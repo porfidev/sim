@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class SurtidoController extends Controller
+class SurtidoJefeController extends Controller
 {
     /**
      * Create a new controller instance.

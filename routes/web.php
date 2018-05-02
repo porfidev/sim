@@ -19,4 +19,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/listadoPedidos', 'SurtidoController@listadoPedidos')->name('listadoPedidos');
+// Almacén o surtir
+Route::get('/listadoPedidosJefe', 'SurtidoJefeController@listadoPedidos')->name('listadoPedidosJefe');
+Route::get('/listadoTareas', 'SurtidoTrabajadorController@listadoTareas')->name('listadoTareas');
+
+// Preparación de pedido o embalaje
+
+// Embarque o distribución de pedido

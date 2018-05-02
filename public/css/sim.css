@@ -1,0 +1,5 @@
+p > i,
+a > i,
+button > i {
+	vertical-align: middle !important;
+}

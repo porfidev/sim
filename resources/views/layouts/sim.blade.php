@@ -12,9 +12,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('iconfont/material-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/sim.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="container-fluid mt-2">
         @include('partials.menu')
 
         @yield('content')
@@ -24,6 +26,6 @@
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    @yield('scripts')
+    @yield('final')
 </body>
 </html>
