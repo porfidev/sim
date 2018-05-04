@@ -18,5 +18,7 @@ class Controller extends BaseController
 		'email'              => 'El correo electrónico no es válido',
 		'min'                => 'El campo :attribute debe tener como mínimo :min caracteres',
 		'password.min'       => 'El campo contraseña debe tener como mínimo :min caracteres',
+		'confirmed'          => 'La confirmación del campo :attribute no coincide.',
+		'password.confirmed' => 'La confirmación de la contraseña no coincide.',
 	);
 }

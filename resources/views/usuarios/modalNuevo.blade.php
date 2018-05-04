@@ -111,8 +111,10 @@
                     $('#modalNuevoUsuario').modal('toggle');
                     location.reload();
                 } else {
-                    erroresValidacion("erroresValidacionNuevo", "Error al agregar el usuario." );
-                    $.each(data.mensajes, function(i,val) { erroresValidacion("erroresValidacionNuevo", val) } );
+                    var errorMsg = "<p>Error al agregar el usuario.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresValidacionNuevo", errorMsg);
                 }
             }).fail(function (jqXHR, textStatus) {
                 errorDetalle = "";

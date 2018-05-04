@@ -30,7 +30,7 @@ class UsuariosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function listado()
+    public function listado(Request $request)
     {
         try {
             Log::info(" UsuariosController - listado ");
