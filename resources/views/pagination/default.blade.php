@@ -4,12 +4,12 @@
         class="mr-2">
         <ul class="pagination">
             <li class="page-item
-            @if ($paginator->getCurrentPage() == 1)
+            @if ($paginator->currentPage() == 1)
                 disabled
             @endif
             ">
                 <a class="page-link"
-                    href="{{ $paginator->getUrl($paginator->getCurrentPage()-1) }}"
+                    href="{{ $paginator->url($paginator->currentPage()-1) }}"
                     aria-label="Anterior"
                     title="Anterior"
                     data-tooltip="tooltip">
@@ -18,30 +18,30 @@
                 </a>
             </li>
             <?php
-                $init = $paginator->getCurrentPage()-2;
+                $init = $paginator->currentPage()-2;
                 if($init <= 0){
                     $init = 1;
                 }
-                $end = $paginator->getCurrentPage()+2;
-                if($end > $paginator->getLastPage()) {
-                    $end = $paginator->getLastPage();
+                $end = $paginator->currentPage()+2;
+                if($end > $paginator->lastPage()) {
+                    $end = $paginator->lastPage();
                 }
             ?>
             @for ($i = $init; $i <= $end; $i++)
             <li class="page-item
-                {{($paginator->getCurrentPage() == $i) ? ' active' : '' }}
+                {{($paginator->currentPage() == $i) ? ' active' : '' }}
             ">
-                <a class="page-link" data-tooltip="tooltip" href="{{ $paginator->getUrl($i) }}" title="Ir a página {{ $i }}">{{ $i }}</a>
+                <a class="page-link" data-tooltip="tooltip" href="{{ $paginator->url($i) }}" title="Ir a página {{ $i }}">{{ $i }}</a>
             </li>
             @endfor
 
             <li class="page-item
-            @if ($paginator->getCurrentPage() == $paginator->getLastPage())
+            @if ($paginator->currentPage() == $paginator->lastPage())
                 disabled
             @endif
             ">
                 <a class="page-link"
-                    href="{{ $paginator->getUrl($paginator->getCurrentPage()+1) }}"
+                    href="{{ $paginator->url($paginator->currentPage()+1) }}"
                     aria-label="Siguiente"
                     title="Siguiente"
                     data-tooltip="tooltip">

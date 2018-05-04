@@ -34,23 +34,50 @@
                         </tr>
                         <tr class="table-dark">
                             <th>
-                                <input type="text" class="form-control" value="#">
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formaId"
+                                        placeholder="#"
+                                    @if ( Session::has('su_id') && Session::get('su_id') != '0' )
+                                        value="{{ Session::get('su_id') }}"
+                                    @endif>
                             </th>
                             <th>
                                 <input type="text"
-                                        class="form-control"
+                                        class="form-control inputFiltro"
                                         id="formaNombre"
                                         placeholder="Nombre"
-                                        value="">
+                                    @if ( Session::has('su_nombre') && Session::get('su_nombre') != 'NA' )
+                                        value="{{ Session::get('su_nombre') }}"
+                                    @endif>
                             </th>
                             <th>
-                                <input type="text" class="form-control" value="Correo">
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formaEmail"
+                                        placeholder="Correo electr&oacute;nico"
+                                    @if ( Session::has('su_email') && Session::get('su_email') != 'NA' )
+                                        value="{{ Session::get('su_email') }}"
+                                    @endif>
                             </th>
                             <th>
-                                <select class="form-control">
-                                    <option> --- Todos --- </option>
-                                    <option value="1">Activo</option>
-                                    <option value="0">Inactivo</option>
+                                <select class="form-control"
+                                        id="formaEstatus">
+                                    <option value="-1">
+                                        --- Todos ---
+                                    </option>
+                                    <option value="1"
+                                    @if ( Session::has('su_status') && Session::get('su_status') == 1 )
+                                        selected
+                                    @endif>
+                                        Activo
+                                    </option>
+                                    <option value="0"
+                                    @if ( Session::has('su_status') && Session::get('su_status') == 0 )
+                                        selected
+                                    @endif>
+                                        Inactivo
+                                    </option>
                                 </select>
                             </th>
                             <th style="text-align: center;">
@@ -65,7 +92,8 @@
                                 <button class="btn btn-sm btn-warning"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Limpiar filtros">
+                                        title="Limpiar filtros"
+                                        id="btnLimpiar">
                                     <i class="material-icons">settings_backup_restore</i>
                                 </button>
                             </th>
@@ -116,7 +144,10 @@
         method="POST"
         action="{{ route('usuarios.listado') }}">
         {{ csrf_field() }}
-        <input type="hidden" name="su_nombre" id="busquedaNombre" value="NA">
+        <input type="hidden" name="su_id"     id="busquedaId"      value="0">
+        <input type="hidden" name="su_nombre" id="busquedaNombre"  value="NA">
+        <input type="hidden" name="su_email"  id="busquedaEmail"   value="NA">
+        <input type="hidden" name="su_status" id="busquedaEstatus" value="-1">
     </form>
 @endsection
 
@@ -126,12 +157,28 @@
     @include('usuarios.modalNuevo')
     <script type="text/javascript">
         function ejecutaBusquedasFiltros() {
-            $( '#busquedaNombre' ).val( $( '#formaNombre' ).val() ? $( '#formaNombre' ).val() : 'NA'  );
+            $( '#busquedaId'      ).val( $( '#formaId'      ).val() ? $( '#formaId'      ).val() : '0'  );
+            $( '#busquedaNombre'  ).val( $( '#formaNombre'  ).val() ? $( '#formaNombre'  ).val() : 'NA' );
+            $( '#busquedaEmail'   ).val( $( '#formaEmail'   ).val() ? $( '#formaEmail'   ).val() : 'NA' );
+            $( '#busquedaEstatus' ).val( $( '#formaEstatus' ).val() ? $( '#formaEstatus' ).val() : '-1' );
             $( '#searchForm' ).submit();
         }
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
+            $( '[data-toggle="tooltip"]' ).tooltip();
+            $( '#btnLimpiar' ).click(function () {
+                $( '#busquedaId'      ).val( '0'  );
+                $( '#busquedaNombre'  ).val( 'NA' );
+                $( '#busquedaEmail'   ).val( 'NA' );
+                $( '#busquedaEstatus' ).val( '-1' );
+                $( '#searchForm' ).submit();
+            });
             $( '#btnBuscar' ).click(ejecutaBusquedasFiltros);
+            $( '#formaEstatus' ).change(ejecutaBusquedasFiltros);
+            $('.inputFiltro').keyup(function(e){
+                if(e.keyCode == 13) {
+                    ejecutaBusquedasFiltros();
+                }
+            });
         });
     </script>
 @endsection

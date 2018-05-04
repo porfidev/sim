@@ -32,23 +32,23 @@ class EloquentUser implements UserRepository
 	{
 		$list = $this->model->orderBy('name');
 		if(!empty($search)) {
-			if(array_key_exists("id", $search)
-				&& !empty($search["id"]) ) {
-				$list->where("id", "like", "%".$search["id"]."%");
+			if(array_key_exists(self::SQL_ID, $search)
+				&& !empty($search[self::SQL_ID]) ) {
+				$list->where(self::SQL_ID, "like", "%".$search[self::SQL_ID]."%");
 			}
-			if(array_key_exists("nombre", $search)
-				&& $search["nombre"] != "NA") {
-				Log::info("EloquentUser - getList - Nombre");
-				$list->where("name", "like", "%".$search["nombre"]."%");
+			if(array_key_exists(self::SQL_NAME, $search)
+				&& $search[self::SQL_NAME] != "NA") {
+				$list->where(self::SQL_NAME, "like", "%".$search[self::SQL_NAME]."%");
 			}
-			if(array_key_exists("email", $search)
-				&& $search["email"] != "NA") {
-				$list->where("email", "like", "%".$search["email"]."%");
+			if(array_key_exists(self::SQL_EMAIL, $search)
+				&& $search[self::SQL_EMAIL] != "NA") {
+				$list->where(self::SQL_EMAIL, "like", "%".$search[self::SQL_EMAIL]."%");
 			}
-			if(array_key_exists("status", $search)) {
-				$list->where("status", "=", $search["id"]);
+			if(array_key_exists(self::SQL_STATUS, $search)) {
+				$list->where(self::SQL_STATUS, "=", $search[self::SQL_STATUS]);
 			}
 		}
+		Log::debug("EloquentUser - getList - SQL: ".$list->toSql());
 		return $list->paginate($itemsPerPage);
 	}
 
