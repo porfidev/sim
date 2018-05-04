@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 interface UserRepository
 {
-	function getList($itemsPerPage);
+	function getList($itemsPerPage, array $search = null);
 
 	function getById($id);
 

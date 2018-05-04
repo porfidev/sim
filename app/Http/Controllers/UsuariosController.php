@@ -14,6 +14,8 @@ class UsuariosController extends Controller
 
     private $model;
 
+    const SESSION_NAME = "su_nombre";
+
     /**
      * Create a new controller instance.
      *
@@ -34,7 +36,18 @@ class UsuariosController extends Controller
     {
         try {
             Log::info(" UsuariosController - listado ");
-            $listado = $this->model->getList(15);
+            if ($request->isMethod('post')) {
+                if( $request->has(self::SESSION_NAME)
+                    && $request->input(self::SESSION_NAME) != 'NA' ) {
+                    $request->session()->put(self::SESSION_NAME, $request->input(self::SESSION_NAME));
+                }
+            }
+            $search = array();
+            if ($request->session()->has(self::SESSION_NAME)) {
+                $search["nombre"] = $request->session()->get(self::SESSION_NAME);
+            }
+            Log::info(" UsuariosController - listado - search: ".json_encode($search));
+            $listado = $this->model->getList(15, $search);
             return view('usuarios.listado',
                 array(
                     "listado" => $listado

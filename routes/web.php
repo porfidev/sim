@@ -20,7 +20,8 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 // Usuarios
-Route::get('/usuarios/listado', 'UsuariosController@listado')->name('usuarios.listado');
+Route::get('/usuarios/listado', 'UsuariosController@listado');
+Route::post('/usuarios/listado', 'UsuariosController@listado')->name('usuarios.listado');
 Route::post('/usuarios/agregar', 'UsuariosController@agregar')->name('usuarios.agregar');
 
 // Almacén o surtir

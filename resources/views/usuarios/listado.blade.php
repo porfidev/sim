@@ -37,7 +37,11 @@
                                 <input type="text" class="form-control" value="#">
                             </th>
                             <th>
-                                <input type="text" class="form-control" value="Nombre">
+                                <input type="text"
+                                        class="form-control"
+                                        id="formaNombre"
+                                        placeholder="Nombre"
+                                        value="">
                             </th>
                             <th>
                                 <input type="text" class="form-control" value="Correo">
@@ -53,7 +57,8 @@
                                 <button class="btn btn-sm btn-info"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Buscar">
+                                        title="Buscar"
+                                        id="btnBuscar">
                                     <i class="material-icons">search</i>
                                 </button>
 
@@ -107,6 +112,12 @@
             </div>
         </div>
     </div>
+    <form id="searchForm"
+        method="POST"
+        action="{{ route('usuarios.listado') }}">
+        {{ csrf_field() }}
+        <input type="hidden" name="su_nombre" id="busquedaNombre" value="NA">
+    </form>
 @endsection
 
 @section('final')
@@ -114,8 +125,13 @@
     @include('partials.modalMensaje')
     @include('usuarios.modalNuevo')
     <script type="text/javascript">
+        function ejecutaBusquedasFiltros() {
+            $( '#busquedaNombre' ).val( $( '#formaNombre' ).val() ? $( '#formaNombre' ).val() : 'NA'  );
+            $( '#searchForm' ).submit();
+        }
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
+            $( '#btnBuscar' ).click(ejecutaBusquedasFiltros);
         });
     </script>
 @endsection

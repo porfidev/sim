@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\User;
 
+use Illuminate\Support\Facades\Log;
+
 class EloquentUser implements UserRepository
 {
 	/**
@@ -26,9 +28,28 @@ class EloquentUser implements UserRepository
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-	public function getList($itemsPerPage)
+	public function getList($itemsPerPage, array $search = null)
 	{
-		return $this->model->paginate($itemsPerPage);
+		$list = $this->model->orderBy('name');
+		if(!empty($search)) {
+			if(array_key_exists("id", $search)
+				&& !empty($search["id"]) ) {
+				$list->where("id", "like", "%".$search["id"]."%");
+			}
+			if(array_key_exists("nombre", $search)
+				&& $search["nombre"] != "NA") {
+				Log::info("EloquentUser - getList - Nombre");
+				$list->where("name", "like", "%".$search["nombre"]."%");
+			}
+			if(array_key_exists("email", $search)
+				&& $search["email"] != "NA") {
+				$list->where("email", "like", "%".$search["email"]."%");
+			}
+			if(array_key_exists("status", $search)) {
+				$list->where("status", "=", $search["id"]);
+			}
+		}
+		return $list->paginate($itemsPerPage);
 	}
 
 	/**
