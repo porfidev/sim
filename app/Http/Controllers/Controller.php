@@ -10,4 +10,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public static $messages = array(
+		'required'           => 'El campo :attribute, es requerido',
+		'email.required'     => 'El campo correo electrónico, es requerido',
+		'password.required'  => 'El campo contraseña, es requerido',
+		'email'              => 'El correo electrónico no es válido',
+		'min'                => 'El campo :attribute debe tener como mínimo :min caracteres',
+		'password.min'       => 'El campo contraseña debe tener como mínimo :min caracteres',
+	);
 }

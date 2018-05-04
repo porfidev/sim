@@ -22,7 +22,7 @@ class EloquentUser implements UserRepository
     }
 
     /**
-	 * Get all tasks.
+	 * Get all users.
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
@@ -32,11 +32,11 @@ class EloquentUser implements UserRepository
 	}
 
 	/**
-	 * Get task by id.
+	 * Get User by id.
 	 *
 	 * @param integer $id
 	 *
-	 * @return App\Task
+	 * @return App\User
 	 */
 	public function getById($id)
 	{
@@ -44,24 +44,25 @@ class EloquentUser implements UserRepository
 	}
 
 	/**
-	 * Create a new task.
+	 * Create a new User.
 	 *
 	 * @param array $attributes
 	 *
-	 * @return App\Task
+	 * @return App\User
 	 */
 	public function create(array $attributes)
 	{
+
 		return $this->model->create($attributes);
 	}
 
 	/**
-	 * Update a task.
+	 * Update a User.
 	 *
 	 * @param integer $id
 	 * @param array $attributes
 	 *
-	 * @return App\Task
+	 * @return App\User
 	 */
 	public function update($id, array $attributes)
 	{
@@ -69,7 +70,7 @@ class EloquentUser implements UserRepository
 	}
 
 	/**
-	 * Delete a task.
+	 * Delete a User.
 	 *
 	 * @param integer $id
 	 *
