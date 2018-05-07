@@ -7,6 +7,7 @@
                 height="30"
                 class="d-inline-block align-top"
                 alt="Marco Polo">
+        &nbsp;
         {{ config('app.name', 'Sim') }}
     </a>
     <button class="navbar-toggler"
@@ -20,6 +21,16 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+            <li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                        href="{{ route('login') }}">
+                        Entrar
+                    </a>
+                </li>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
             <!-- Authentication Links -->
             @guest
                 <li class="nav-item">
@@ -39,7 +50,12 @@
                         aria-expanded="false">
                         {{ Auth::user()->name }}
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <div class="dropdown-menu"
+                            aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item"
+                            href="#">
+                            Cambio de contrase&ntilde;a
+                        </a>
                         <a class="dropdown-item"
                             href="{{ route('logout') }}"
                             onclick="event.preventDefault();
