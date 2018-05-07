@@ -119,7 +119,8 @@
                     @endif
                             </td>
                             <td style="text-align: center;">
-                                <button class="btn btn-sm btn-success"
+                                <button class="btn btn-sm btn-success editarUsuario"
+                                        data-id="{{ $user->id }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Editar">
@@ -155,6 +156,7 @@
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('usuarios.modalNuevo')
+    @include('usuarios.modalEditar')
     <script type="text/javascript">
         function ejecutaBusquedasFiltros() {
             $( '#busquedaId'      ).val( $( '#formaId'      ).val() ? $( '#formaId'      ).val() : '0'  );

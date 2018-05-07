@@ -2,6 +2,11 @@
     <!-- Branding Image -->
     <a class="navbar-brand"
         href="{{ url('/') }}">
+        <img src="{{ url('img/logo_marco_polo.png') }}"
+                width="auto"
+                height="30"
+                class="d-inline-block align-top"
+                alt="Marco Polo">
         {{ config('app.name', 'Sim') }}
     </a>
     <button class="navbar-toggler"

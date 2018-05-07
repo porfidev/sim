@@ -23,6 +23,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/usuarios/listado', 'UsuariosController@listado');
 Route::post('/usuarios/listado', 'UsuariosController@listado')->name('usuarios.listado');
 Route::post('/usuarios/agregar', 'UsuariosController@agregar')->name('usuarios.agregar');
+Route::post('/usuarios/consultar', 'UsuariosController@consultar')->name('usuarios.consultar');
+Route::post('/usuarios/editar', 'UsuariosController@editar')->name('usuarios.editar');
 
 // Almacén o surtir
 Route::get('/listadoPedidosJefe', 'SurtidoJefeController@listadoPedidos')->name('listadoPedidosJefe');

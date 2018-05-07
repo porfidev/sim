@@ -100,7 +100,7 @@ class UsuariosController extends Controller
     public function agregar(Request $request)
     {
         $resultado = "OK";
-        $mensajes = "NA";
+        $mensajes  = "NA";
         try {
             Log::info(" UsuariosController - agregar ");
             $validator = Validator::make(
@@ -118,18 +118,108 @@ class UsuariosController extends Controller
                 $mensajes = $validator->errors();
             } else {
                 $data = array(
-                    "name"     => $request->nombre,
-                    "email"    => $request->email,
-                    "password" => bcrypt($request->password),
+                    UserRepository::SQL_NAME  => $request->nombre,
+                    UserRepository::SQL_EMAIL => $request->email,
+                    UserRepository::SQL_PASS  => bcrypt($request->password),
                 );
                 Log::info(" UsuariosController - agregar - data: ".json_encode($data));
                 $this->model->create($data);
             }
         } catch (\Exception $e) {
-            Log::error( 'UsuariosController - agregar - Error'.$e->getMessage() );
+            Log::error( 'UsuariosController - agregar - Error: '.$e->getMessage() );
             $resultado = "ERROR";
             $mensajes = $e->getMessage();
         }
         return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes));
+    }
+
+    /**
+     * Función para consultar los datos de un usuario
+     * Se usa en ajax.
+     *
+     * @return json
+     */
+    public function consultar(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info(" UsuariosController - consultar ");
+            if( $request->has('id') ) {
+                $usuario = $this->model->getById( $request->get('id') );
+                if( !empty($usuario) ) {
+                    $datos = $usuario;
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se encontraron datos de usuario" );
+                }
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "No se encontraron datos de usuario" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'UsuariosController - consultar - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes = $e->getMessage();
+        }
+        return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
+    }
+
+    /**
+     * Función para editar los datos de un usuario
+     * Se usa en ajax.
+     *
+     * @return json
+     */
+    public function editar(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info(" UsuariosController - editar ");
+            if($request->has('id'))
+            {
+                $usuario = $this->model->getById( $request->get('id') );
+                if( !empty($usuario) )
+                {
+                    $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'nombre'   => 'required|string|max:191',
+                            'email'    => 'required|string|email|max:120|unique:users,email,'.$usuario->id,
+                            'password' => 'sometimes|string|min:6|confirmed',
+                            'status'   => 'required|boolean'
+                        ),
+                        Controller::$messages
+                    );
+                    if ($validator->fails())
+                    {
+                        $resultado = "ERROR";
+                        $mensajes = $validator->errors();
+                    } else {
+                        $datos = array();
+                        $datos[UserRepository::SQL_NAME]   = $request->nombre;
+                        $datos[UserRepository::SQL_EMAIL]  = $request->email;
+                        $datos[UserRepository::SQL_STATUS] = $request->status;
+                        if($request->has(UserRepository::SQL_PASS)) {
+                            $datos[UserRepository::SQL_PASS] = bcrypt($request->password);
+                        }
+                        if(!$this->model->update( $request->get('id'), $datos)) {
+                            $resultado = "ERROR";
+                            $mensajes  = array( "No se pudo actualizar el usuario" );
+                        }
+                    }
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se encontraron datos de usuario" );
+                }
+            }
+
+        } catch (\Exception $e) {
+            Log::error( 'UsuariosController - editar - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes = array( $e->getMessage() );
+        }
+        return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
     }
 }

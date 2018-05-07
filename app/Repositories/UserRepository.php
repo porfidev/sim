@@ -4,10 +4,11 @@ namespace App\Repositories;
 
 interface UserRepository
 {
-	const SQL_ID     = "id";
-	const SQL_NAME   = "name";
-	const SQL_EMAIL  = "email";
-	const SQL_STATUS = "status";
+	const SQL_ID      = "id";
+	const SQL_NAME    = "name";
+	const SQL_EMAIL   = "email";
+	const SQL_PASS    = "password";
+	const SQL_STATUS  = "status";
 
 	function getList($itemsPerPage, array $search = null);
 

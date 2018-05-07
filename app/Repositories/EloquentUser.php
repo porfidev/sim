@@ -87,7 +87,11 @@ class EloquentUser implements UserRepository
 	 */
 	public function update($id, array $attributes)
 	{
-		return $this->model->find($id)->update($attributes);
+		Log::debug("EloquentUser - update - id: ".$id);
+		Log::debug("EloquentUser - update - attributes: ".json_encode($attributes));
+		$this->model = $this->model->find($id);
+		Log::debug("EloquentUser - update - model: ".json_encode($this->model));
+		return $this->model->update($attributes);
 	}
 
 	/**
@@ -99,6 +103,6 @@ class EloquentUser implements UserRepository
 	 */
 	public function delete($id)
 	{
-		return $this->model->find($id)->delete();
+		return $this->model->find($id)->update( array(self::SQL_STATUS => 0) );
 	}
 }

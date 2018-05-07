@@ -69,6 +69,7 @@
                         <input id="password-confirm"
                             type="password"
                             class="form-control"
+                            placeholder="Escribe la confirmaci&oacute;n de tu contrase&ntilde;a"
                             name="password_confirmation"
                             required>
                     </div>
