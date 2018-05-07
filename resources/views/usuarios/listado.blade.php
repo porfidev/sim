@@ -20,6 +20,9 @@
                             <th scope="col" style="min-width: 270px;">
                                 Correo electr&oacute;nico
                             </th>
+                            <th scope="col" style="min-width: 220px;">
+                                Rol
+                            </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
                                 Estatus
                             </th>
@@ -59,6 +62,21 @@
                                     @if ( Session::has('su_email') && Session::get('su_email') != 'NA' )
                                         value="{{ Session::get('su_email') }}"
                                     @endif>
+                            </th>
+                            <th>
+                                <select class="form-control"
+                                        id="formaRol">
+                                    <option value="0"> --- Todos --- </option>
+                            @foreach ($roles as $rol)
+                                    <option value="{{ $rol->id }}"
+                                @if ( Session::has('su_rol')
+                                        && Session::get('su_rol') == $rol->id )
+                                        selected
+                                @endif>
+                                        {{ $rol->description }}
+                                    </option>
+                            @endforeach
+                                </select>
                             </th>
                             <th>
                                 <select class="form-control"
@@ -111,6 +129,9 @@
                             <td>
                                 {{ $user->email }}
                             </td>
+                            <td>
+                                {{ $user->rol->description }}
+                            </td>
                             <td style="text-align: center;">
                     @if ($user->status == 0)
                                 <span class="text-danger font-weight-bold">Inactivo</span>
@@ -131,7 +152,7 @@
             @endforeach
             @if (count($listado) === 0)
                         <tr style="text-align: center;">
-                            <td colspan="5">
+                            <td colspan="6">
                                 No hay usuarios que mostrar
                             </td>
                         </tr>
@@ -148,6 +169,7 @@
         <input type="hidden" name="su_id"     id="busquedaId"      value="0">
         <input type="hidden" name="su_nombre" id="busquedaNombre"  value="NA">
         <input type="hidden" name="su_email"  id="busquedaEmail"   value="NA">
+        <input type="hidden" name="su_rol"    id="busquedaRol"     value="0">
         <input type="hidden" name="su_status" id="busquedaEstatus" value="-1">
     </form>
 @endsection
@@ -162,6 +184,7 @@
             $( '#busquedaId'      ).val( $( '#formaId'      ).val() ? $( '#formaId'      ).val() : '0'  );
             $( '#busquedaNombre'  ).val( $( '#formaNombre'  ).val() ? $( '#formaNombre'  ).val() : 'NA' );
             $( '#busquedaEmail'   ).val( $( '#formaEmail'   ).val() ? $( '#formaEmail'   ).val() : 'NA' );
+            $( '#busquedaRol'     ).val( $( '#formaRol'     ).val() ? $( '#formaRol'     ).val() : '0'  );
             $( '#busquedaEstatus' ).val( $( '#formaEstatus' ).val() ? $( '#formaEstatus' ).val() : '-1' );
             $( '#searchForm' ).submit();
         }
@@ -171,12 +194,16 @@
                 $( '#busquedaId'      ).val( '0'  );
                 $( '#busquedaNombre'  ).val( 'NA' );
                 $( '#busquedaEmail'   ).val( 'NA' );
+                $( '#busquedaRol'     ).val( '0'  );
                 $( '#busquedaEstatus' ).val( '-1' );
                 $( '#searchForm' ).submit();
             });
             $( '#btnBuscar' ).click(ejecutaBusquedasFiltros);
+
             $( '#formaEstatus' ).change(ejecutaBusquedasFiltros);
-            $('.inputFiltro').keyup(function(e){
+            $( '#formaRol'     ).change(ejecutaBusquedasFiltros);
+
+            $( '.inputFiltro' ).keyup(function(e){
                 if(e.keyCode == 13) {
                     ejecutaBusquedasFiltros();
                 }

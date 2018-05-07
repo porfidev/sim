@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Schema;
 use App\Repositories\UserRepository;
 use App\Repositories\EloquentUser;
 
+use App\Repositories\RolRepository;
+use App\Repositories\EloquentRol;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -28,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(UserRepository::class, EloquentUser::class);
+        $this->app->singleton(RolRepository::class, EloquentRol::class);
     }
 }

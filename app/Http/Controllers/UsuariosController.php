@@ -7,16 +7,19 @@ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
+use App\Repositories\RolRepository;
 use App\Repositories\UserRepository;
 
 class UsuariosController extends Controller
 {
 
-    private $model;
+    private $userModel;
+    private $rolModel;
 
     const SESSION_ID     = "su_id";
     const SESSION_NAME   = "su_nombre";
     const SESSION_EMAIL  = "su_email";
+    const SESSION_ROL    = "su_rol";
     const SESSION_STATUS = "su_status";
 
     /**
@@ -24,10 +27,11 @@ class UsuariosController extends Controller
      *
      * @return void
      */
-    public function __construct(UserRepository $model)
+    public function __construct(UserRepository $user, RolRepository $rol)
     {
         //$this->middleware('auth');
-        $this->model = $model;
+        $this->userModel = $user;
+        $this->rolModel  = $rol;
     }
 
     /**
@@ -52,6 +56,10 @@ class UsuariosController extends Controller
                     $request->session()->put(self::SESSION_EMAIL, $request->input(self::SESSION_EMAIL));
                 }
 
+                if( $request->has(self::SESSION_ROL)) {
+                    $request->session()->put(self::SESSION_ROL, $request->input(self::SESSION_ROL));
+                }
+
                 if( $request->has(self::SESSION_STATUS)) {
                     $request->session()->put(self::SESSION_STATUS, $request->input(self::SESSION_STATUS));
                 }
@@ -69,20 +77,25 @@ class UsuariosController extends Controller
                     && $request->session()->get(self::SESSION_EMAIL) != 'NA' ) {
                 $search[UserRepository::SQL_EMAIL] = $request->session()->get(self::SESSION_EMAIL);
             }
+            if ($request->session()->has(self::SESSION_ROL)
+                    && $request->session()->get(self::SESSION_ROL) != '0' ) {
+                $search[UserRepository::SQL_ROL] = $request->session()->get(self::SESSION_ROL);
+            }
             if ($request->session()->has(self::SESSION_STATUS)
                     && $request->session()->get(self::SESSION_STATUS) != '-1' ) {
                 $search[UserRepository::SQL_STATUS] = $request->session()->get(self::SESSION_STATUS);
             }
             Log::info(" UsuariosController - listado - search: ".json_encode($search));
-            $listado = $this->model->getList(15, $search);
+            $listado = $this->userModel->getList(15, $search);
             return view('usuarios.listado',
                 array(
-                    "listado" => $listado
+                    "listado" => $listado,
+                    "roles"   => $this->rolModel->getAll()
                 )
             );
         } catch (\Exception $e) {
             Log::error( 'UsuariosController - listado - Error'.$e->getMessage() );
-            return View::make('error',
+            return view('error',
                 array(
                     "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
                     "titulo" => "Error inesperado"
@@ -123,7 +136,7 @@ class UsuariosController extends Controller
                     UserRepository::SQL_PASS  => bcrypt($request->password),
                 );
                 Log::info(" UsuariosController - agregar - data: ".json_encode($data));
-                $this->model->create($data);
+                $this->userModel->create($data);
             }
         } catch (\Exception $e) {
             Log::error( 'UsuariosController - agregar - Error: '.$e->getMessage() );
@@ -146,7 +159,7 @@ class UsuariosController extends Controller
         try {
             Log::info(" UsuariosController - consultar ");
             if( $request->has('id') ) {
-                $usuario = $this->model->getById( $request->get('id') );
+                $usuario = $this->userModel->getById( $request->get('id') );
                 if( !empty($usuario) ) {
                     $datos = $usuario;
                 } else {
@@ -179,7 +192,7 @@ class UsuariosController extends Controller
             Log::info(" UsuariosController - editar ");
             if($request->has('id'))
             {
-                $usuario = $this->model->getById( $request->get('id') );
+                $usuario = $this->userModel->getById( $request->get('id') );
                 if( !empty($usuario) )
                 {
                     $validator = Validator::make(
@@ -204,7 +217,7 @@ class UsuariosController extends Controller
                         if($request->has(UserRepository::SQL_PASS)) {
                             $datos[UserRepository::SQL_PASS] = bcrypt($request->password);
                         }
-                        if(!$this->model->update( $request->get('id'), $datos)) {
+                        if(!$this->userModel->update( $request->get('id'), $datos)) {
                             $resultado = "ERROR";
                             $mensajes  = array( "No se pudo actualizar el usuario" );
                         }

@@ -30,7 +30,8 @@ class EloquentUser implements UserRepository
 	 */
 	public function getList($itemsPerPage, array $search = null)
 	{
-		$list = $this->model->orderBy('name');
+		$list = $this->model->with('rol')
+			->orderBy('name');
 		if(!empty($search)) {
 			if(array_key_exists(self::SQL_ID, $search)
 				&& !empty($search[self::SQL_ID]) ) {
@@ -43,6 +44,10 @@ class EloquentUser implements UserRepository
 			if(array_key_exists(self::SQL_EMAIL, $search)
 				&& $search[self::SQL_EMAIL] != "NA") {
 				$list->where(self::SQL_EMAIL, "like", "%".$search[self::SQL_EMAIL]."%");
+			}
+			if(array_key_exists(self::SQL_ROL, $search)
+				&& !empty($search[self::SQL_ROL]) ) {
+				$list->where(self::SQL_ROL, "=", $search[self::SQL_ROL]);
 			}
 			if(array_key_exists(self::SQL_STATUS, $search)) {
 				$list->where(self::SQL_STATUS, "=", $search[self::SQL_STATUS]);
@@ -103,6 +108,10 @@ class EloquentUser implements UserRepository
 	 */
 	public function delete($id)
 	{
-		return $this->model->find($id)->update( array(self::SQL_STATUS => 0) );
+		return $this->model->find($id)->update(
+			array(
+				self::SQL_STATUS => self::DELETED
+			)
+		);
 	}
 }

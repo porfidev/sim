@@ -26,4 +26,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get the rol that owns the user.
+     */
+    public function rol()
+    {
+        return $this->belongsTo('App\Rol', 'rol_id');
+    }
 }

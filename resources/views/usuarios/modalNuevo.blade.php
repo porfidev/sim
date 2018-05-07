@@ -53,6 +53,22 @@
                     </div>
                     <div class="form-group">
                         <label for="modalNewPassword">
+                            Rol
+                        </label>
+                        <select class="form-control"
+                                id="modalNewRol"
+                                name="rol">
+                            <option value=""> --- Selecciona un rol --- </option>
+                    @foreach ($roles as $rol)
+                            <option value="{{ $rol->id }}">
+                                {{ $rol->description }}
+                            </option>
+                    @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modalNewPassword">
                             Contrase&ntilde;a
                         </label>
                         <input type="password"
