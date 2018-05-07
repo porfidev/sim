@@ -121,6 +121,7 @@ class UsuariosController extends Controller
                 array(
                     'nombre'   => 'required|string|max:191',
                     'email'    => 'required|string|email|max:120|unique:users',
+                    'rol'      => 'required|integer|exists:rols,id',
                     'password' => 'required|string|min:6|confirmed',
                 ),
                 Controller::$messages
@@ -133,6 +134,7 @@ class UsuariosController extends Controller
                 $data = array(
                     UserRepository::SQL_NAME  => $request->nombre,
                     UserRepository::SQL_EMAIL => $request->email,
+                    UserRepository::SQL_ROL   => $request->rol,
                     UserRepository::SQL_PASS  => bcrypt($request->password),
                 );
                 Log::info(" UsuariosController - agregar - data: ".json_encode($data));
@@ -200,6 +202,7 @@ class UsuariosController extends Controller
                         array(
                             'nombre'   => 'required|string|max:191',
                             'email'    => 'required|string|email|max:120|unique:users,email,'.$usuario->id,
+                            'rol'      => 'required|integer|exists:rols,id',
                             'password' => 'sometimes|string|min:6|confirmed',
                             'status'   => 'required|boolean'
                         ),
@@ -213,6 +216,7 @@ class UsuariosController extends Controller
                         $datos = array();
                         $datos[UserRepository::SQL_NAME]   = $request->nombre;
                         $datos[UserRepository::SQL_EMAIL]  = $request->email;
+                        $datos[UserRepository::SQL_ROL]    = $request->rol;
                         $datos[UserRepository::SQL_STATUS] = $request->status;
                         if($request->has(UserRepository::SQL_PASS)) {
                             $datos[UserRepository::SQL_PASS] = bcrypt($request->password);

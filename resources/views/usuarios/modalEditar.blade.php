@@ -61,6 +61,20 @@
                         </small>
                     </div>
                     <div class="form-group">
+                        <label for="modalEditRol">
+                            Rol
+                        </label>
+                        <select class="form-control"
+                                id="modalEditRol"
+                                name="rol">
+                    @foreach ($roles as $rol)
+                            <option value="{{ $rol->id }}">
+                                {{ $rol->description }}
+                            </option>
+                    @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="modalEditEmail">
                             Estatus
                         </label>
@@ -112,7 +126,7 @@
                 <button type="button"
                     class="btn btn-secondary"
                     data-dismiss="modal">
-                    Cancelar
+                    Cerrar
                 </button>
             </div>
         </div>
@@ -143,9 +157,10 @@
             }).done(function( data ) {
                 if(data.resultado === 'OK') {
                     $( '#modalEditarUsuarioTitle' ).text("Usuario " + data.datos.id);
-                    $( '#modalEditId' ).val(data.datos.id);
-                    $( '#modalEditName' ).val(data.datos.name);
-                    $( '#modalEditEmail' ).val(data.datos.email);
+                    $( '#modalEditId'      ).val(data.datos.id);
+                    $( '#modalEditName'    ).val(data.datos.name);
+                    $( '#modalEditEmail'   ).val(data.datos.email);
+                    $( '#modalEditRol'     ).val(data.datos.rol_id);
                     $( '#modalEditEstatus' ).val(data.datos.status);
                     $( '#loading_modal_edit_user' ).hide();
                     $( '#formGuardarEditar' ).show();

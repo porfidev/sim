@@ -31,7 +31,7 @@ class EloquentUser implements UserRepository
 	public function getList($itemsPerPage, array $search = null)
 	{
 		$list = $this->model->with('rol')
-			->orderBy('name');
+			->orderBy('id', 'desc');
 		if(!empty($search)) {
 			if(array_key_exists(self::SQL_ID, $search)
 				&& !empty($search[self::SQL_ID]) ) {
@@ -95,7 +95,6 @@ class EloquentUser implements UserRepository
 		Log::debug("EloquentUser - update - id: ".$id);
 		Log::debug("EloquentUser - update - attributes: ".json_encode($attributes));
 		$this->model = $this->model->find($id);
-		Log::debug("EloquentUser - update - model: ".json_encode($this->model));
 		return $this->model->update($attributes);
 	}
 

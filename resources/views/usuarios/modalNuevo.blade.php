@@ -52,7 +52,7 @@
                         </small>
                     </div>
                     <div class="form-group">
-                        <label for="modalNewPassword">
+                        <label for="modalNewRol">
                             Rol
                         </label>
                         <select class="form-control"
