@@ -126,7 +126,7 @@ class MenuController extends Controller
             $resultado = "ERROR";
             $mensajes = $e->getMessage();
         }
-        return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes));
+        return response()->json(array(Controller::JSON_RESPONSE => $resultado, Controller::JSON_MESSAGE => $mensajes));
     }
 
     /**
@@ -158,7 +158,13 @@ class MenuController extends Controller
             $resultado = "ERROR";
             $mensajes = $e->getMessage();
         }
-        return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
+        return response()->json(
+            array(
+                Controller::JSON_RESPONSE => $resultado,
+                Controller::JSON_MESSAGE  => $mensajes,
+                Controller::JSON_DATA     => $datos
+            )
+        );
     }
 
     /**
@@ -217,6 +223,12 @@ class MenuController extends Controller
             $resultado = "ERROR";
             $mensajes = array( $e->getMessage() );
         }
-        return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
+        return response()->json(
+            array(
+                Controller::JSON_RESPONSE => $resultado,
+                Controller::JSON_MESSAGE  => $mensajes,
+                Controller::JSON_DATA     => $datos
+            )
+        );
     }
 }

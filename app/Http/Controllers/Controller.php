@@ -11,6 +11,10 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+	const JSON_MESSAGE  = "mensajes";
+    const JSON_RESPONSE = "resultado";
+    const JSON_DATA     = "datos";
+
     public static $messages = array(
 		'required'           => 'El campo :attribute, es requerido',
 		'email.required'     => 'El campo correo electrónico, es requerido',

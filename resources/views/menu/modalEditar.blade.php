@@ -75,7 +75,7 @@
                 <button type="button"
                     class="btn btn-primary",
                     id="btnEditMenuItem">
-                    Aceptar
+                    Guardar
                 </button>
                 <button type="button"
                     class="btn btn-secondary"
