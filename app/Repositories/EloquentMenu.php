@@ -28,9 +28,9 @@ class EloquentMenu implements MenuRepository
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-    function getParents()
+    function getParents($rol = null)
     {
-        return $this->model->whereNull('parent')->get();
+        return $this->model->whereNull(self::SQL_PARENT)->get();
     }
 
     /**
@@ -38,10 +38,32 @@ class EloquentMenu implements MenuRepository
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-    function getChilds($parent)
+    function getChilds($parent, $rol)
     {
-        return $this->model->where('parent', '=', $parent)->get();
-    }
+        return $this->model->where(self::SQL_PARENT, '=', $parent)->get();
+	}
+
+	/**
+	 * Get menu items to show.
+	 *
+	 * @return Array
+	 */
+	function getMenu($rol) {
+		$menu = array();
+		$parents = $this->getParents($rol);
+		foreach ($parents as $parentItem) {
+			Log::debug("--------------------------------------------------------------------------");
+			Log::debug("EloquentMenu - getMenu - parent: ".json_encode($parentItem));
+			$temp = array(
+				"parent" => $parentItem
+			);
+			$childs = $this->getChilds($parentItem->id, $rol);
+			Log::debug("EloquentMenu - getMenu - childs: ".json_encode($childs));
+			$temp["childs"] = $childs;
+			$menu[] = $temp;
+		}
+		return $menu;
+	}
 
     /**
 	 * Get all menu items.

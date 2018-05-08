@@ -10,9 +10,11 @@ interface MenuRepository
     const SQL_URL    = "url";
     const SQL_USER   = "user_id";
 
-    function getParents();
+    function getParents($rol = null);
 
-    function getChilds($parent);
+    function getChilds($parent, $rol);
+
+    function getMenu($rol);
 
     public function getList($itemsPerPage, array $search = null);
 
