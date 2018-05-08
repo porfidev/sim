@@ -14,4 +14,12 @@ class Menu extends Model
     protected $fillable = [
         'parent', 'label', 'url', 'user_id'
     ];
+
+    /**
+     * Get the rol that owns the user.
+     */
+    public function myParent()
+    {
+        return $this->belongsTo('App\Menu', 'parent');
+    }
 }

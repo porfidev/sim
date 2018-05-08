@@ -11,6 +11,9 @@ use App\Repositories\EloquentUser;
 use App\Repositories\RolRepository;
 use App\Repositories\EloquentRol;
 
+use App\Repositories\MenuRepository;
+use App\Repositories\EloquentMenu;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -31,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(UserRepository::class, EloquentUser::class);
-        $this->app->singleton(RolRepository::class, EloquentRol::class);
+        $this->app->singleton(RolRepository::class,  EloquentRol::class);
+        $this->app->singleton(MenuRepository::class, EloquentMenu::class);
     }
 }

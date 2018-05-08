@@ -176,6 +176,7 @@
                 // If req debug show errorDetalle
                 $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
                 erroresValidacion( "erroresValidacionEditar", "Error al editar el usuario." );
+                $( '#loading_modal_edit_user' ).hide();
             });
         });
 
@@ -206,10 +207,10 @@
                 $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
                 erroresValidacion( "erroresValidacionEditar", "Error al editar el usuario." );
             }).always(function() {
-                $( '#modalEditPassword' ).prop( 'disabled', false );
-                $( '#password-confirm-edit' ).prop( 'disabled', false );
+                $( '#modalEditPassword'       ).prop( 'disabled', false );
+                $( '#password-confirm-edit'   ).prop( 'disabled', false );
                 $( '#loading_modal_edit_user' ).hide();
-                $( '#formGuardarEditar' ).show();
+                $( '#formGuardarEditar'       ).show();
             });
         });
 

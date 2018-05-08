@@ -35,7 +35,7 @@ class UsuariosController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Show the user list.
      *
      * @return \Illuminate\Http\Response
      */
