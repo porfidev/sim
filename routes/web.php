@@ -17,25 +17,25 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', '\App\Http\Controllers\Base\HomeController@index')->name('home');
 
 // Usuarios
-Route::get('/usuarios/listado',    'UsuariosController@listado'  );
-Route::post('/usuarios/listado',   'UsuariosController@listado'  )->name('usuarios.listado');
-Route::post('/usuarios/agregar',   'UsuariosController@agregar'  )->name('usuarios.agregar');
-Route::post('/usuarios/consultar', 'UsuariosController@consultar')->name('usuarios.consultar');
-Route::post('/usuarios/editar',    'UsuariosController@editar'   )->name('usuarios.editar');
+Route::get('/usuarios/listado',    '\App\Http\Controllers\Base\UsuariosController@listado'  );
+Route::post('/usuarios/listado',   '\App\Http\Controllers\Base\UsuariosController@listado'  )->name('usuarios.listado');
+Route::post('/usuarios/agregar',   '\App\Http\Controllers\Base\UsuariosController@agregar'  )->name('usuarios.agregar');
+Route::post('/usuarios/consultar', '\App\Http\Controllers\Base\UsuariosController@consultar')->name('usuarios.consultar');
+Route::post('/usuarios/editar',    '\App\Http\Controllers\Base\UsuariosController@editar'   )->name('usuarios.editar');
 
 // Administración de menu
-Route::get('/menu/listado',    'MenuController@listado'   );
-Route::post('/menu/listado',   'MenuController@listado'   )->name('menu.listado');
-Route::post('/menu/agregar',   'MenuController@agregar'   )->name('menu.agregar');
-Route::post('/menu/consultar', 'MenuController@consultar' )->name('menu.consultar');
-Route::post('/menu/editar',    'MenuController@editar'    )->name('menu.editar');
+Route::get('/menu/listado',    '\App\Http\Controllers\Base\MenuController@listado'   );
+Route::post('/menu/listado',   '\App\Http\Controllers\Base\MenuController@listado'   )->name('menu.listado');
+Route::post('/menu/agregar',   '\App\Http\Controllers\Base\MenuController@agregar'   )->name('menu.agregar');
+Route::post('/menu/consultar', '\App\Http\Controllers\Base\MenuController@consultar' )->name('menu.consultar');
+Route::post('/menu/editar',    '\App\Http\Controllers\Base\MenuController@editar'    )->name('menu.editar');
 
 // Almacén o surtir
-Route::get('/listadoPedidosJefe', 'SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
-Route::get('/listadoTareas',      'SurtidoTrabajadorController@listadoTareas' )->name('listadoTareas');
+Route::get('/listadoPedidosJefe', '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
+Route::get('/listadoTareas',      '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@listadoTareas' )->name('listadoTareas');
 
 // Preparación de pedido o embalaje
 

@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Surtido;
 
 use Illuminate\Http\Request;
 
-class SurtidoTrabajadorController extends Controller
+use App\Http\Controllers\Controller;
+
+class SurtidoJefeController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -21,8 +23,8 @@ class SurtidoTrabajadorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function listadoTareas()
+    public function listadoPedidos()
     {
-        return view('surtir.trabajador');
+        return view('surtir.jefe');
     }
 }
