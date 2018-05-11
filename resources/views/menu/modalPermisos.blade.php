@@ -205,6 +205,11 @@
                 erroresValidacion( "erroresValidacionPermisos", "Selecciona un rol");
                 return;
             }
+            var index = buscaEnArreglo(rolesList, 'profile', id);
+            if(index > -1) {
+                erroresValidacion( "erroresValidacionPermisos", "Este rol ya tiene permisos");
+                return;
+            }
             var rol = {
                 "description" : $("#modalProfileRol option:selected").text(),
                 "id"          : id,
