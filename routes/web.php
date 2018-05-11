@@ -27,11 +27,14 @@ Route::post('/usuarios/consultar', '\App\Http\Controllers\Base\UsuariosControlle
 Route::post('/usuarios/editar',    '\App\Http\Controllers\Base\UsuariosController@editar'   )->name('usuarios.editar');
 
 // Administración de menu
-Route::get('/menu/listado',    '\App\Http\Controllers\Base\MenuController@listado'   );
-Route::post('/menu/listado',   '\App\Http\Controllers\Base\MenuController@listado'   )->name('menu.listado');
-Route::post('/menu/agregar',   '\App\Http\Controllers\Base\MenuController@agregar'   )->name('menu.agregar');
-Route::post('/menu/consultar', '\App\Http\Controllers\Base\MenuController@consultar' )->name('menu.consultar');
-Route::post('/menu/editar',    '\App\Http\Controllers\Base\MenuController@editar'    )->name('menu.editar');
+Route::get('/menu/listado',            '\App\Http\Controllers\Base\MenuController@listado'          );
+Route::post('/menu/listado',           '\App\Http\Controllers\Base\MenuController@listado'          )->name('menu.listado');
+Route::post('/menu/agregar',           '\App\Http\Controllers\Base\MenuController@agregar'          )->name('menu.agregar');
+Route::post('/menu/consultar',         '\App\Http\Controllers\Base\MenuController@consultar'        )->name('menu.consultar');
+Route::post('/menu/editar',            '\App\Http\Controllers\Base\MenuController@editar'           )->name('menu.editar');
+Route::post('/menu/agregar/permiso',   '\App\Http\Controllers\Base\MenuController@agregarPermiso'   )->name('menu.agregar.permiso');
+Route::post('/menu/consultar/permiso', '\App\Http\Controllers\Base\MenuController@consultarPermisos')->name('menu.consultar.permiso');
+Route::post('/menu/eliminar/permiso',  '\App\Http\Controllers\Base\MenuController@eliminarPermiso'  )->name('menu.eliminar.permiso');
 
 // Almacén o surtir
 Route::get('/listadoPedidosJefe', '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');

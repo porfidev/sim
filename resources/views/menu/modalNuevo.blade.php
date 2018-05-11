@@ -100,7 +100,7 @@
 
         $( '#btnGuardarNuevo' ).click(function () {
             $( '#formGuardarNuevo' ).hide();
-            $( 'loading_modal_new_menu' ).show();
+            $( '#loading_modal_new_menu' ).show();
             if( $( '#modalNewMenuItem' ).val() == '0' ) {
                 $( '#modalNewMenuItem' ).prop( 'disabled', true );
             }
@@ -130,7 +130,7 @@
                 $( '#modalNewMenuItem' ).prop( 'disabled', false );
                 $( '#modalNewUrl'      ).prop( 'disabled', false );
 
-                $( 'loading_modal_new_menu' ).hide();
+                $( '#loading_modal_new_menu' ).hide();
                 $( '#formGuardarNuevo'      ).show();
             });
         });

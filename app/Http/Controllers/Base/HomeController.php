@@ -8,20 +8,29 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\MenuRepository;
+use App\Repositories\RolRepository;
 
 class HomeController extends Controller
 {
     private $menuModel;
+    private $rolModel;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(MenuRepository $menu)
+    public function __construct(MenuRepository $menu, RolRepository $rol)
     {
         $this->middleware('auth');
         $this->menuModel = $menu;
+        $this->rolModel  = $rol;
+    }
+
+    public static function setMenu($request, $menuModel) {
+        $user = Auth::user();
+        $user->rol;
+        $request->session()->put('menu', $menuModel->getMenu($user->rol));
     }
 
     /**
@@ -33,9 +42,7 @@ class HomeController extends Controller
     {
         try {
             Log::info(" HomeController - index ");
-            $user = Auth::user();
-            $user->rol;
-            $request->session()->put('menu', $this->menuModel->getMenu($user->rol->id));
+            self::setMenu($request, $this->menuModel);
             return view('home');
         } catch (\Exception $e) {
             Log::error( 'HomeController - index - Error'.$e->getMessage() );

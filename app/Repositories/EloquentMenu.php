@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Menu;
+use App\Profile;
 
 use Illuminate\Support\Facades\Log;
 
@@ -11,26 +12,74 @@ class EloquentMenu implements MenuRepository
     /**
 	 * @var $model
 	 */
-    private $model;
+	private $model;
+
+	/**
+	 * @var $model
+	 */
+	private $profile;
 
     /**
 	 * EloquentRol constructor.
 	 *
 	 * @param App\Menu $model
 	 */
-	public function __construct(Menu $model)
+	public function __construct(Menu $model, Profile $profile)
 	{
-		$this->model = $model;
+		$this->model   = $model;
+		$this->profile = $profile;
     }
+
+	/**
+	 * Add rol in the profile list
+	 *
+	 * @param array $attributes
+	 *
+	 * @return App\Profile
+	 */
+	public function addProfile(array $attributes)
+	{
+		return $this->profile->create($attributes);
+	}
+
+	/**
+	 * Delete a rol in the profile list
+	 *
+	 * @param integer $profile_id
+	 *
+	 * @return boolean
+	 */
+	public function deleteProfile($profile_id)
+	{
+		return $this->profile->find($profile_id)->delete();
+	}
+
+	/**
+	 * Get profile list of menu item.
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getProfileList($id)
+	{
+		return $this->model->find($id)
+			->getRols()->select('rols.id', 'rols.description', 'profiles.id as profile_id')->get();
+	}
 
     /**
 	 * Get parent menu items.
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-    function getParents($rol = null)
+    public function getParents($rol = null)
     {
-        return $this->model->whereNull(self::SQL_PARENT)->get();
+		$parentsList = array();
+		if( empty($rol) ) {
+			$parentsList = $this->model->whereNull(self::SQL_PARENT)->get();
+		} else {
+			Log::info("EloquentMenu - getParents: ".json_encode($rol));
+			$parentsList = $rol->getMenuItems()->whereNull(self::SQL_PARENT)->get();
+		}
+		return $parentsList;
     }
 
     /**
@@ -38,9 +87,15 @@ class EloquentMenu implements MenuRepository
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-    function getChilds($parent, $rol)
+    public function getChilds($parent, $rol = null)
     {
-        return $this->model->where(self::SQL_PARENT, '=', $parent)->get();
+		$childsList = array();
+		if( empty($rol) ) {
+			$childsList = $this->model->where(self::SQL_PARENT, '=', $parent)->get();
+		} else {
+			$childsList = $rol->getMenuItems()->where(self::SQL_PARENT, '=', $parent)->get();
+		}
+		return $childsList;
 	}
 
 	/**
@@ -48,7 +103,7 @@ class EloquentMenu implements MenuRepository
 	 *
 	 * @return Array
 	 */
-	function getMenu($rol) {
+	public function getMenu($rol) {
 		$menu = array();
 		$parents = $this->getParents($rol);
 		foreach ($parents as $parentItem) {
@@ -105,7 +160,7 @@ class EloquentMenu implements MenuRepository
     }
 
     /**
-	 * Create a meni item.
+	 * Create a menu item.
 	 *
 	 * @param array $attributes
 	 *

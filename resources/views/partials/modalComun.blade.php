@@ -1,6 +1,18 @@
 <!-- Scripts comunes para Modales -->
 <script type="text/javascript">
 
+    function buscaEnArreglo(array, property, value) {
+        let find = -1;
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            if(array[index][property] == value) {
+                find = index;
+                break;
+            }
+        }
+        return find;
+    }
+
     function llenaCombo(comboId, datos, seleccionado){
         $('#' + comboId).html('');
 

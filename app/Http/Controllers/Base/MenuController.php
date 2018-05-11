@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Base;
 
 use Validator;
+use Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\RolRepository;
 use App\Repositories\MenuRepository;
 
 class MenuController extends Controller
 {
 
     private $menuModel;
+    private $rolModel;
 
     const SESSION_ID     = "smi_id";
     const SESSION_PARENT = "smi_parent";
@@ -24,10 +27,11 @@ class MenuController extends Controller
      *
      * @return void
      */
-    public function __construct(MenuRepository $menu)
+    public function __construct(MenuRepository $menu, RolRepository $rol)
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
         $this->menuModel = $menu;
+        $this->rolModel  = $rol;
     }
 
     /**
@@ -70,7 +74,8 @@ class MenuController extends Controller
             return view('menu.listado',
                 array(
                     "listado" => $listado,
-                    "parents" => $this->menuModel->getParents()
+                    "parents" => $this->menuModel->getParents(),
+                    "roles"   => $this->rolModel->getAll()
                 )
             );
         } catch (\Exception $e) {
@@ -229,6 +234,127 @@ class MenuController extends Controller
                 Controller::JSON_RESPONSE => $resultado,
                 Controller::JSON_MESSAGE  => $mensajes,
                 Controller::JSON_DATA     => $datos
+            )
+        );
+    }
+
+    /**
+     * Función para agregar permisos del item del Menu
+     * Se usa en ajax.
+     *
+     * @return json
+     */
+    public function agregarPermiso(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info(" MenuController - agregarPermiso ");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'rol'  => 'required|integer|exists:rols,id',
+                    'menu' => 'required|integer|exists:menus,id',
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails())
+            {
+                $resultado = "ERROR";
+                $mensajes = $validator->errors();
+            } else {
+                $data = array(
+                    MenuRepository::SQL_PROFILE_ROL  => $request->rol,
+                    MenuRepository::SQL_PROFILE_MENU => $request->menu,
+                    MenuRepository::SQL_PROFILE_USER => Auth::id()
+                );
+                Log::debug(" MenuController - agregarPermiso - data: ".json_encode($data));
+                $datos = $this->menuModel->addProfile($data)->id;
+                HomeController::setMenu($request, $this->menuModel);
+            }
+        } catch (\Exception $e) {
+            Log::error( 'MenuController - agregarPermiso - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes = array( $e->getMessage() );
+        }
+        return response()->json(
+            array(
+                Controller::JSON_RESPONSE => $resultado,
+                Controller::JSON_MESSAGE  => $mensajes,
+                Controller::JSON_DATA     => $datos
+            )
+        );
+    }
+
+    /**
+     * Función para consultar los permisos del item del Menu
+     * Se usa en ajax.
+     *
+     * @return json
+     */
+    public function consultarPermisos(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info(" MenuController - consultarPermisos ");
+            if( $request->has('id') ) {
+                $profileList = $this->menuModel->getProfileList( $request->get('id') );
+                Log::debug(" MenuController - consultarPermisos: ".json_encode($profileList));
+                if( !empty($profileList) ) {
+                    $datos = $profileList;
+                }
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "No se encontraron datos del elemento del menu" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'MenuController - consultarPermisos - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(
+            array(
+                Controller::JSON_RESPONSE => $resultado,
+                Controller::JSON_MESSAGE  => $mensajes,
+                Controller::JSON_DATA     => $datos
+            )
+        );
+    }
+
+    /**
+     * Función para eliminar un permiso del item del Menu
+     * Se usa en ajax.
+     *
+     * @return json
+     */
+    public function eliminarPermiso(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info(" MenuController - eliminarPermiso ");
+            if( $request->has('id') ) {
+                $deleted = $this->menuModel->deleteProfile( $request->get('id') );
+                Log::debug(" MenuController - eliminarPermiso: ".json_encode($deleted));
+                if( !$deleted ) {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se puede eliminar el permiso" );
+                } else {
+                    HomeController::setMenu($request, $this->menuModel);
+                }
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "No se encontraron datos del permiso" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'MenuController - eliminarPermiso - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(
+            array(
+                Controller::JSON_RESPONSE => $resultado,
+                Controller::JSON_MESSAGE  => $mensajes
             )
         );
     }

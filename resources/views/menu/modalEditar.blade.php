@@ -139,7 +139,7 @@
 
         $( '#btnEditMenuItem' ).click(function () {
             $( '#formUpdateMenuItem' ).hide();
-            $( 'loading_modal_new_menu' ).show();
+            $( '#loading_modal_new_menu' ).show();
             if( $( '#modalEditMenuParent' ).val() == '0' ) {
                 $( '#modalEditMenuParent' ).prop( 'disabled', true );
             }
@@ -169,7 +169,7 @@
                 $( '#modalEditMenuParent' ).prop( 'disabled', false );
                 $( '#modalEditMenuUrl'    ).prop( 'disabled', false );
 
-                $( 'loading_modal_edit_menu' ).hide();
+                $( '#loading_modal_edit_menu' ).hide();
                 $( '#formUpdateMenuItem'     ).show();
             });
         });

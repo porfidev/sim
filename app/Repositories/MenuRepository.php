@@ -10,13 +10,23 @@ interface MenuRepository
     const SQL_URL    = "url";
     const SQL_USER   = "user_id";
 
+    const SQL_PROFILE_ROL  = "rol_id";
+    const SQL_PROFILE_MENU = "menu_item_id";
+    const SQL_PROFILE_USER = "user_id";
+
+    function addProfile(array $attributes);
+
+    function deleteProfile($profile_id);
+
+    function getProfileList($id);
+
     function getParents($rol = null);
 
     function getChilds($parent, $rol);
 
     function getMenu($rol);
 
-    public function getList($itemsPerPage, array $search = null);
+    function getList($itemsPerPage, array $search = null);
 
 	function getById($id);
 

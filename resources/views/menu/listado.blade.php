@@ -113,6 +113,14 @@
                                         title="Editar">
                                     <i class="material-icons">mode_edit</i>
                                 </button>
+                                <button class="btn btn-sm btn-warning profiles"
+                                        data-id="{{ $item->id }}"
+                                        data-title="{{ $item->label }}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Permisos">
+                                    <i class="material-icons">lock</i>
+                                </button>
                             </td>
                         </tr>
             @endforeach
@@ -144,6 +152,7 @@
 
     @include('menu.modalNuevo')
     @include('menu.modalEditar')
+    @include('menu.modalPermisos')
 
     <script type="text/javascript">
         function ejecutaBusquedasFiltros() {
