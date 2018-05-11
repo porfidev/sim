@@ -14,6 +14,8 @@ interface MenuRepository
     const SQL_PROFILE_MENU = "menu_item_id";
     const SQL_PROFILE_USER = "user_id";
 
+    function findProfile(array $attributes);
+
     function addProfile(array $attributes);
 
     function deleteProfile($profile_id);

@@ -31,6 +31,21 @@ class EloquentMenu implements MenuRepository
     }
 
 	/**
+	 * Find profiles with the attributes array
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function findProfile(array $attributes)
+	{
+		$search = $this->profile->orderBy('id');
+		foreach ($attributes as $key => $value) {
+			$search->where($key, '=', $value);
+		}
+		return $search->get();
+	}
+
+
+	/**
 	 * Add rol in the profile list
 	 *
 	 * @param array $attributes

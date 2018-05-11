@@ -265,12 +265,18 @@ class MenuController extends Controller
             } else {
                 $data = array(
                     MenuRepository::SQL_PROFILE_ROL  => $request->rol,
-                    MenuRepository::SQL_PROFILE_MENU => $request->menu,
-                    MenuRepository::SQL_PROFILE_USER => Auth::id()
+                    MenuRepository::SQL_PROFILE_MENU => $request->menu
                 );
-                Log::debug(" MenuController - agregarPermiso - data: ".json_encode($data));
-                $datos = $this->menuModel->addProfile($data)->id;
-                HomeController::setMenu($request, $this->menuModel);
+                $anterior = $this->menuModel->findProfile($data);
+                if(!empty($anterior)) {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "El rol ya se encuentra registrado" );
+                } else {
+                    $data[MenuRepository::SQL_PROFILE_USER] = Auth::id();
+                    Log::debug(" MenuController - agregarPermiso - data: ".json_encode($data));
+                    $datos = $this->menuModel->addProfile($data)->id;
+                    HomeController::setMenu($request, $this->menuModel);
+                }
             }
         } catch (\Exception $e) {
             Log::error( 'MenuController - agregarPermiso - Error: '.$e->getMessage() );
