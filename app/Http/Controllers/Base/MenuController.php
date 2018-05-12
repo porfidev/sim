@@ -268,7 +268,7 @@ class MenuController extends Controller
                     MenuRepository::SQL_PROFILE_MENU => $request->menu
                 );
                 $anterior = $this->menuModel->findProfile($data);
-                if(!empty($anterior)) {
+                if(count($anterior) > 0) {
                     $resultado = "ERROR";
                     $mensajes  = array( "El rol ya se encuentra registrado" );
                 } else {
