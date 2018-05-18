@@ -36,6 +36,21 @@ Route::post('/menu/agregar/permiso',   '\App\Http\Controllers\Base\MenuControlle
 Route::post('/menu/consultar/permiso', '\App\Http\Controllers\Base\MenuController@consultarPermisos')->name('menu.consultar.permiso');
 Route::post('/menu/eliminar/permiso',  '\App\Http\Controllers\Base\MenuController@eliminarPermiso'  )->name('menu.eliminar.permiso');
 
+// Administración de Catalogos
+Route::get('/catalogos/listado',    '\App\Http\Controllers\Base\CatalogosController@listado'  );
+Route::post('/catalogos/listado',   '\App\Http\Controllers\Base\CatalogosController@listado'  )->name('catalogos.listado');
+Route::post('/catalogos/agregar',   '\App\Http\Controllers\Base\CatalogosController@agregar'  )->name('catalogos.agregar');
+Route::post('/catalogos/editar',    '\App\Http\Controllers\Base\CatalogosController@editar'   )->name('catalogos.editar');
+Route::post('/catalogos/eliminar',  '\App\Http\Controllers\Base\CatalogosController@eliminar' )->name('catalogos.eliminar');
+Route::post('/catalogos/obtener',   '\App\Http\Controllers\Base\CatalogosController@obtenerCatalogo')->name('catalogos.obtener');
+
+// Administracion de clientes
+Route::get('/clientes/listado',    '\App\Http\Controllers\Ventas\ClientesController@listado' );
+Route::post('/clientes/listado',   '\App\Http\Controllers\Ventas\ClientesController@listado' )->name('clientes.listado');
+Route::post('/clientes/agregar',   '\App\Http\Controllers\Ventas\ClientesController@agregar' )->name('clientes.agregar');
+Route::post('/clientes/editar',   '\App\Http\Controllers\Ventas\ClientesController@editar'   )->name('clientes.editar');
+Route::post('/clientes/eliminar',  '\App\Http\Controllers\Ventas\ClientesController@eliminar' )->name('clientes.eliminar');
+
 // Almacén o surtir
 Route::get('/listadoPedidosJefe', '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
 Route::get('/listadoTareas',      '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@listadoTareas' )->name('listadoTareas');
