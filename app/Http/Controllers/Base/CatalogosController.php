@@ -43,6 +43,7 @@ class CatalogosController extends Controller{
         try {
             Log::info(" CatalogosController - listado ");
 
+           
             if ( $request->isMethod('post') ) {
                 if( $request->has(self::SESSION_ID)) {
                     $request->session()->put(self::SESSION_ID, $request->input(self::SESSION_ID));
