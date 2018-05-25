@@ -20,6 +20,15 @@ use App\Repositories\EloquentCatalogo;
 use App\Repositories\ClienteRepository;
 use App\Repositories\EloquentCliente;
 
+use App\Repositories\OrderRepository;
+use App\Repositories\EloquentOrder;
+
+use App\Repositories\OrderDetailRepository;
+use App\Repositories\EloquentOrderDetail;
+
+use App\Repositories\CalculationRepository;
+use App\Repositories\EloquentCalculation;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -44,5 +53,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(MenuRepository::class, EloquentMenu::class);
         $this->app->singleton(CatalogoRepository::class, EloquentCatalogo::class);
         $this->app->singleton(ClienteRepository::class, EloquentCliente::class);
+        $this->app->singleton(OrderRepository::class, EloquentOrder::class);
+        $this->app->singleton(OrderDetailRepository::class, EloquentOrderDetail::class);
+        $this->app->singleton(CalculationRepository::class, EloquentCalculation::class);
     }
 }

@@ -111,6 +111,16 @@ class EloquentCatalogo implements CatalogoRepository
 		return $groupList;
 	}
 
+	/**
+	 * Get the group catalog items.
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getByLabel($label){		
+
+		return $this->model->where(self::SQL_ETIQUETA, '=', $label)->first()->label;
+	}
+
     /**
 	 * Get Catalogo by id.
 	 *

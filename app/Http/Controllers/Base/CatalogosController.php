@@ -40,6 +40,8 @@ class CatalogosController extends Controller{
      */
     public function listado(Request $request){
 
+
+
         try {
             Log::info(" CatalogosController - listado ");
 

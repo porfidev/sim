@@ -5,8 +5,12 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+use App\Repositories\OrderRepository;
+use App\Repositories\OrderDetailRepository;
+
 class Kernel extends ConsoleKernel
 {
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -24,8 +28,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        
     }
 
     /**
