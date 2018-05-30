@@ -7,11 +7,13 @@ use App\Calculation;
 use App\OrderDetail;
 use App\Order;
 use App\Catalogo;
+use App\Cliente;
 
 use App\Repositories\CalculationRepository;
 use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\CatalogoRepository;
+use App\Repositories\ClienteRepository;
 
 
 class DownloadOrders extends Command
@@ -34,19 +36,21 @@ class DownloadOrders extends Command
     protected $detail;
     protected $order;
     protected $cat;
+    protected $cli;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(Calculation $cal, OrderDetail $ordDet, Order $ord, Catalogo $cata)
+    public function __construct(Calculation $cal, OrderDetail $ordDet, Order $ord, Catalogo $cata, Cliente $clie)
     {
         parent::__construct();
         $this->calc = $cal;
         $this->detail = $ordDet;
         $this->order = $ord;
         $this->cat = $cata;
+        $this->cli = $clie;
     }
 
     /**
@@ -153,6 +157,32 @@ class DownloadOrders extends Command
                     }
 
                 }
+
+                $fechaHoy = date('Y-m-j');
+
+                $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
+
+                $cliente = $this->cli->getByCodigo($row['CARDCODE']);
+
+                //$tamanioPedido = ?;
+
+                $D = $cliente->CE + $tamanioPedido;
+
+                //dist ??? 
+
+                $data3 = array(
+                    CalculationRepository::SQL_P => $cliente->P,
+                    CalculationRepository::SQL_V => $V,
+                    CalculationRepository::SQL_D => $D,
+                    CalculationRepository::SQL_DIST => 0,
+                    CalculationRepository::SQL_FP => $fp,
+                    CalculationRepository::SQL_ORDID => $row['DOCNUM'],
+                    'codigoOrden' => $row['DOCNUM']
+                );
+
+                $this->order->create($data1);
+                $this->detail->create($data2);
+                $this->calc->create($data3);
             }
 
 

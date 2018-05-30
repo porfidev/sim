@@ -35,6 +35,13 @@ class EloquentCalculation implements CalculationRepository
         return $list->paginate(10);
     }
 
+    function getAllEsp(){
+
+    	$list = $this->model->orderBy('id', 'desc');
+    	    	
+        return $list->get();
+    }
+
     /**
 	 * Get Catalogo by id.
 	 *
@@ -45,6 +52,11 @@ class EloquentCalculation implements CalculationRepository
 	public function getById($id)
 	{
 		return $this->model->find($id);
+    }
+
+    public function getIdCalc($idOrd){
+
+    	return $this->model->where(self::SQL_ORDID,'=',$idOrd)->get()->first()->id;
     }
 
     /**
