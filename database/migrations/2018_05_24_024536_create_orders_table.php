@@ -20,7 +20,7 @@ class CreateOrdersTable extends Migration
             $table->date('end');
             $table->string('code');
             $table->foreign('code')->references('code')->on('clients');
-            $table->integer('status');            
+            $table->integer('status');
             $table->timestamps();
         });
     }

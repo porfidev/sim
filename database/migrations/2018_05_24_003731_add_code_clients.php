@@ -14,7 +14,7 @@ class AddCodeClients extends Migration
     public function up()
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->string('code')->unique()->after('status');            
+            $table->string('code')->unique()->after('status');
         });
     }
 
