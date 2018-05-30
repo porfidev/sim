@@ -14,6 +14,17 @@ interface ClienteRepository
 	const SQL_DIRECCION  = "address";
 	const SQL_ESTATUS  = "status";
 	const SQL_BRANCH_ID  = "branch_id";
+	const SQL_CODE  = "code";
+	const SQL_P  = "P";
+	const SQL_SHOPS  = "shops";
+	const SQL_SKU  = "sku";
+	const SQL_PACK  = "package";
+	const SQL_D2  = "D2";
+	const SQL_TE  = "TE";
+	const SQL_CE  = "CE";
+	const SQL_TP  = "TP";
+	const SQL_AVERAGE  = "average";
+	const SQL_D  = "D";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
@@ -21,6 +32,8 @@ interface ClienteRepository
 	function getAll();
 
 	function getById($id);
+
+	function getByCodigo($codigo);
 
 	function create(array $attributes);
 

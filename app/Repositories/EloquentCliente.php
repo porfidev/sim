@@ -90,6 +90,11 @@ class EloquentCliente implements ClienteRepository
 		return $this->model->find($id);
     }
 
+    public function getByCodigo($codigo){
+
+    	return $this->model->where(self::SQL_CODE,'=',$codigo)->get()->first();
+    }
+
     /**
 	 * Create a new Catalogo.
 	 *
