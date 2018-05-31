@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Base;
 
 use Validator;
 use Auth;
+use DB;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -90,6 +91,53 @@ class MenuController extends Controller
     }
 
     /**
+     * Función para eliminar un elemento del menu a la BD.
+     * Elimina todos los registros de profile que tenga asociados.
+     * Se usa en ajax.
+     *
+     * @return json
+     */
+    public function eliminar(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info(" MenuController - eliminar ");
+            if( $request->has('id') ) {
+                Log::info(" MenuController - eliminar: ".$request->get('id') );
+                $menuItem = $this->menuModel->getById( $request->get('id') );
+                if( !empty($menuItem) ) {
+                    Log::debug(" MenuController - eliminar: ".json_encode($menuItem) );
+                    DB::beginTransaction();
+                    $result = $this->menuModel->delete( $request->get('id') );
+                    Log::debug(" MenuController - eliminar - result: ".json_encode($result) );
+                    if(!$result) {
+                        $resultado = "ERROR";
+                        $mensajes  = array( "No se pudo elimnar el elemento del menu" );
+                        DB::rollBack();
+                    } else {
+                        DB::commit();
+                    }
+                } else {
+                    Log::error("MenuController - eliminar: El objeto menuItem esta vacío");
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se encontraron datos del elemento del menu" );
+                }
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "No se encontraron datos del elemento del menu" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'MenuController - eliminar - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE => $mensajes
+        ));
+    }
+
+    /**
      * Función para agregar un elemento del menu a la BD.
      * Se usa en ajax.
      *
@@ -105,6 +153,7 @@ class MenuController extends Controller
                 $request->all(),
                 array(
                     'padre'    => 'sometimes|integer|exists:menus,id',
+                    'orden'    => 'required|integer',
                     'etiqueta' => 'required|string|max:120',
                     'url'      => 'sometimes|string'
                 ),
@@ -116,7 +165,9 @@ class MenuController extends Controller
                 $mensajes = $validator->errors();
             } else {
                 $data = array(
-                    MenuRepository::SQL_LABEL  => $request->etiqueta
+                    MenuRepository::SQL_LABEL  => $request->etiqueta,
+                    MenuRepository::SQL_ORDER  => $request->orden,
+                    MenuRepository::SQL_USER   => Auth::id()
                 );
                 if($request->has('padre')) {
                     $data[MenuRepository::SQL_PARENT] = $request->padre;
@@ -130,9 +181,12 @@ class MenuController extends Controller
         } catch (\Exception $e) {
             Log::error( 'MenuController - agregar - Error: '.$e->getMessage() );
             $resultado = "ERROR";
-            $mensajes = $e->getMessage();
+            $mensajes  = array( $e->getMessage() );
         }
-        return response()->json(array(Controller::JSON_RESPONSE => $resultado, Controller::JSON_MESSAGE => $mensajes));
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE => $mensajes
+        ));
     }
 
     /**
@@ -162,15 +216,13 @@ class MenuController extends Controller
         } catch (\Exception $e) {
             Log::error( 'MenuController - consultar - Error: '.$e->getMessage() );
             $resultado = "ERROR";
-            $mensajes = $e->getMessage();
+            $mensajes  = array( $e->getMessage() );
         }
-        return response()->json(
-            array(
-                Controller::JSON_RESPONSE => $resultado,
-                Controller::JSON_MESSAGE  => $mensajes,
-                Controller::JSON_DATA     => $datos
-            )
-        );
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes,
+            Controller::JSON_DATA     => $datos
+        ));
     }
 
     /**
@@ -194,6 +246,7 @@ class MenuController extends Controller
                         $request->all(),
                         array(
                             'padre'    => 'sometimes|integer|exists:menus,id',
+                            'orden'    => 'required|integer',
                             'etiqueta' => 'required|string|max:120',
                             'url'      => 'sometimes|string'
                         ),
@@ -205,7 +258,9 @@ class MenuController extends Controller
                         $mensajes = $validator->errors();
                     } else {
                         $data = array(
-                            MenuRepository::SQL_LABEL  => $request->etiqueta
+                            MenuRepository::SQL_LABEL  => $request->etiqueta,
+                            MenuRepository::SQL_ORDER  => $request->orden,
+                            MenuRepository::SQL_USER   => Auth::id()
                         );
                         if($request->has('padre')) {
                             $data[MenuRepository::SQL_PARENT] = $request->padre;
@@ -222,12 +277,15 @@ class MenuController extends Controller
                     $resultado = "ERROR";
                     $mensajes  = array( "No se encontraron datos del elemento del menu" );
                 }
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "No se encontraron datos del elemento del menu" );
             }
 
         } catch (\Exception $e) {
             Log::error( 'MenuController - editar - Error: '.$e->getMessage() );
             $resultado = "ERROR";
-            $mensajes = array( $e->getMessage() );
+            $mensajes  = array( $e->getMessage() );
         }
         return response()->json(
             array(
@@ -281,7 +339,7 @@ class MenuController extends Controller
         } catch (\Exception $e) {
             Log::error( 'MenuController - agregarPermiso - Error: '.$e->getMessage() );
             $resultado = "ERROR";
-            $mensajes = array( $e->getMessage() );
+            $mensajes  = array( $e->getMessage() );
         }
         return response()->json(
             array(

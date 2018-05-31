@@ -5,7 +5,8 @@ namespace App\Repositories;
 interface MenuRepository
 {
 	const SQL_ID     = "id";
-	const SQL_PARENT = "parent";
+    const SQL_PARENT = "parent";
+    const SQL_ORDER  = "sequence";
     const SQL_LABEL  = "label";
     const SQL_URL    = "url";
     const SQL_USER   = "user_id";

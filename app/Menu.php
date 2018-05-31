@@ -21,7 +21,7 @@ class Menu extends Model
      * @var array
      */
     protected $fillable = [
-        'parent', 'label', 'url', 'user_id'
+        'parent', 'sequence', 'label', 'url', 'user_id'
     ];
 
     /**

@@ -14,6 +14,9 @@
                             <th scope="col" style="text-align: center;">
                                 #
                             </th>
+                            <th scope="col" style="text-align: center; min-width: 120px;">
+                                Orden
+                            </th>
                             <th scope="col" style="min-width: 220px;">
                                 Padre
                             </th>
@@ -23,7 +26,7 @@
                             <th scope="col" style="min-width: 270px;">
                                 URL
                             </th>
-                            <th scope="col" style="min-width: 130px; text-align: center;">
+                            <th scope="col" style="min-width: 175px; text-align: center;">
                                 <button class="btn btn-sm btn-primary nuevoElementoMenu"
                                         data-toggle="tooltip"
                                         data-placement="top"
@@ -42,6 +45,7 @@
                                         value="{{ Session::get('smi_id') }}"
                                     @endif>
                             </th>
+                            <th>&nbsp;</th>
                             <th>
                                 <select class="form-control"
                                         id="formaParent">
@@ -94,6 +98,9 @@
                             <td style="text-align: center;">
                                 {{ $item->id }}
                             </td>
+                            <td style="text-align: center;">
+                                {{ $item->sequence }}
+                            </td>
                             <td>
                 @isset($item->myParent)
                                 {{ $item->myParent->label }}
@@ -120,6 +127,14 @@
                                         data-placement="top"
                                         title="Permisos">
                                     <i class="material-icons">lock</i>
+                                </button>
+                                <button class="btn btn-sm btn-danger deleteMenuItem"
+                                        data-id="{{ $item->id }}"
+                                        data-title="{{ $item->label }}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Permisos">
+                                    <i class="material-icons">delete</i>
                                 </button>
                             </td>
                         </tr>
@@ -149,6 +164,7 @@
 @section('final')
     @include('partials.modalComun')
     @include('partials.modalMensaje')
+    @include('partials.modalConfirmacion')
 
     @include('menu.modalNuevo')
     @include('menu.modalEditar')
@@ -177,6 +193,16 @@
                 if(e.keyCode == 13) {
                     ejecutaBusquedasFiltros();
                 }
+            });
+            $( '.deleteMenuItem' ).click(function () {
+                var parametros = [];
+                parametros["id"] = $(this).attr("data-id");
+                abrirConfirmacion(
+                    "Confirmaci&oacute;n",
+                    "¿Estás seguro de eliminar '" + $(this).attr("data-title") + "' del menu?",
+                    "{{ route('menu.eliminar') }}",
+                    parametros
+                );
             });
         });
     </script>

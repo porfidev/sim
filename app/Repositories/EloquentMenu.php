@@ -44,7 +44,6 @@ class EloquentMenu implements MenuRepository
 		return $search->get();
 	}
 
-
 	/**
 	 * Add rol in the profile list
 	 *
@@ -89,10 +88,14 @@ class EloquentMenu implements MenuRepository
     {
 		$parentsList = array();
 		if( empty($rol) ) {
-			$parentsList = $this->model->whereNull(self::SQL_PARENT)->get();
+			$parentsList = $this->model->whereNull(self::SQL_PARENT)
+				->orderBy(self::SQL_ORDER)
+				->get();
 		} else {
 			Log::info("EloquentMenu - getParents: ".json_encode($rol));
-			$parentsList = $rol->getMenuItems()->whereNull(self::SQL_PARENT)->get();
+			$parentsList = $rol->getMenuItems()->whereNull(self::SQL_PARENT)
+				->orderBy(self::SQL_ORDER)
+				->get();
 		}
 		return $parentsList;
     }
@@ -106,9 +109,14 @@ class EloquentMenu implements MenuRepository
     {
 		$childsList = array();
 		if( empty($rol) ) {
-			$childsList = $this->model->where(self::SQL_PARENT, '=', $parent)->get();
+			$childsList = $this->model->where(self::SQL_PARENT, '=', $parent)
+				->orderBy(self::SQL_ORDER)
+				->get();
 		} else {
-			$childsList = $rol->getMenuItems()->where(self::SQL_PARENT, '=', $parent)->get();
+			$childsList = $rol->getMenuItems()
+				->where(self::SQL_PARENT, '=', $parent)
+				->orderBy(self::SQL_ORDER)
+				->get();
 		}
 		return $childsList;
 	}
@@ -142,7 +150,8 @@ class EloquentMenu implements MenuRepository
 	 */
     public function getList($itemsPerPage, array $search = null)
     {
-        $list = $this->model->with('myParent')
+		$list = $this->model->with('myParent')
+			->orderBy('parent')
             ->orderBy('id', 'desc');
         if(!empty($search)) {
 			if(array_key_exists(self::SQL_ID, $search)
@@ -208,6 +217,7 @@ class EloquentMenu implements MenuRepository
 	 */
 	public function delete($id)
 	{
+		$this->model->find($id)->profiles()->delete();
 		return $this->model->find($id)->delete();
 	}
 }

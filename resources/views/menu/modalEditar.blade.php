@@ -28,9 +28,21 @@
                         class="rounded mx-auto d-block"
                         style="max-height: 90px;">
                 </div>
-                <form id="formUpdateMenuItem">
+                <form id="formUpdateMenuItem"
+                    style="display: none;">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" id="modalEditMenuId" value="0">
+                    <div class="form-group">
+                            <label for="modalEditMenuOrder">
+                                Orden
+                            </label>
+                            <input type="number"
+                                    class="form-control"
+                                    id="modalEditMenuOrder"
+                                    name="orden"
+                                    value="0"
+                                    required>
+                        </div>
                     <div class="form-group">
                         <label for="modalEditMenuParent">
                             Padre
@@ -95,6 +107,7 @@
         $( '.editarElementoMenu' ).click(function () {
             var id = $(this).attr( "data-id" );
             updateEditMenuItem = 0;
+            $("#messageModalEditMenuItem").text("");
             $( "#modalEditarMenuItem" ).modal({
                 keyboard : false,
                 backdrop : 'static'
@@ -112,6 +125,7 @@
                 if(data.resultado === 'OK') {
                     $( '#modalEditMenuItemTitle' ).text("Elemento " + data.datos.id);
                     $( '#modalEditMenuId'        ).val(data.datos.id);
+                    $( '#modalEditMenuOrder'     ).val(data.datos.sequence);
                     if(data.datos.parent) {
                         $( '#modalEditMenuParent' ).val(data.datos.parent);
                     }
@@ -119,21 +133,20 @@
                     if(data.datos.url) {
                         $( '#modalEditMenuUrl' ).val(data.datos.url);
                     }
-                    $( '#loading_modal_edit_menu' ).hide();
-                    $( '#formUpdateMenuItem' ).show();
                 } else {
                     var errorMsg = "<p>Error al obtener datos del usuario.<p><ul>";
                     $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
                     errorMsg += "</ul>";
                     erroresValidacion("messageModalEditMenuItem", errorMsg);
-                    $( '#loading_modal_edit_menu' ).hide();
                 }
             }).fail(function (jqXHR, textStatus) {
                 errorDetalle = "";
                 // If req debug show errorDetalle
                 $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
                 erroresValidacion( "messageModalEditMenuItem", "Error al editar el usuario." );
+            }).always(function() {
                 $( '#loading_modal_edit_menu' ).hide();
+                $( '#formUpdateMenuItem'     ).show();
             });
         });
 

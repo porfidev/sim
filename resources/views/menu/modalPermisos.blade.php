@@ -247,6 +247,7 @@
                         row += "</tr>";
                         $( '#modalProfilesTable' ).append(row);
                     }
+                    mensajeExito("erroresValidacionPermisos", "Se ha eliminado el permiso.");
                 } else {
                     var errorMsg = "<p>Error al eliminar el permiso.<p><ul>";
                     $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
