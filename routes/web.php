@@ -45,15 +45,19 @@ Route::post('/catalogos/eliminar',  '\App\Http\Controllers\Base\CatalogosControl
 Route::post('/catalogos/obtener',   '\App\Http\Controllers\Base\CatalogosController@obtenerCatalogo')->name('catalogos.obtener');
 
 // Administracion de clientes
-Route::get('/clientes/listado',    '\App\Http\Controllers\Ventas\ClientesController@listado' );
-Route::post('/clientes/listado',   '\App\Http\Controllers\Ventas\ClientesController@listado' )->name('clientes.listado');
-Route::post('/clientes/agregar',   '\App\Http\Controllers\Ventas\ClientesController@agregar' )->name('clientes.agregar');
-Route::post('/clientes/editar',   '\App\Http\Controllers\Ventas\ClientesController@editar'   )->name('clientes.editar');
+Route::get('/clientes/listado',    '\App\Http\Controllers\Ventas\ClientesController@listado'  );
+Route::post('/clientes/listado',   '\App\Http\Controllers\Ventas\ClientesController@listado'  )->name('clientes.listado');
+Route::post('/clientes/agregar',   '\App\Http\Controllers\Ventas\ClientesController@agregar'  )->name('clientes.agregar');
+Route::post('/clientes/editar',    '\App\Http\Controllers\Ventas\ClientesController@editar'   )->name('clientes.editar');
 Route::post('/clientes/eliminar',  '\App\Http\Controllers\Ventas\ClientesController@eliminar' )->name('clientes.eliminar');
 
 // Almacén o surtir
 Route::get('/listadoPedidosJefe', '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
 Route::get('/listadoTareas',      '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@listadoTareas' )->name('listadoTareas');
+
+// Recepción de mercancía
+Route::get('/ordenes/listado',    '\App\Http\Controllers\Recepcion\RecepcionController@listado'    )->name('ordenes.listado');
+Route::get('/ordenes/validacion', '\App\Http\Controllers\Recepcion\RecepcionController@validacion' )->name('ordenes.validacion');
 
 // Preparación de pedido o embalaje
 
