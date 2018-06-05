@@ -10,7 +10,7 @@ class Calculation extends Model
     protected $table = 'calculations';
 
     protected $fillable = [
-        'P','V', 'D','Dist','ordersId','FP'
+        'P','V', 'D','Dist','order_id','FP','priority'
     ];
 
 }

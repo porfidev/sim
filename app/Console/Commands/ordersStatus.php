@@ -53,10 +53,11 @@ class ordersStatus extends Command
     public function handle()
     {
         
-        $listado = $this->order->getAll();
-        $idCalc = $this->calc->getIdCalc();
+        $listado = $this->order->getAll();        
 
         foreach ($listado as $element) {
+
+            $idCalc = $this->calc->getCalc($element->id);
 
             $fechaI = strtotime($element->start);
             $fechaF = strtotime($element->end);
@@ -111,17 +112,20 @@ class ordersStatus extends Command
 
             }
 
-            $fechaHoy = date('Y-m-j');
+            /*$fechaHoy = date('Y-m-j');
 
             $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
 
-            $fp = date('Y-m-d', $fp);
+            $fp = date('Y-m-d', $fp);*/
+
+            $priority = (($idCalc->P + $V + $idCalc->D) / 2);
 
             $datos = array();
             $datos[CalculationRepository::SQL_V]   = $V;
-            $datos[CalculationRepository::SQL_FP]  = $fp;
+            //$datos[CalculationRepository::SQL_FP]  = $fp;
+            $datos[CalculationRepository::SQL_PRIORITY]  = $priority;
 
-            $this->calc->update( $idCalc, $datos);
+            $this->calc->update( $idCalc->id, $datos);
         }
     }
 }

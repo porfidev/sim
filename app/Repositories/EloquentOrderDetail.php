@@ -47,6 +47,15 @@ class EloquentOrderDetail implements OrderDetailRepository
 		return $this->model->find($id);
     }
 
+    public function getDetExt($it,$qua,$pack,$idOrd){
+
+    	return $this->model->where("itemcode","=",$it)
+    					   ->where("quantity","=",$qua)
+    					   ->where("quantitypack","=",$pack)
+    					   ->where(self::SQL_ORDEN_ID,"=",$idOrd);
+
+    }
+
     /**
 	 * Create a new Catalogo.
 	 *

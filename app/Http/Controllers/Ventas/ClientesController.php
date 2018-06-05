@@ -33,7 +33,7 @@ class ClientesController extends Controller{
      */
     public function __construct(ClienteRepository $cli){
 
-        $this->middleware('auth');
+        //$this->middleware('auth');
         $this->clienteModel = $cli;
     }
 

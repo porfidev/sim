@@ -12,7 +12,8 @@ class Cliente extends Model
     protected $table = 'clients';
 
     protected $fillable = [
-        'name', 'email','telephone','rfc','cp','city','address','status','branch_id'
+        'name', 'email','telephone','rfc','cp','city','address','status','branch_id',
+        'code','P','shops','sku','package','D2','CE','TE','TP','average','D'
     ];
 
     protected $dates = ['deleted_at'];

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddProgramDateToCalc extends Migration
+class AddPriorityCalc extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddProgramDateToCalc extends Migration
     public function up()
     {
         Schema::table('calculations', function (Blueprint $table) {
-            $table->date('FP')->after('D');            
-        });
+            $table->date('priority')->after('dist_id');            
+        });    
     }
 
     /**

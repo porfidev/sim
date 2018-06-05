@@ -74,15 +74,13 @@ class DownloadOrders extends Command
 
             if($con){
 
-                echo "conexion exitosa<br>";
-
-                $sql = "select DOCNUM,CARDCODE,U_VIGENCIAINI,U_VIGENCIAFIN,DOCSTATUS,ITEMCODE,QUANTITY,U_CANTREQ,Confirmed from ORDR".
+                $sql = "select CARDCODE,CARDCODE,U_VIGENCIAINI,U_VIGENCIAFIN,DOCSTATUS,ITEMCODE,QUANTITY,U_CANTREQ,Confirmed from ORDR".
                        " left join RDR1 ON ORDR.DocEntry = RDR1.DocEntry where ORDR.DocStatus = 'O' and ORDR.Confirmed = 'Y'";
             $stmt = sqlsrv_query( $con, $sql );
 
             while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
 
-                Log::info(" Registro:  ".$row['DOCNUM']." , ".$row['CARDCODE']." , ".$row['U_VIGENCIAINI'].
+                Log::info(" pedido:  ".$row['DOCNUM']." , ".$row['CARDCODE']." , ".$row['U_VIGENCIAINI'].
                           " , ".$row['U_VIGENCIAFIN']." , ".$row['DOCSTATUS']." , ".$row['Confirmed']." , ".$row['ITEMCODE'].
                           " , ".$row['QUANTITY']." , ".$row['U_CANTREQ']);
 
@@ -101,7 +99,7 @@ class DownloadOrders extends Command
                     OrderDetailRepository::SQL_CODIGOP => $row['ITEMCODE'],
                     OrderDetailRepository::SQL_CANTIDAD => $row['QUANTITY'],
                     OrderDetailRepository::SQL_CANTIDADP => $row['U_CANTREQ'],
-                    'codigoOrden' => $row['DOCNUM']
+                    OrderDetailRepository::SQL_ORDEN_ID => $row['DOCNUM']
                 );
 
                 //función para restar fechas, regresa los dias restantes
@@ -124,6 +122,7 @@ class DownloadOrders extends Command
                 $c1 = $this->cat->getByLabel('c1');
                 $c2 = $this->cat->getByLabel('c2');
                 $c3 = $this->cat->getByLabel('c3');
+                $c6 = $this->cat->getByLabel('c6');
 
                 $validity = 0;
 
@@ -166,29 +165,43 @@ class DownloadOrders extends Command
 
                 //$tamanioPedido = ?;
 
-                $D = $cliente->CE + $tamanioPedido;
+                $D = floor(($cliente->CE * $cliente->TP) / $c6);
+
 
                 //dist ??? 
+
+                $priority = (($P + $V + $D) / 2);
 
                 $data3 = array(
                     CalculationRepository::SQL_P => $cliente->P,
                     CalculationRepository::SQL_V => $V,
                     CalculationRepository::SQL_D => $D,
+                    CalculationRepository::SQL_PRIORITY => $priority,
                     CalculationRepository::SQL_DIST => 0,
                     CalculationRepository::SQL_FP => $fp,
                     CalculationRepository::SQL_ORDID => $row['DOCNUM'],
                     'codigoOrden' => $row['DOCNUM']
-                );
+                );            
 
-                $this->order->create($data1);
-                $this->detail->create($data2);
-                $this->calc->create($data3);
+                if($this->order->getByCode($row['DOCNUM']) == null){
+
+                    $this->order->create($data1);
+                    $this->calc->create($data3);
+                }
+
+                $idOrder = $this->order->getByCode($row['DOCNUM']);      
+
+                if($this->detail->getDetExt($row['ITEMCODE'],$row['QUANTITY'],$row['U_CANTREQ'],$idOrder) == null){
+
+                    $this->detail->create($data2);
+                    
+                }
             }
 
 
             }else{
 
-                Log::info(" CatalogosController - error:  ".sqlsrv_errors());
+                Log::info(" DownloadOrders - error:  ".sqlsrv_errors());
 
             }
     }

@@ -42,6 +42,16 @@ class EloquentCalculation implements CalculationRepository
         return $list->get();
     }
 
+    function getAllOrd(){
+
+    	$list = $this->model->select("orders.status as ordStatus,orders.id as idOrd,*")
+    						->leftJoin("orders","orders.id","=","calculations.order_id")
+    						->leftJoin("clients","orders.code","=","clients.code")
+    						->orderBy('priority', 'desc');
+    	    	
+        return $list->paginate(10);
+    }
+
     /**
 	 * Get Catalogo by id.
 	 *
@@ -57,6 +67,11 @@ class EloquentCalculation implements CalculationRepository
     public function getIdCalc($idOrd){
 
     	return $this->model->where(self::SQL_ORDID,'=',$idOrd)->get()->first()->id;
+    }
+
+    public function getCalc($idOrd){
+
+    	return $this->model->where(self::SQL_ORDID,'=',$idOrd)->get()->first();
     }
 
     /**

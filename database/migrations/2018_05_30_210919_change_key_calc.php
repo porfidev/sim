@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddProgramDateToCalc extends Migration
+class ChangeKeyCalc extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,15 @@ class AddProgramDateToCalc extends Migration
      */
     public function up()
     {
+        
+
         Schema::table('calculations', function (Blueprint $table) {
-            $table->date('FP')->after('D');            
+
+            $table->dropForeign(['ordersId']);
+            $table->dropColumn('ordersId');
+            
+            $table->integer('order_id')->unsigned()->after('FP');
+            $table->foreign('order_id')->references('id')->on('orders');
         });
     }
 
@@ -24,7 +31,7 @@ class AddProgramDateToCalc extends Migration
      * @return void
      */
     public function down()
-    {
-        //
+    {    
+
     }
 }

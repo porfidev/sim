@@ -18,6 +18,8 @@ interface OrderRepository
 
 	function getById($id);
 
+	function getByCode($code);
+
 	function create(array $attributes);
 
 	function update($id, array $attributes);

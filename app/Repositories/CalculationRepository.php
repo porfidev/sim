@@ -8,16 +8,21 @@ interface CalculationRepository
 	const SQL_V  = "V";
 	const SQL_D  = "D";
 	const SQL_DIST  = "Dist";
-	const SQL_ORDID  = "ordersId";
+	const SQL_ORDID  = "order_id";
 	const SQL_FP  = "FP";
+	const SQL_PRIORITY  = "priority";
 	
 	function getAll();
 
 	function getAllEsp();
 
+	function getAllOrd();
+
 	function getById($id);
 
 	function getIdCalc($idOrd);
+
+	function getCalc($idOrd);
 
 	function create(array $attributes);
 

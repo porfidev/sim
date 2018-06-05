@@ -6,6 +6,7 @@
     <br>
     <div class="card">
         <div class="card-body">
+            {{ $listado->links('pagination.default') }}
             <div class="table-responsive mt-2">
                 <table class="table table-striped">
                     <thead>
@@ -23,7 +24,13 @@
                                 Estatus
                             </th>
                             <th scope="col" style="min-width: 200px; text-align: center;">
-                                Fecha de Entrega
+                                Fecha Programada
+                            </th>
+                            <th scope="col" style="min-width: 200px; text-align: center;">
+                                Fecha Inicio
+                            </th>
+                            <th scope="col" style="min-width: 200px; text-align: center;">
+                                Fecha Final
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
                                 Acci&oacute;n
@@ -49,6 +56,12 @@
                             <th>
                                 <input type="date" class="form-control">
                             </th>
+                            <th>
+                                <input type="date" class="form-control">
+                            </th>
+                            <th>
+                                <input type="date" class="form-control">
+                            </th>
                             <th style="text-align: center;">
                                 <button class="btn btn-sm btn-info"
                                         data-toggle="tooltip"
@@ -67,108 +80,48 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($listado as $ped)
                         <tr>
                             <td style="text-align: center;">
-                                2356
+                                {{ $ped->codeOrder }}
                             </td>
                             <td>
-                                Sears
+                                {{ $ped->name }}
                             </td>
                             <td>
-                                <ul>
-                                    <li>
-                                        Nombre Apellido Paterno 1
-                                    </li>
-                                    <li>
-                                        Nombre Apellido Paterno 4
-                                    </li>
-                                </ul>
-                            </td>
-                            <td style="text-align: center;">
-                                En proceso
-                            </td>
-                            <td style="text-align: center;">
-                                12/05/2018
-                            </td>
-                            <td style="text-align: center;">
-                                &nbsp;
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;">
-                                2380
+                                -
                             </td>
                             <td>
-                                Liverpool
+                                {{ $ped->ordStatus }}
                             </td>
                             <td>
-                                &nbsp;
+                                {{ $ped->FP }}
                             </td>
-                            <td style="text-align: center;">
-                                En espera
+                            <td>
+                                {{ $ped->start }}
                             </td>
+                            <td>
+                                {{ $ped->end }}
+                            </td>                            
                             <td style="text-align: center;">
-                                12/05/2018
-                            </td>
-                            <td style="text-align: center;">
-                                <button class="btn btn-sm btn-primary creacionEquipo"
+                                <button class="btn btn-sm btn-success asignarPersonal"
+                                        data-id="{{ $ped->idOrd }}"
+                                        data-codeOrd="{{ $ped->codeOrder }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Asignar equipo de trabajo">
-                                    <i class="material-icons">add_shopping_cart</i>
+                                        title="Editar">
+                                    <i class="material-icons">mode_edit</i>
                                 </button>
                             </td>
                         </tr>
-                        <tr>
-                            <td style="text-align: center;">
-                                2390
-                            </td>
-                            <td>
-                                Home Depot
-                            </td>
-                            <td>
-                                &nbsp;
-                            </td>
-                            <td style="text-align: center;">
-                                En espera
-                            </td>
-                            <td style="text-align: center;">
-                                12/05/2018
-                            </td>
-                            <td style="text-align: center;">
-                                <button class="btn btn-sm btn-primary creacionEquipo"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Asignar equipo de trabajo">
-                                    <i class="material-icons">add_shopping_cart</i>
-                                </button>
+            @endforeach
+            @if (count($listado) === 0)
+                        <tr style="text-align: center;">
+                            <td colspan="10">
+                                No hay pedidos que mostrar
                             </td>
                         </tr>
-                        <tr>
-                            <td style="text-align: center;">
-                                2392
-                            </td>
-                            <td>
-                                Oxxo
-                            </td>
-                            <td>
-                                &nbsp;
-                            </td>
-                            <td style="text-align: center;">
-                                En espera
-                            </td>
-                            <td style="text-align: center;">
-                                12/05/2018
-                            </td>
-                            <td style="text-align: center;">
-                                <button class="btn btn-sm btn-primary creacionEquipo"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Asignar equipo de trabajo">
-                                    <i class="material-icons">add_shopping_cart</i>
-                                </button>
-                            </td>
-                        </tr>
+            @endif
                     </tbody>
                 </table>
             </div>

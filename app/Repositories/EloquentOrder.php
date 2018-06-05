@@ -47,6 +47,11 @@ class EloquentOrder implements OrderRepository
 		return $this->model->find($id);
     }
 
+    public function getByCode($code){
+
+    	return $this->model->where("codeOrder","=",$code)->get()->first();
+    }
+
     /**
 	 * Create a new Catalogo.
 	 *
