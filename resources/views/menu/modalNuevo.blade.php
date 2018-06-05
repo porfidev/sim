@@ -32,6 +32,17 @@
                 <form id="formGuardarNuevo">
                     {{ csrf_field() }}
                     <div class="form-group">
+                        <label for="modalNewOrder">
+                            Orden
+                        </label>
+                        <input type="number"
+                                class="form-control"
+                                id="modalNewOrder"
+                                name="orden"
+                                value="0"
+                                required>
+                    </div>
+                    <div class="form-group">
                         <label for="modalNewMenuItem">
                             Padre
                         </label>
@@ -92,6 +103,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $( '.nuevoElementoMenu' ).click(function () {
+            $( '#erroresValidacionNuevo').text("");
+            $( '#modalNewOrder' ).val(0);
             $( "#modalNuevoMenuItem" ).modal({
                 keyboard : false,
                 backdrop : 'static'
@@ -110,7 +123,7 @@
             $.ajax({
                 url    : "{{ route('menu.agregar') }}",
                 method : "POST",
-                data: $( "#formGuardarNuevo" ).serialize()
+                data   : $( "#formGuardarNuevo" ).serialize()
             }).done(function( data ) {
                 if(data.resultado === 'OK') {
                     $('#modalNuevoMenuItem').modal('toggle');

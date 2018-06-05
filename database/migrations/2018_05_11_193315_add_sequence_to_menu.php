@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCodeClients extends Migration
+class AddSequenceToMenu extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddCodeClients extends Migration
      */
     public function up()
     {
-        Schema::table('clients', function (Blueprint $table) {
-            $table->string('code')->unique()->after('status');
+        Schema::table('menus', function (Blueprint $table) {
+            $table->integer('sequence')->default(0)->after('parent');
         });
     }
 
@@ -25,6 +25,8 @@ class AddCodeClients extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('menus', function (Blueprint $table) {
+            $table->dropColumn('sequence');
+        });
     }
 }
