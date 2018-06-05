@@ -138,7 +138,7 @@ class DownloadOrders extends Command
 
                 $V = 0;
 
-                if($Validity == 1){
+                if($validity == 1){
 
                     $V = 90;
 
