@@ -72,6 +72,50 @@ class EloquentCliente implements ClienteRepository
 				$list->where(self::SQL_ESTATUS, "=", $search[self::SQL_ESTATUS]);
 			}
 
+			if(array_key_exists(self::SQL_CODE, $search)) {
+				$list->where(self::SQL_CODE, "=", $search[self::SQL_CODE]);
+			}
+
+			if(array_key_exists(self::SQL_P, $search)) {
+				$list->where(self::SQL_P, "=", $search[self::SQL_P]);
+			}
+
+			if(array_key_exists(self::SQL_SHOPS, $search)) {
+				$list->where(self::SQL_SHOPS, "=", $search[self::SQL_SHOPS]);
+			}
+
+			if(array_key_exists(self::SQL_SKU, $search)) {
+				$list->where(self::SQL_SKU, "=", $search[self::SQL_SKU]);
+			}
+
+			if(array_key_exists(self::SQL_PACK, $search)) {
+				$list->where(self::SQL_PACK, "=", $search[self::SQL_PACK]);
+			}
+
+			if(array_key_exists(self::SQL_D2, $search)) {
+				$list->where(self::SQL_D2, "=", $search[self::SQL_D2]);
+			}
+
+			if(array_key_exists(self::SQL_TE, $search)) {
+				$list->where(self::SQL_TE, "=", $search[self::SQL_TE]);
+			}
+
+			if(array_key_exists(self::SQL_CE, $search)) {
+				$list->where(self::SQL_CE, "=", $search[self::SQL_CE]);
+			}
+
+			if(array_key_exists(self::SQL_TP, $search)) {
+				$list->where(self::SQL_TP, "=", $search[self::SQL_TP]);
+			}
+
+			if(array_key_exists(self::SQL_AVERAGE, $search)) {
+				$list->where(self::SQL_AVERAGE, "=", $search[self::SQL_AVERAGE]);
+			}
+
+			if(array_key_exists(self::SQL_D, $search)) {
+				$list->where(self::SQL_D, "=", $search[self::SQL_D]);
+			}
+
     	}
 
     	Log::debug("EloquentCatalogo - getList - SQL: ".$list->toSql());

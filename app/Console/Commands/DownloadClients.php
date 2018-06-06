@@ -56,21 +56,22 @@ class DownloadClients extends Command
 
             echo "conexion exitosa<br>";
 
-            $sql = "select CardName,CardCode,Phone1,ZipCode,City,Address,E_Mail from OCRD".
+            $sql = "select CardName,CardCode,Phone1,ZipCode,City,Address,E_Mail,LicTradNum from OCRD".
                        " where OCRD.CardType = 'C'";
             $stmt = sqlsrv_query( $con, $sql );
 
             while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
 
                 Log::info(" Cliente:  ".$row['CardName']." , ".$row['CardCode']." , ".$row['Phone1'].
-                          " , ".$row['ZipCode']." , ".$row['City']." , ".$row['Address']." , ".$row['E_Mail']);
+                          " , ".$row['ZipCode']." , ".$row['City']." , ".$row['Address']." , ".$row['E_Mail'].
+                          " , ".$row['LicTradNum']);
 
 
                 $data = array(
                     ClienteRepository::SQL_NOMBRE  => (empty($row['CardName'])) ? "-":$row['CardName'],
                     ClienteRepository::SQL_CORREO   => (empty($row['E_Mail'])) ? "-":$row['E_Mail'],
                     ClienteRepository::SQL_TELEFONO  => (empty($row['Phone1'])) ? "-":$row['Phone1'],
-                    ClienteRepository::SQL_RFC   => "-",
+                    ClienteRepository::SQL_RFC   => (empty($row['LicTradNum'])) ? "-":$row['LicTradNum'],
                     ClienteRepository::SQL_CP  => (empty($row['ZipCode'])) ? "-":$row['ZipCode'],
                     ClienteRepository::SQL_CIUDAD   => (empty($row['City'])) ? "-":$row['City'],
                     ClienteRepository::SQL_DIRECCION  => (empty($row['Address'])) ? "-":$row['Address'],
@@ -88,7 +89,20 @@ class DownloadClients extends Command
                     ClienteRepository::SQL_D   => "-",
                 );
 
-                $this->clientsModel->create($data);
+                $cliEsp = $this->clientsModel->getByCodigo($row['CardCode']);
+
+                if($cliEsp != null){
+
+                    $datos = array();
+                    $datos[ClienteRepository::SQL_RFC] = $row['LicTradNum'];
+
+                    $this->clienteModel->update( $cliEsp->id, $datos);
+                    
+                }else{
+
+                    $this->clientsModel->create($data);
+
+                }                
 
             }
 
