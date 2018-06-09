@@ -25,6 +25,17 @@ class ClientesController extends Controller{
     const SESSION_CIUDAD    = "scl_ciudad";
     const SESSION_DIRECCION = "scl_direccion";
     const SESSION_ESTATUS   = "scl_estatus";
+    const SESSION_CODE      = "scl_code";
+    const SESSION_P         = "scl_p";
+    const SESSION_SHOPS     = "scl_shops";
+    const SESSION_SKU       = "scl_sku";
+    const SESSION_PACK      = "scl_pack";
+    const SESSION_D2        = "scl_d2";
+    const SESSION_TE        = "scl_te";
+    const SESSION_CE        = "scl_ce";
+    const SESSION_TP        = "scl_tp";
+    const SESSION_AVERAGE   = "scl_average";
+    const SESSION_D         = "scl_d";
 
     /**
      * Create a new catalogos instance.
@@ -83,6 +94,50 @@ class ClientesController extends Controller{
                 if( $request->has(self::SESSION_ESTATUS)) {
                     $request->session()->put(self::SESSION_ESTATUS, $request->input(self::SESSION_ESTATUS));
                 }
+
+                if( $request->has(self::SESSION_CODE)) {
+                    $request->session()->put(self::SESSION_CODE, $request->input(self::SESSION_CODE));
+                }
+
+                if( $request->has(self::SESSION_P)) {
+                    $request->session()->put(self::SESSION_P, $request->input(self::SESSION_P));
+                }
+
+                if( $request->has(self::SESSION_SHOPS)) {
+                    $request->session()->put(self::SESSION_SHOPS, $request->input(self::SESSION_SHOPS));
+                }
+
+                if( $request->has(self::SESSION_SKU)) {
+                    $request->session()->put(self::SESSION_SKU, $request->input(self::SESSION_SKU));
+                }
+
+                if( $request->has(self::SESSION_PACK)) {
+                    $request->session()->put(self::SESSION_PACK, $request->input(self::SESSION_PACK));
+                }
+
+                if( $request->has(self::SESSION_D2)) {
+                    $request->session()->put(self::SESSION_D2, $request->input(self::SESSION_D2));
+                }
+
+                if( $request->has(self::SESSION_TE)) {
+                    $request->session()->put(self::SESSION_TE, $request->input(self::SESSION_TE));
+                }
+
+                if( $request->has(self::SESSION_CE)) {
+                    $request->session()->put(self::SESSION_CE, $request->input(self::SESSION_CE));
+                }
+
+                if( $request->has(self::SESSION_TP)) {
+                    $request->session()->put(self::SESSION_TP, $request->input(self::SESSION_TP));
+                }
+
+                if( $request->has(self::SESSION_AVERAGE)) {
+                    $request->session()->put(self::SESSION_AVERAGE, $request->input(self::SESSION_AVERAGE));
+                }
+
+                if( $request->has(self::SESSION_D)) {
+                    $request->session()->put(self::SESSION_D, $request->input(self::SESSION_D));
+                }
             }
             $search = array();
             if ( $request->session()->has(self::SESSION_ID)
@@ -121,6 +176,51 @@ class ClientesController extends Controller{
                     && $request->session()->get(self::SESSION_ESTATUS) != '-1' ) {
                 $search[ClienteRepository::SQL_ESTATUS] = $request->session()->get(self::SESSION_ESTATUS);
             }
+            if ( $request->session()->has(self::SESSION_P)
+                    && $request->session()->get(self::SESSION_P) != 'NA' ) {
+                $search[ClienteRepository::SQL_P] = $request->session()->get(self::SESSION_P);
+            }
+            if ( $request->session()->has(self::SESSION_SHOPS)
+                    && $request->session()->get(self::SESSION_SHOPS) != 'NA' ) {
+                $search[ClienteRepository::SQL_SHOPS] = $request->session()->get(self::SESSION_SHOPS);
+            }
+            if ( $request->session()->has(self::SESSION_CODE)
+                    && $request->session()->get(self::SESSION_CODE) != 'NA' ) {
+                $search[ClienteRepository::SQL_CODE] = $request->session()->get(self::SESSION_CODE);
+            }
+            if ( $request->session()->has(self::SESSION_SKU)
+                    && $request->session()->get(self::SESSION_SKU) != 'NA' ) {
+                $search[ClienteRepository::SQL_SKU] = $request->session()->get(self::SESSION_SKU);
+            }
+            if ( $request->session()->has(self::SESSION_PACK)
+                    && $request->session()->get(self::SESSION_PACK) != 'NA' ) {
+                $search[ClienteRepository::SQL_PACK] = $request->session()->get(self::SESSION_PACK);
+            }
+            if ( $request->session()->has(self::SESSION_D2)
+                    && $request->session()->get(self::SESSION_D2) != 'NA' ) {
+                $search[ClienteRepository::SQL_D2] = $request->session()->get(self::SESSION_D2);
+            }
+            if ( $request->session()->has(self::SESSION_TE)
+                    && $request->session()->get(self::SESSION_TE) != 'NA' ) {
+                $search[ClienteRepository::SQL_TE] = $request->session()->get(self::SESSION_TE);
+            }
+            if ( $request->session()->has(self::SESSION_CE)
+                    && $request->session()->get(self::SESSION_CE) != 'NA' ) {
+                $search[ClienteRepository::SQL_CE] = $request->session()->get(self::SESSION_CE);
+            }
+            if ( $request->session()->has(self::SESSION_TP)
+                    && $request->session()->get(self::SESSION_TP) != 'NA' ) {
+                $search[ClienteRepository::SQL_TP] = $request->session()->get(self::SESSION_TP);
+            }
+            if ( $request->session()->has(self::SESSION_AVERAGE)
+                    && $request->session()->get(self::SESSION_AVERAGE) != 'NA' ) {
+                $search[ClienteRepository::SQL_AVERAGE] = $request->session()->get(self::SESSION_AVERAGE);
+            }
+            if ( $request->session()->has(self::SESSION_D)
+                    && $request->session()->get(self::SESSION_D) != 'NA' ) {
+                $search[ClienteRepository::SQL_D] = $request->session()->get(self::SESSION_D);
+            }
+
             Log::info(" ClientesController - listado - search: ".json_encode($search));
 
             $listado = $this->clienteModel->getAll($search);
@@ -153,7 +253,18 @@ class ClientesController extends Controller{
                     'rfc'       => 'required|string|max:20',
                     'cp'        => 'required|string|max:10',
                     'ciudad'    => 'required|string|max:191',
-                    'direccion' => 'required|string|max:191'
+                    'direccion' => 'required|string|max:191',
+                    'code'      => 'required|string|max:191',
+                    'p'         => 'required|numeric|max:10',
+                    'tiendas'   => 'required|numeric|max:10',
+                    'sku'       => 'required|numeric|max:10',
+                    'pack'      => 'required|numeric|max:10',
+                    'd2'        => 'required|numeric|max:10',
+                    'te'        => 'required|numeric|max:10',
+                    'ce'        => 'required|numeric|max:10',
+                    'tp'        => 'required|numeric|max:10',
+                    'promedio'  => 'required|numeric|max:10',
+                    'd'         => 'required|numeric|max:10'
                 ),
                 Controller::$messages
             );
@@ -170,6 +281,17 @@ class ClientesController extends Controller{
                     ClienteRepository::SQL_CP        => $request->cp,
                     ClienteRepository::SQL_CIUDAD    => $request->ciudad,
                     ClienteRepository::SQL_DIRECCION => $request->direccion,
+                    ClienteRepository::SQL_CODE      => $request->code,
+                    ClienteRepository::SQL_P         => $request->p,
+                    ClienteRepository::SQL_SHOPS     => $request->tiendas,
+                    ClienteRepository::SQL_SKU       => $request->sku,
+                    ClienteRepository::SQL_PACK      => $request->pack,
+                    ClienteRepository::SQL_D2        => $request->d2,
+                    ClienteRepository::SQL_TE        => $request->te,
+                    ClienteRepository::SQL_CE        => $request->ce,
+                    ClienteRepository::SQL_TP        => $request->tp,
+                    ClienteRepository::SQL_AVERAGE   => $request->promedio,
+                    ClienteRepository::SQL_D         => $request->d,
                     ClienteRepository::SQL_ESTATUS   => ClienteRepository::ACTIVE
                 );
                 Log::info(" ClientesController - agregar - data: ".json_encode($data));
@@ -204,6 +326,17 @@ class ClientesController extends Controller{
                             'cp'        => 'required|string|max:10',
                             'ciudad'    => 'required|string|max:191',
                             'direccion' => 'required|string|max:191',
+                            'code'      => 'required|string|max:191',
+                            'p'         => 'required|numeric|max:10',
+                            'tiendas'   => 'required|numeric|max:10',
+                            'sku'       => 'required|numeric|max:10',
+                            'pack'      => 'required|numeric|max:10',
+                            'd2'        => 'required|numeric|max:10',
+                            'te'        => 'required|numeric|max:10',
+                            'ce'        => 'required|numeric|max:10',
+                            'tp'        => 'required|numeric|max:10',
+                            'promedio'  => 'required|numeric|max:10',
+                            'd'         => 'required|numeric|max:10',
                             'estatus'   => 'required|boolean'
                         ),
                         Controller::$messages
@@ -222,6 +355,17 @@ class ClientesController extends Controller{
                         $datos[ClienteRepository::SQL_CIUDAD]    = $request->ciudad;
                         $datos[ClienteRepository::SQL_DIRECCION] = $request->direccion;
                         $datos[ClienteRepository::SQL_ESTATUS]   = $request->estatus;
+                        $datos[ClienteRepository::SQL_CODE       = $request->code;
+                        $datos[ClienteRepository::SQL_P]         = $request->p;
+                        $datos[ClienteRepository::SQL_SHOPS]     = $request->tiendas;
+                        $datos[ClienteRepository::SQL_SKU]       = $request->sku;
+                        $datos[ClienteRepository::SQL_PACK]      = $request->pack;
+                        $datos[ClienteRepository::SQL_D2]        = $request->d2;
+                        $datos[ClienteRepository::SQL_TE]        = $request->te;
+                        $datos[ClienteRepository::SQL_CE]        = $request->ce;
+                        $datos[ClienteRepository::SQL_TP]        = $request->tp;
+                        $datos[ClienteRepository::SQL_AVERAGE]   = $request->promedio;
+                        $datos[ClienteRepository::SQL_D]         = $request->d;
 
                         if(!$this->clienteModel->update( $request->get('id'), $datos)) {
                             $resultado = "ERROR";

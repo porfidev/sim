@@ -36,6 +36,39 @@
                                 Direcci&oacute;n
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
+                                C&oacute;digo
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                P
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                Tiendas
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                Sku
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                Empaque
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                D2
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                TE
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                CE
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                TP
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                Promedio
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
+                                D
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
                                 Estatus
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
@@ -121,6 +154,105 @@
                                     @endif>
                             </th>
                             <th>
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formaCode"
+                                        placeholder="Codigo"
+                                    @if ( Session::has('scl_code') && Session::get('scl_code') != 'NA' )
+                                        value="{{ Session::get('scl_code') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaP"
+                                        placeholder="P"
+                                    @if ( Session::has('scl_p') && Session::get('scl_p') != 'NA' )
+                                        value="{{ Session::get('scl_p') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaShops"
+                                        placeholder="Tiendas"
+                                    @if ( Session::has('scl_shops') && Session::get('scl_shops') != 'NA' )
+                                        value="{{ Session::get('scl_shops') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaSku"
+                                        placeholder="Sku"
+                                    @if ( Session::has('scl_sku') && Session::get('scl_sku') != 'NA' )
+                                        value="{{ Session::get('scl_sku') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaPack"
+                                        placeholder="Empaque"
+                                    @if ( Session::has('scl_pack') && Session::get('scl_pack') != 'NA' )
+                                        value="{{ Session::get('scl_pack') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaD2"
+                                        placeholder="D2"
+                                    @if ( Session::has('scl_d2') && Session::get('scl_d2') != 'NA' )
+                                        value="{{ Session::get('scl_d2') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaTe"
+                                        placeholder="TE"
+                                    @if ( Session::has('scl_te') && Session::get('scl_te') != 'NA' )
+                                        value="{{ Session::get('scl_te') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaCe"
+                                        placeholder="CE"
+                                    @if ( Session::has('scl_ce') && Session::get('scl_ce') != 'NA' )
+                                        value="{{ Session::get('scl_ce') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaTp"
+                                        placeholder="TP"
+                                    @if ( Session::has('scl_tp') && Session::get('scl_tp') != 'NA' )
+                                        value="{{ Session::get('scl_tp') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaPromedio"
+                                        placeholder="Promedio"
+                                    @if ( Session::has('scl_average') && Session::get('scl_average') != 'NA' )
+                                        value="{{ Session::get('scl_average') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="number"
+                                        class="form-control inputFiltro"
+                                        id="formaD"
+                                        placeholder="D"
+                                    @if ( Session::has('scl_d') && Session::get('scl_d') != 'NA' )
+                                        value="{{ Session::get('scl_d') }}"
+                                    @endif>
+                            </th>
+                            <th>
                                 <select class="form-control"
                                         id="formaEstatus">
                                     <option value="-1">
@@ -186,6 +318,39 @@
                             <td>
                                 {{ $cli->address }}
                             </td>
+                            <td>
+                                {{ $cli->code }}
+                            </td>
+                            <td>
+                                {{ $cli->P }}
+                            </td>
+                            <td>
+                                {{ $cli->shops }}
+                            </td>
+                            <td>
+                                {{ $cli->sku }}
+                            </td>
+                            <td>
+                                {{ $cli->package }}
+                            </td>
+                            <td>
+                                {{ $cli->D2 }}
+                            </td>
+                            <td>
+                                {{ $cli->TE }}
+                            </td>
+                            <td>
+                                {{ $cli->CE }}
+                            </td>
+                            <td>
+                                {{ $cli->TP }}
+                            </td>
+                            <td>
+                                {{ $cli->average }}
+                            </td>
+                            <td>
+                                {{ $cli->D }}
+                            </td>
                             <td style="text-align: center;">
                     @if ($cli->estatus == 0)
                                 <span class="text-danger font-weight-bold">Inactivo</span>
@@ -204,6 +369,17 @@
                                         data-ciudad="{{ $cli->city }}"
                                         data-direccion="{{ $cli->address }}"
                                         data-estatus="{{ $cli->estatus }}"
+                                        data-code="{{ $cli->code }}"
+                                        data-p="{{ $cli->P }}"
+                                        data-tienda="{{ $cli->shops }}"
+                                        data-sku="{{ $cli->sku }}"
+                                        data-pack="{{ $cli->package }}"
+                                        data-d2="{{ $cli->D2 }}"
+                                        data-te="{{ $cli->TE }}"
+                                        data-ce="{{ $cli->CE }}"
+                                        data-tp="{{ $cli->TP }}"
+                                        data-promedio="{{ $cli->average }}"
+                                        data-d="{{ $cli->D }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Editar">
@@ -243,7 +419,17 @@
         <input type="hidden" name="scl_CP"        id="busquedaCP"        value="NA">
         <input type="hidden" name="scl_ciudad"    id="busquedaCiudad"    value="NA">
         <input type="hidden" name="scl_direccion" id="busquedaDireccion" value="NA">
-        <input type="hidden" name="scl_estatus"   id="busquedaEstatus"   value="-1">
+        <input type="hidden" name="scl_code"      id="busquedaCodigo" value="NA">
+        <input type="hidden" name="scl_p"         id="busquedaP" value="NA">
+        <input type="hidden" name="scl_shops"     id="busquedaTienda" value="NA">
+        <input type="hidden" name="scl_sku"       id="busquedaSku" value="NA">
+        <input type="hidden" name="scl_pack"      id="busquedaPack" value="NA">
+        <input type="hidden" name="scl_d2"        id="busquedaD2" value="NA">
+        <input type="hidden" name="scl_te"        id="busquedaTe" value="NA">
+        <input type="hidden" name="scl_ce"        id="busquedaCe" value="NA">
+        <input type="hidden" name="scl_tp"        id="busquedaTp" value="NA">
+        <input type="hidden" name="scl_average"   id="busquedaPromedio" value="NA">
+        <input type="hidden" name="scl_d"         id="busquedaD"   value="-1">
     </form>
 @endsection
 
@@ -264,6 +450,17 @@
             $( '#busquedaCP'        ).val( $( '#formaCP'       ).val() ? $( '#formaCP'       ).val() : 'NA' );
             $( '#busquedaCiudad'    ).val( $( '#formaCiudad'   ).val() ? $( '#formaCiudad'   ).val() : 'NA' );
             $( '#busquedaDireccion' ).val( $( '#formaDireccion').val() ? $( '#formaDireccion').val() : 'NA' );
+            $( '#busquedaCodigo' ).val( $( '#formaCode').val() ? $( '#formaCode').val() : 'NA' );
+            $( '#busquedaP' ).val( $( '#formaP').val() ? $( '#formaP').val() : 'NA' );
+            $( '#busquedaTienda' ).val( $( '#formaShops').val() ? $( '#formaShops').val() : 'NA' );
+            $( '#busquedaSku' ).val( $( '#formaSku').val() ? $( '#formaSku').val() : 'NA' );
+            $( '#busquedaPack' ).val( $( '#formaPack').val() ? $( '#formaPack').val() : 'NA' );
+            $( '#busquedaD2' ).val( $( '#formaD2').val() ? $( '#formaD2').val() : 'NA' );
+            $( '#busquedaTe' ).val( $( '#formaTe').val() ? $( '#formaTe').val() : 'NA' );
+            $( '#busquedaCe' ).val( $( '#formaCe').val() ? $( '#formaCe').val() : 'NA' );
+            $( '#busquedaTp' ).val( $( '#formaTp').val() ? $( '#formaTp').val() : 'NA' );
+            $( '#busquedaPromedio' ).val( $( '#formaPromedio').val() ? $( '#formaPromedio').val() : 'NA' );
+            $( '#busquedaD' ).val( $( '#formaD').val() ? $( '#formaD').val() : 'NA' );
             $( '#busquedaEstatus'   ).val( $( '#formaEstatus'  ).val() ? $( '#formaEstatus'  ).val() : '-1' );
             $( '#searchForm' ).submit();
         }
@@ -280,6 +477,17 @@
                 $( '#busquedaCP'        ).val( 'NA' );
                 $( '#busquedaCiudad'    ).val( 'NA' );
                 $( '#busquedaDireccion' ).val( 'NA' );
+                $( '#busquedaCodigo' ).val( 'NA' );
+                $( '#busquedaP' ).val( 'NA' );
+                $( '#busquedaSku' ).val( 'NA' );
+                $( '#busquedaTienda' ).val( 'NA' );
+                $( '#busquedaPack' ).val( 'NA' );
+                $( '#busquedaD2' ).val( 'NA' );
+                $( '#busquedaTe' ).val( 'NA' );
+                $( '#busquedaCe' ).val( 'NA' );
+                $( '#busquedaTp' ).val( 'NA' );
+                $( '#busquedaPromedio' ).val( 'NA' );
+                $( '#busquedaD' ).val( 'NA' );
                 $( '#busquedaEstatus'   ).val( '-1' );
                 $( '#searchForm' ).submit();
             });
