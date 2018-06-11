@@ -603,6 +603,7 @@
                 "psysh"
             ],
             "time": "2018-05-17T13:42:07+00:00"
+<<<<<<< HEAD
         },
         {
             "name": "laravelcollective/html",
@@ -671,6 +672,8 @@
             "description": "HTML and Form Builders for the Laravel Framework",
             "homepage": "https://laravelcollective.com",
             "time": "2018-03-24T00:39:21+00:00"
+=======
+>>>>>>> ce5a0419fbf52160407038282a546da78d1f980b
         },
         {
             "name": "league/flysystem",
@@ -1172,6 +1175,7 @@
         },
         {
             "name": "psy/psysh",
+<<<<<<< HEAD
             "version": "v0.9.6",
             "source": {
                 "type": "git",
@@ -1182,6 +1186,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/bobthecow/psysh/zipball/4a2ce86f199d51b6e2524214dc06835e872f4fce",
                 "reference": "4a2ce86f199d51b6e2524214dc06835e872f4fce",
+=======
+            "version": "v0.9.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bobthecow/psysh.git",
+                "reference": "0951e91ac04ca28cf317f3997a0adfc319e80106"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/0951e91ac04ca28cf317f3997a0adfc319e80106",
+                "reference": "0951e91ac04ca28cf317f3997a0adfc319e80106",
+>>>>>>> ce5a0419fbf52160407038282a546da78d1f980b
                 "shasum": ""
             },
             "require": {
@@ -1240,7 +1256,11 @@
                 "interactive",
                 "shell"
             ],
+<<<<<<< HEAD
             "time": "2018-06-10T17:57:20+00:00"
+=======
+            "time": "2018-06-02T16:39:22+00:00"
+>>>>>>> ce5a0419fbf52160407038282a546da78d1f980b
         },
         {
             "name": "ramsey/uuid",
