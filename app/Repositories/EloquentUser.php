@@ -30,8 +30,8 @@ class EloquentUser implements UserRepository
 	 */
 	public function getList($itemsPerPage, array $search = null)
 	{
-		$list = $this->model->with('rol')
-			->orderBy('id', 'desc');
+		$list = $this->model->with('jefe')->with('rol')
+					 ->orderBy('id', 'desc');
 		if(!empty($search)) {
 			if(array_key_exists(self::SQL_ID, $search)
 				&& !empty($search[self::SQL_ID]) ) {
@@ -55,6 +55,22 @@ class EloquentUser implements UserRepository
 		}
 		Log::debug("EloquentUser - getList - SQL: ".$list->toSql());
 		return $list->paginate($itemsPerPage);
+	}
+
+	public function getListBus($nombre)
+	{
+		$list = $this->model->select("id as value", "name as label")->where("users.name","like","%".$nombre."%");
+		
+		return $list->get();
+	}
+
+	public function getListBusUsu($nombre,$idJefe)
+	{
+		$list = $this->model->select("id as value", "name as label")
+							->where("users.name","like","%".$nombre."%")
+							->where("users.boss_id","=",$idJefe);
+		
+		return $list->get();
 	}
 
 	/**

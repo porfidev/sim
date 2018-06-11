@@ -30,8 +30,13 @@ class User extends Authenticatable
     /**
      * Get the rol that owns the user.
      */
-    public function rol()
-    {
+    public function rol(){
+
         return $this->belongsTo('App\Rol', 'rol_id');
+    }
+
+    public function jefe(){
+
+        return $this->belongsTo('App\User', 'boss_id');
     }
 }

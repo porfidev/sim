@@ -44,12 +44,12 @@ class EloquentCalculation implements CalculationRepository
 
     function getAllOrd(){
 
-    	$list = $this->model->select("orders.status as ordStatus,orders.id as idOrd,*")
+    	$list = $this->model->select("*","orders.status as ordStatus","orders.id as idOrd")
     						->leftJoin("orders","orders.id","=","calculations.order_id")
     						->leftJoin("clients","orders.code","=","clients.code")
     						->orderBy('priority', 'desc');
     	    	
-        return $list->paginate(10);
+        return $list;
     }
 
     /**

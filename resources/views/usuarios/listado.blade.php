@@ -3,7 +3,7 @@
 @section('content')
     <br>
     <h2 class="mt-2">Listado de Usuarios</h2>
-    <br>
+    <br>    
     <div class="card">
         <div class="card-body">
             {{ $listado->links('pagination.default') }}
@@ -22,6 +22,9 @@
                             </th>
                             <th scope="col" style="min-width: 220px;">
                                 Rol
+                            </th>
+                            <th scope="col" style="min-width: 220px;">
+                                Jefe
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
                                 Estatus
@@ -79,6 +82,15 @@
                                 </select>
                             </th>
                             <th>
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formaJefe"
+                                        placeholder="Jefe"
+                                    @if ( Session::has('su_jefe') && Session::get('su_jefe') != 'NA' )
+                                        value="{{ Session::get('su_jefe') }}"
+                                    @endif>
+                            </th>
+                            <th>
                                 <select class="form-control"
                                         id="formaEstatus">
                                     <option value="-1">
@@ -132,6 +144,13 @@
                             <td>
                                 {{ $user->rol->description }}
                             </td>
+                            <td>
+                                @if (!empty($user->jefe->name))
+                                    {{ $user->jefe->name }}
+                                @else
+                                    Sin jefe
+                                @endif
+                            </td>
                             <td style="text-align: center;">
                     @if ($user->status == 0)
                                 <span class="text-danger font-weight-bold">Inactivo</span>
@@ -141,11 +160,33 @@
                             </td>
                             <td style="text-align: center;">
                                 <button class="btn btn-sm btn-success editarUsuario"
-                                        data-id="{{ $user->id }}"
+                                        data-id="{{ $user->id }}"                                        
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Editar">
                                     <i class="material-icons">mode_edit</i>
+                                </button>  
+                                <button class="btn btn-sm btn-success asignarJefe"
+                                        data-id="{{ $user->id }}"
+                                        data-nombre="{{ $user->name }}"
+
+                                        @if (!empty($user->jefe->name))
+
+                                           data-idJ="{{ $user->jefe->id }}"
+                                
+                                        @endif
+
+                                        @if (!empty($user->jefe->name))
+
+                                           data-nombreJ="{{ $user->jefe->name }}"
+                                
+                                        @endif
+                                        
+                                        
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Asignar jefe">
+                                    <i class="material-icons">perm_identity</i>
                                 </button>
                             </td>
                         </tr>
@@ -179,6 +220,7 @@
     @include('partials.modalMensaje')
     @include('usuarios.modalNuevo')
     @include('usuarios.modalEditar')
+    @include('usuarios.asignaJefe')
     <script type="text/javascript">
         function ejecutaBusquedasFiltros() {
             $( '#busquedaId'      ).val( $( '#formaId'      ).val() ? $( '#formaId'      ).val() : '0'  );

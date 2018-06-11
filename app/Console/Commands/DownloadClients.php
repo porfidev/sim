@@ -96,7 +96,7 @@ class DownloadClients extends Command
                     $datos = array();
                     $datos[ClienteRepository::SQL_RFC] = $row['LicTradNum'];
 
-                    $this->clienteModel->update( $cliEsp->id, $datos);
+                    $this->clientsModel->update( $cliEsp->id, $datos);
                     
                 }else{
 

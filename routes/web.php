@@ -25,6 +25,9 @@ Route::post('/usuarios/listado',   '\App\Http\Controllers\Base\UsuariosControlle
 Route::post('/usuarios/agregar',   '\App\Http\Controllers\Base\UsuariosController@agregar'  )->name('usuarios.agregar');
 Route::post('/usuarios/consultar', '\App\Http\Controllers\Base\UsuariosController@consultar')->name('usuarios.consultar');
 Route::post('/usuarios/editar',    '\App\Http\Controllers\Base\UsuariosController@editar'   )->name('usuarios.editar');
+Route::get('/usuarios/obtenerNombre', '\App\Http\Controllers\Base\UsuariosController@buscaJefe' )->name('usuarios.nom');
+Route::get('/usuarios/obtenerNombresJefe', '\App\Http\Controllers\Base\UsuariosController@buscaUsuarios' )->name('usuarios.usu');
+Route::post('/usuarios/asignarJefe',    '\App\Http\Controllers\Base\UsuariosController@asignarJefe' )->name('usuarios.asignarJ');
 
 // Productos
 Route::get('/productos/listado',        '\App\Http\Controllers\Base\ProductController@listado'  );
@@ -59,6 +62,7 @@ Route::post('/clientes/listado',   '\App\Http\Controllers\Ventas\ClientesControl
 Route::post('/clientes/agregar',   '\App\Http\Controllers\Ventas\ClientesController@agregar'  )->name('clientes.agregar');
 Route::post('/clientes/editar',    '\App\Http\Controllers\Ventas\ClientesController@editar'   )->name('clientes.editar');
 Route::post('/clientes/eliminar',  '\App\Http\Controllers\Ventas\ClientesController@eliminar' )->name('clientes.eliminar');
+Route::post('/clientes/CSVCli',    '\App\Http\Controllers\Ventas\ClientesController@CSVCli' )->name('clientes.CSV');
 
 // Almacén o surtir
 Route::get('/listadoPedidosJefe', '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');

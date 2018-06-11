@@ -32,6 +32,9 @@
                             <th scope="col" style="min-width: 200px; text-align: center;">
                                 Fecha Final
                             </th>
+                            <th scope="col" style="min-width: 200px; text-align: center;">
+                                Prioridad
+                            </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
                                 Acci&oacute;n
                             </th>
@@ -62,6 +65,7 @@
                             <th>
                                 <input type="date" class="form-control">
                             </th>
+                            <th> &nbsp; </th>
                             <th style="text-align: center;">
                                 <button class="btn btn-sm btn-info"
                                         data-toggle="tooltip"
@@ -102,15 +106,18 @@
                             </td>
                             <td>
                                 {{ $ped->end }}
-                            </td>                            
+                            </td>   
+                            <td>
+                                {{ $ped->priority }}
+                            </td>                          
                             <td style="text-align: center;">
                                 <button class="btn btn-sm btn-success asignarPersonal"
                                         data-id="{{ $ped->idOrd }}"
                                         data-codeOrd="{{ $ped->codeOrder }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Editar">
-                                    <i class="material-icons">mode_edit</i>
+                                        title="Asignar personal">
+                                    <i class="material-icons">person_add</i>
                                 </button>
                             </td>
                         </tr>
@@ -132,6 +139,7 @@
 @section('final')
 
     @include('surtir.modalTrabajadores')
+    @include('surtir.asignaUsuarios')
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();

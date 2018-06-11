@@ -14,6 +14,7 @@ use App\Repositories\UserRepository;
 class UsuariosController extends Controller
 {
 
+
     private $userModel;
     private $rolModel;
 
@@ -33,6 +34,61 @@ class UsuariosController extends Controller
         //$this->middleware('auth');
         $this->userModel = $user;
         $this->rolModel  = $rol;
+    }
+
+    public function buscaJefe(Request $request) {
+        $response = array();
+        $nombre = "";
+        try {
+
+            if($request->has("term")) {
+                $nombre = $request->input("term");
+            }
+
+            Log::info(" UsuariosController - buscaJefe ");
+
+            $listado = $this->userModel->getListBus($nombre);
+
+            $response = $listado->toArray();
+
+            Log::info(" array especial: ".$listado);
+
+           
+        } catch (\Exception $e) {
+            Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
+            $response = array();
+
+        }
+        return response()->json($response, 200);
+    }
+
+    public function buscaUsuarios(Request $request) {
+        $response = array();
+        $nombre = "";
+        try {
+
+            if($request->has("term")) {
+                $nombre = $request->input("term");
+            }
+
+            Log::info(" UsuariosController - buscaUsuarios ");
+
+            //$jefeId = Auth::id();
+            $jefeId = 1;
+
+            $listado = $this->userModel->getListBusUsu($nombre,$jefeId);
+
+            $response = $listado->toArray();
+
+            Log::info(" array especial: ".$listado);
+
+           
+        } catch (\Exception $e) {
+            Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
+            $response = array();
+
+        }
+        return response()->json($response, 200);
     }
 
     /**
@@ -235,6 +291,46 @@ class UsuariosController extends Controller
 
         } catch (\Exception $e) {
             Log::error( 'UsuariosController - editar - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes = array( $e->getMessage() );
+        }
+        return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
+    }
+
+    /**
+     * Función para asignar jefe a un usuario
+     * Se usa en ajax.
+     *
+     * @return json
+     */
+    public function asignarJefe(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info(" UsuariosController - asignarJefe - id: ".$request->get('usrId'));
+            if($request->has('usrId'))
+            {
+                $usuario = $this->userModel->getById( $request->get('usrId') );
+                if( !empty($usuario) )
+                {
+                    
+                        $datos = array();
+                        $datos[UserRepository::SQL_BOSS]   = $request->jefeId;
+
+                        if(!$this->userModel->update( $request->get('usrId'), $datos)) {
+                            $resultado = "ERROR";
+                            $mensajes  = array( "No se pudo actualizar el usuario" );
+                        }
+                    
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se encontraron datos de usuario" );
+                }
+            }
+
+        } catch (\Exception $e) {
+            Log::error( 'UsuariosController - asignarJefe - Error: '.$e->getMessage() );
             $resultado = "ERROR";
             $mensajes = array( $e->getMessage() );
         }

@@ -8,12 +8,14 @@ use App\OrderDetail;
 use App\Order;
 use App\Catalogo;
 use App\Cliente;
+use Datetime;
 
 use App\Repositories\CalculationRepository;
 use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\CatalogoRepository;
 use App\Repositories\ClienteRepository;
+use Illuminate\Support\Facades\Log;
 
 
 class DownloadOrders extends Command
@@ -23,7 +25,7 @@ class DownloadOrders extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'downloadOrders';
 
     /**
      * The console command description.
@@ -43,7 +45,8 @@ class DownloadOrders extends Command
      *
      * @return void
      */
-    public function __construct(Calculation $cal, OrderDetail $ordDet, Order $ord, Catalogo $cata, Cliente $clie)
+    public function __construct(CalculationRepository $cal, OrderDetailRepository $ordDet, OrderRepository $ord,
+                                CatalogoRepository $cata, ClienteRepository $clie)
     {
         parent::__construct();
         $this->calc = $cal;
@@ -74,13 +77,24 @@ class DownloadOrders extends Command
 
             if($con){
 
-                $sql = "select CARDCODE,CARDCODE,U_VIGENCIAINI,U_VIGENCIAFIN,DOCSTATUS,ITEMCODE,QUANTITY,U_CANTREQ,Confirmed from ORDR".
+                $sql = "select DOCNUM,CARDCODE,U_VIGENCIAINI,U_VIGENCIAFIN,DOCSTATUS,ITEMCODE,QUANTITY,U_CANTREQ,Confirmed from ORDR".
                        " left join RDR1 ON ORDR.DocEntry = RDR1.DocEntry where ORDR.DocStatus = 'O' and ORDR.Confirmed = 'Y'";
             $stmt = sqlsrv_query( $con, $sql );
 
-            while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+            /*while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
 
                 Log::info(" pedido:  ".$row['DOCNUM']." , ".$row['CARDCODE']." , ".$row['U_VIGENCIAINI'].
+                          " , ".$row['U_VIGENCIAFIN']." , ".$row['DOCSTATUS']." , ".$row['Confirmed']." , ".$row['ITEMCODE'].
+                          " , ".$row['QUANTITY']." , ".$row['U_CANTREQ']);
+            }*/
+
+            while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+
+                
+
+                if($row['CARDCODE'] == "CLN-0044-0001"){
+
+                    Log::info(" pedido:  ".$row['DOCNUM']." , ".$row['CARDCODE']." , ".$row['U_VIGENCIAINI'].
                           " , ".$row['U_VIGENCIAFIN']." , ".$row['DOCSTATUS']." , ".$row['Confirmed']." , ".$row['ITEMCODE'].
                           " , ".$row['QUANTITY']." , ".$row['U_CANTREQ']);
 
@@ -95,12 +109,7 @@ class DownloadOrders extends Command
                     OrderRepository::SQL_CODIGO   => $row['CARDCODE']
                 );
 
-                $data2 = array(
-                    OrderDetailRepository::SQL_CODIGOP => $row['ITEMCODE'],
-                    OrderDetailRepository::SQL_CANTIDAD => $row['QUANTITY'],
-                    OrderDetailRepository::SQL_CANTIDADP => $row['U_CANTREQ'],
-                    OrderDetailRepository::SQL_ORDEN_ID => $row['DOCNUM']
-                );
+                
 
                 //función para restar fechas, regresa los dias restantes
 
@@ -161,6 +170,8 @@ class DownloadOrders extends Command
 
                 $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
 
+                $fp = date('Y-m-d', $fp);
+
                 $cliente = $this->cli->getByCodigo($row['CARDCODE']);
 
                 //$tamanioPedido = ?;
@@ -170,33 +181,46 @@ class DownloadOrders extends Command
 
                 //dist ??? 
 
-                $priority = (($P + $V + $D) / 2);
+                $dist = 10;
 
-                $data3 = array(
-                    CalculationRepository::SQL_P => $cliente->P,
-                    CalculationRepository::SQL_V => $V,
-                    CalculationRepository::SQL_D => $D,
-                    CalculationRepository::SQL_PRIORITY => $priority,
-                    CalculationRepository::SQL_DIST => 0,
-                    CalculationRepository::SQL_FP => $fp,
-                    CalculationRepository::SQL_ORDID => $row['DOCNUM'],
-                    'codigoOrden' => $row['DOCNUM']
-                );            
+                $priority = floor((($cliente->P + $V + $D) / 2) + $dist);                            
 
                 if($this->order->getByCode($row['DOCNUM']) == null){
 
                     $this->order->create($data1);
+
+                    $idOrderEsp = $this->order->getByCode($row['DOCNUM'])->id;
+
+                    $data3 = array(
+                        CalculationRepository::SQL_P => $cliente->P,
+                        CalculationRepository::SQL_V => $V,
+                        CalculationRepository::SQL_D => $D,
+                        CalculationRepository::SQL_PRIORITY => $priority,
+                        CalculationRepository::SQL_DIST => 12,
+                        CalculationRepository::SQL_FP => $fp,
+                        CalculationRepository::SQL_ORDID => $idOrderEsp
+                    );
+
                     $this->calc->create($data3);
-                }
-
-                $idOrder = $this->order->getByCode($row['DOCNUM']);      
-
-                if($this->detail->getDetExt($row['ITEMCODE'],$row['QUANTITY'],$row['U_CANTREQ'],$idOrder) == null){
-
-                    $this->detail->create($data2);
                     
                 }
+
+                $idOrder = $this->order->getByCode($row['DOCNUM'])->id;
+
+                $data2 = array(
+                    OrderDetailRepository::SQL_CODIGOP => $row['ITEMCODE'],
+                    OrderDetailRepository::SQL_CANTIDAD => $row['QUANTITY'],
+                    OrderDetailRepository::SQL_CANTIDADP => $row['U_CANTREQ'],
+                    OrderDetailRepository::SQL_ORDEN_ID => $idOrder
+                );
+
+                $this->detail->create($data2);
+
             }
+
+        }
+
+
 
 
             }else{

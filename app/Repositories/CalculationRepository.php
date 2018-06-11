@@ -7,7 +7,7 @@ interface CalculationRepository
 	const SQL_P    = "P";	
 	const SQL_V  = "V";
 	const SQL_D  = "D";
-	const SQL_DIST  = "Dist";
+	const SQL_DIST  = "dist_id";
 	const SQL_ORDID  = "order_id";
 	const SQL_FP  = "FP";
 	const SQL_PRIORITY  = "priority";

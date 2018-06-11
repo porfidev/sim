@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderDetail extends Model
 {
     
-    protected $table = 'orders';
+    protected $table = 'order_details';
 
     protected $fillable = [
         'itemcode','quantity', 'quantitypack','idOrder'

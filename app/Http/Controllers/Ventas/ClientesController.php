@@ -5,16 +5,24 @@ namespace App\Http\Controllers\Ventas;
 use Validator;
 use Auth;
 use DB;
+use App\Catalogo;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Session;
+
+use Illuminate\Support\Facades\Input;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\ClienteRepository;
+use App\Repositories\CatalogoRepository;
+
+use Illuminate\Support\Facades\Redirect;
 
 class ClientesController extends Controller{
 
     private $clienteModel;
+    private $cat;
 
     const SESSION_ID        = "scl_id";
     const SESSION_NOMBRE    = "scl_nombre";
@@ -42,10 +50,11 @@ class ClientesController extends Controller{
      *
      * @return void
      */
-    public function __construct(ClienteRepository $cli){
+    public function __construct(ClienteRepository $cli, CatalogoRepository $cata){
 
         //$this->middleware('auth');
         $this->clienteModel = $cli;
+        $this->cat = $cata;
     }
 
     /**
@@ -355,7 +364,7 @@ class ClientesController extends Controller{
                         $datos[ClienteRepository::SQL_CIUDAD]    = $request->ciudad;
                         $datos[ClienteRepository::SQL_DIRECCION] = $request->direccion;
                         $datos[ClienteRepository::SQL_ESTATUS]   = $request->estatus;
-                        $datos[ClienteRepository::SQL_CODE       = $request->code;
+                        $datos[ClienteRepository::SQL_CODE]      = $request->code;
                         $datos[ClienteRepository::SQL_P]         = $request->p;
                         $datos[ClienteRepository::SQL_SHOPS]     = $request->tiendas;
                         $datos[ClienteRepository::SQL_SKU]       = $request->sku;
@@ -424,5 +433,125 @@ class ClientesController extends Controller{
             Controller::JSON_RESPONSE => $resultado,
             Controller::JSON_MESSAGE  => $mensajes
         ));
+    }
+
+    public function CSVCli() {
+        Log::debug("CursosController - CSVHist");
+        try {
+            $file = Input::file('CSVFile3');
+
+            Log::debug(" ClientesController - CSVCli - NombreCSV: ".$file );
+
+            if(empty($file)){
+
+                Session::flash('errores', 'No se selecciono un archivo CSV ');
+                Log::debug(" ClientesController - CSVCli - archivo vacio " );
+                return Redirect::route('clientes.listado');
+            }
+
+            if($file->getMimeType() != "text/plain"){
+
+                Session::flash('errores', 'El archivo seleccionado no es un CSV');
+                Log::debug(" ClientesController - CSVCli - no es texto " );
+                return Redirect::route('clientes.listado');
+            }
+
+            $gestor = fopen($file->getRealPath(), "r");
+            $deliminator = ";";
+            $contador = 0;
+            $contMod = 0;
+            DB::beginTransaction();
+            while (($datos = fgetcsv($gestor, 10000, $deliminator)) !== FALSE) {
+                Log::info("_________________________________________________________________");
+                Log::info("Datos: ".json_encode($datos));
+                $cliente = $this->clienteModel->getByCodigo( $datos[0] );
+
+                if($cliente == null){
+
+                        $c4 = $this->cat->getByLabel('c4');
+                        $c5 = $this->cat->getByLabel('c5');
+                        $c6 = $this->cat->getByLabel('c6');
+
+                        $CE = floor((floatval($datos[9])*floatval($datos[10]))*(floatval($datos[11])*floatval($datos[12])));
+
+                        $TP = floor((floatval($datos[13])/intval($c4))*intval($c5));                        
+
+                        $data = array(
+                            ClienteRepository::SQL_NOMBRE    => $datos[1],
+                            ClienteRepository::SQL_CORREO    => $datos[2],
+                            ClienteRepository::SQL_TELEFONO  => $datos[3],
+                            ClienteRepository::SQL_RFC       => $datos[4],
+                            ClienteRepository::SQL_CP        => $datos[5],
+                            ClienteRepository::SQL_CIUDAD    => $datos[6],
+                            ClienteRepository::SQL_DIRECCION => $datos[7],
+                            ClienteRepository::SQL_CODE      => $datos[0],
+                            ClienteRepository::SQL_P         => $datos[8],
+                            ClienteRepository::SQL_SHOPS     => $datos[9],
+                            ClienteRepository::SQL_SKU       => $datos[10],
+                            ClienteRepository::SQL_PACK      => $datos[11],
+                            ClienteRepository::SQL_D2        => $datos[12],
+                            ClienteRepository::SQL_TE        => $datos[11],
+                            ClienteRepository::SQL_CE        => $CE,
+                            ClienteRepository::SQL_TP        => $TP,
+                            ClienteRepository::SQL_AVERAGE   => $datos[13],
+                            ClienteRepository::SQL_D         => $datos[14],
+                            ClienteRepository::SQL_ESTATUS   => ClienteRepository::ACTIVE
+                        );
+
+                        $this->clienteModel->create($data);
+
+                        $contador++;
+
+                } else {
+                    
+                        $c4 = $this->cat->getByLabel('c4');
+                        $c5 = $this->cat->getByLabel('c5');
+
+                        $CE = floor((floatval($datos[9])*floatval($datos[10]))*(floatval($datos[11])*floatval($datos[12])));
+
+                        $TP = floor((floatval($datos[13])/intval($c4))*floatval($c5));
+
+                        Log::debug(" ClientesController - CSVCli - CE:  ".$CE." TP: ".$TP." Promedio: ".floatval($datos[13]).
+                                    " tiendas: ".floatval($datos[9])." Sku: ".floatval($datos[10])." TE: ".floatval($datos[11]).
+                                    " D2: ".floatval($datos[12])." C4: ".intval($c4)." C5: ".floatval($c5));
+
+                        $datosC = array();
+                        $datosC[ClienteRepository::SQL_NOMBRE]    = $datos[1];
+                        $datosC[ClienteRepository::SQL_CORREO]    = $datos[2];
+                        $datosC[ClienteRepository::SQL_TELEFONO]  = $datos[3];
+                        $datosC[ClienteRepository::SQL_RFC]       = $datos[4];
+                        $datosC[ClienteRepository::SQL_CP]        = $datos[5];
+                        $datosC[ClienteRepository::SQL_CIUDAD]    = $datos[6];
+                        $datosC[ClienteRepository::SQL_DIRECCION] = $datos[7];
+                        $datosC[ClienteRepository::SQL_P]         = $datos[8];
+                        $datosC[ClienteRepository::SQL_SHOPS]     = $datos[9];
+                        $datosC[ClienteRepository::SQL_SKU]       = $datos[10];
+                        $datosC[ClienteRepository::SQL_PACK]      = $datos[11];
+                        $datosC[ClienteRepository::SQL_D2]        = $datos[12];
+                        $datosC[ClienteRepository::SQL_TE]        = $datos[11];
+                        $datosC[ClienteRepository::SQL_CE]        = $CE;
+                        $datosC[ClienteRepository::SQL_TP]        = $TP;
+                        $datosC[ClienteRepository::SQL_AVERAGE]   = $datos[13];
+                        $datosC[ClienteRepository::SQL_D]         = $datos[14];
+
+                        $cliId = $cliente->id;
+                        Log::debug(" ClientesController - CSVCli - objCli:  ".$cliente);
+                        //$cliId = 174;
+
+                        $this->clienteModel->update( $cliId, $datosC);
+
+                        $contMod++;
+                }
+            }
+            DB::commit();
+            Session::flash('exito', 'Se han agregado: '.$contador.' clientes y se modificaron:  '.$contMod);
+            return Redirect::route('clientes.listado');
+
+        } catch (\Exception $e) {
+            Log::error( 'ClientesController - CSVCli - Error: '.$e->getMessage() );
+            DB::rollback();
+            Session::flash('errores', 'ocurrio el siguiente error: '.$e->getMessage());
+            return Redirect::route('clientes.listado');
+        }
     }
 }

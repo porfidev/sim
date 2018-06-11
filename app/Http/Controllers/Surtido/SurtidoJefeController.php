@@ -39,6 +39,10 @@ class SurtidoJefeController extends Controller
 
             $listado = $this->calcModel->getAllOrd();
 
+            Log::info(" listadoPedidos - listado - Listita: ".$listado->get());
+
+            $listado = $listado->paginate(10);
+
             return view('surtir.jefe',
                 array(
 
