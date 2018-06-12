@@ -9,6 +9,7 @@ use App\PurchaseItem;
 
 use App\Repositories\PurchaseItemsRepository;
 use App\Repositories\PurchasesRepository;
+use Illuminate\Support\Facades\Log;
 
 class DownloadPurchaseOrders extends Command
 {
@@ -48,7 +49,7 @@ class DownloadPurchaseOrders extends Command
      */
     public function handle()
     {
-        //El antiguo commit es tambien de mirosrs@gmail.com  
+        //Servicio del bajado de ordenes de pedidos
 
             //---------------------------------------------------------------------------------------
 
@@ -62,46 +63,48 @@ class DownloadPurchaseOrders extends Command
 
             if($con){
 
-                $sql = "select DocNum, CardCode, CardName, DocDueDate, ItemCode, Quantity, CodeBars, U_CANTREQ from OPOR".
-                       " left join POR1 ON OPOR.DocEntry = POR1.DocEntry";
-            $stmt = sqlsrv_query( $con, $sql );
-
-            while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
-
-                Log::info(" purchaseOrder:  ".$row['DocNum']." , ".$row['CardCode']." , ".$row['CardName'].
-                          " , ".$row['DocDueDate']);
+                $sql = "select OPOR.DocEntry, DocNum, CardCode, CardName, DocDueDate, ItemCode, Quantity, CodeBars, U_CANTREQ from OPOR".
+                       "  join POR1 ON OPOR.DocEntry = POR1.DocEntry where OPOR.Confirmed = 'Y' AND  OPOR.CANCELED = 'N' ";
+                $stmt = sqlsrv_query( $con, $sql );
 
 
-                $data1 = array(
-                    PurchasesRepository::SQL_DOCNUM  => $row['DocNum'],
-                    PurchasesRepository::SQL_CARDCODE   => $row['CardCode'],
-                    PurchasesRepository::SQL_CARDNAME   => $row['CardName'],
-                    PurchasesRepository::SQL_DOCDUEDATE   => $row['DocDueDate']
-                );
+                $cuentaRegistros = 0;
+                $cuentaPurchases = 0;
+                $cuentaPurchaseItems = 0;
+                $docEntry = "";
+                while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC ) ) {
+         
+                    if (  $row['DocEntry']  != $docEntry ) {
+                        $data1 = array(
+                            PurchasesRepository::SQL_DOCENTRY  => $row['DocEntry'],
+                            PurchasesRepository::SQL_DOCNUM  => $row['DocNum'],
+                            PurchasesRepository::SQL_CARDCODE   => $row['CardCode'],
+                            PurchasesRepository::SQL_CARDNAME   => $row['CardName'],
+                            PurchasesRepository::SQL_DOCDUEDATE   => $row['DocDueDate']
+                        );
+                       
+                        $creado = $this->pur->create($data1);                        
+                        $docEntry  = $row['DocEntry'];
+                        $cuentaPurchases++;
+                    }
 
-
-                $data2 = array(
-                    PurchaseItemsRepository::SQL_ITEMCODE => $row['ItemCode'],
-                    PurchaseItemsRepository::SQL_QUANTITY => $row['Quantity'],
-                    PurchaseItemsRepository::SQL_CODEBARS => $row['CodeBars'],
-                    PurchaseItemsRepository::SQL_CANTREQ => $row['U_CANTREQ']
-                );
-       
-
-                if($this->pur->getByCode($row['DocNum']) == null){
-
-                    $this->pur->create($data1);
-                }
-
-                $idPur = $this->pur->getByCode($row['DocNum']);      
-
-                if($this->puri->getDetExt($row['purchase_id'],$row['Quantity'],$row['CodeBars'],$row['U_CANTREQ'],$idPur) == null){
+                    $data2 = array(
+                        PurchasesRepository::SQL_DOCENTRY  => $row['DocEntry'],
+                        PurchaseItemsRepository::SQL_ITEMCODE => $row['ItemCode'],
+                        PurchaseItemsRepository::SQL_QUANTITY => $row['Quantity'],
+                        PurchaseItemsRepository::SQL_CODEBARS => $row['CodeBars'],
+                        PurchaseItemsRepository::SQL_CANTREQ => $row['U_CANTREQ'],  
+                        PurchaseItemsRepository::SQL_PURCHASE_ID   => $creado['id']
+                    );
 
                     $this->puri->create($data2);
-                    
+                    $cuentaPurchaseItems++;
+                    if ( $cuentaRegistros++ == 1000 ) break;
+                
                 }
-            }
-
+                echo (" Registros:  " . $cuentaRegistros);
+                echo (" Purchase:  " . $cuentaPurchases);
+                echo (" Purchase Items:  " . $cuentaPurchaseItems);
 
             }else{
 
@@ -110,5 +113,3 @@ class DownloadPurchaseOrders extends Command
             }
     }
 }
-
-

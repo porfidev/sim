@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddDocEntryPurchaseItems extends Migration
+class ChangesPurchaseItems extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,11 @@ class AddDocEntryPurchaseItems extends Migration
     public function up()
     {
         Schema::table('purchase_items', function (Blueprint $table) {
-            $table->string('DocEntry')->after('id');
+            $table->dropColumn('id');
+            $table->string('product_id')->nullable()->change();
+            $table->string('DistNumber', 36)->nullable()->change();
+            $table->string('u_Caducidad')->nullable()->change();
+            $table->string('u_CANTREQ')->nullable()->change();
         });
     }
 

@@ -12,7 +12,7 @@ class PurchaseItem extends Model
 
 
     protected $fillable = [
-        'purchase_id', 'ItemCode','product_id','quantity','CodeBars','u_CantReq','DistNumber','u_Caducidad'
+        'DocEntry','purchase_id', 'ItemCode','product_id','quantity','CodeBars','u_CantReq','DistNumber','u_Caducidad'
     ];
 
 

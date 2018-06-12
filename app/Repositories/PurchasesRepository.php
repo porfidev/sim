@@ -5,7 +5,7 @@ namespace App\Repositories;
 interface PurchasesRepository
 {
 	const SQL_ID    = "id";
-	const DOCENTRY = "DocEntry";
+	const SQL_DOCENTRY = "DocEntry";
     const SQL_DOCNUM  = "DocNum";
     const SQL_CARDCODE  = "CardCode";
 	const SQL_CARDNAME  = "CardName";

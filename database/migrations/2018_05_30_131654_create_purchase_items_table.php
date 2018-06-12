@@ -18,10 +18,10 @@ class CreatePurchaseItemsTable extends Migration
             $table->integer('purchase_id')->unsigned();
             $table->foreign('purchase_id')->references('id')->on('purchases');
             $table->string('ItemCode', 50)->nullable();
-            $table->integer('product_id')->unsigned();
+            $table->integer('product_id')->unsigned()->nullable();
             $table->float('quantity', 19, 6)->default(0);
             $table->string('CodeBars', 254)->nullable();
-            $table->float('u_CantReq', 19, 6)->default(0);
+            $table->float('u_CantReq', 19, 6)->default(0)->nullable();
             $table->string('DistNumber', 36)->nullable();
             $table->timestamp('u_Caducidad')->nullable();
             $table->timestamps();
