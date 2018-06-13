@@ -494,7 +494,7 @@ class ProductController extends Controller
                 if( $product != null ) {
 
                     Log::debug(" ProductController - addDet: ".json_encode($product) );
-                    DB::beginTransaction();
+                    
 
                     $codigo = $request->get('cod');
                     $cantU = intval($request->get('cantU'));
@@ -520,6 +520,8 @@ class ProductController extends Controller
                     if($cantidadTot <= $cantT){
 
                         Log::error("ProductController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
+
+                        $datos = array();
 
                         $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
 
