@@ -7,35 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Validator;
 use Illuminate\Support\Facades\Log;
-use App\Repositories\PurchasesRepository;
-use App\Repositories\PurchaseItemsRepository;
+
+
+use App\Purchase;
+use App\PurchaseItem;
 
 class RecepcionController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-
-
-    private $purchasesModel;
-    private $purchaseItemsModel;
-
-    const SESSION_ID     = "su_id";
-    const SESSION_NAME   = "su_proveedor";
-    const SESSION_EMAIL  = "su_estatus";
-    const SESSION_ROL    = "su_date";
-    const SESSION_STATUS = "su_duedate";
-    const SESSION_CODIGO = "su_codigo";
-
-
-    public function __construct(PurchasesRepository $pur, PurchaseItemsRepository $puri)
-    {
-        $this->middleware('auth');
-        $this->purchasesModel = $pur;
-        $this->purchaseItemsModel  = $puri;
-    }
 
     /**
      * Listado de ordenes de compra por llegar
@@ -44,16 +22,16 @@ class RecepcionController extends Controller
      */
     public function listado()
     {
-        return view('recepcion.listado');
+        $data = Purchase::all();
+
+        return view('recepcion.listado',['data' => $data] );
     }
 
-    /**
-     * Validación de la recepción de mercancía
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function validacion()
+    public function listadoItems($purchase_id)
     {
-        return view('recepcion.validacion');
+        $data = PurchaseItem::where('purchase_id','=',$purchase_id)->get();
+
+        return view('recepcion.listadoItems',['data' => $data] );
     }
+
 }

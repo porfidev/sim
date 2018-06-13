@@ -41,25 +41,25 @@
                     <thead>
                         <tr>
                             <th scope="col" style="text-align: center;">
-                                DocNum
+                                DocEntry
                             </th>
                             <th scope="col" style="min-width: 250px;">
-                                Proveedor
+                                LineNum
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Estatus
+                                ItemCode
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                F. Recepci&oacute;n
+                                Quantity
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Due Date
+                                Lote
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Codigo
+                                Pedimiento
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
-                                Acci&oacute;n
+                                Caducidad
                             </th>
                           </tr>
                         <tr class="table-dark">
@@ -76,24 +76,25 @@
                                 <input type="text"
                                         class="form-control inputFiltro"
                                         id="formProveedor"
-                                        placeholder="Proveedor"
+                                        placeholder="LineNum"
                                     @if ( Session::has('scl_proveedor') && Session::get('scl_proveedor') != 'NA' )
                                         value="{{ Session::get('scl_proveedor') }}"
                                     @endif>
                             </th>
                             <th>
-                                <select class="form-control">
-                                    <option> --- Todos --- </option>
-                                    <option>En espera</option>
-                                    <option>En proceso</option>
-                                    <option>Recibido</option>
-                                </select>
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formDate"
+                                        placeholder="ItemCode"
+                                    @if ( Session::has('scl_date') && Session::get('scl_date') != 'NA' )
+                                        value="{{ Session::get('scl_date') }}"
+                                    @endif>
                             </th>
                             <th>
                                 <input type="text"
                                         class="form-control inputFiltro"
                                         id="formDate"
-                                        placeholder="Fecha de recepcion"
+                                        placeholder="Quantity"
                                     @if ( Session::has('scl_date') && Session::get('scl_date') != 'NA' )
                                         value="{{ Session::get('scl_date') }}"
                                     @endif>
@@ -102,7 +103,7 @@
                                 <input type="text"
                                         class="form-control inputFiltro"
                                         id="formDueDate"
-                                        placeholder="Due Date"
+                                        placeholder="Lote"
                                     @if ( Session::has('scl_DueDate') && Session::get('scl_DueDate') != 'NA' )
                                         value="{{ Session::get('scl_DueDate') }}"
                                     @endif>
@@ -111,25 +112,19 @@
                                 <input type="text"
                                         class="form-control inputFiltro"
                                         id="formCodigo"
-                                        placeholder="Codigo"
+                                        placeholder="Pedimento"
                                     @if ( Session::has('scl_codigo') && Session::get('scl_codigo') != 'NA' )
                                         value="{{ Session::get('scl_codigo') }}"
                                     @endif>
                             </th>
                             <th style="text-align: center;">
-                                <button class="btn btn-sm btn-info"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Buscar">
-                                    <i class="material-icons">search</i>
-                                </button>
-
-                                <button class="btn btn-sm btn-warning"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Limpiar filtros">
-                                    <i class="material-icons">settings_backup_restore</i>
-                                </button>
+                                    <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formCaducidad"
+                                        placeholder="Caducidad"
+                                    @if ( Session::has('scl_caducidad') && Session::get('scl_caducidad') != 'NA' )
+                                        value="{{ Session::get('scl_caducidad') }}"
+                                    @endif>
                             </th>
                         </tr>
                     </thead>
@@ -138,31 +133,28 @@
                        
                        @foreach ($data as $item)
                             <td style="text-align: center;">
-                                 {{ $item->DocNum }}
+                                 {{ $item->DocEntry }}
                             </td>
                             <td>
-                                {{ $item->CardName }}
+                                {{ $item->LineNum}}
                             </td>
                             <td style="text-align: center;">
-                                 {{ $item->status}}
+                                 {{ $item->ItemCode}}
                             </td>
                             <td style="text-align: center;">
-                                {{ $item->Arrival }}
+                                {{ $item->quantity}}
                             </td>
                             <td style="text-align: center;">
-                                 {{ $item->DocDueDate }}
+                                 {{ $item->Lote }}
                             </td>
                             <td style="text-align: center;">
-                                 {{ $item->CardCode }}
+                                 {{ $item->Pedimento }}
                             </td>
                             <td style="text-align: center;">
-                                <button class="btn btn-sm btn-success irADetalle"
-                                            data-id="{{ $item->id }}"                                        
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Ver detalle">
-                                        <i class="material-icons">assignment_ind</i>
-                                </button>  
+                                 {{ $item->Caducidad }}
+                            </td>
+                            <td style="text-align: center;">
+                        
                             </td>
                         </tr>
                         @endforeach

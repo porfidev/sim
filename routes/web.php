@@ -70,6 +70,8 @@ Route::get('/listadoTareas',      '\App\Http\Controllers\Surtido\SurtidoTrabajad
 
 // Recepción de mercancía
 Route::get('/ordenes/listado',    '\App\Http\Controllers\Recepcion\RecepcionController@listado'    )->name('ordenes.listado');
+Route::get('/ordenes/listadoItems/{purchase}',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoItems'    )->name('ordenes.listadoItems');
+
 Route::get('/ordenes/validacion', '\App\Http\Controllers\Recepcion\RecepcionController@validacion' )->name('ordenes.validacion');
 
 // Preparación de pedido o embalaje
