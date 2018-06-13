@@ -5,7 +5,7 @@ namespace App\Repositories;
 interface PurchasesRepository
 {
 	const SQL_ID    = "id";
-	const DOCENTRY = "DocEntry";
+	const SQL_DOCENTRY = "DocEntry";
     const SQL_DOCNUM  = "DocNum";
     const SQL_CARDCODE  = "CardCode";
 	const SQL_CARDNAME  = "CardName";
@@ -15,6 +15,8 @@ interface PurchasesRepository
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
+
+	function getList($itemsPerPage, array $search = null);
 
 	function getAll();
 

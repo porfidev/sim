@@ -23,6 +23,47 @@ class EloquentPurchases implements PurchasesRepository
 		$this->model = $model;
     }
 
+	public function getList($itemsPerPage, array $search = null)
+	{
+		$list = $this->model->orderBy('id', 'desc');
+		if(!empty($search)) {
+			if(array_key_exists(self::SQL_ID, $search)
+				&& !empty($search[self::SQL_ID]) ) {
+				$list->where(self::SQL_ID, "like", "%".$search[self::SQL_ID]."%");
+			}
+			if(array_key_exists(self::SQL_DOCENTRY, $search)
+				&& $search[self::SQL_DOCENTRY] != "NA") {
+				$list->where(self::SQL_DOCENTRY, "like", "%".$search[self::SQL_DOCENTRY]."%");
+			}
+			if(array_key_exists(self::SQL_DOCNUM, $search)
+				&& $search[self::SQL_DOCNUM] != "NA") {
+				$list->where(self::SQL_DOCNUM, "like", "%".$search[self::SQL_DOCNUM]."%");
+			}
+			if(array_key_exists(self::SQL_CARDCODE, $search)
+				&& $search[self::SQL_CARDCODE] != "NA") {
+				$list->where(self::SQL_CARDCODE, "like", "%".$search[self::SQL_CARDCODE]."%");
+			}
+			if(array_key_exists(self::SQL_CARDNAME, $search)
+				&& $search[self::SQL_CARDNAME] != "NA") {
+				$list->where(self::SQL_CARDNAME, "like", "%".$search[self::SQL_CARDNAME]."%");
+			}
+			if(array_key_exists(self::SQL_DOCDUEDATE, $search)
+				&& $search[self::DocDueDate] != "NA") {
+				$list->where(self::DocDueDate, "like", "%".$search[self::DocDueDate]."%");
+			}
+			if(array_key_exists(self::SQL_ARRIVAL, $search)
+				&& $search[self::arrival] != "NA") {
+				$list->where(self::arrival, "like", "%".$search[self::arrival]."%");
+			}
+			if(array_key_exists(self::SQL_STATUS, $search)
+				&& $search[self::status] != "NA") {
+				$list->where(self::status, "like", "%".$search[self::status]."%");
+			}
+		}
+		Log::debug("EloquentPurchases - getList - SQL: ".$list->toSql());
+		return $list->paginate($itemsPerPage);
+	}
+
     /**
 	 * Get all Catalogos.
 	 *

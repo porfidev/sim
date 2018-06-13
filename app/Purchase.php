@@ -11,7 +11,7 @@ class Purchase extends Model
 
 
     protected $fillable = [
-        'DocNum','CardCode','CardName','DocDueDate','arrival','status'
+        'DocEntry','DocNum','CardCode','CardName','DocDueDate','arrival','status'
     ];
     
     

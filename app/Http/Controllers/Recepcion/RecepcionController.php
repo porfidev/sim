@@ -5,18 +5,15 @@ namespace App\Http\Controllers\Recepcion;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
+use Validator;
+use Illuminate\Support\Facades\Log;
+
+
+use App\Purchase;
+use App\PurchaseItem;
 
 class RecepcionController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Listado de ordenes de compra por llegar
@@ -25,16 +22,16 @@ class RecepcionController extends Controller
      */
     public function listado()
     {
-        return view('recepcion.listado');
+        $data = Purchase::all();
+
+        return view('recepcion.listado',['data' => $data] );
     }
 
-    /**
-     * Validación de la recepción de mercancía
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function validacion()
+    public function listadoItems($purchase_id)
     {
-        return view('recepcion.validacion');
+        $data = PurchaseItem::where('purchase_id','=',$purchase_id)->get();
+
+        return view('recepcion.listadoItems',['data' => $data] );
     }
+
 }

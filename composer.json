@@ -9,12 +9,16 @@
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
+<<<<<<< HEAD
+=======
+        "doctrine/dbal": "~2.5",
+>>>>>>> 6a1b142d4f047d92e141467fdb76811adf2ae9a4
         "laravelcollective/html": "~5.5"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
-        "mockery/mockery": "~1.0",
+        "mockery/mockery": "~1.0",  
         "phpunit/phpunit": "~6.0",
         "symfony/thanks": "^1.0"
     },
