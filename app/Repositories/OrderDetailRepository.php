@@ -9,6 +9,8 @@ interface OrderDetailRepository
 	const SQL_CANTIDAD  = "quantity";
 	const SQL_CANTIDADP  = "quantitypack";
 	const SQL_ORDEN_ID  = "idOrder";
+	const SQL_CANTIDAD_U  = "quantity_user";
+	const SQL_CANTIDAD_B  = "quantity_boss";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
@@ -16,6 +18,8 @@ interface OrderDetailRepository
 	function getAll();
 
 	function getById($id);
+
+	function getByIdOrd($id);
 
 	function getDetExt($it,$qua,$pack,$idOrd);
 

@@ -66,6 +66,11 @@ class EloquentProduct implements ProductRepository
 		return $this->model->find($id);
 	}
 
+	public function getBySku($sku)
+	{
+		return $this->model->where("sku","=",$sku)->get()->first();
+	}
+
     /**
 	 * Create a Product.
 	 *

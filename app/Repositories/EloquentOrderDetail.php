@@ -35,6 +35,7 @@ class EloquentOrderDetail implements OrderDetailRepository
         return $list->paginate(10);
     }
 
+
     /**
 	 * Get Catalogo by id.
 	 *
@@ -45,6 +46,11 @@ class EloquentOrderDetail implements OrderDetailRepository
 	public function getById($id)
 	{
 		return $this->model->find($id);
+    }
+
+    public function getByIdOrd($id)
+	{
+		return $this->model->where("idOrder","=",$id)->get();
     }
 
     public function getDetExt($it,$qua,$pack,$idOrd){

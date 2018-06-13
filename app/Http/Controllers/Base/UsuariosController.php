@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Base;
 
 use Validator;
+use DB;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -11,12 +12,15 @@ use App\Http\Controllers\Controller;
 use App\Repositories\RolRepository;
 use App\Repositories\UserRepository;
 
+use App\Repositories\AssignmentRepository;
+
 class UsuariosController extends Controller
 {
 
 
     private $userModel;
     private $rolModel;
+    private $assiModel;
 
     const SESSION_ID     = "su_id";
     const SESSION_NAME   = "su_nombre";
@@ -29,11 +33,12 @@ class UsuariosController extends Controller
      *
      * @return void
      */
-    public function __construct(UserRepository $user, RolRepository $rol)
+    public function __construct(UserRepository $user, RolRepository $rol, AssignmentRepository $as)
     {
         //$this->middleware('auth');
         $this->userModel = $user;
         $this->rolModel  = $rol;
+        $this->assiModel = $as;
     }
 
     public function buscaJefe(Request $request) {
@@ -91,6 +96,33 @@ class UsuariosController extends Controller
         return response()->json($response, 200);
     }
 
+    public function listaAsig(Request $request) {
+        $response = array();
+        $ordId = "";
+        try {
+
+            if($request->has("ord")) {
+                $ordId = $request->input("ord");
+            }
+
+            Log::info(" UsuariosController - listaAsig ");
+
+            $listado = $this->assiModel->getListAsi($ordId);
+
+            $response = $listado->toArray();
+
+            Log::info(" array especial: ".$listado);
+
+           
+        } catch (\Exception $e) {
+            Log::error( 'UsuariosController - listaAsig - Error: '.$e->getMessage() );
+            $response = array();
+
+        }
+        return response()->json($response, 200);
+    }
+
+
     /**
      * Show the user list.
      *
@@ -142,8 +174,9 @@ class UsuariosController extends Controller
                     && $request->session()->get(self::SESSION_STATUS) != '-1' ) {
                 $search[UserRepository::SQL_STATUS] = $request->session()->get(self::SESSION_STATUS);
             }
-            Log::info(" UsuariosController - listado - search: ".json_encode($search));
+            //Log::info(" UsuariosController - listado - search: ".json_encode($search));
             $listado = $this->userModel->getList(15, $search);
+            
             return view('usuarios.listado',
                 array(
                     "listado" => $listado,
@@ -335,5 +368,82 @@ class UsuariosController extends Controller
             $mensajes = array( $e->getMessage() );
         }
         return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
+    }
+
+    public function asignarUsuario(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info(" UsuariosController - asignarUsuario - idUsuario: ".
+                $request->get('userId')." idOrder: ".$request->get('orderId'));
+            if($request->has('userId') && $request->has('orderId'))
+            {
+                $assignment = $this->assiModel->search( $request->orderId, $request->userId );
+
+                if( empty($assignment) ){                    
+
+                        $data = array(
+                            AssignmentRepository::SQL_ORDID  => $request->orderId,
+                            AssignmentRepository::SQL_USRID => $request->userId
+                        );
+
+                Log::info(" UsuariosController - asignarUsuario - data: ".json_encode($data));
+                $this->assiModel->create($data);
+                    
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "Ese usuario ya esta asignado" );
+                }
+            }
+
+        } catch (\Exception $e) {
+            Log::error( 'UsuariosController - asignarUsuario - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes = array( $e->getMessage() );
+        }
+        return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
+    }
+
+  
+
+    public function desasignarUsuario(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info(" UsuariosController - eliminar ");
+            if( $request->has('id') ) {
+                Log::info(" UsuariosController - eliminar: ".$request->get('id') );
+                $catItem = $this->assiModel->getById( $request->get('id') );
+                if( !empty($catItem) ) {
+                    Log::debug(" UsuariosController - eliminar: ".json_encode($catItem) );
+                    DB::beginTransaction();
+                    $result = $this->assiModel->delete( $request->get('id') );
+                    Log::debug(" UsuariosController - eliminar - result: ".json_encode($result) );
+                    if(!$result) {
+                        $resultado = "ERROR";
+                        $mensajes  = array( "No se pudo elimnar el elemento" );
+                        DB::rollBack();
+                    } else {
+                        DB::commit();
+                    }
+                } else {
+                    Log::error("UsuariosController - eliminar: El objeto catItem esta vacío");
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se encontraron datos del elemento" );
+                }
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "No se encontraron datos del elemento" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'CatalogosController - eliminar - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 }

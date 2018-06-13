@@ -4,6 +4,36 @@
     <br>
     <h2 class="mt-2">Listado de Productos</h2>
     <br>
+
+     @if(Session::has('exito'))
+    <div class="alert alert-success alert-dismissible fade show mt-3 mb-2"
+        role="alert">
+        <button type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{{ Session::get('exito') }}}
+    </div>
+    @endif
+    <input id="rolcin" type="hidden" value="{{ Session::get('rol') }}">
+
+    <span id="mensajeHist"></span>
+
+    @if(Session::has('errores'))
+    <div class="alert alert-danger alert-dismissible fade show mt-3 mb-2"
+        role="alert">
+        <button type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ Session::get('errores') }}
+    </div>
+    @endif
+    
     <div id="erroresLitadoProductos"></div>
     <div class="card">
         <div class="card-body">
@@ -33,6 +63,14 @@
                                     data-placement="top"
                                     title="Agregar Producto">
                                     <i class="material-icons">add</i>
+                                </button>
+                                <button
+                                    class="btn btn-primary btn-sm"
+                                    id="btnCSV"
+                                    data-tooltip="tooltip"
+                                    data-placement="top"
+                                    title="Cargar CSV">
+                                    <i class="material-icons">file_upload</i>
                                 </button>
                             </th>
                         </tr>
@@ -133,6 +171,69 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade"
+    id="CSVModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="listaModalTitle"
+    aria-hidden="true">
+
+    {{
+        Form::open(
+            array(
+                'url'    => 'productos/CSVPro',
+                'id'     => 'CsvForm',
+                'method' => 'POST',
+                'enctype'=> 'multipart/form-data'
+            )
+        )
+    }}
+    <!-- MODAL PARA CSV -->
+    <div class="modal-dialog modal-dialog-centered modal-lg"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="listaModalTitle">
+                        Archivo CSV
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="custom-file">
+                        <input type="file"
+                            name="CSVFile3"
+                            id="CSVFile3"
+                            class="custom-file-input">
+                        <label class="custom-file-label"
+                                id="labelCSV"
+                                for="CSVFile3">
+                            Selecciona un archivo CSV
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button 
+                    type="submit" 
+                    class="btn btn-primary">
+                    Guardar
+                </button>
+                <button type="button"
+                    id="btnCerrar"
+                    class="btn btn-secondary"
+                    data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{ Form::close() }}
+
+</div>
+
     <form id="searchForm"
         method="POST"
         action="{{ route('productos.listado') }}">
@@ -186,6 +287,20 @@
                     parametros
                 );
             });
+
+            $("#btnCSV").click(function () {
+            $( "#labelCSV" ).text('Seleccina un archivo CSV');
+            $( "#CSVModal" ).modal({
+                keyboard : false,
+                backdrop : 'static'
+            });
+
+            });
+
+            $( "#CSVFile3" ).change(function () {
+                $( "#labelCSV" ).text($( "#CSVFile3" ).val().replace(/C:\\fakepath\\/i, ''));
+            });
+
         });
     </script>
 @endsection

@@ -28,6 +28,13 @@ Route::post('/usuarios/editar',    '\App\Http\Controllers\Base\UsuariosControlle
 Route::get('/usuarios/obtenerNombre', '\App\Http\Controllers\Base\UsuariosController@buscaJefe' )->name('usuarios.nom');
 Route::get('/usuarios/obtenerNombresJefe', '\App\Http\Controllers\Base\UsuariosController@buscaUsuarios' )->name('usuarios.usu');
 Route::post('/usuarios/asignarJefe',    '\App\Http\Controllers\Base\UsuariosController@asignarJefe' )->name('usuarios.asignarJ');
+Route::post('/usuarios/asignarUsuario',    '\App\Http\Controllers\Base\UsuariosController@asignarUsuario' )->name('usuarios.asignarU');
+Route::post('/usuarios/listaAsig',    '\App\Http\Controllers\Base\UsuariosController@listaAsig' )->name('usuarios.listaAsig');
+Route::post('/usuarios/desasignarUsuario',  '\App\Http\Controllers\Base\UsuariosController@desasignarUsuario' )->name('usuarios.desasignar');
+
+// Pedidos
+
+Route::post('/pedidos/listaAsig',    '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@listaAsig' )->name('pedidos.listaAsig');
 
 // Productos
 Route::get('/productos/listado',        '\App\Http\Controllers\Base\ProductController@listado'  );
@@ -36,6 +43,8 @@ Route::post('/productos/agregar',       '\App\Http\Controllers\Base\ProductContr
 Route::post('/productos/consultar',     '\App\Http\Controllers\Base\ProductController@consultar')->name('productos.consultar');
 Route::post('/productos/editar',        '\App\Http\Controllers\Base\ProductController@editar'   )->name('productos.editar');
 Route::post('/productos/eliminar',      '\App\Http\Controllers\Base\ProductController@eliminar' )->name('productos.eliminar');
+Route::post('/productos/CSVPro',    '\App\Http\Controllers\Base\ProductController@CSVPro' )->name('productos.CSV');
+Route::post('/productos/addDet',    '\App\Http\Controllers\Base\ProductController@addDet' )->name('productos.addDet');
 
 // Administración de menu
 Route::get('/menu/listado',            '\App\Http\Controllers\Base\MenuController@listado'          );

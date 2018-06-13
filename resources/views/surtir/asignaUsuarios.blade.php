@@ -21,7 +21,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="erroresValidacionAsignar"></div>
+                <div id="erroresValidacionAsignarEsp"></div>
 
                 <div id="loading_modal_edit_userEsp">
                     <img src="{{ url('img/spinner_3.gif') }}"
@@ -35,14 +35,15 @@
                 
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Jefe</label>
+                        <label>Trabajador</label>
                         <input type="text"
                             id="usuarioAutocompleteEsp"
                             name="jefe"
                             class="form-control"
-                            placeholder="Escribe el nombre del jefe"
+                            placeholder="Escribe el nombre del usuario a asignar"
                             value="">
                         <input type="hidden" name="userId" id="idUsr"/>
+                        <input type="hidden" name="orderId" id="idOrd"/>
                     </div>
                 </form> 
             </div>
@@ -66,13 +67,16 @@
 <!-- Script de Modal para Usuario Editar -->
 <script type="text/javascript">
     var update = 0;
-    var idUsr = 0;
+    var idUsr;
     var idJefe;
     $(document).ready(function () {     
 
 
         $( '.asignarPersonal' ).click(function () {
+
             $( '#loading_modal_edit_userEsp' ).hide();
+
+            $( "#idOrd" ).val($(this).attr( "data-id" ));
             
             update = 0;
             $( "#modalAsignarUsuarios" ).modal({
@@ -82,7 +86,7 @@
 
         });
 
-        console.log("Listita: "+"{{ URL::to('usuarios/obtenerNombresJefe') }}");   
+        console.log("Listita: "+"{{ URL::to('usuarios/obtenerNombresJefe') }}");
 
         
         $( "#usuarioAutocompleteEsp" ).autocomplete({
@@ -106,31 +110,40 @@
         $( '#btnAsignar' ).click(function () {
             $( '#loading_modal_edit_userEsp' ).show();
             $( '#formGuardarAsignarPed' ).hide();
-            if( idJefe == null ) {
-                erroresValidacion("erroresValidacionAsignar", "No se ha seleccionado ningun usuario");
+            if( idUsr == null ) {
+                erroresValidacion("erroresValidacionAsignarEsp", "No se ha seleccionado ningun usuario");
                 $( '#loading_modal_edit_userEsp' ).hide();
                 $( '#formGuardarAsignarPed' ).show();
                 return;
             }
             $.ajax({
-                url    : "{{ route('usuarios.asignarJ') }}",
+                url    : "{{ route('usuarios.asignarU') }}",
                 method : "POST",
                 data: $( "#formGuardarAsignarPed" ).serialize()
             }).done(function( data ) {
                 if(data.resultado === 'OK') {
                     update = 1;
-                    mensajeExito("erroresValidacionAsignar", "Se han guardado los cambios.");
+                    mensajeExito("erroresValidacionAsignarEsp", "Se han guardado los cambios.");
+                    idUsr = null;
+                    $( "#usuarioAutocompleteEsp" ).val("");
                 } else {
                     var errorMsg = "<p>Error al actualizar el usuario.<p><ul>";
                     $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
                     errorMsg += "</ul>";
-                    erroresValidacion("erroresValidacionAsignar", errorMsg);
+                    erroresValidacion("erroresValidacionAsignarEsp", errorMsg);
+
+                    idUsr = null;
+                    $( "#usuarioAutocompleteEsp" ).val("");
                 }
             }).fail(function (jqXHR, textStatus) {
                 errorDetalle = "";
                 // If req debug show errorDetalle
                 $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
-                erroresValidacion( "erroresValidacionAsignar", "Error al asignar el usuario." );
+                erroresValidacion( "erroresValidacionAsignarEsp", "Error al asignar el usuario." );
+
+                idUsr = null;
+                $( "#idUsr" ).val("");
+                
             }).always(function() {
 
                 $( '#loading_modal_edit_userEsp' ).hide();

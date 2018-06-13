@@ -179,7 +179,7 @@ class DownloadOrders extends Command
                 $D = floor(($cliente->CE * $cliente->TP) / $c6);
 
 
-                //dist ??? 
+                //dist ???
 
                 $dist = 10;
 

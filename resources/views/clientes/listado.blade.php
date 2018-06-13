@@ -620,8 +620,8 @@
             });
 
             $( "#CSVFile3" ).change(function () {
-            $( "#labelCSV" ).text($( "#CSVFile3" ).val().replace(/C:\\fakepath\\/i, ''));
-        });
+                $( "#labelCSV" ).text($( "#CSVFile3" ).val().replace(/C:\\fakepath\\/i, ''));
+            });
         });
 
         });

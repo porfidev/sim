@@ -18,24 +18,15 @@
                             </th>
                             <th scope="col" style="min-width: 250px;">
                                 Cliente
-                            </th>
-                            <th scope="col" style="min-width: 270px;">
-                                Encargados
-                            </th>
-                            <th scope="col" style="min-width: 150px; text-align: center;">
-                                Estatus
-                            </th>
+                            </th>                            
                             <th scope="col" style="min-width: 200px; text-align: center;">
                                 Fecha Programada
-                            </th>
-                            <th scope="col" style="min-width: 200px; text-align: center;">
-                                Fecha Inicio
-                            </th>
-                            <th scope="col" style="min-width: 200px; text-align: center;">
-                                Fecha Final
-                            </th>
+                            </th>                            
                             <th scope="col" style="min-width: 200px; text-align: center;">
                                 Prioridad
+                            </th>
+                            <th scope="col" style="min-width: 200px; text-align: center;">
+                                Productos
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
                                 Acci&oacute;n
@@ -47,26 +38,11 @@
                             </th>
                             <th>
                                 <input type="text" class="form-control" value="Cliente">
+                            </th>                            
+                            <th>
+                                <input type="date" class="form-control">
                             </th>
                             <th> &nbsp; </th>
-                            <th>
-                                <select class="form-control">
-                                    <option> --- Todos --- </option>
-                                    <option>En espera</option>
-                                    <option>En proceso</option>
-                                    <option>Por validar</option>
-                                    <option>Surtido</option>
-                                </select>
-                            </th>
-                            <th>
-                                <input type="date" class="form-control">
-                            </th>
-                            <th>
-                                <input type="date" class="form-control">
-                            </th>
-                            <th>
-                                <input type="date" class="form-control">
-                            </th>
                             <th> &nbsp; </th>
                             <th style="text-align: center;">
                                 <button class="btn btn-sm btn-info"
@@ -95,34 +71,17 @@
                                 {{ $ped->name }}
                             </td>
                             <td>
-                                <span class="assiU" data-status="{{ $ped->ordStatus }}" 
-                                    data-id="{{ $ped->idOrd }}" id="assi{{ $ped->idOrd }}">-</span>
-                            </td>
-                            <td>
-                                {{ $ped->ordStatus }}
-                            </td>
-                            <td>
                                 {{ $ped->FP }}
+                            </td>                             
+                            <td>
+                                {{ $ped->prio }}
                             </td>
                             <td>
-                                {{ $ped->start }}
+                                <span class="proAssi"
+                                    data-id="{{ $ped->id }}" id="prod{{ $ped->id }}">-</span>
                             </td>
-                            <td>
-                                {{ $ped->end }}
-                            </td>   
-                            <td>
-                                {{ $ped->priority }}
-                            </td>                          
-                            <td style="text-align: center;">
-                                <button class="btn btn-sm btn-success asignarPersonal"
-                                        data-id="{{ $ped->idOrd }}"                                        
-                                        data-codeOrd="{{ $ped->codeOrder }}"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Asignar personal">
-                                    <i class="material-icons">person_add</i>
-                                </button>
-                            </td>
+                            <td> &nbsp; </td>                     
+                            
                         </tr>
             @endforeach
             @if (count($listado) === 0)
@@ -141,29 +100,22 @@
 
 @section('final')
 
-    @include('surtir.modalTrabajadores')
     @include('partials.modalComun')
     @include('partials.modalMensaje')
-    @include('surtir.asignaUsuarios')
     @include('partials.modalConfirmacion')
 
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
 
-
-            
-
-            $(".assiU").each(function(){
+            $(".proAssi").each(function(){
 
                 var idOrd = $(this).attr( "data-id" );
-
-                var status = $(this).attr( "data-status" );
 
                 console.log(status);
 
                 $.ajax({
-                    url     : "{{ URL::to('usuarios/listaAsig') }}",
+                    url     : "{{ URL::to('pedidos/listaAsig') }}",
                     method  : "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -175,47 +127,83 @@
 
                     //console.log(data);
 
-                    var tt = "";
+                    var tt = "<table><tr><th>SKU</th><th>cantidad</th><th>codigo</th></tr>";
+
+                    
                     data.forEach(function(element) {
+
+                        var cantUsr = (((element.quantity_user) == null)?0:element.quantity_user);
+                        
 
                         console.log(element);
 
-                        tt += element.name;
-                              if(status == 1){
+                        tt += "<tr><td>"+element.itemcode+"</td>"+
+                              "<td><span id='canti"+element.id+"'>"+cantUsr+
+                              "</span> / "+element.quantity+"<input type='hidden' value='"+cantUsr+"' id='cantiU"+element.id+"'></td>";
 
-
-                                tt += ' <button class="btn btn-sm btn-danger borrarAsignado"'+
-                                        'onclick="desasigna('+element.id+')"'+
-                                        'data-toggle="tooltip"'+
-                                        'data-placement="top"'+
-                                        'title="Eliminar">'+
-                                    '<i class="material-icons">delete</i>'+
-                                '</button>';
-                              }
-                        tt += "<br><br>";
-
+                        tt += '<td><input class="codigines" '+
+                              'onkeypress="return runScript(event,'+element.id+','+element.quantity+','+cantUsr+',\''+element.itemcode+'\')"'+
+                              ' id="cod'+element.id+'"></td></tr>';
+                    
+                    
                     });
 
-                    $("#assi"+idOrd).html(tt);
-                    
+                    tt += "</table>";
+
+                    $("#prod"+idOrd).html(tt);
+
+
                 });
 
             });
-        });
 
-        function desasigna(idO) {
+        });  
 
-            console.log("idAssi: "+idO);
 
-                    var parametros = [];
-                    parametros["id"] = idO;
-                     abrirConfirmacion(
-                        "Confirmaci&oacute;n",
-                        "¿Estás seguro de desasignar este usuario?",
-                        "{{ route('usuarios.desasignar') }}",
-                        parametros
-                    );
-                }
+        function runScript(e,id,cantidad,cantUsu,skus) {
+
+            cantUsu = $("#cantiU"+id).val();
+
+            if (e.keyCode == 13) {
+
+                var codigo = $("#cod"+id).val();
+        
+                console.log("entro, id: "+id+", codigo: "+codigo+" cantidad: "+cantidad+" cantUsu: "+cantUsu+" sku: "+skus);
+
+                $("#cod"+id).val("");
+
+                $.ajax({
+                    url     : "{{ URL::to('productos/addDet') }}",
+                    method  : "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data    : {
+                        idDet  : id,
+                        sku    : skus,
+                        cod    : codigo,
+                        cant   : cantidad,
+                        cantU  : cantUsu
+                              }
+                }).done(function( data ) {
+
+                    if(data.resultado == "ERROR"){
+
+                        alert(data.mensajes);
+                        return;
+
+                    }
+
+                    console.log("Datitos regreso: "+data.resultado);
+
+                    $("#canti"+id).html(data.resultado);
+                    $("#cantiU"+id).val(data.resultado);
+
+                });
+
+                return false;
+            }
+        }
 
     </script>
 @endsection

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 
 use App\Repositories\CalculationRepository;
 
+use Illuminate\Support\Facades\Auth;
+
 class SurtidoJefeController extends Controller
 {
 
@@ -21,7 +23,7 @@ class SurtidoJefeController extends Controller
      */
     public function __construct(CalculationRepository $cal)
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
 
         $this->calcModel = $cal;
     }
@@ -39,7 +41,7 @@ class SurtidoJefeController extends Controller
 
             $listado = $this->calcModel->getAllOrd();
 
-            Log::info(" listadoPedidos - listado - Listita: ".$listado->get());
+            //Log::info(" listadoPedidos - listado - Listita: ".$listado->get());
 
             $listado = $listado->paginate(10);
 

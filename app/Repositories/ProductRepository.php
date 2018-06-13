@@ -25,6 +25,8 @@ interface ProductRepository
 
     function getById($id);
 
+    function getBySku($sku);
+
 	function create(array $attributes);
 
 	function update($id, array $attributes);
