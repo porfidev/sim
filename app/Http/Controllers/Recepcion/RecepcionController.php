@@ -34,4 +34,9 @@ class RecepcionController extends Controller
         return view('recepcion.listadoItems',['data' => $data] );
     }
 
+    public function validacion()
+    {
+        return view('recepcion.validacion');
+    }
+
 }
