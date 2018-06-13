@@ -16,6 +16,8 @@ interface PurchasesRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getList($itemsPerPage, array $search = null);
+
 	function getAll();
 
 	function getById($id);

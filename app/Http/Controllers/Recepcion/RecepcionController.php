@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Recepcion;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
+use Validator;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\PurchasesRepository;
+use App\Repositories\PurchaseItemsRepository;
 
 class RecepcionController extends Controller
 {
@@ -13,9 +17,24 @@ class RecepcionController extends Controller
      *
      * @return void
      */
-    public function __construct()
+
+
+    private $purchasesModel;
+    private $purchaseItemsModel;
+
+    const SESSION_ID     = "su_id";
+    const SESSION_NAME   = "su_proveedor";
+    const SESSION_EMAIL  = "su_estatus";
+    const SESSION_ROL    = "su_date";
+    const SESSION_STATUS = "su_duedate";
+    const SESSION_CODIGO = "su_codigo";
+
+
+    public function __construct(PurchasesRepository $pur, PurchaseItemsRepository $puri)
     {
         $this->middleware('auth');
+        $this->purchasesModel = $pur;
+        $this->purchaseItemsModel  = $puri;
     }
 
     /**
