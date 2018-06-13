@@ -2,7 +2,7 @@
 
 @section('content')
     <br>
-    <h2 class="mt-2">Listado de Ordenes de Compra</h2>
+    <h2 class="mt-2">Listado de Items</h2>
     <br>
     @if(Session::has('exito'))
     <div class="alert alert-success alert-dismissible fade show mt-3 mb-2"
@@ -35,8 +35,20 @@
     <div class="card">
         <div class="card-body">
         
+        <div class="float-right">
+    <nav aria-label="Paginacion" class="mr-2">
+                        <button class="btn btn-sm btn-primary regresa"
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Ordenes de compra">
+                                 <i class="material-icons"  align="center" >keyboard_backspace</i>
+                      </button>
+                         </nav>  
+                            </div>
 
             <div class="table-responsive mt-2">
+           
+
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -172,9 +184,10 @@
     <!-- Script de Modal para Usuario Editar -->
     <script type="text/javascript">
         $(document).ready(function () {
-            $( '.irADetalle' ).click(function () {
-                window.location.href = "/ordenes/listadoItems/" + $(this).attr( "data-id" );
+            $( '.regresa' ).click(function () {
+                window.history.back();
             });
+
         });
     </script>
 
