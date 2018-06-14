@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Base;
 
-use Validator;
 use DB;
+use Auth;
+use Validator;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -78,16 +79,15 @@ class UsuariosController extends Controller
 
             Log::info(" UsuariosController - buscaUsuarios ");
 
-            //$jefeId = Auth::id();
-            $jefeId = 1;
+            $jefeId = Auth::id();
+            //$jefeId = 1;
 
-            $listado = $this->userModel->getListBusUsu($nombre,$jefeId);
+            $listado = $this->userModel->getListBusUsu($nombre, $jefeId);
 
             $response = $listado->toArray();
 
             Log::info(" array especial: ".$listado);
 
-           
         } catch (\Exception $e) {
             Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
             $response = array();
