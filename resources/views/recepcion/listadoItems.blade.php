@@ -23,29 +23,34 @@
     @if(Session::has('errores'))
     <div class="alert alert-danger alert-dismissible fade show mt-3 mb-2"
         role="alert">
-        <button type="button"
-            class="close"
-            data-dismiss="alert"
-            aria-label="Cerrar">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        {{ Session::get('errores') }}
-    </div>
+            <button type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ Session::get('errores') }}
+        </div>
     @endif
     <div class="card">
-        <div class="card-body">
-        
-        <div class="float-right">
-    <nav aria-label="Paginacion" class="mr-2">
-                        <button class="btn btn-sm btn-primary regresa"
-                                data-toggle="tooltip"
-                                data-placement="top"
-                                title="Ordenes de compra">
-                                 <i class="material-icons"  align="center" >keyboard_backspace</i>
-                      </button>
-                         </nav>  
-                            </div>
+        <div class="card-header">
 
+            <div class="float-right">
+                <nav aria-label="Paginacion" class="mr-2">
+                    <button class="btn btn-sm btn-primary regresa"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Ordenes de compra">
+                                <i class="material-icons"  align="center" >keyboard_backspace</i>
+                    </button>
+                </nav>  
+            </div>
+
+        </div>
+        <div class="card-body">
+
+        
+        
             <div class="table-responsive mt-2">
            
 
@@ -53,16 +58,13 @@
                     <thead>
                         <tr>
                             <th scope="col" style="text-align: center;">
-                                DocEntry
-                            </th>
-                            <th scope="col" style="min-width: 250px;">
-                                LineNum
+                                #
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                ItemCode
+                                SKU
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Quantity
+                                Cantidad Solicitada
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
                                 Lote
@@ -79,36 +81,27 @@
                                 <input type="text" 
                                        class="form-control inputFiltro" 
                                        id="formID"
-                                       placeholder="DocNum"
+                                       placeholder=""
                                     @if ( Session::has('scl_id') && Session::get('scl_id') != '0' )
                                         value="{{ Session::get('scl_id') }}"
                                     @endif>
-                            </th>
+                            </th>              
                             <th>
                                 <input type="text"
                                         class="form-control inputFiltro"
-                                        id="formProveedor"
-                                        placeholder="LineNum"
-                                    @if ( Session::has('scl_proveedor') && Session::get('scl_proveedor') != 'NA' )
-                                        value="{{ Session::get('scl_proveedor') }}"
+                                        id="itemCode"
+                                        placeholder="SKU"
+                                    @if ( Session::has('scl_itemCode') && Session::get('scl_itemCode') != 'NA' )
+                                        value="{{ Session::get('scl_itemCode') }}"
                                     @endif>
                             </th>
                             <th>
                                 <input type="text"
                                         class="form-control inputFiltro"
-                                        id="formDate"
-                                        placeholder="ItemCode"
-                                    @if ( Session::has('scl_date') && Session::get('scl_date') != 'NA' )
-                                        value="{{ Session::get('scl_date') }}"
-                                    @endif>
-                            </th>
-                            <th>
-                                <input type="text"
-                                        class="form-control inputFiltro"
-                                        id="formDate"
-                                        placeholder="Quantity"
-                                    @if ( Session::has('scl_date') && Session::get('scl_date') != 'NA' )
-                                        value="{{ Session::get('scl_date') }}"
+                                        id="formCantidad"
+                                        placeholder="Cantidad Solicitada"
+                                    @if ( Session::has('scl_cantidad') && Session::get('scl_cantidad') != 'NA' )
+                                        value="{{ Session::get('scl_cantidad') }}"
                                     @endif>
                             </th>
                             <th>
@@ -147,9 +140,6 @@
                             <td style="text-align: center;">
                                  {{ $item->DocEntry }}
                             </td>
-                            <td>
-                                {{ $item->LineNum}}
-                            </td>
                             <td style="text-align: center;">
                                  {{ $item->ItemCode}}
                             </td>
@@ -158,15 +148,13 @@
                             </td>
                             <td style="text-align: center;">
                                  {{ $item->Lote }}
+                                 
                             </td>
                             <td style="text-align: center;">
                                  {{ $item->Pedimento }}
                             </td>
                             <td style="text-align: center;">
                                  {{ $item->Caducidad }}
-                            </td>
-                            <td style="text-align: center;">
-                        
                             </td>
                         </tr>
                         @endforeach

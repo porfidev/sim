@@ -35,13 +35,14 @@
     <div class="card">
         <div class="card-body">
         
-
+        
+        
             <div class="table-responsive mt-2">
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th scope="col" style="text-align: center;">
-                                DocNum
+                                #
                             </th>
                             <th scope="col" style="min-width: 250px;">
                                 Proveedor
@@ -53,7 +54,7 @@
                                 F. Recepci&oacute;n
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Due Date
+                              Fecha de entrega
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
                                 Codigo
@@ -67,7 +68,7 @@
                                 <input type="text" 
                                        class="form-control inputFiltro" 
                                        id="formID"
-                                       placeholder="DocNum"
+                                       placeholder=""
                                     @if ( Session::has('scl_id') && Session::get('scl_id') != '0' )
                                         value="{{ Session::get('scl_id') }}"
                                     @endif>
@@ -102,7 +103,7 @@
                                 <input type="text"
                                         class="form-control inputFiltro"
                                         id="formDueDate"
-                                        placeholder="Due Date"
+                                        placeholder="Fecha de entrega"
                                     @if ( Session::has('scl_DueDate') && Session::get('scl_DueDate') != 'NA' )
                                         value="{{ Session::get('scl_DueDate') }}"
                                     @endif>
