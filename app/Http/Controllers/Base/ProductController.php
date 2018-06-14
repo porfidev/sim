@@ -483,6 +483,9 @@ class ProductController extends Controller
     /**
      * Función para agregar productos a las tareas de un trabajador
      * (En Surtudo de pedidos)
+     *
+     * @param sku   String  Clave del producto a agregar
+     * @param idDet integer Id del item dentro del pedido
      */
     public function addDet(Request $request) {
         $resultado = "OK";
@@ -490,43 +493,43 @@ class ProductController extends Controller
         $cantidad = 0;
         try {
             Log::info(" ProductController - addDet sku : ".$request->get('sku'));
-                $product = $this->productModel->getBySku( $request->get('sku') );
-                if( $product != null ) {
-                    Log::debug(" ProductController - addDet: ".json_encode($product) );
-                    $codigo = $request->get('cod');
-                    $cantU = intval($request->get('cantU'));
-                    $cantT = intval($request->get('cant'));
-                    if($codigo == $product->corrugated_barcode){
-                        $cantidad = intval($product->display_per_box)*intval($product->items_per_display);
-                    } else if($codigo == $product->display_barcode){
-                        $cantidad = intval($product->items_per_display);
-                    } else if($codigo == $product->barcode){
-                        $cantidad = 1;
+            $product = $this->productModel->getBySku( $request->get('sku') );
+            if( $product != null ) {
+                Log::debug(" ProductController - addDet: ".json_encode($product) );
+                $codigo = $request->get('cod');
+                $cantU = intval($request->get('cantU'));
+                $cantT = intval($request->get('cant'));
+                if($codigo == $product->corrugated_barcode){
+                    $cantidad = intval($product->display_per_box)*intval($product->items_per_display);
+                } else if($codigo == $product->display_barcode){
+                    $cantidad = intval($product->items_per_display);
+                } else if($codigo == $product->barcode){
+                    $cantidad = 1;
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "Código de barras incorrecto" );
+                }
+                if($resultado === "OK") {
+                    $cantidadTot = $cantidad + $cantU;
+                    if($cantidadTot <= $cantT){
+                        Log::info("ProductController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
+                        $datos = array();
+                        $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
+                        if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
+                            $resultado = "ERROR";
+                            $mensajes  = array( "No se pudo actualizar el detalle" );
+                        }
+                        $resultado = $cantidadTot;
                     } else {
                         $resultado = "ERROR";
-                        $mensajes  = array( "Código de barras incorrecto" );
+                        $mensajes  = array( "Cantidad excedida" );
                     }
-                    if($resultado === "OK") {
-                        $cantidadTot = $cantidad + $cantU;
-                        if($cantidadTot <= $cantT){
-                            Log::error("ProductController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
-                            $datos = array();
-                            $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
-                            if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
-                                $resultado = "ERROR";
-                                $mensajes  = array( "No se pudo actualizar el detalle" );
-                            }
-                            $resultado = $cantidadTot;
-                        } else {
-                            $resultado = "ERROR";
-                            $mensajes  = array( "Cantidad excedida" );
-                        }
-                    }
-                } else {
-                    Log::error("ProductController - addDet: El objeto product esta vacío");
-                    $resultado = "ERROR";
-                    $mensajes  = array( "No se encontro ese producto" );
                 }
+            } else {
+                Log::error("ProductController - addDet: El objeto product esta vacío");
+                $resultado = "ERROR";
+                $mensajes  = array( "No se encontro ese producto" );
+            }
         } catch (\Exception $e) {
             Log::error( 'ProductController - addDet - Error: '.$e->getMessage() );
             $resultado = "ERROR";
