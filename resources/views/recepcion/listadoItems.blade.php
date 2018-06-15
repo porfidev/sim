@@ -34,7 +34,8 @@
     @endif
     <div class="card">
         <div class="card-header">
-
+        {{ $data->links('pagination.default') }}
+        
             <div class="float-right">
                 <nav aria-label="Paginacion" class="mr-2">
                     <button class="btn btn-sm btn-primary regresa"
@@ -74,6 +75,9 @@
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
                                 Caducidad
+                            </th>
+                            <th scope="col" style="min-width: 130px; text-align: center;">
+                                Acci&oacute;n
                             </th>
                           </tr>
                         <tr class="table-dark">
@@ -131,6 +135,21 @@
                                         value="{{ Session::get('scl_caducidad') }}"
                                     @endif>
                             </th>
+                            <th style="text-align: center;">
+                                <button class="btn btn-sm btn-info"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Buscar">
+                                    <i class="material-icons">search</i>
+                                </button>
+
+                                <button class="btn btn-sm btn-warning"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Limpiar filtros">
+                                    <i class="material-icons">settings_backup_restore</i>
+                                </button>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -155,6 +174,9 @@
                             </td>
                             <td style="text-align: center;">
                                  {{ $item->Caducidad }}
+                            </td>
+                            <td style="text-align: center;">
+                                
                             </td>
                         </tr>
                         @endforeach

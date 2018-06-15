@@ -35,7 +35,7 @@
     <div class="card">
         <div class="card-body">
         
-        
+        {{ $data->links('pagination.default') }}
         
             <div class="table-responsive mt-2">
                 <table class="table table-striped">
@@ -69,8 +69,8 @@
                                        class="form-control inputFiltro" 
                                        id="formID"
                                        placeholder=""
-                                    @if ( Session::has('scl_id') && Session::get('scl_id') != '0' )
-                                        value="{{ Session::get('scl_id') }}"
+                                    @if ( Session::has('su_id') && Session::get('su_id') != '0' )
+                                        value="{{ Session::get('su_id') }}"
                                     @endif>
                             </th>
                             <th>
@@ -78,8 +78,8 @@
                                         class="form-control inputFiltro"
                                         id="formProveedor"
                                         placeholder="Proveedor"
-                                    @if ( Session::has('scl_proveedor') && Session::get('scl_proveedor') != 'NA' )
-                                        value="{{ Session::get('scl_proveedor') }}"
+                                    @if ( Session::has('su_proveedor') && Session::get('su_proveedor') != 'NA' )
+                                        value="{{ Session::get('su_proveedor') }}"
                                     @endif>
                             </th>
                             <th>
@@ -93,19 +93,19 @@
                             <th>
                                 <input type="text"
                                         class="form-control inputFiltro"
-                                        id="formDate"
+                                        id="formRecepcion"
                                         placeholder="Fecha de recepcion"
-                                    @if ( Session::has('scl_date') && Session::get('scl_date') != 'NA' )
-                                        value="{{ Session::get('scl_date') }}"
+                                    @if ( Session::has('su_reception') && Session::get('su_reception') != 'NA' )
+                                        value="{{ Session::get('su_reception') }}"
                                     @endif>
                             </th>
                             <th>
                                 <input type="text"
                                         class="form-control inputFiltro"
-                                        id="formDueDate"
+                                        id="formEntrega"
                                         placeholder="Fecha de entrega"
-                                    @if ( Session::has('scl_DueDate') && Session::get('scl_DueDate') != 'NA' )
-                                        value="{{ Session::get('scl_DueDate') }}"
+                                    @if ( Session::has('su_entrega') && Session::get('su_entrega') != 'NA' )
+                                        value="{{ Session::get('su_entrega') }}"
                                     @endif>
                             </th>
                             <th>
@@ -113,24 +113,27 @@
                                         class="form-control inputFiltro"
                                         id="formCodigo"
                                         placeholder="Codigo"
-                                    @if ( Session::has('scl_codigo') && Session::get('scl_codigo') != 'NA' )
-                                        value="{{ Session::get('scl_codigo') }}"
+                                    @if ( Session::has('su_codigo') && Session::get('su_codigo') != 'NA' )
+                                        value="{{ Session::get('su_codigo') }}"
                                     @endif>
                             </th>
                             <th style="text-align: center;">
                                 <button class="btn btn-sm btn-info"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Buscar">
+                                        title="Buscar"
+                                        id="btnBuscar">
                                     <i class="material-icons">search</i>
                                 </button>
 
                                 <button class="btn btn-sm btn-warning"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Limpiar filtros">
+                                        title="Limpiar filtros"
+                                        id="btnLimpiar">
                                     <i class="material-icons">settings_backup_restore</i>
                                 </button>
+
                             </th>
                         </tr>
                     </thead>
@@ -174,6 +177,17 @@
             </div>
         </div>
     </div>
+      <form id="searchForm"
+        method="POST"
+        action="{{ route('ordenes.listado') }}">
+        {{ csrf_field() }}
+        <input type="hidden" name="su_id"     id="busquedaId"      value="0">
+        <input type="hidden" name="su_proveedor" id="busquedaProveedor"  value="NA">
+        <input type="hidden" name="su_recepcion"  id="busquedaRecepcion"   value="NA">
+        <input type="hidden" name="su_entrega"    id="busquedaEntrega"     value="0">
+        <input type="hidden" name="su_codigo"    id="busquedaCodigo"     value="0">
+    </form>
+
 @endsection
 
 @section('final')
@@ -185,6 +199,41 @@
                 window.location.href = "/ordenes/listadoItems/" + $(this).attr( "data-id" );
             });
         });
+    </script>
+
+   <script type="text/javascript">
+          function ejecutaBusquedasFiltros() {
+            $( '#busquedaId'      ).val( $( '#formID'      ).val() ? $( '#formID'      ).val() : '0'  );
+            $( '#busquedaProveedor'  ).val( $( '#formProveedor'  ).val() ? $( '#formProveedor'  ).val() : ' ' );
+            $( '#busquedaRecepcion'     ).val( $( '#formRecepecion'     ).val() ? $( '#formRecepecion'     ).val() : ' '  );
+            $( '#busquedaEntrega'     ).val( $( '#formEntrega'     ).val() ? $( '#formEntrega'     ).val() : ' '  );
+            $( '#busquedaCodigo' ).val( $( '#formCodigo' ).val() ? $( '#formCodigo' ).val() : ' ' );
+            $( '#searchForm' ).submit();
+        }
+
+        $(document).ready(function () {
+            $( '[data-toggle="tooltip"]' ).tooltip();
+            $( '#btnLimpiar' ).click(function () {
+                $( '#busquedaId').val( '0'  );
+                $( '#formProveedor').val( ' ' );
+                $( '#busquedaRecepcion').val( ' ' );
+                $( '#busquedaEntrega').val( ' ' );
+                $( '#busquedaCodigo').val( '0'  );
+                $( '#searchForm' ).submit();
+            });
+            $( '#btnBuscar' ).click(ejecutaBusquedasFiltros);
+
+             $( '.inputFiltro' ).keyup(function(e){
+                if(e.keyCode == 13) {
+                    ejecutaBusquedasFiltros();
+                }
+            });
+
+
+        });
+
+        
+
     </script>
 
 

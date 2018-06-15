@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-interface PurchasesRepository
+interface PurchaseRepository
 {
 	const SQL_ID    = "id";
 	const SQL_DOCENTRY = "DocEntry";
@@ -18,7 +18,7 @@ interface PurchasesRepository
 
 	function getList($itemsPerPage, array $search = null);
 
-	function getAll();
+	function getAll(array $search = null);
 
 	function getById($id);
 
