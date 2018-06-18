@@ -377,24 +377,36 @@ class UsuariosController extends Controller
         try {
             Log::info(" UsuariosController - asignarUsuario - idUsuario: ".
                 $request->get('userId')." idOrder: ".$request->get('orderId'));
-            if($request->has('userId') && $request->has('orderId'))
-            {
-                $assignment = $this->assiModel->search( $request->orderId, $request->userId );
 
-                if( empty($assignment) ){                    
 
-                        $data = array(
-                            AssignmentRepository::SQL_ORDID  => $request->orderId,
-                            AssignmentRepository::SQL_USRID => $request->userId
-                        );
+            $typedocs = $request->typedoc;
 
-                Log::info(" UsuariosController - asignarUsuario - data: ".json_encode($data));
-                $this->assiModel->create($data);
-                    
-                } else {
-                    $resultado = "ERROR";
-                    $mensajes  = array( "Ese usuario ya esta asignado" );
+            if(!empty($typedocs)){
+
+                foreach($typedocs as $value){
+
+                  $assignment = $this->assiModel->search( $request->orderId, $value );
+
+                    if( empty($assignment) ){                    
+
+                            $data = array(
+                                AssignmentRepository::SQL_ORDID  => $request->orderId,
+                                AssignmentRepository::SQL_USRID => $value
+                            );
+
+                    Log::info(" UsuariosController - asignarUsuario - data: ".json_encode($data));
+                    $this->assiModel->create($data);
+                        
+                    } else {
+                        $resultado = "ERROR";
+                        $mensajes  = array( "Ese usuario ya esta asignado" );
+                    }
                 }
+
+            }else {
+
+                $resultado = "ERROR";
+                $mensajes  = array( "No se selecciono usuario" );
             }
 
         } catch (\Exception $e) {

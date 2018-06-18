@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\Controller;
 use App\Repositories\ProductRepository;
 use App\Repositories\OrderDetailRepository;
+use App\Repositories\OrderRepository;
 
 use Session;
 
@@ -28,17 +29,19 @@ class ProductController extends Controller
 
     private $productModel;
     private $ordDetModel;
+    private $orderModel;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(ProductRepository $product, OrderDetailRepository $det)
+    public function __construct(ProductRepository $product, OrderDetailRepository $det, OrderRepository $ord)
     {
         //$this->middleware('auth');
         $this->productModel = $product;
         $this->ordDetModel = $det;
+        $this->orderModel = $ord;
     }
 
     /**
@@ -520,6 +523,14 @@ class ProductController extends Controller
                             $mensajes  = array( "No se pudo actualizar el detalle" );
                         }
                         $resultado = $cantidadTot;
+
+                        $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
+
+                        $datosE = array();
+                        $datosE[OrderRepository::SQL_ESTATUS] = 2;
+
+                        $this->orderModel->update($detalleOrder->idOrder,$datosE);
+
                     } else {
                         $resultado = "ERROR";
                         $mensajes  = array( "Cantidad excedida" );

@@ -35,13 +35,8 @@
                 
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Trabajador</label>
-                        <input type="text"
-                            id="usuarioAutocompleteEsp"
-                            name="jefe"
-                            class="form-control"
-                            placeholder="Escribe el nombre del usuario a asignar"
-                            value="">
+                        <label>Trabajadores</label>
+                        <div id="espTrab"></div>
                         <input type="hidden" name="userId" id="idUsr"/>
                         <input type="hidden" name="orderId" id="idOrd"/>
                     </div>
@@ -77,6 +72,37 @@
             $( '#loading_modal_edit_userEsp' ).hide();
 
             $( "#idOrd" ).val($(this).attr( "data-id" ));
+
+            listita = "{{ URL::to('usuarios/obtenerNombresJefe') }}";
+
+            ter = "";
+
+            $.ajax({
+               type : 'GET',
+               url : "{{ URL::to('usuarios/obtenerNombresJefe') }}",
+               dataType : 'json',
+               success : function(data) {
+
+                    $.each(data, function(i,item){
+
+                        console.log(item.value);
+
+                        contadorEsp = 0;
+
+                        ter += '<input type="checkbox" name="typedoc[]" value="'+item.value+'">'+item.label+'</br>';
+
+                        contadorEsp++;
+
+                    });
+
+                    console.log(ter);
+
+                    $("#espTrab").html(ter);
+
+               },
+            });
+
+            
             
             update = 0;
             $( "#modalAsignarUsuarios" ).modal({
@@ -110,12 +136,12 @@
         $( '#btnAsignar' ).click(function () {
             $( '#loading_modal_edit_userEsp' ).show();
             $( '#formGuardarAsignarPed' ).hide();
-            if( idUsr == null ) {
+            /*if( idUsr == null ) {
                 erroresValidacion("erroresValidacionAsignarEsp", "No se ha seleccionado ningun usuario");
                 $( '#loading_modal_edit_userEsp' ).hide();
                 $( '#formGuardarAsignarPed' ).show();
                 return;
-            }
+            }*/
             $.ajax({
                 url    : "{{ route('usuarios.asignarU') }}",
                 method : "POST",

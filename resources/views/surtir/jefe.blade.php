@@ -51,11 +51,11 @@
                             <th> &nbsp; </th>
                             <th>
                                 <select class="form-control">
-                                    <option> --- Todos --- </option>
-                                    <option>En espera</option>
-                                    <option>En proceso</option>
-                                    <option>Por validar</option>
-                                    <option>Surtido</option>
+                                    <option value="0"> --- Todos --- </option>
+                                    <option value="1">En espera</option>
+                                    <option value="2">En proceso</option>
+                                    <option value="3">Por validar</option>
+                                    <option value="4">Surtido</option>
                                 </select>
                             </th>
                             <th>
@@ -99,7 +99,31 @@
                                     data-id="{{ $ped->idOrd }}" id="assi{{ $ped->idOrd }}">-</span>
                             </td>
                             <td>
-                                {{ $ped->ordStatus }}
+
+                                @if ($ped->ordStatus === 1)
+
+                                    En espera
+                        
+                                @endif
+
+                                @if ($ped->ordStatus === 2)
+
+                                    En Proceso
+                        
+                                @endif
+
+                                @if ($ped->ordStatus === 3)
+
+                                    Por validar Surtido
+                        
+                                @endif
+
+                                @if ($ped->ordStatus === 4)
+
+                                    Surtido
+                        
+                                @endif
+                                
                             </td>
                             <td>
                                 {{ $ped->FP }}
