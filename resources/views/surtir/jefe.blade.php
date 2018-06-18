@@ -29,10 +29,10 @@
                                 Fecha Programada
                             </th>
                             <th scope="col" style="min-width: 200px; text-align: center;">
-                                Fecha Inicio
+                                Inicio de Vigencia
                             </th>
                             <th scope="col" style="min-width: 200px; text-align: center;">
-                                Fecha Final
+                                Fin de Vigencia
                             </th>
                             <th scope="col" style="min-width: 200px; text-align: center;">
                                 Prioridad
@@ -100,25 +100,25 @@
                             </td>
                             <td>
 
-                                @if ($ped->ordStatus === 1)
+                                @if ($ped->ordStatus == 1)
 
                                     En espera
                         
                                 @endif
 
-                                @if ($ped->ordStatus === 2)
+                                @if ($ped->ordStatus == 2)
 
                                     En Proceso
                         
                                 @endif
 
-                                @if ($ped->ordStatus === 3)
+                                @if ($ped->ordStatus == 3)
 
                                     Por validar Surtido
                         
                                 @endif
 
-                                @if ($ped->ordStatus === 4)
+                                @if ($ped->ordStatus == 4)
 
                                     Surtido
                         
@@ -133,10 +133,10 @@
                             </td>
                             <td>
                                 {{ $ped->end }}
-                            </td>   
-                            <td>
+                            </td>
+                            <td style="text-align: center;">
                                 {{ $ped->priority }}
-                            </td>                          
+                            </td>
                             <td style="text-align: center;">
                                 <button class="btn btn-sm btn-success asignarPersonal"
                                         data-id="{{ $ped->idOrd }}"                                        

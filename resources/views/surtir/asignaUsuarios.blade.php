@@ -11,7 +11,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    <span id="modalEditarUsuarioTitle">Asignacion de jefe</span>
+                    <span id="modalEditarUsuarioTitle">Asignacion de Tarea</span>
                 </h4>
                 <button type="button"
                     class="close"
@@ -30,17 +30,14 @@
                 </div>
 
                 <form id="formGuardarAsignarPed">
-
-                
-                
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Trabajadores</label>
+                        <label>Listado de Trabajadores</label>
                         <div id="espTrab"></div>
                         <input type="hidden" name="userId" id="idUsr"/>
                         <input type="hidden" name="orderId" id="idOrd"/>
                     </div>
-                </form> 
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button"
@@ -64,8 +61,7 @@
     var update = 0;
     var idUsr;
     var idJefe;
-    $(document).ready(function () {     
-
+    $(document).ready(function () {
 
         $( '.asignarPersonal' ).click(function () {
 
@@ -88,8 +84,10 @@
                         console.log(item.value);
 
                         contadorEsp = 0;
-
-                        ter += '<input type="checkbox" name="typedoc[]" value="'+item.value+'">'+item.label+'</br>';
+                        ter += "<div class=\"form-check\">";
+                        ter += ("<input type=\"checkbox\" class=\"form-check-input\" name=\"typedoc[]\" value=\""+item.value+"\">");
+                        ter += ("<label class=\"form-check-label\">" + item.label + "</label>");
+                        ter += "</div>";
 
                         contadorEsp++;
 
@@ -102,8 +100,6 @@
                },
             });
 
-            
-            
             update = 0;
             $( "#modalAsignarUsuarios" ).modal({
                 keyboard : false,
@@ -114,7 +110,6 @@
 
         console.log("Listita: "+"{{ URL::to('usuarios/obtenerNombresJefe') }}");
 
-        
         $( "#usuarioAutocompleteEsp" ).autocomplete({
             minLength: 2,
             source: "{{ URL::to('usuarios/obtenerNombresJefe') }}",
@@ -169,7 +164,7 @@
 
                 idUsr = null;
                 $( "#idUsr" ).val("");
-                
+
             }).always(function() {
 
                 $( '#loading_modal_edit_userEsp' ).hide();
@@ -178,12 +173,12 @@
             });
 
             $('#modalAsignarUsuarios').on('hide.bs.modal', function (e) {
-            if(update === 1) {
-                location.reload();
-            }
+                if(update === 1) {
+                    location.reload();
+                }
+            });
         });
-        });
-       
+
     });
 </script>
 <!-- Fin de Modal para Usuario Editar -->
