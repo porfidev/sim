@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Purchase;
-use App\PurchaseItem;
+use App\PurchaseItems;
 
 use App\Repositories\PurchaseItemsRepository;
 use App\Repositories\PurchasesRepository;
@@ -35,7 +35,7 @@ class DownloadPurchaseOrders extends Command
      *
      * @return void
      */
-    public function __construct(Purchase $pur, PurchaseItem $puri)
+    public function __construct(Purchase $pur, PurchaseItems $puri)
     {
         parent::__construct();
         $this->pur = $pur;

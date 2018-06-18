@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\PurchaseItem;
+use App\Purchaseitems;
 
 use Illuminate\Support\Facades\Log;
 
@@ -18,7 +18,7 @@ class EloquentPurchaseItems implements PurchaseItemsRepository
 	 *
 	 * @param App\Catalogo $model
 	 */
-	public function __construct(PurchaseItem $model)
+	public function __construct(PurchaseItems $model)
 	{
 		$this->model = $model;
     }
