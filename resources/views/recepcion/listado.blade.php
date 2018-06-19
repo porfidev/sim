@@ -183,7 +183,7 @@
         {{ csrf_field() }}
         <input type="hidden" name="su_id"     id="busquedaId"      value="0">
         <input type="hidden" name="su_proveedor" id="busquedaProveedor"  value="NA">
-        <input type="hidden" name="su_recepcion"  id="busquedaRecepcion"   value="NA">
+        <input type="hidden" name="su_reception"  id="busquedaRecepcion"   value="NA">
         <input type="hidden" name="su_entrega"    id="busquedaEntrega"     value="0">
         <input type="hidden" name="su_codigo"    id="busquedaCodigo"     value="0">
     </form>

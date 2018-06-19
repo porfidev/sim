@@ -38,6 +38,9 @@ use App\Repositories\EloquentAssignment;
 use App\Repositories\PurchaseItemsRepository;
 use App\Repositories\EloquentPurchaseItems;
 
+use App\Repositories\PurchaseRepository;
+use App\Repositories\EloquentPurchase;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -68,5 +71,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ProductRepository::class,     EloquentProduct::class);
         $this->app->singleton(AssignmentRepository::class,  EloquentAssignment::class);
         $this->app->singleton(PurchaseItemsRepository::class,  EloquentPurchaseItems::class);
+        $this->app->singleton(PurchaseRepository::class,  EloquentPurchase::class);
     }
 }
