@@ -140,6 +140,7 @@
                             <td>
                                 {{ $item->display_barcode }}
                             </td>
+                            
                             <td style="text-align: center;">
                                 <button class="btn btn-sm btn-success editProduct"
                                         data-id="{{ $item->id }}"

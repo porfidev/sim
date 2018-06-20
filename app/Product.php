@@ -35,7 +35,7 @@ class Product extends Model
         'items_per_display', 'display_per_box', 'weight_per_display',
         'weight_per_box', 'width', 'height', 'depth',
         'barcode', 'display_barcode', 'corrugated_barcode',
-        'user_id'
+        'user_id','caducidad_minima'
     ];
 
 }

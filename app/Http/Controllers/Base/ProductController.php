@@ -125,6 +125,7 @@ class ProductController extends Controller
                     'codigoDeBarras'           => 'required|string|max:150',
                     'codigoDeBarrasDelDisplay' => 'required|string|max:150',
                     'codigoDeBarrasCorrugado'  => 'required|string|max:150',
+                    'caducidadMinima'          => 'required|numeric',
                 ),
                 Controller::$messages
             );
@@ -148,6 +149,7 @@ class ProductController extends Controller
                     ProductRepository::SQL_B_C     => $request->codigoDeBarras,
                     ProductRepository::SQL_D_B_C   => $request->codigoDeBarrasDelDisplay,
                     ProductRepository::SQL_C_B_C   => $request->codigoDeBarrasCorrugado,
+                    ProductRepository::SQL_CADM    => $request->caducidadMinima,
                     ProductRepository::SQL_USER    => Auth::id(),
                 );
                 Log::info(" ProductController - agregar - data: ".json_encode($data));
@@ -240,6 +242,7 @@ class ProductController extends Controller
                             'codigoDeBarras'           => 'required|string|max:150',
                             'codigoDeBarrasDelDisplay' => 'required|string|max:150',
                             'codigoDeBarrasCorrugado'  => 'required|string|max:150',
+                            'editCaducidadMinima'      => 'required|numeric',
                         ),
                         Controller::$messages
                     );
@@ -263,6 +266,7 @@ class ProductController extends Controller
                             ProductRepository::SQL_B_C     => $request->codigoDeBarras,
                             ProductRepository::SQL_D_B_C   => $request->codigoDeBarrasDelDisplay,
                             ProductRepository::SQL_C_B_C   => $request->codigoDeBarrasCorrugado,
+                            ProductRepository::SQL_CADM    => $request->editCaducidadMinima,
                             ProductRepository::SQL_USER    => Auth::id()
                         );
                         Log::info(" ProductController - editar - data: ".json_encode($data));
@@ -406,7 +410,6 @@ class ProductController extends Controller
 
                     if(strpos($datos[3], "kg") || strpos($datos[3], "Kg")){
 
-                        
                         $datos[3] = str_replace($vowels, "", $datos[3]);
 
                         $datos[3] = floatval($datos[3])*1000;
@@ -460,16 +463,17 @@ class ProductController extends Controller
                     ProductRepository::SQL_B_C     => $datos[6],
                     ProductRepository::SQL_D_B_C   => $datos[7],
                     ProductRepository::SQL_C_B_C   => $datos[8],
+                    ProductRepository::SQL_CADM    => $datos[9],
                     ProductRepository::SQL_USER    => Auth::id(),
                 );
-                    
+
                 Log::info(" ProductController - agregar - data: ".json_encode($data));
                 DB::beginTransaction();
                 $this->productModel->create($data);
                 $contador++;
                 DB::commit();
 
-                } 
+                }
             }
             DB::commit();
             Session::flash('exito', 'Se han agregado: '.$contador.' productos  ');
@@ -483,72 +487,94 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Función para agregar productos a las tareas de un trabajador
-     * (En Surtudo de pedidos)
-     *
-     * @param sku   String  Clave del producto a agregar
-     * @param idDet integer Id del item dentro del pedido
-     */
-    public function addDet(Request $request) {
+    static function validaSku($sku,$codigo,$cantU,$productModelE){
+
         $resultado = "OK";
         $mensajes  = "NA";
-        $cantidad = 0;
+        //error
+        $cantidadTot = -1;
+        $response = [];
+
         try {
-            Log::info(" ProductController - addDet sku : ".$request->get('sku'));
-            $product = $this->productModel->getBySku( $request->get('sku') );
+
+            Log::info(" ProductController - validaSku sku : ".$sku);
+            $product = $productModelE->getBySku( $sku );
+
             if( $product != null ) {
-                Log::debug(" ProductController - addDet: ".json_encode($product) );
-                $codigo = $request->get('cod');
-                $cantU = intval($request->get('cantU'));
-                $cantT = intval($request->get('cant'));
+
+                Log::debug(" ProductController - validaSku: ".json_encode($product) );
+
                 if($codigo == $product->corrugated_barcode){
-                    $cantidad = intval($product->display_per_box)*intval($product->items_per_display);
+
+                    $cantidadTot = intval($product->display_per_box)*intval($product->items_per_display);
+
                 } else if($codigo == $product->display_barcode){
-                    $cantidad = intval($product->items_per_display);
+
+                    $cantidadTot = intval($product->items_per_display);
+
                 } else if($codigo == $product->barcode){
-                    $cantidad = 1;
+
+                    $cantidadTot = 1;
+
                 } else {
+
                     $resultado = "ERROR";
-                    $mensajes  = array( "Código de barras incorrecto" );
+                    $mensajes  = "Código de barras incorrecto";
+
                 }
-                if($resultado === "OK") {
-                    $cantidadTot = $cantidad + $cantU;
-                    if($cantidadTot <= $cantT){
-                        Log::info("ProductController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
-                        $datos = array();
-                        $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
-                        if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
-                            $resultado = "ERROR";
-                            $mensajes  = array( "No se pudo actualizar el detalle" );
-                        }
-                        $resultado = $cantidadTot;
 
-                        $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
-
-                        $datosE = array();
-                        $datosE[OrderRepository::SQL_ESTATUS] = 2;
-
-                        $this->orderModel->update($detalleOrder->idOrder,$datosE);
-
-                    } else {
-                        $resultado = "ERROR";
-                        $mensajes  = array( "Cantidad excedida" );
-                    }
-                }
             } else {
-                Log::error("ProductController - addDet: El objeto product esta vacío");
+
+                Log::error("ProductController - validaSku: El objeto product esta vacío");
                 $resultado = "ERROR";
-                $mensajes  = array( "No se encontro ese producto" );
+                $mensajes  = "No se encontro ese producto";
             }
+
         } catch (\Exception $e) {
-            Log::error( 'ProductController - addDet - Error: '.$e->getMessage() );
+            Log::error( 'ProductController - validaSku - Error: '.$e->getMessage() );
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
-        return response()->json(array(
-            Controller::JSON_RESPONSE => $resultado,
-            Controller::JSON_MESSAGE  => $mensajes
-        ));
+
+        $response[1] = $mensajes;
+        $response[0] = $cantidadTot;
+
+        return $response;
     }
+
+    static function checaPedUsr($idPed,$ordDetModelE){
+
+        Log::info(" ProductController - checaPedUsr idPed : ".$idPed);
+
+        try{
+
+            $boolDet = true;
+
+            $listaDet = $ordDetModelE->getByIdOrd($idPed);
+
+            foreach ($listaDet as $ele) {
+
+                Log::info(" ProductController - checaPedUsr cant : ".$ele->quantity." CantUsr: ".$ele->quantity_user);
+
+                if($ele->quantity > $ele->quantity_user){
+
+                    $boolDet = false;
+
+                }
+
+            }
+
+            Log::info(" ProductController - checaPedUsr - boolEsp : ".$boolDet);
+
+            return $boolDet;
+
+
+        } catch (\Exception $e) {
+
+            Log::error( 'ProductController - checaPedUsr - Error: '.$e->getMessage() );
+            return -1;
+
+        }
+    }
+    
 }

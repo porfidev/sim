@@ -182,6 +182,17 @@
                                     name="codigoDeBarrasCorrugado"
                                     required>
                         </div>
+                        <div class="form-group col-md-6">
+                            <label>
+                                Caducidad m&iacute;nima
+                            </label>
+                            <input type="number"
+                                    class="form-control"
+                                    id="modalEditCaducidad"
+                                    placeholder="Escribe la caducidad mínima"
+                                    name="caducidadMinima"
+                                    required>
+                        </div>
                     </div>
                 </form>
             </div>

@@ -25,14 +25,14 @@ class RecepcionController extends Controller
 {
     private $purchaseModel;
 
-    const SESSION_ID         = "su_id";
-    const SESSION_PROVEEDOR  = "su_proveedor";
-    const SESSION_RECEPTIOM  = "su_reception";
-    const SESSION_ENTREGA    = "su_entrega";
-    const SESSION_CODIGO     = "su_codigo";
+    const SESSION_ID        = "su_id";
+    const SESSION_NOMBRE    = "su_proveedor";
+    const SESSION_REC       = "su_reception";
+    const SESSION_ENTR      = "su_entrega";
+    const SESSION_COD       = "su_codigo";
 
-    public function __construct(PurchaseRepository $cli){
-
+    public function __construct(PurchaseRepository $cli)
+    {
         $this->middleware('auth');
         $this->purchaseModel = $cli;
     }
@@ -42,21 +42,60 @@ class RecepcionController extends Controller
 
         return view('recepcion.listado',['data' => $data] );
 
-        /*
         try {
-            Log::info(" ClientesController - listado ");
+            Log::info(" RecepcionController - listado ");
 
+            if ( $request->isMethod('post') ) {
+                if( $request->has(self::SESSION_ID)) {
+                    $request->session()->put(self::SESSION_ID, $request->input(self::SESSION_ID));
+                }
+
+                if( $request->has(self::SESSION_NOMBRE)) {
+                    $request->session()->put(self::SESSION_NOMBRE, $request->input(self::SESSION_NOMBRE));
+                }
+
+                if( $request->has(self::SESSION_REC)) {
+                    $request->session()->put(self::SESSION_REC, $request->input(self::SESSION_REC));
+                }
+
+                if( $request->has(self::SESSION_ENTR)) {
+                    $request->session()->put(self::SESSION_ENTR, $request->input(self::SESSION_ENTR));
+                }
+
+                if( $request->has(self::SESSION_COD)) {
+                    $request->session()->put(self::SESSION_COD, $request->input(self::SESSION_COD));
+                }
+            }
             $search = array();
+            if ( $request->session()->has(self::SESSION_ID)
+                    && $request->session()->get(self::SESSION_ID) != '0' ) {
+                $search[PurchaseRepository::SQL_ID] = $request->session()->get(self::SESSION_ID);
+            }
+            if ($request->session()->has(self::SESSION_NOMBRE)
+                    && $request->session()->get(self::SESSION_NOMBRE) != 'NA' ) {
+                $search[PurchaseRepository::SQL_CARDNAME] = $request->session()->get(self::SESSION_NOMBRE);
+            }
+            if ($request->session()->has(self::SESSION_REC)
+                    && $request->session()->get(self::SESSION_REC) != 'NA' ) {
+                $search[PurchaseRepository::SQL_ARRIVAL] = $request->session()->get(self::SESSION_REC);
+            }
+            if ($request->session()->has(self::SESSION_ENTR)
+                    && $request->session()->get(self::SESSION_ENTR) != 'NA' ) {
+                $search[PurchaseRepository::SQL_DOCDUEDATE] = $request->session()->get(self::SESSION_ENTR);
+            }
+            if ($request->session()->has(self::SESSION_COD)
+                    && $request->session()->get(self::SESSION_COD) != 'NA' ) {
+                $search[PurchaseRepository::SQL_CARDCODE] = $request->session()->get(self::SESSION_COD);
+            }
+            Log::info(" RecepcionController - listado - search: ".json_encode($search));
 
-            Log::info(" ClientesController - listado - search: ".json_encode($search));
-
-            $listado = $this->clienteModel->getAll($search);
-            return view('clientes.listado',
+            $listado = $this->purchaseModel->getAll($search);
+            return view('recepcion.listado',
                 array(
                     "listado" => $listado
                 ));
         } catch (\Exception $e) {
-            Log::error( 'ClientesController - listado - Error'.$e->getMessage() );
+            Log::error( 'RecepcionController - listado - Error'.$e->getMessage() );
             return view('error',
                 array(
                     "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
@@ -64,9 +103,7 @@ class RecepcionController extends Controller
                 )
             );
         }
-        */
     }
-
 
 
     public function listadoItems($purchase_id)

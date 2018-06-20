@@ -194,7 +194,20 @@
                                     name="codigoDeBarrasCorrugado"
                                     required>
                         </div>
+                        <div class="form-group col-md-6">
+                            <label for="modalEditCaducidadMinima">
+                                Editar caducidad m&iacute;nima
+                            </label>
+                            <input type="number"
+                                    class="form-control"
+                                    id="modalEditCaducidadMinima"
+                                    placeholder="Escribe el peso por caja del producto"
+                                    name="editCaducidadMinima"
+                                    required>
+                        </div>
+
                     </div>
+                    
                 </form>
             </div>
             <div class="modal-footer">
@@ -253,6 +266,7 @@
                     $( '#modalEditProductCB'       ).val(data.datos.barcode);
                     $( '#modalEditProductCBD'      ).val(data.datos.display_barcode);
                     $( '#modalEditProductCBC'      ).val(data.datos.corrugated_barcode);
+                    $( '#modalEditCaducidadMinima' ).val(data.datos.caducidad_minima);
                 } else {
                     var errorMsg = "<p>Error al obtener datos de productos.<p><ul>";
                     $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );

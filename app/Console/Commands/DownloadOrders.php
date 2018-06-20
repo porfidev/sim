@@ -114,6 +114,7 @@ class DownloadOrders extends Command
                         OrderRepository::SQL_ESTATUS        => 1,
                         OrderRepository::SQL_CODIGO         => $row['CARDCODE']
                     );
+                    
                     //función para restar fechas, regresa los dias restantes
 
                     //------------------------------------------------------

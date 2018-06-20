@@ -80,8 +80,15 @@
                                 <span class="proAssi"
                                     data-id="{{ $ped->id }}" id="prod{{ $ped->id }}">-</span>
                             </td>
-                            <td> &nbsp; </td>                     
-                            
+                            <td style="text-align: center;"> 
+                                <button class="btn btn-sm btn-success cierraPed"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        data-id="{{ $ped->idOrdW }}"
+                                        title="Cerrar pedido">
+                                    <i class="material-icons">offline_pin</i>
+                                </button>
+                            </td>                            
                         </tr>
             @endforeach
             @if (count($listado) === 0)
@@ -157,6 +164,19 @@
 
             });
 
+            $(".cierraPed").click(function() {
+
+                  var parametros = [];
+                    parametros["id"] = $(this).attr( "data-id" );
+                     abrirConfirmacion(
+                        "Confirmaci&oacute;n",
+                        "¿Estás seguro de que deseas cerrar este pedido?",
+                        "{{ route('surtir.cierraPed') }}",
+                        parametros
+                    );
+
+            });
+
         });  
 
 
@@ -167,13 +187,19 @@
             if (e.keyCode == 13) {
 
                 var codigo = $("#cod"+id).val();
+
+                if(codigo == ""){
+
+                    alert("codigo vacio");
+                    return;
+                }
         
                 console.log("entro, id: "+id+", codigo: "+codigo+" cantidad: "+cantidad+" cantUsu: "+cantUsu+" sku: "+skus);
 
                 $("#cod"+id).val("");
 
                 $.ajax({
-                    url     : "{{ URL::to('productos/addDet') }}",
+                    url     : "{{ URL::to('addDet') }}",
                     method  : "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
