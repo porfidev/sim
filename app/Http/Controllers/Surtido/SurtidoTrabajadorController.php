@@ -8,28 +8,34 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
-
-use App\Repositories\OrderDetailRepository;
+use App\Http\Controllers\Base\ProductController;
 
 use App\Repositories\AssignmentRepository;
+use App\Repositories\ProductRepository;
+use App\Repositories\OrderDetailRepository;
+use App\Repositories\OrderRepository;
 
 use Illuminate\Support\Facades\Log;
 
 class SurtidoTrabajadorController extends Controller
 {
 
-    private $detModel;
     private $assiModel;
+    private $productModel;
+    private $ordDetModel;
+    private $orderModel;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(OrderDetailRepository $det, AssignmentRepository $as)
+    public function __construct(AssignmentRepository $as, ProductRepository $product, OrderDetailRepository $det, OrderRepository $ord)
     {
         $this->middleware('auth');
-        $this->detModel = $det;
         $this->assiModel = $as;
+        $this->productModel = $product;
+        $this->ordDetModel = $det;
+        $this->orderModel = $ord;
     }
 
     /**
@@ -82,7 +88,7 @@ class SurtidoTrabajadorController extends Controller
 
             Log::info(" listadoPedidos - listaAsig ");
 
-            $listado = $this->detModel->getByIdOrd($ordId);
+            $listado = $this->ordDetModel->getByIdOrd($ordId);
 
             $response = $listado->toArray();
 
@@ -95,5 +101,133 @@ class SurtidoTrabajadorController extends Controller
 
         }
         return response()->json($response, 200);
+    }
+
+       /**
+     * Función para agregar productos a las tareas de un trabajador
+     * (En Surtudo de pedidos)
+     *
+     * @param sku   String  Clave del producto a agregar
+     * @param idDet integer Id del item dentro del pedido
+     */
+    public function addDet(Request $request) {
+
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $cantidad = 0;
+
+        try {
+            Log::info(" SurtidoTrabajadorController - addDet sku : ".$request->get('sku'));
+            $product = $this->productModel->getBySku( $request->get('sku') );
+           
+                Log::debug(" SurtidoTrabajadorController - addDet: ".json_encode($product) );
+
+                $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
+
+                $modPed = $this->orderModel->getById($detalleOrder->idOrder);
+
+                if($modPed->status < 3){
+
+                    $codigo = $request->get('cod');
+                    $cantU = intval($request->get('cantU'));
+                    $cantT = intval($request->get('cant'));
+
+                    $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel); 
+
+                    Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );                   
+
+                    if($resp[0] != -1) {
+
+                        $cantidadTot = $resp[0] + $cantU;
+
+                        if($cantidadTot <= $cantT){
+
+                            Log::info("SurtidoTrabajadorController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
+                            $datos = array();
+                            $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
+
+                            if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
+
+                                $resultado = "ERROR";
+                                $mensajes  = array( "No se pudo actualizar el detalle" );
+
+                            }else{
+
+                                $resultado = $cantidadTot;
+
+                                $datosE = array();
+                                $datosE[OrderRepository::SQL_ESTATUS] = 2;
+
+                                $this->orderModel->update($detalleOrder->idOrder,$datosE);
+
+                                if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
+
+                                    $datosW = array();
+                                    $datosW[OrderRepository::SQL_ESTATUS] = 3;
+
+                                    $this->orderModel->update($detalleOrder->idOrder,$datosW);
+                                }
+                            }
+
+                        } else {
+                            $resultado = "ERROR";
+                            $mensajes  = array( "Cantidad excedida" );
+                        }
+                    }
+
+                } else {
+                            $resultado = "ERROR";
+                            $mensajes  = array( "Este pedido ya esta Cerrado" );
+                       }
+
+                
+            
+        } catch (\Exception $e) {
+            Log::error( 'SurtidoTrabajadorController - addDet - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    function cierraPed(Request $request){
+
+        $resultado = "OK";
+        $mensajes  = "NA";
+
+        Log::info(" ProductController - cierraPed idPed : ".$request->get('id'));
+
+        try{
+
+            $idPed = $request->get('id');
+
+            $listaDet = $this->ordDetModel->getByIdOrd($idPed);
+
+            $datosW = array();
+            $datosW[OrderRepository::SQL_ESTATUS] = 3;
+
+            if(!$this->orderModel->update($idPed,$datosW)) {
+
+                $resultado = "ERROR";
+                $mensajes  = array( "No se pudo cerrar el pedido" );
+
+            }
+
+
+        } catch (\Exception $e) {
+
+            Log::error( 'ProductController - cierraPed - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+
+        }
+
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 }

@@ -46,7 +46,7 @@ class EloquentAssignment implements AssignmentRepository
 
     public function getPedUser($idUsr){
 
-    	$list = $this->model->select("orders.*","calculations.fP as FP","calculations.priority as prio","clients.name as name")
+    	$list = $this->model->select("orders.*","orders.id as idOrdW","calculations.fP as FP","calculations.priority as prio","clients.name as name")
     						->leftJoin("orders","orders.id","=","assignments.order_id")
     						->leftJoin("calculations","orders.id","=","calculations.order_id")
     						->leftJoin("clients","clients.code","=","orders.code")
