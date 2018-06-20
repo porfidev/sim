@@ -2,7 +2,10 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\User;
+use App\Session;
 
 use Illuminate\Support\Facades\Log;
 
@@ -11,17 +14,52 @@ class EloquentUser implements UserRepository
 	/**
 	 * @var $model
 	 */
-    private $model;
+	private $model;
+	private $modelSession;
 
     /**
 	 * EloquentUser constructor.
 	 *
 	 * @param App\User $model
 	 */
-	public function __construct(User $model)
+	public function __construct(User $model, Session $session)
 	{
-		$this->model = $model;
+		$this->model        = $model;
+		$this->modelSession = $session;
     }
+
+	/**
+	 * Get the user session
+	 */
+	public function getSession($user_id)
+	{
+		$today = date('Y-m-d');
+		return $this->modelSession
+			/*
+			->whereBetween(DB::raw("created_at"),
+				[
+					($today.' 00:00:00'),
+					($today.' 23:59:59')
+				]
+			)
+			*/
+			->whereRaw('TIMESTAMPDIFF(MINUTE,created_at,NOW()) < 45')
+			->where('user_id', '=', $user_id)
+			->first();
+	}
+
+	/**
+	 * Create the user session
+	 */
+	public function createSession($user_id, $ip)
+	{
+		return $this->modelSession->create(
+			array(
+				self::SQL_SESSION_USER_ID => $user_id,
+				self::SQL_SESSION_IP      => $ip
+			)
+		);
+	}
 
     /**
 	 * Get all users.
@@ -59,8 +97,8 @@ class EloquentUser implements UserRepository
 
 	public function getListBus($nombre)
 	{
-		$list = $this->model->select("id as value", "name as label")->where("users.name","like","%".$nombre."%");
-		
+		$list = $this->model->select("id as value", "name as label")
+			->where("users.name","like","%".$nombre."%");
 		return $list->get();
 	}
 
@@ -69,7 +107,6 @@ class EloquentUser implements UserRepository
 		$list = $this->model->select("id as value", "name as label")
 							->where("users.name","like","%".$nombre."%")
 							->where("users.boss_id","=",$idJefe);
-		
 		return $list->get();
 	}
 
@@ -94,7 +131,6 @@ class EloquentUser implements UserRepository
 	 */
 	public function create(array $attributes)
 	{
-
 		return $this->model->create($attributes);
 	}
 

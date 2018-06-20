@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Log;
 use Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Base\HomeController;
 
 use App\Repositories\MenuRepository;
+use App\Repositories\UserRepository;
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -16,6 +18,7 @@ class LoginController extends Controller
 {
 
     private $menuModel;
+    private $userModel;
 
     /*
     |--------------------------------------------------------------------------
@@ -35,10 +38,13 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct(MenuRepository $menu)
+    public function __construct(
+        MenuRepository $menu,
+        UserRepository $user )
     {
         $this->middleware('guest')->except('logout');
         $this->menuModel = $menu;
+        $this->userModel = $user;
     }
 
     /**
@@ -67,8 +73,32 @@ class LoginController extends Controller
                 ]
             )) {
             HomeController::setMenu($request, $this->menuModel);
-            // Authentication passed...
-            return redirect()->intended('home');
+            $session = $this->userModel->getSession(Auth::id());
+            Log::info("LoginController - login: ".json_encode($session));
+            if(!empty($session)){
+                Auth::logout();
+                $request->session()->flash('error', 'Existe una sesión del usuario');
+                return redirect()->route('login');
+            } else {
+                $this->userModel->createSession(Auth::id(), $request->ip());
+                // Authentication passed...
+                return redirect()->intended('home');
+            }
         }
+    }
+
+    public function logout(Request $request)
+    {
+        $session = $this->userModel->getSession(Auth::id());
+        if(!empty($session)){
+            
+        }
+        $this->guard()->logout();
+        Auth::logout();
+
+        $request->session()->flush();
+        $request->session()->regenerate();
+
+        return redirect()->route('login');
     }
 }

@@ -59,7 +59,6 @@ class UsuariosController extends Controller
 
             Log::info(" array especial: ".$listado);
 
-           
         } catch (\Exception $e) {
             Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
             $response = array();

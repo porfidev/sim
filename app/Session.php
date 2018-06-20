@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Session extends Model
 {
     use SoftDeletes;
 
@@ -22,7 +22,7 @@ class Product extends Model
      * @var array
      */
     protected $hidden = [
-        'pivot', 'created_at', 'updated_at', 'deleted_at'
+        'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -31,11 +31,6 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'sku', 'concept', 'alias', 'weight_per_piece',
-        'items_per_display', 'display_per_box', 'weight_per_display',
-        'weight_per_box', 'width', 'height', 'depth',
-        'barcode', 'display_barcode', 'corrugated_barcode',
-        'user_id','caducidad_minima'
+        'user_id', 'ip'
     ];
-
 }
