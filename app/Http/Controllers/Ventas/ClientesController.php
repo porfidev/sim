@@ -50,9 +50,9 @@ class ClientesController extends Controller{
      *
      * @return void
      */
-    public function __construct(ClienteRepository $cli, CatalogoRepository $cata){
-
-        //$this->middleware('auth');
+    public function __construct(ClienteRepository $cli, CatalogoRepository $cata)
+    {
+        $this->middleware('auth');
         $this->clienteModel = $cli;
         $this->cat = $cata;
     }

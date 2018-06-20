@@ -24,7 +24,6 @@ class SurtidoJefeController extends Controller
     public function __construct(CalculationRepository $cal)
     {
         $this->middleware('auth');
-
         $this->calcModel = $cal;
     }
 

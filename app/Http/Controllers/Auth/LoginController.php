@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use Auth;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Base\HomeController;
+
+use App\Repositories\MenuRepository;
+
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
+
+    private $menuModel;
+
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -26,9 +35,10 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MenuRepository $menu)
     {
         $this->middleware('guest')->except('logout');
+        $this->menuModel = $menu;
     }
 
     /**
@@ -39,5 +49,26 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         return '/home';
+    }
+
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    public function login(Request $request)
+    {
+        if (Auth::attempt(
+                [
+                    'email'    => request('email'),
+                    'password' => request('password'),
+                    'status'   => 1
+                ]
+            )) {
+            HomeController::setMenu($request, $this->menuModel);
+            // Authentication passed...
+            return redirect()->intended('home');
+        }
     }
 }

@@ -28,7 +28,7 @@ class SurtidoTrabajadorController extends Controller
     public function __construct(OrderDetailRepository $det, AssignmentRepository $as)
     {
         $this->middleware('auth');
-        $this->detModel = $det;
+        $this->detModel  = $det;
         $this->assiModel = $as;
     }
 

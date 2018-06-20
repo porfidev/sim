@@ -25,16 +25,15 @@ class RecepcionController extends Controller
 {
     private $purchaseModel;
 
-    const SESSION_ID        = "su_id";
-    const SESSION_PROVEEDOR    = "su_proveedor";
-    const SESSION_RECEPTIOM    = "su_reception";
-    const SESSION_ENTREGA  = "su_entrega";
-    const SESSION_CODIGO       = "su_codigo";
-    
+    const SESSION_ID         = "su_id";
+    const SESSION_PROVEEDOR  = "su_proveedor";
+    const SESSION_RECEPTIOM  = "su_reception";
+    const SESSION_ENTREGA    = "su_entrega";
+    const SESSION_CODIGO     = "su_codigo";
 
     public function __construct(PurchaseRepository $cli){
 
-        //$this->middleware('auth');
+        $this->middleware('auth');
         $this->purchaseModel = $cli;
     }
 
