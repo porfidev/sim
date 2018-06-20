@@ -80,6 +80,10 @@ class LoginController extends Controller
                 $request->session()->flash('error', 'Existe una sesión del usuario');
                 return redirect()->route('login');
             } else {
+                $oldSessions = $this->userModel->getSession(Auth::id(), true);
+                foreach ($oldSessions as $item) {
+                    $this->userModel->deleteSession($item->id);
+                }
                 $this->userModel->createSession(Auth::id(), $request->ip());
                 // Authentication passed...
                 return redirect()->intended('home');
@@ -91,7 +95,7 @@ class LoginController extends Controller
     {
         $session = $this->userModel->getSession(Auth::id());
         if(!empty($session)){
-            
+            $this->userModel->deleteSession($session->id);
         }
         $this->guard()->logout();
         Auth::logout();

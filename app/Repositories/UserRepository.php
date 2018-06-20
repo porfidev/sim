@@ -18,7 +18,7 @@ interface UserRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
-	function getSession($user_id);
+	function getSession($user_id, $old=false);
 
 	function createSession($user_id, $ip);
 

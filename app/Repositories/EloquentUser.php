@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Log;
 
 class EloquentUser implements UserRepository
 {
+
+	const SESSION_TIME   = 45;
+	const SESSION_OLD    = '> ';
+	const SESSION_ACTUAL = '< ';
+
 	/**
 	 * @var $model
 	 */
@@ -31,21 +36,23 @@ class EloquentUser implements UserRepository
 	/**
 	 * Get the user session
 	 */
-	public function getSession($user_id)
+	public function getSession($user_id, $old=false)
 	{
-		$today = date('Y-m-d');
-		return $this->modelSession
-			/*
-			->whereBetween(DB::raw("created_at"),
-				[
-					($today.' 00:00:00'),
-					($today.' 23:59:59')
-				]
-			)
-			*/
-			->whereRaw('TIMESTAMPDIFF(MINUTE,created_at,NOW()) < 45')
-			->where('user_id', '=', $user_id)
-			->first();
+		$condition = self::SESSION_ACTUAL;
+		if($old) {
+			$condition = self::SESSION_OLD;
+		}
+		$session = $this->modelSession
+			->whereRaw('TIMESTAMPDIFF(MINUTE,created_at,NOW()) '.$condition.self::SESSION_TIME)
+			->where('user_id', '=', $user_id);
+
+		if($old) {
+			$session = $session->get();
+		} else {
+			$session = $session->first();
+		}
+
+		return $session;
 	}
 
 	/**
@@ -59,6 +66,18 @@ class EloquentUser implements UserRepository
 				self::SQL_SESSION_IP      => $ip
 			)
 		);
+	}
+
+	/**
+	 * Delete a Session.
+	 *
+	 * @param integer $id
+	 *
+	 * @return boolean
+	 */
+	public function deleteSession($id)
+	{
+		return $this->modelSession->find($id)->delete();
 	}
 
     /**
