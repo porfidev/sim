@@ -64,7 +64,7 @@ class DownloadPurchaseOrders extends Command
             if($con){
 
                 $sql = "select OPOR.DocEntry, DocNum, CardCode, CardName, DocDueDate, ItemCode, Quantity, CodeBars, LineNum, U_CANTREQ from OPOR".
-                       "  join POR1 ON OPOR.DocEntry = POR1.DocEntry where OPOR.Confirmed = 'Y' AND  OPOR.CANCELED = 'N' ";
+                       "  join POR1 ON OPOR.DocEntry = POR1.DocEntry where OPOR.DocStatus = 'O' ";
                 $stmt = sqlsrv_query( $con, $sql );
 
 

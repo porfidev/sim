@@ -125,6 +125,7 @@ class ProductController extends Controller
                     'codigoDeBarras'           => 'required|string|max:150',
                     'codigoDeBarrasDelDisplay' => 'required|string|max:150',
                     'codigoDeBarrasCorrugado'  => 'required|string|max:150',
+                    'caducidadMinima'          => 'required|numeric',
                 ),
                 Controller::$messages
             );
@@ -148,6 +149,7 @@ class ProductController extends Controller
                     ProductRepository::SQL_B_C     => $request->codigoDeBarras,
                     ProductRepository::SQL_D_B_C   => $request->codigoDeBarrasDelDisplay,
                     ProductRepository::SQL_C_B_C   => $request->codigoDeBarrasCorrugado,
+                    ProductRepository::SQL_CADM    => $request->caducidadMinima,
                     ProductRepository::SQL_USER    => Auth::id(),
                 );
                 Log::info(" ProductController - agregar - data: ".json_encode($data));
@@ -240,6 +242,7 @@ class ProductController extends Controller
                             'codigoDeBarras'           => 'required|string|max:150',
                             'codigoDeBarrasDelDisplay' => 'required|string|max:150',
                             'codigoDeBarrasCorrugado'  => 'required|string|max:150',
+                            'editCaducidadMinima'      => 'required|numeric',
                         ),
                         Controller::$messages
                     );
@@ -263,6 +266,7 @@ class ProductController extends Controller
                             ProductRepository::SQL_B_C     => $request->codigoDeBarras,
                             ProductRepository::SQL_D_B_C   => $request->codigoDeBarrasDelDisplay,
                             ProductRepository::SQL_C_B_C   => $request->codigoDeBarrasCorrugado,
+                            ProductRepository::SQL_CADM    => $request->editCaducidadMinima,
                             ProductRepository::SQL_USER    => Auth::id()
                         );
                         Log::info(" ProductController - editar - data: ".json_encode($data));
@@ -460,6 +464,7 @@ class ProductController extends Controller
                     ProductRepository::SQL_B_C     => $datos[6],
                     ProductRepository::SQL_D_B_C   => $datos[7],
                     ProductRepository::SQL_C_B_C   => $datos[8],
+                    ProductRepository::SQL_CADM    => $datos[9],
                     ProductRepository::SQL_USER    => Auth::id(),
                 );
                     

@@ -20,6 +20,7 @@ interface ProductRepository
     const SQL_D_B_C   = "display_barcode";
     const SQL_C_B_C   = "corrugated_barcode";
     const SQL_USER    = "user_id";
+    const SQL_CADM    = "caducidad_minima";
 
     function getList($itemsPerPage, array $search = null);
 
