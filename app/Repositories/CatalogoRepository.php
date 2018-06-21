@@ -22,6 +22,8 @@ interface CatalogoRepository
 
 	function getByLabel($label);
 
+	function getByLabelFull($label);
+
 	function getPadres();
 
 	function create(array $attributes);

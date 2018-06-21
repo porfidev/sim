@@ -10,6 +10,7 @@ interface OrderRepository
 	const SQL_FIN  = "end";
 	const SQL_CODIGO  = "code";
 	const SQL_ESTATUS  = "status";
+	const SQL_DIST_ID  = "dist_id";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
