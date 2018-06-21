@@ -109,12 +109,14 @@ class DownloadOrders extends Command
 
                     $distanciaEsp = $this->cat->getByLabelFull($row['ShipToCode']);
 
+                    //0-50 dist
+
                     if($distanciaEsp == null){
 
                         $dataCat = array(
                             CatalogoRepository::SQL_ETIQUETA  => $row['ShipToCode'],
                             CatalogoRepository::SQL_GRUPO_ID => 8,
-                            CatalogoRepository::SQL_VALOR   => 0
+                            CatalogoRepository::SQL_VALOR   => -1
                         );
 
                         $this->cat->create($dataCat);
@@ -126,7 +128,7 @@ class DownloadOrders extends Command
 
                     $cliente = $this->cli->getByCodigo($row['CARDCODE']);
 
-                    if($cliente != null && $distanciaEsp->value != 0 && $cliente->CE != '-' && 
+                    if($cliente != null && $distanciaEsp->value != -1 && $cliente->CE != '-' && 
                         $cliente->TP != '-' && $cliente->P != '-'){
 
                         //función para restar fechas, regresa los dias restantes
@@ -187,7 +189,7 @@ class DownloadOrders extends Command
                             OrderRepository::SQL_FIN            => date('Y-m-d', $fechaF),
                             OrderRepository::SQL_ESTATUS        => 1,
                             OrderRepository::SQL_CODIGO         => $row['CARDCODE'],
-                            OrderRepository::SQL_DIST_ID         => $distanciaEsp->id
+                            OrderRepository::SQL_DIST_ID        => $distanciaEsp->id
                         );
 
                         $fechaHoy = date('Y-m-j');

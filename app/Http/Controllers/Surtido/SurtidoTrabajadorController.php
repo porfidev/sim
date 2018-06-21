@@ -216,8 +216,6 @@ class SurtidoTrabajadorController extends Controller
 
             $idPed = $request->get('id');
 
-            $listaDet = $this->ordDetModel->getByIdOrd($idPed);
-
             $datosW = array();
             $datosW[OrderRepository::SQL_ESTATUS] = 3;
 
