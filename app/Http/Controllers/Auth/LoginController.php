@@ -74,13 +74,17 @@ class LoginController extends Controller
             )) {
             HomeController::setMenu($request, $this->menuModel);
             $session = $this->userModel->getSession(Auth::id());
-            Log::info("LoginController - login: ".json_encode($session));
             if(!empty($session)){
+                Log::error("LoginController - login: ".json_encode($session));
+                Log::error("LoginController - login - Intento doble de autenticación: ".Auth::id()." | ".$request->ip());
                 Auth::logout();
                 $request->session()->flash('error', 'Existe una sesión del usuario');
                 return redirect()->route('login');
             } else {
                 $oldSessions = $this->userModel->getSession(Auth::id(), true);
+                if(count($oldSessions) > 0) {
+                    Log::warning("LoginController - login - Tenemos sesiones caducadas sin borrar: ".count($oldSessions));
+                }
                 foreach ($oldSessions as $item) {
                     $this->userModel->deleteSession($item->id);
                 }

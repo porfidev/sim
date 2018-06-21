@@ -43,7 +43,7 @@ class EloquentUser implements UserRepository
 			$condition = self::SESSION_OLD;
 		}
 		$session = $this->modelSession
-			->whereRaw('TIMESTAMPDIFF(MINUTE,created_at,NOW()) '.$condition.self::SESSION_TIME)
+			->whereRaw('TIMESTAMPDIFF(MINUTE, updated_at, NOW()) '.$condition.self::SESSION_TIME)
 			->where('user_id', '=', $user_id);
 
 		if($old) {
