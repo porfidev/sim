@@ -33,7 +33,7 @@ class RecepcionController extends Controller
 
     public function __construct(PurchaseRepository $cli)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'permission']);
         $this->purchaseModel = $cli;
     }
 

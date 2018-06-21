@@ -35,7 +35,7 @@ class SurtidoTrabajadorController extends Controller
                                  OrderDetailRepository $det, OrderRepository $ord,
                                 historySupplyRepository $hist)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'permission']);
         $this->assiModel    = $as;
         $this->productModel = $product;
         $this->ordDetModel = $det;
