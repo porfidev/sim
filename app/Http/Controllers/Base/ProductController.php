@@ -38,7 +38,7 @@ class ProductController extends Controller
      */
     public function __construct(ProductRepository $product, OrderDetailRepository $det, OrderRepository $ord)
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
         $this->productModel = $product;
         $this->ordDetModel = $det;
         $this->orderModel = $ord;
@@ -410,7 +410,6 @@ class ProductController extends Controller
 
                     if(strpos($datos[3], "kg") || strpos($datos[3], "Kg")){
 
-                        
                         $datos[3] = str_replace($vowels, "", $datos[3]);
 
                         $datos[3] = floatval($datos[3])*1000;
@@ -467,14 +466,14 @@ class ProductController extends Controller
                     ProductRepository::SQL_CADM    => $datos[9],
                     ProductRepository::SQL_USER    => Auth::id(),
                 );
-                    
+
                 Log::info(" ProductController - agregar - data: ".json_encode($data));
                 DB::beginTransaction();
                 $this->productModel->create($data);
                 $contador++;
                 DB::commit();
 
-                } 
+                }
             }
             DB::commit();
             Session::flash('exito', 'Se han agregado: '.$contador.' productos  ');
@@ -487,7 +486,7 @@ class ProductController extends Controller
             return Redirect::route('productos.listado');
         }
     }
- 
+
     static function validaSku($sku,$codigo,$cantU,$productModelE){
 
         $resultado = "OK";
@@ -522,9 +521,8 @@ class ProductController extends Controller
                     $resultado = "ERROR";
                     $mensajes  = "Código de barras incorrecto";
 
-                }   
+                }
 
-                
             } else {
 
                 Log::error("ProductController - validaSku: El objeto product esta vacío");

@@ -42,7 +42,6 @@ class HomeController extends Controller
     {
         try {
             Log::info(" HomeController - index ");
-            self::setMenu($request, $this->menuModel);
             return view('home');
         } catch (\Exception $e) {
             Log::error( 'HomeController - index - Error'.$e->getMessage() );

@@ -36,7 +36,7 @@ class UsuariosController extends Controller
      */
     public function __construct(UserRepository $user, RolRepository $rol, AssignmentRepository $as)
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
         $this->userModel = $user;
         $this->rolModel  = $rol;
         $this->assiModel = $as;
@@ -59,7 +59,6 @@ class UsuariosController extends Controller
 
             Log::info(" array especial: ".$listado);
 
-           
         } catch (\Exception $e) {
             Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
             $response = array();

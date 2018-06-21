@@ -36,11 +36,16 @@ class SurtidoTrabajadorController extends Controller
                                 historySupplyRepository $hist)
     {
         $this->middleware('auth');
-        $this->assiModel = $as;
+        $this->assiModel    = $as;
         $this->productModel = $product;
+<<<<<<< HEAD
         $this->ordDetModel = $det;
         $this->orderModel = $ord;
         $this->histModel = $hist;
+=======
+        $this->ordDetModel  = $det;
+        $this->orderModel   = $ord;
+>>>>>>> 23bcbaa7a1c8f962b69b4175993839613eb3a7b1
     }
 
     /**
@@ -79,7 +84,6 @@ class SurtidoTrabajadorController extends Controller
                 )
             );
         }
-        
     }
 
      public function listaAsig(Request $request) {
@@ -99,7 +103,6 @@ class SurtidoTrabajadorController extends Controller
 
             Log::info(" array especial: ".$listado);
 
-           
         } catch (\Exception $e) {
             Log::error( 'listadoPedidos - listaAsig - Error: '.$e->getMessage() );
             $response = array();
@@ -124,47 +127,47 @@ class SurtidoTrabajadorController extends Controller
         try {
             Log::info(" SurtidoTrabajadorController - addDet sku : ".$request->get('sku'));
             $product = $this->productModel->getBySku( $request->get('sku') );
-           
-                Log::debug(" SurtidoTrabajadorController - addDet: ".json_encode($product) );
+            Log::debug(" SurtidoTrabajadorController - addDet: ".json_encode($product) );
 
-                $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
+            $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
 
-                $modPed = $this->orderModel->getById($detalleOrder->idOrder);
+            $modPed = $this->orderModel->getById($detalleOrder->idOrder);
 
-                if($modPed->status < 3){
+            if($modPed->status < 3){
 
-                    $codigo = $request->get('cod');
-                    $cantU = intval($request->get('cantU'));
-                    $cantT = intval($request->get('cant'));
+                $codigo = $request->get('cod');
+                $cantU = intval($request->get('cantU'));
+                $cantT = intval($request->get('cant'));
 
-                    $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel); 
+                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel); 
 
-                    Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );                   
+                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );                   
 
-                    if($resp[0] != -1) {
+                if($resp[0] != -1) {
 
-                        $cantidadTot = $resp[0] + $cantU;
+                    $cantidadTot = $resp[0] + $cantU;
 
-                        if($cantidadTot <= $cantT){
+                    if($cantidadTot <= $cantT){
 
-                            Log::info("SurtidoTrabajadorController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
-                            $datos = array();
-                            $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
+                        Log::info("SurtidoTrabajadorController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
+                        $datos = array();
+                        $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
 
-                            if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
+                        if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
 
-                                $resultado = "ERROR";
-                                $mensajes  = array( "No se pudo actualizar el detalle" );
+                            $resultado = "ERROR";
+                            $mensajes  = array( "No se pudo actualizar el detalle" );
 
-                            }else{
+                        }else{
 
-                                $resultado = $cantidadTot;
+                            $resultado = $cantidadTot;
 
-                                $datosE = array();
-                                $datosE[OrderRepository::SQL_ESTATUS] = 2;
+                            $datosE = array();
+                            $datosE[OrderRepository::SQL_ESTATUS] = 2;
 
-                                $this->orderModel->update($detalleOrder->idOrder,$datosE);
+                            $this->orderModel->update($detalleOrder->idOrder,$datosE);
 
+<<<<<<< HEAD
                                 $fecHor = date("Y-m-d H:i:s");
 
                                 $dataHist = array(
@@ -179,27 +182,27 @@ class SurtidoTrabajadorController extends Controller
                                 $this->histModel->create($dataHist);
 
                                 if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
+=======
+                            if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
+>>>>>>> 23bcbaa7a1c8f962b69b4175993839613eb3a7b1
 
-                                    $datosW = array();
-                                    $datosW[OrderRepository::SQL_ESTATUS] = 3;
+                                $datosW = array();
+                                $datosW[OrderRepository::SQL_ESTATUS] = 3;
 
-                                    $this->orderModel->update($detalleOrder->idOrder,$datosW);
-                                }
+                                $this->orderModel->update($detalleOrder->idOrder,$datosW);
                             }
-
-                        } else {
-                            $resultado = "ERROR";
-                            $mensajes  = array( "Cantidad excedida" );
                         }
+
+                    } else {
+                        $resultado = "ERROR";
+                        $mensajes  = array( "Cantidad excedida" );
                     }
+                }
 
-                } else {
-                            $resultado = "ERROR";
-                            $mensajes  = array( "Este pedido ya esta Cerrado" );
-                       }
-
-                
-            
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "Este pedido ya esta Cerrado" );
+            }
         } catch (\Exception $e) {
             Log::error( 'SurtidoTrabajadorController - addDet - Error: '.$e->getMessage() );
             $resultado = "ERROR";

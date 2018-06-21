@@ -6,6 +6,14 @@
         <div class="col-12 col-sm-8 col-md-6 col-lg-5">
             <div class="card">
                 <div class="card-body">
+                @if(Session::has('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ Session::get('error')}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
                     <h5 class="card-title">
                             Entrada SIM
                     </h5>
