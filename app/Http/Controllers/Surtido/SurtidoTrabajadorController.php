@@ -38,14 +38,9 @@ class SurtidoTrabajadorController extends Controller
         $this->middleware('auth');
         $this->assiModel    = $as;
         $this->productModel = $product;
-<<<<<<< HEAD
         $this->ordDetModel = $det;
         $this->orderModel = $ord;
         $this->histModel = $hist;
-=======
-        $this->ordDetModel  = $det;
-        $this->orderModel   = $ord;
->>>>>>> 23bcbaa7a1c8f962b69b4175993839613eb3a7b1
     }
 
     /**
@@ -167,24 +162,20 @@ class SurtidoTrabajadorController extends Controller
 
                             $this->orderModel->update($detalleOrder->idOrder,$datosE);
 
-<<<<<<< HEAD
-                                $fecHor = date("Y-m-d H:i:s");
+                            $fecHor = date("Y-m-d H:i:s");
 
-                                $dataHist = array(
-                                    historySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
-                                    historySupplyRepository::SQL_DETID     => $request->get('idDet'),
-                                    historySupplyRepository::SQL_PROID     => $product->id,
-                                    historySupplyRepository::SQL_USRID     => Auth::id(),
-                                    historySupplyRepository::SQL_QUANTITY  => $resp[0],
-                                    historySupplyRepository::SQL_DATIME    => $fecHor
-                                );
+                            $dataHist = array(
+                                historySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
+                                historySupplyRepository::SQL_DETID     => $request->get('idDet'),
+                                historySupplyRepository::SQL_PROID     => $product->id,
+                                historySupplyRepository::SQL_USRID     => Auth::id(),
+                                historySupplyRepository::SQL_QUANTITY  => $resp[0],
+                                historySupplyRepository::SQL_DATIME    => $fecHor
+                            );
 
-                                $this->histModel->create($dataHist);
+                            $this->histModel->create($dataHist);
 
-                                if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
-=======
                             if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
->>>>>>> 23bcbaa7a1c8f962b69b4175993839613eb3a7b1
 
                                 $datosW = array();
                                 $datosW[OrderRepository::SQL_ESTATUS] = 3;
