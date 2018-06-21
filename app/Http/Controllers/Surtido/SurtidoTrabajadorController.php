@@ -14,6 +14,7 @@ use App\Repositories\AssignmentRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
+use App\Repositories\historySupplyRepository;
 
 use Illuminate\Support\Facades\Log;
 
@@ -24,18 +25,22 @@ class SurtidoTrabajadorController extends Controller
     private $productModel;
     private $ordDetModel;
     private $orderModel;
+    private $histModel;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(AssignmentRepository $as, ProductRepository $product, OrderDetailRepository $det, OrderRepository $ord)
+    public function __construct(AssignmentRepository $as, ProductRepository $product,
+                                 OrderDetailRepository $det, OrderRepository $ord,
+                                historySupplyRepository $hist)
     {
         $this->middleware('auth');
         $this->assiModel = $as;
         $this->productModel = $product;
         $this->ordDetModel = $det;
         $this->orderModel = $ord;
+        $this->histModel = $hist;
     }
 
     /**
@@ -159,6 +164,19 @@ class SurtidoTrabajadorController extends Controller
                                 $datosE[OrderRepository::SQL_ESTATUS] = 2;
 
                                 $this->orderModel->update($detalleOrder->idOrder,$datosE);
+
+                                $fecHor = date("Y-m-d H:i:s");
+
+                                $dataHist = array(
+                                    historySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
+                                    historySupplyRepository::SQL_DETID     => $request->get('idDet'),
+                                    historySupplyRepository::SQL_PROID     => $product->id,
+                                    historySupplyRepository::SQL_USRID     => Auth::id(),
+                                    historySupplyRepository::SQL_QUANTITY  => $resp[0],
+                                    historySupplyRepository::SQL_DATIME    => $fecHor
+                                );
+
+                                $this->histModel->create($dataHist);
 
                                 if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
 
