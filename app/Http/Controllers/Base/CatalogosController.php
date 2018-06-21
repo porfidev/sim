@@ -29,7 +29,7 @@ class CatalogosController extends Controller{
      */
     public function __construct(CatalogoRepository $cat){
 
-        $this->middleware('auth');
+        $this->middleware(['auth', 'permission']);
         $this->catalogoModel  = $cat;
     }
 
@@ -146,7 +146,6 @@ class CatalogosController extends Controller{
 
                 }
 
-                
                 Log::info(" CatalogosController - agregar - data: ".json_encode($data));
                 $this->catalogoModel->create($data);
             }

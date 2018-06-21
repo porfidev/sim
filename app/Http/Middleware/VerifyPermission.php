@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Log;
+use Auth;
 use Closure;
 
 use App\Repositories\MenuRepository;
@@ -10,6 +11,7 @@ use App\Repositories\MenuRepository;
 class VerifyPermission
 {
 
+    const URL_HOME = "home";
     private $menuModel;
 
     /**
@@ -30,10 +32,23 @@ class VerifyPermission
      */
     public function handle($request, Closure $next)
     {
-        $base = env('APP_BASE_URL', 'http://localhost/sim/public');
+        $base = env('APP_BASE_URL', 'http://localhost/sim/public/');
         $url  = $request->fullUrl();
         $url = str_replace($base, "", $url);
-        Log::info("Intento de acceder a: ".$url);
+        Log::debug("VerifyPermission - Intento de acceder a: ".$url);
+        if($url != self::URL_HOME) {
+            $user = Auth::user();
+            $rol = $user->rol;
+            $permission = $rol
+                ->getMenuItems()
+                ->where(MenuRepository::SQL_URL, '=', $url)
+                ->first();
+            Log::debug("VerifyPermission - permission: ".json_encode($permission));
+            if(empty($permission)) {
+                Log::error("VerifyPermission - acceso sin permiso");
+                return redirect()->route('login');
+            }
+        }
         return $next($request);
     }
 }

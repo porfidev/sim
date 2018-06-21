@@ -122,6 +122,17 @@ class EloquentMenu implements MenuRepository
 	}
 
 	/**
+	 * Get menu items by URL.
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function findMenuByUrl($url)
+	{
+		return $this->model->where(self::SQL_URL, '=', $url)
+			->first();
+	}
+
+	/**
 	 * Get menu items to show.
 	 *
 	 * @return Array
