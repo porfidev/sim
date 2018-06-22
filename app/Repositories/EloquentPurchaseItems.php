@@ -29,9 +29,7 @@ class EloquentPurchaseItems implements PurchaseItemsRepository
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
     function getAll(array $search = null){
-
-    	$list = $this->model->orderBy('id', 'desc');
-    	    	
+		$list = $this->model->orderBy('id', 'desc');	
         return $list->paginate(10);
     }
 
