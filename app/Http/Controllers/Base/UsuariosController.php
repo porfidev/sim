@@ -34,9 +34,12 @@ class UsuariosController extends Controller
      *
      * @return void
      */
-    public function __construct(UserRepository $user, RolRepository $rol, AssignmentRepository $as)
+    public function __construct(
+        UserRepository $user,
+        RolRepository $rol,
+        AssignmentRepository $as)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'permission']);
         $this->userModel = $user;
         $this->rolModel  = $rol;
         $this->assiModel = $as;

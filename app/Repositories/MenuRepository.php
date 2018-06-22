@@ -27,6 +27,8 @@ interface MenuRepository
 
     function getChilds($parent, $rol);
 
+    function findMenuByUrl($url);
+
     function getMenu($rol);
 
     function getList($itemsPerPage, array $search = null);
