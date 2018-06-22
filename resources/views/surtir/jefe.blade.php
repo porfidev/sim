@@ -102,35 +102,25 @@
                             <td>
 
                                 @if ($ped->ordStatus == 1)
-
                                     En espera
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 2)
-
                                     En Proceso
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 3)
 
                                     Por validar Surtido
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 4)
-
                                     Surtido
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 0)
-
                                     Faltan datos
-                        
                                 @endif
-                                
                             </td>
                             <td>
                                 {{ $ped->FP }}
@@ -237,7 +227,6 @@
 
                     $("#assi"+idOrd).html(tt);
                 });
-
             });
 
             $( '.checarProyecto' ).click(function () {

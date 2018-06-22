@@ -75,7 +75,7 @@ class MenuController extends Controller
             return view('menu.listado',
                 array(
                     "listado" => $listado,
-                    "parents" => $this->menuModel->getParents(),
+                    "parents" => $this->menuModel->getParents(null, 2),
                     "roles"   => $this->rolModel->getAll()
                 )
             );
@@ -248,7 +248,8 @@ class MenuController extends Controller
                             'padre'    => 'sometimes|integer|exists:menus,id',
                             'orden'    => 'required|integer',
                             'etiqueta' => 'required|string|max:120',
-                            'url'      => 'sometimes|string'
+                            'url'      => 'sometimes|string',
+                            'visible'  => 'required|boolean'
                         ),
                         Controller::$messages
                     );
@@ -258,9 +259,10 @@ class MenuController extends Controller
                         $mensajes = $validator->errors();
                     } else {
                         $data = array(
-                            MenuRepository::SQL_LABEL  => $request->etiqueta,
-                            MenuRepository::SQL_ORDER  => $request->orden,
-                            MenuRepository::SQL_USER   => Auth::id()
+                            MenuRepository::SQL_LABEL   => $request->etiqueta,
+                            MenuRepository::SQL_ORDER   => $request->orden,
+                            MenuRepository::SQL_VISIBLE => $request->visible,
+                            MenuRepository::SQL_USER    => Auth::id()
                         );
                         if($request->has('padre')) {
                             $data[MenuRepository::SQL_PARENT] = $request->padre;

@@ -81,7 +81,10 @@ class SurtidoTrabajadorController extends Controller
         }
     }
 
-     public function listaAsig(Request $request) {
+    /**
+     * Función para obtener datos de una orden asignada
+     */
+    public function listaAsig(Request $request) {
         $response = array();
         $ordId = "";
         try {
@@ -106,7 +109,7 @@ class SurtidoTrabajadorController extends Controller
         return response()->json($response, 200);
     }
 
-       /**
+    /**
      * Función para agregar productos a las tareas de un trabajador
      * (En Surtudo de pedidos)
      *

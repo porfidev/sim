@@ -32,16 +32,16 @@ class VerifyPermission
      */
     public function handle($request, Closure $next)
     {
-        $base = env('APP_BASE_URL', 'http://localhost/sim/public/');
-        $url  = $request->fullUrl();
+        $base = env('APP_BASE_URL', 'http://localhost:8000/');
+        $url  = $request->url();
         $url = str_replace($base, "", $url);
         Log::debug("VerifyPermission - Intento de acceder a: ".$url);
-        if(!empty($url) && $url != self::URL_HOME) {
+        if(!empty($url)) {
             $user = Auth::user();
             $rol = $user->rol;
             $permission = $rol
                 ->getMenuItems()
-                ->where(MenuRepository::SQL_URL, '=', $url)
+                ->where(MenuRepository::SQL_URL, 'like', $url)
                 ->first();
             Log::debug("VerifyPermission - permission: ".json_encode($permission));
             if(empty($permission)) {

@@ -12,7 +12,7 @@ class Menu extends Model
      * @var array
      */
     protected $hidden = [
-        'pivot', 'created_at', 'updated_at'
+        'pivot', 'created_at', 'updated_at',
     ];
 
     /**
@@ -21,7 +21,7 @@ class Menu extends Model
      * @var array
      */
     protected $fillable = [
-        'parent', 'sequence', 'label', 'url', 'user_id'
+        'parent', 'sequence', 'label', 'url', 'visible', 'user_id'
     ];
 
     /**
