@@ -36,7 +36,7 @@ class VerifyPermission
         $url  = $request->fullUrl();
         $url = str_replace($base, "", $url);
         Log::debug("VerifyPermission - Intento de acceder a: ".$url);
-        if($url != self::URL_HOME) {
+        if(!empty($url) && $url != self::URL_HOME) {
             $user = Auth::user();
             $rol = $user->rol;
             $permission = $rol
