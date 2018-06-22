@@ -45,6 +45,7 @@ Route::post('/productos/editar',        '\App\Http\Controllers\Base\ProductContr
 Route::post('/productos/eliminar',      '\App\Http\Controllers\Base\ProductController@eliminar' )->name('productos.eliminar');
 Route::post('/productos/CSVPro',    '\App\Http\Controllers\Base\ProductController@CSVPro' )->name('productos.CSV');
 Route::post('/productos/addDet',    '\App\Http\Controllers\Base\ProductController@addDet' )->name('productos.addDet');
+Route::post('/productos/cierraPed',    '\App\Http\Controllers\Base\ProductController@cierraPed' )->name('productos.cierraPed');
 
 // Administración de menu
 Route::get('/menu/listado',            '\App\Http\Controllers\Base\MenuController@listado'          );
@@ -76,6 +77,11 @@ Route::post('/clientes/CSVCli',    '\App\Http\Controllers\Ventas\ClientesControl
 // Almacén o surtir
 Route::get('/listadoPedidosJefe', '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
 Route::get('/listadoTareas',      '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@listadoTareas' )->name('listadoTareas');
+Route::get('/listadoTareasJ/{idPed}',      '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoTareasJ' )->name('listadoTareasJ');
+Route::post('/addDet',    '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@addDet' )->name('surtir.addDet');
+Route::post('/addDetJ',    '\App\Http\Controllers\Surtido\SurtidoJefeController@addDetJ' )->name('surtir.addDetJ');
+Route::post('/cierraPed',    '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@cierraPed' )->name('surtir.cierraPed');
+Route::post('/cierraPedJ',    '\App\Http\Controllers\Surtido\SurtidoJefeController@cierraPedJ' )->name('surtir.cierraPedJ');
 
 // Recepción de mercancía
 Route::get('/ordenes/listado',    '\App\Http\Controllers\Recepcion\RecepcionController@listado'     );

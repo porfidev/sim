@@ -32,15 +32,12 @@ class RecepcionController extends Controller
     const SESSION_ENTR      = "su_entrega";
     const SESSION_COD       = "su_codigo";
 
-
-
-    public function __construct(PurchaseRepository $cli){
-
-        //$this->middleware('auth');
+    public function __construct(PurchaseRepository $cli)
+    {
+        $this->middleware(['auth', 'permission']);
         $this->purchaseModel = $cli;
     }
 
-    
     public function listado(Request $request){
         $data = Purchase::paginate(10);
 
@@ -69,7 +66,6 @@ class RecepcionController extends Controller
                 if( $request->has(self::SESSION_COD)) {
                     $request->session()->put(self::SESSION_COD, $request->input(self::SESSION_COD));
                 }
-              
             }
             $search = array();
             if ( $request->session()->has(self::SESSION_ID)
@@ -92,7 +88,6 @@ class RecepcionController extends Controller
                     && $request->session()->get(self::SESSION_COD) != 'NA' ) {
                 $search[PurchaseRepository::SQL_CARDCODE] = $request->session()->get(self::SESSION_COD);
             }
-            
             Log::info(" RecepcionController - listado - search: ".json_encode($search));
 
             $listado = $this->purchaseModel->getAll($search);

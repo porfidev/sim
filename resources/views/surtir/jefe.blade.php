@@ -51,11 +51,12 @@
                             <th> &nbsp; </th>
                             <th>
                                 <select class="form-control">
-                                    <option value="0"> --- Todos --- </option>
+                                    <option value="-1"> --- Todos --- </option>
                                     <option value="1">En espera</option>
                                     <option value="2">En proceso</option>
                                     <option value="3">Por validar</option>
                                     <option value="4">Surtido</option>
+                                    <option value="0">Faltan datos</option>
                                 </select>
                             </th>
                             <th>
@@ -123,6 +124,12 @@
                                     Surtido
                         
                                 @endif
+
+                                @if ($ped->ordStatus == 0)
+
+                                    Faltan datos
+                        
+                                @endif
                                 
                             </td>
                             <td>
@@ -135,7 +142,14 @@
                                 {{ $ped->end }}
                             </td>
                             <td style="text-align: center;">
-                                {{ $ped->priority }}
+                                <a href="#" 
+                                   data-toggle="popover" 
+                                   title="Calculos" 
+                                   data-content="P: {{ $ped->P }} 
+                                                 D: {{ $ped->D }} 
+                                                 V: {{ $ped->V }}">
+                                    {{ $ped->priority }}
+                                </a>
                             </td>
                             <td style="text-align: center;">
                                 <button class="btn btn-sm btn-success asignarPersonal"
@@ -146,6 +160,18 @@
                                         title="Asignar personal">
                                     <i class="material-icons">person_add</i>
                                 </button>
+                                @if ($ped->ordStatus == 3)
+
+                                    <button class="btn btn-sm btn-success checarProyecto"
+                                        data-id="{{ $ped->idOrd }}"                                        
+                                        data-codeOrd="{{ $ped->codeOrder }}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="validar proyecto">
+                                    <i class="material-icons">done_all</i>
+                                    </button>
+                        
+                                @endif
                             </td>
                         </tr>
             @endforeach
@@ -174,6 +200,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').popover(); 
 
 
             
@@ -224,6 +251,16 @@
                     
                 });
 
+            });
+
+
+            $( '.checarProyecto' ).click(function () {
+                
+
+                idPed = $(this).attr( "data-id" );
+
+                window.location.href = "listadoTareasJ/"+idPed;
+                
             });
         });
 

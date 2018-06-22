@@ -29,7 +29,7 @@ class CatalogosController extends Controller{
      */
     public function __construct(CatalogoRepository $cat){
 
-        //$this->middleware('auth');
+        $this->middleware(['auth', 'permission']);
         $this->catalogoModel  = $cat;
     }
 
@@ -45,7 +45,6 @@ class CatalogosController extends Controller{
         try {
             Log::info(" CatalogosController - listado ");
 
-           
             if ( $request->isMethod('post') ) {
                 if( $request->has(self::SESSION_ID)) {
                     $request->session()->put(self::SESSION_ID, $request->input(self::SESSION_ID));
@@ -92,7 +91,7 @@ class CatalogosController extends Controller{
 
             $listado = $this->catalogoModel->getAll($search);
             $padres = $this->catalogoModel->getPadres();
-       
+
             return view('catalogos.listado',
                 array(
                     "listado" => $listado,
@@ -147,7 +146,6 @@ class CatalogosController extends Controller{
 
                 }
 
-                
                 Log::info(" CatalogosController - agregar - data: ".json_encode($data));
                 $this->catalogoModel->create($data);
             }

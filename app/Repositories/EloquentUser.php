@@ -2,26 +2,83 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\User;
+use App\Session;
 
 use Illuminate\Support\Facades\Log;
 
 class EloquentUser implements UserRepository
 {
+
+	const SESSION_TIME   = 45;
+	const SESSION_OLD    = '> ';
+	const SESSION_ACTUAL = '< ';
+
 	/**
 	 * @var $model
 	 */
-    private $model;
+	private $model;
+	private $modelSession;
 
     /**
 	 * EloquentUser constructor.
 	 *
 	 * @param App\User $model
 	 */
-	public function __construct(User $model)
+	public function __construct(User $model, Session $session)
 	{
-		$this->model = $model;
+		$this->model        = $model;
+		$this->modelSession = $session;
     }
+
+	/**
+	 * Get the user session
+	 */
+	public function getSession($user_id, $old=false)
+	{
+		$condition = self::SESSION_ACTUAL;
+		if($old) {
+			$condition = self::SESSION_OLD;
+		}
+		$session = $this->modelSession
+			->whereRaw('TIMESTAMPDIFF(MINUTE, updated_at, NOW()) '.$condition.self::SESSION_TIME)
+			->where('user_id', '=', $user_id);
+
+		if($old) {
+			$session = $session->get();
+		} else {
+			$session = $session->first();
+		}
+
+		return $session;
+	}
+
+	/**
+	 * Create the user session
+	 */
+	public function createSession($user_id, $ip)
+	{
+		return $this->modelSession->create(
+			array(
+				self::SQL_SESSION_USER_ID => $user_id,
+				self::SQL_SESSION_IP      => $ip
+			)
+		);
+	}
+
+	/**
+	 * Delete a Session.
+	 *
+	 * @param integer $id
+	 *
+	 * @return boolean
+	 */
+	public function deleteSession($id)
+	{
+		return $this->modelSession->find($id)->delete();
+	}
 
     /**
 	 * Get all users.
@@ -59,8 +116,8 @@ class EloquentUser implements UserRepository
 
 	public function getListBus($nombre)
 	{
-		$list = $this->model->select("id as value", "name as label")->where("users.name","like","%".$nombre."%");
-		
+		$list = $this->model->select("id as value", "name as label")
+			->where("users.name","like","%".$nombre."%");
 		return $list->get();
 	}
 
@@ -69,7 +126,6 @@ class EloquentUser implements UserRepository
 		$list = $this->model->select("id as value", "name as label")
 							->where("users.name","like","%".$nombre."%")
 							->where("users.boss_id","=",$idJefe);
-		
 		return $list->get();
 	}
 
@@ -94,7 +150,6 @@ class EloquentUser implements UserRepository
 	 */
 	public function create(array $attributes)
 	{
-
 		return $this->model->create($attributes);
 	}
 

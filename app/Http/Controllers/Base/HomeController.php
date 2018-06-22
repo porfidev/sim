@@ -22,7 +22,7 @@ class HomeController extends Controller
      */
     public function __construct(MenuRepository $menu, RolRepository $rol)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'permission']);
         $this->menuModel = $menu;
         $this->rolModel  = $rol;
     }
@@ -42,7 +42,6 @@ class HomeController extends Controller
     {
         try {
             Log::info(" HomeController - index ");
-            self::setMenu($request, $this->menuModel);
             return view('home');
         } catch (\Exception $e) {
             Log::error( 'HomeController - index - Error'.$e->getMessage() );
