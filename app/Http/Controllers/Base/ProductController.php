@@ -576,5 +576,40 @@ class ProductController extends Controller
 
         }
     }
+
+    static function checaPedUsrJ($idPed,$ordDetModelE){
+
+        Log::info(" ProductController - checaPedUsr idPed : ".$idPed);
+
+        try{
+
+            $boolDet = true;
+
+            $listaDet = $ordDetModelE->getByIdOrd($idPed);
+
+            foreach ($listaDet as $ele) {
+
+                Log::info(" ProductController - checaPedUsr cant : ".$ele->quantity." CantUsr: ".$ele->quantity_boss);
+
+                if($ele->quantity > $ele->quantity_boss){
+
+                    $boolDet = false;
+
+                }
+
+            }
+
+            Log::info(" ProductController - checaPedUsr - boolEsp : ".$boolDet);
+
+            return $boolDet;
+
+
+        } catch (\Exception $e) {
+
+            Log::error( 'ProductController - checaPedUsr - Error: '.$e->getMessage() );
+            return -1;
+
+        }
+    }
     
 }

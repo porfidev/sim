@@ -160,6 +160,18 @@
                                         title="Asignar personal">
                                     <i class="material-icons">person_add</i>
                                 </button>
+                                @if ($ped->ordStatus == 3)
+
+                                    <button class="btn btn-sm btn-success checarProyecto"
+                                        data-id="{{ $ped->idOrd }}"                                        
+                                        data-codeOrd="{{ $ped->codeOrder }}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="validar proyecto">
+                                    <i class="material-icons">done_all</i>
+                                    </button>
+                        
+                                @endif
                             </td>
                         </tr>
             @endforeach
@@ -239,6 +251,16 @@
                     
                 });
 
+            });
+
+
+            $( '.checarProyecto' ).click(function () {
+                
+
+                idPed = $(this).attr( "data-id" );
+
+                window.location.href = "listadoTareasJ/"+idPed;
+                
             });
         });
 
