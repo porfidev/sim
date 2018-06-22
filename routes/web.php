@@ -77,8 +77,11 @@ Route::post('/clientes/CSVCli',    '\App\Http\Controllers\Ventas\ClientesControl
 // Almacén o surtir
 Route::get('/listadoPedidosJefe', '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
 Route::get('/listadoTareas',      '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@listadoTareas' )->name('listadoTareas');
+Route::get('/listadoTareasJ/{idPed}',      '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoTareasJ' )->name('listadoTareasJ');
 Route::post('/addDet',    '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@addDet' )->name('surtir.addDet');
+Route::post('/addDetJ',    '\App\Http\Controllers\Surtido\SurtidoJefeController@addDetJ' )->name('surtir.addDetJ');
 Route::post('/cierraPed',    '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@cierraPed' )->name('surtir.cierraPed');
+Route::post('/cierraPedJ',    '\App\Http\Controllers\Surtido\SurtidoJefeController@cierraPedJ' )->name('surtir.cierraPedJ');
 
 // Recepción de mercancía
 Route::get('/ordenes/listado',    '\App\Http\Controllers\Recepcion\RecepcionController@listado'     );

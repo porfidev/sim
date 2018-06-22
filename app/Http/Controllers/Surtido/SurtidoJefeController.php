@@ -11,20 +11,37 @@ use App\Repositories\CalculationRepository;
 
 use Illuminate\Support\Facades\Auth;
 
+use App\Repositories\ProductRepository;
+use App\Repositories\OrderDetailRepository;
+use App\Repositories\OrderRepository;
+use App\Repositories\historySupplyRepository;
+
+use App\Http\Controllers\Base\ProductController;
+
 class SurtidoJefeController extends Controller
 {
 
     private $calcModel;
+    private $productModel;
+    private $ordDetModel;
+    private $orderModel;
+    private $histModel;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(CalculationRepository $cal)
+    public function __construct(CalculationRepository $cal, ProductRepository $product,
+                                 OrderDetailRepository $det, OrderRepository $ord,
+                                historySupplyRepository $hist)
     {
         $this->middleware(['auth', 'permission']);
         $this->calcModel = $cal;
+        $this->productModel = $product;
+        $this->ordDetModel = $det;
+        $this->orderModel = $ord;
+        $this->histModel = $hist;
     }
 
     /**
@@ -59,5 +76,163 @@ class SurtidoJefeController extends Controller
                 )
             );
         }
+    }
+
+    public function listadoTareasJ($idPed){
+
+        try {
+
+            Log::info(" listadoTareasJ - listado ");
+
+            $idOrd = $idPed;
+            //$userId = 2;
+
+            $listado = $this->ordDetModel->getByIdOrd($idOrd);
+
+            //Log::info(" listadoTareasJ - listado - Listita: ".$listado->get());
+
+            return view('surtir.validaProyecto',
+                array(
+
+                    "listado" => $listado,
+                    "idP" => $idOrd
+                ));
+
+        } catch (\Exception $e) {
+            Log::error( 'listadoTareasJ - listado - Error'.$e->getMessage() );
+            return view('error',
+                array(
+                    "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
+                    "titulo" => "Error inesperado"
+                )
+            );
+        }
+    }
+
+    public function addDetJ(Request $request) {
+
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $cantidad = 0;
+
+        try {
+            Log::info(" SurtidoTrabajadorController - addDet sku : ".$request->get('sku'));
+            $product = $this->productModel->getBySku( $request->get('sku') );
+            Log::debug(" SurtidoTrabajadorController - addDet: ".json_encode($product) );
+
+            $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
+
+            $modPed = $this->orderModel->getById($detalleOrder->idOrder);
+
+            if($modPed->status < 4){
+
+                $codigo = $request->get('cod');
+                $cantU = intval($request->get('cantU'));
+                $cantT = intval($request->get('cant'));
+
+                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel); 
+
+                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );                   
+
+                if($resp[0] != -1) {
+
+                    $cantidadTot = $resp[0] + $cantU;
+
+                    if($cantidadTot <= $cantT){
+
+                        Log::info("SurtidoTrabajadorController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
+                        $datos = array();
+                        $datos[OrderDetailRepository::SQL_CANTIDAD_B] = intval($cantidadTot);
+
+                        if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
+
+                            $resultado = "ERROR";
+                            $mensajes  = array( "No se pudo actualizar el detalle" );
+
+                        }else{
+
+                            $resultado = $cantidadTot;
+
+                            $fecHor = date("Y-m-d H:i:s");
+
+                            $dataHist = array(
+                                historySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
+                                historySupplyRepository::SQL_DETID     => $request->get('idDet'),
+                                historySupplyRepository::SQL_PROID     => $product->id,
+                                historySupplyRepository::SQL_USRID     => Auth::id(),
+                                historySupplyRepository::SQL_QUANTITY  => $resp[0],
+                                historySupplyRepository::SQL_DATIME    => $fecHor
+                            );
+
+                            $this->histModel->create($dataHist);
+
+                            if(ProductController::checaPedUsrJ($detalleOrder->idOrder,$this->ordDetModel)){
+
+                                $datosW = array();
+                                $datosW[OrderRepository::SQL_ESTATUS] = 4;
+
+                                $this->orderModel->update($detalleOrder->idOrder,$datosW);
+                            }
+                        }
+
+                    } else {
+                        $resultado = "ERROR";
+                        $mensajes  = array( "Cantidad excedida" );
+                    }
+                }else{
+
+                    $resultado = "ERROR";
+                    $mensajes  = array( "no existe ese codigo de barras" );
+                }
+
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "Este pedido ya esta Cerrado" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'SurtidoTrabajadorController - addDet - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    function cierraPedJ(Request $request){
+
+        $resultado = "OK";
+        $mensajes  = "NA";
+
+        Log::info(" ProductController - cierraPed idPed : ".$request->get('id'));
+
+        try{
+
+            $idPed = $request->get('id');
+
+            $datosW = array();
+            $datosW[OrderRepository::SQL_ESTATUS] = 4;
+
+            if(!$this->orderModel->update($idPed,$datosW)) {
+
+                $resultado = "ERROR";
+                $mensajes  = array( "No se pudo cerrar el pedido" );
+
+            }
+
+
+        } catch (\Exception $e) {
+
+            Log::error( 'ProductController - cierraPed - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+
+        }
+
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 }
