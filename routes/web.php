@@ -87,8 +87,14 @@ Route::post('/cierraPedJ',    '\App\Http\Controllers\Surtido\SurtidoJefeControll
 Route::get('/ordenes/listado',    '\App\Http\Controllers\Recepcion\RecepcionController@listado'     );
 Route::post('/ordenes/listado',    '\App\Http\Controllers\Recepcion\RecepcionController@listado'    )->name('ordenes.listado');
 Route::get('/ordenes/listadoItems/{purchase}',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoItems'    )->name('ordenes.listadoItems');
-
 Route::get('/ordenes/validacion', '\App\Http\Controllers\Recepcion\RecepcionController@validacion' )->name('ordenes.validacion');
+
+//FuncionesHandHelds
+
+Route::get('/hh/recepcion/listadoHH',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoHH'     );
+Route::post('/hh/recepcion/listadoHH',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoHH'    )->name('ordenes.listadoHH');
+Route::get('/hh/recepcion/listadoItemsHH/{purchase}',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'    );
+Route::post('/hh/recepcion/listadoItemsHH/{purchase}',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'    )->name('ordenes.listadoItemsHH');
 
 // Preparación de pedido o embalaje
 

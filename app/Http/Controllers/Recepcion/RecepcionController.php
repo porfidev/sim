@@ -10,12 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Session;
 
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\PurchaseRepository;
 
-use Illuminate\Support\Facades\Redirect;
+
 
 
 use App\Purchase;
@@ -106,11 +107,31 @@ class RecepcionController extends Controller
     }
 
 
+    public function listadoHH(Request $request){
+        $data = Purchase::paginate(10);
+
+        return view('recepcion.listadoHH',['data' => $data] );
+    }
+
+
     public function listadoItems($purchase_id)
     {
         $data = PurchaseItems::where('purchase_id','=',$purchase_id)->paginate(10);
 
         return view('recepcion.listadoItems',['data' => $data] );
+    }
+
+
+    public function listadoItemsHH($purchase_id)
+    {    
+        $data = DB::table('purchase_items')
+        ->join('products', 'purchase_items.ItemCode', '=', 'products.sku')
+        ->where('purchase_id','=',$purchase_id)
+        ->paginate(10);
+
+        $proveedor = Purchase::find($purchase_id);
+
+        return view('recepcion.listadoItemsHH',['data' => $data,'proveedor' => $proveedor] );
     }
 
 
