@@ -605,11 +605,8 @@ class ProductController extends Controller
 
 
         } catch (\Exception $e) {
-
             Log::error( 'ProductController - checaPedUsr - Error: '.$e->getMessage() );
             return -1;
-
         }
     }
-    
 }

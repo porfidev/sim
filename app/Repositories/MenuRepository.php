@@ -9,11 +9,15 @@ interface MenuRepository
     const SQL_ORDER  = "sequence";
     const SQL_LABEL  = "label";
     const SQL_URL    = "url";
+    const SQL_VISIBLE= "visible";
     const SQL_USER   = "user_id";
 
     const SQL_PROFILE_ROL  = "rol_id";
     const SQL_PROFILE_MENU = "menu_item_id";
     const SQL_PROFILE_USER = "user_id";
+
+    const VISIBLE_SI = 1;
+    const VISIBLE_NO = 0;
 
     function findProfile(array $attributes);
 
@@ -23,9 +27,9 @@ interface MenuRepository
 
     function getProfileList($id);
 
-    function getParents($rol = null);
+    function getParents($rol = null, $visible = 1);
 
-    function getChilds($parent, $rol);
+    function getChilds($parent, $rol = null, $visible = 1);
 
     function findMenuByUrl($url);
 

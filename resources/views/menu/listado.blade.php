@@ -26,6 +26,9 @@
                             <th scope="col" style="min-width: 270px;">
                                 URL
                             </th>
+                            <th scope="col" style="text-align: center;">
+                                Visible
+                            </th>
                             <th scope="col" style="min-width: 175px; text-align: center;">
                                 <button class="btn btn-sm btn-primary nuevoElementoMenu"
                                         data-toggle="tooltip"
@@ -73,6 +76,9 @@
                             <th>
                                 &nbsp;
                             </th>
+                            <th>
+                                &nbsp;
+                            </th>
                             <th style="text-align: center;">
                                 <button class="btn btn-sm btn-info"
                                         data-toggle="tooltip"
@@ -111,6 +117,15 @@
                             </td>
                             <td>
                                 {{ $item->url }}
+                            </td>
+                            <td style="text-align: center;">
+
+                        @if ($item->visible == 1)
+                                    Si
+                        @elseif ($item->visible == 0)
+                                    No
+                        @endif
+
                             </td>
                             <td style="text-align: center;">
                                 <button class="btn btn-sm btn-success editarElementoMenu"

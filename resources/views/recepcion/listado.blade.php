@@ -2,7 +2,7 @@
 
 @section('content')
     <br>
-    <h2 class="mt-2">Listado de Ordenes de Compra</h2>
+    <h2 class="mt-2">Ordenes de Compra</h2>
     <br>
     @if(Session::has('exito'))
     <div class="alert alert-success alert-dismissible fade show mt-3 mb-2"

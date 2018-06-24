@@ -81,23 +81,34 @@ class EloquentMenu implements MenuRepository
 
     /**
 	 * Get parent menu items.
+	 * 0: Visible = 0
+	 * 1: Visible = 1
+	 * 2: All
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-    public function getParents($rol = null)
+    public function getParents($rol = null, $visible = 1)
     {
 		$parentsList = array();
 		if( empty($rol) ) {
 			$parentsList = $this->model->whereNull(self::SQL_PARENT)
-				->orderBy(self::SQL_ORDER)
-				->get();
+				->orderBy(self::SQL_ORDER);
+			if($visible === self::VISIBLE_SI){
+				$parentsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_SI);
+			} else if( $visible === self::VISIBLE_NO ){
+				$parentsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_NO);
+			}
 		} else {
 			Log::info("EloquentMenu - getParents: ".json_encode($rol));
 			$parentsList = $rol->getMenuItems()->whereNull(self::SQL_PARENT)
-				->orderBy(self::SQL_ORDER)
-				->get();
+				->orderBy(self::SQL_ORDER);
+			if($visible === self::VISIBLE_SI){
+				$parentsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_SI);
+			} else if( $visible === self::VISIBLE_NO ){
+				$parentsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_NO);
+			}
 		}
-		return $parentsList;
+		return $parentsList->get();
     }
 
     /**
@@ -105,20 +116,28 @@ class EloquentMenu implements MenuRepository
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-    public function getChilds($parent, $rol = null)
+    public function getChilds($parent, $rol = null, $visible = 1)
     {
 		$childsList = array();
 		if( empty($rol) ) {
 			$childsList = $this->model->where(self::SQL_PARENT, '=', $parent)
-				->orderBy(self::SQL_ORDER)
-				->get();
+				->orderBy(self::SQL_ORDER);
+			if($visible === self::VISIBLE_SI){
+				$childsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_SI);
+			} else if( $visible === self::VISIBLE_NO ){
+				$childsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_NO);
+			}
 		} else {
 			$childsList = $rol->getMenuItems()
 				->where(self::SQL_PARENT, '=', $parent)
-				->orderBy(self::SQL_ORDER)
-				->get();
+				->orderBy(self::SQL_ORDER);
+			if($visible === self::VISIBLE_SI){
+				$childsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_SI);
+			} else if( $visible === self::VISIBLE_NO ){
+				$childsList->where(self::SQL_VISIBLE, '=', self::VISIBLE_NO);
+			}
 		}
-		return $childsList;
+		return $childsList->get();
 	}
 
 	/**

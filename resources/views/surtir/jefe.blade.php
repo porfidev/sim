@@ -102,35 +102,25 @@
                             <td>
 
                                 @if ($ped->ordStatus == 1)
-
                                     En espera
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 2)
-
                                     En Proceso
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 3)
 
                                     Por validar Surtido
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 4)
-
                                     Surtido
-                        
                                 @endif
 
                                 @if ($ped->ordStatus == 0)
-
                                     Faltan datos
-                        
                                 @endif
-                                
                             </td>
                             <td>
                                 {{ $ped->FP }}
@@ -200,19 +190,14 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="popover"]').popover(); 
-
-
-            
+            $('[data-toggle="popover"]').popover();
 
             $(".assiU").each(function(){
 
                 var idOrd = $(this).attr( "data-id" );
-
                 var status = $(this).attr( "data-status" );
 
-                console.log(status);
-
+                //console.log(status);
                 $.ajax({
                     url     : "{{ URL::to('usuarios/listaAsig') }}",
                     method  : "POST",
@@ -223,18 +208,12 @@
                         ord  : idOrd
                               }
                 }).done(function( data ) {
-
                     //console.log(data);
-
                     var tt = "";
                     data.forEach(function(element) {
-
-                        console.log(element);
-
+                        //console.log(element);
                         tt += element.name;
                               if(status == 1){
-
-
                                 tt += ' <button class="btn btn-sm btn-danger borrarAsignado"'+
                                         'onclick="desasigna('+element.id+')"'+
                                         'data-toggle="tooltip"'+
@@ -244,39 +223,28 @@
                                 '</button>';
                               }
                         tt += "<br><br>";
-
                     });
 
                     $("#assi"+idOrd).html(tt);
-                    
                 });
-
             });
 
-
             $( '.checarProyecto' ).click(function () {
-                
-
                 idPed = $(this).attr( "data-id" );
-
                 window.location.href = "listadoTareasJ/"+idPed;
-                
             });
         });
 
         function desasigna(idO) {
-
-            console.log("idAssi: "+idO);
-
-                    var parametros = [];
-                    parametros["id"] = idO;
-                     abrirConfirmacion(
-                        "Confirmaci&oacute;n",
-                        "¿Estás seguro de desasignar este usuario?",
-                        "{{ route('usuarios.desasignar') }}",
-                        parametros
-                    );
-                }
-
+            //console.log("idAssi: "+idO);
+            var parametros = [];
+            parametros["id"] = idO;
+            abrirConfirmacion(
+                "Confirmaci&oacute;n",
+                "¿Estás seguro de desasignar este usuario?",
+                "{{ route('usuarios.desasignar') }}",
+                parametros
+            );
+        }
     </script>
 @endsection

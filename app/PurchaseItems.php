@@ -21,5 +21,9 @@ class PurchaseItems extends Model
         return $this->belongsTo('App\Purchase', 'purchase_id');
     }
 
+    public function producto()
+    {
+        return $this->belongsTo('App\Product', 'ItemCode');
+    }
 
 }

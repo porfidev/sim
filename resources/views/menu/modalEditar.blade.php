@@ -32,7 +32,8 @@
                     style="display: none;">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" id="modalEditMenuId" value="0">
-                    <div class="form-group">
+                    <div class="form-row">
+                        <div class="col form-group">
                             <label for="modalEditMenuOrder">
                                 Orden
                             </label>
@@ -43,6 +44,22 @@
                                     value="0"
                                     required>
                         </div>
+                        <div class="col form-group">
+                            <label for="modalEditMenuVisible">
+                                Visible
+                            </label>
+                            <select class="form-control"
+                                id="modalEditMenuVisible"
+                                name="visible">
+                                <option value="1">
+                                    Si
+                                </option>
+                                <option value="0">
+                                    No
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="modalEditMenuParent">
                             Padre
@@ -126,6 +143,7 @@
                     $( '#modalEditMenuItemTitle' ).text("Elemento " + data.datos.id);
                     $( '#modalEditMenuId'        ).val(data.datos.id);
                     $( '#modalEditMenuOrder'     ).val(data.datos.sequence);
+                    $( '#modalEditMenuVisible'   ).val(data.datos.visible);
                     if(data.datos.parent) {
                         $( '#modalEditMenuParent' ).val(data.datos.parent);
                     }
