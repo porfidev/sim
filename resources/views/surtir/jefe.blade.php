@@ -43,14 +43,27 @@
                         </tr>
                         <tr class="table-dark">
                             <th>
-                                <input type="text" class="form-control" value="#">
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formaId"
+                                        placeholder="#"
+                                    @if ( Session::has('sc_id') && Session::get('sc_id') != '0' )
+                                        value="{{ Session::get('sc_id') }}"
+                                    @endif>
                             </th>
                             <th>
-                                <input type="text" class="form-control" value="Cliente">
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formaCliente"
+                                        placeholder="cliente"
+                                    @if ( Session::has('sc_cliente') && Session::get('sc_cliente') != '0' )
+                                        value="{{ Session::get('sc_cliente') }}"
+                                    @endif>
                             </th>
                             <th> &nbsp; </th>
                             <th>
-                                <select class="form-control">
+                                <input type="hidden" id="grupoSelEsp" value="{{ Session::get('sc_estatus') }}">
+                                <select class="form-control" id="grupoEst">
                                     <option value="-1"> --- Todos --- </option>
                                     <option value="1">En espera</option>
                                     <option value="2">En proceso</option>
@@ -60,13 +73,28 @@
                                 </select>
                             </th>
                             <th>
-                                <input type="date" class="form-control">
+                                <input type="date" 
+                                       class="form-control inputFiltro"
+                                       id="formaFecProg"
+                                    @if ( Session::has('sc_fec_prog') && Session::get('sc_fec_prog') != 'NA' )
+                                        value="{{ Session::get('sc_fec_prog') }}"
+                                    @endif>
                             </th>
                             <th>
-                                <input type="date" class="form-control">
+                                <input type="date" 
+                                       class="form-control inputFiltro"
+                                       id="formaFecIni"
+                                    @if ( Session::has('sc_fec_ini') && Session::get('sc_fec_ini') != 'NA' )
+                                        value="{{ Session::get('sc_fec_ini') }}"
+                                    @endif>
                             </th>
                             <th>
-                                <input type="date" class="form-control">
+                                <input type="date" 
+                                       class="form-control inputFiltro"
+                                       id="formaFecFin"
+                                    @if ( Session::has('sc_fec_fin') && Session::get('sc_fec_fin') != 'NA' )
+                                        value="{{ Session::get('sc_fec_fin') }}"
+                                    @endif>
                             </th>
                             <th> &nbsp; </th>
                             <th style="text-align: center;">
@@ -177,6 +205,17 @@
             </div>
         </div>
     </div>
+    <form id="searchForm"
+        method="POST"
+        action="{{ route('listadoPedidosJefe') }}">
+        {{ csrf_field() }}
+        <input type="hidden" name="sc_id"       id="busquedaId"       value="0">
+        <input type="hidden" name="sc_cliente"  id="busquedaCliente"  value="NA">
+        <input type="hidden" name="sc_estatus"  id="busquedaEstatus"  value="-1">
+        <input type="hidden" name="sc_fec_prog" id="busquedafecProg"  value="0">
+        <input type="hidden" name="sc_fec_ini"  id="busquedafecIni"   value="NA">
+        <input type="hidden" name="sc_fec_fin"  id="busquedafecFin"   value="NA">
+    </form>
 @endsection
 
 @section('final')
@@ -188,9 +227,59 @@
     @include('partials.modalConfirmacion')
 
     <script type="text/javascript">
+
+        function ejecutaBusquedasFiltros() {
+
+            //alert("Fecha: "+$( '#formaFecProg'    ).val());
+
+            $( '#busquedaId'       ).val( $( '#formaId'       ).val() ? $( '#formaId'       ).val() : '0'  );
+            $( '#busquedaCliente' ).val( $( '#formaCliente' ).val() ? $( '#formaCliente' ).val() : 'NA' );
+            $( '#busquedaEstatus'    ).val( $( '#grupoEst'    ).val() ? $( '#grupoEst'    ).val() : '-1' );
+            $( '#busquedafecProg'    ).val( $( '#formaFecProg'    ).val() ? $( '#formaFecProg'    ).val() : '0'  );
+            $( '#busquedafecIni'  ).val( $( '#formaFecIni'  ).val() ? $( '#formaFecIni'  ).val() : 'NA' );
+            $( '#busquedafecFin'  ).val( $( '#formaFecFin'  ).val() ? $( '#formaFecFin'  ).val() : 'NA' );
+            $( '#searchForm' ).submit();
+        }
+
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
+
+            $( '#btnLimpiar' ).click(function () {
+                $( '#busquedaId'       ).val( '0'  );
+                $( '#busquedaCliente' ).val( 'NA' );
+                $( '#busquedafecProg'    ).val( 'NA'  );
+                $( '#busquedafecIni'    ).val( 'NA'  );
+                $( '#busquedafecFin'    ).val( 'NA'  );
+                $( '#busquedaEstatus'  ).val( '-1' );
+                $( '#searchForm' ).submit();
+            });
+
+            $( '.inputFiltro' ).keyup(function(e){
+                if(e.keyCode == 13) {
+                    ejecutaBusquedasFiltros();
+                }
+            });
+
+            $('#grupoEst').val($('#grupoSelEsp').val());
+
+            $( "#grupoEst" ).change(function() {
+                ejecutaBusquedasFiltros();
+            });
+
+            $( "#formaFecProg" ).change(function() {
+                ejecutaBusquedasFiltros();
+            });
+
+            $( "#formaFecIni" ).change(function() {
+                ejecutaBusquedasFiltros();
+            });
+
+            $( "#formaFecFin" ).change(function() {
+                ejecutaBusquedasFiltros();
+            });
+
+            $( '#btnBuscar' ).click(ejecutaBusquedasFiltros);
 
             $(".assiU").each(function(){
 

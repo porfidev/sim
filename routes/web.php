@@ -73,6 +73,7 @@ Route::post('/clientes/CSVCli',    '\App\Http\Controllers\Ventas\ClientesControl
 
 // Almacén o surtir
 Route::get('/listadoPedidosJefe',       '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
+Route::post('/listadoPedidosJefe',       '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoPedidos'      )->name('listadoPedidosJefe');
 Route::get('/listadoTareas',            '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@listadoTareas' )->name('listadoTareas');
 Route::get('/listadoTareasJ/{idPed}',   '\App\Http\Controllers\Surtido\SurtidoJefeController@listadoTareasJ'      )->name('listadoTareasJ');
 Route::post('/addDet',                  '\App\Http\Controllers\Surtido\SurtidoTrabajadorController@addDet'        )->name('surtir.addDet');

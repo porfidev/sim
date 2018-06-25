@@ -6,6 +6,9 @@ use App\Calculation;
 
 use Illuminate\Support\Facades\Log;
 
+use App\Repositories\OrderRepository;
+use App\Repositories\ClienteRepository;
+
 class EloquentCalculation implements CalculationRepository
 {
     /**
@@ -18,6 +21,7 @@ class EloquentCalculation implements CalculationRepository
 	 *
 	 * @param App\Catalogo $model
 	 */
+
 	public function __construct(Calculation $model)
 	{
 		$this->model = $model;
@@ -42,12 +46,46 @@ class EloquentCalculation implements CalculationRepository
         return $list->get();
     }
 
-    function getAllOrd(){
+    function getAllOrd(array $search = null){
 
     	$list = $this->model->select("*","orders.status as ordStatus","orders.id as idOrd")
     						->leftJoin("orders","orders.id","=","calculations.order_id")
     						->leftJoin("clients","orders.code","=","clients.code")
     						->orderBy('priority', 'desc');
+
+    	if(!empty($search)) {
+
+    		if(array_key_exists(self::SQL_FP, $search)
+				&& !empty($search[self::SQL_FP]) ) {
+				$list->where(self::SQL_FP, "like", "%".$search[self::SQL_FP]."%");
+			}
+
+			if(array_key_exists(OrderRepository::SQL_CODIGO_ORDEN, $search)
+				&& !empty($search[OrderRepository::SQL_CODIGO_ORDEN]) ) {
+				$list->where(OrderRepository::SQL_CODIGO_ORDEN, "like", "%".$search[OrderRepository::SQL_CODIGO_ORDEN]."%");
+			}
+
+			if(array_key_exists(OrderRepository::SQL_INICIO, $search)
+				&& !empty($search[OrderRepository::SQL_INICIO]) ) {
+				$list->where(OrderRepository::SQL_INICIO, "like", "%".$search[OrderRepository::SQL_INICIO]."%");
+			}
+
+			if(array_key_exists(OrderRepository::SQL_FIN, $search)
+				&& !empty($search[OrderRepository::SQL_FIN]) ) {
+				$list->where(OrderRepository::SQL_FIN, "like", "%".$search[OrderRepository::SQL_FIN]."%");
+			}
+
+			if(array_key_exists(OrderRepository::SQL_ESTATUS, $search)
+				&& !empty($search[OrderRepository::SQL_ESTATUS]) ) {
+				$list->where(OrderRepository::SQL_ESTATUS, "=",$search[OrderRepository::SQL_ESTATUS]);
+			}
+
+			if(array_key_exists(ClienteRepository::SQL_NOMBRE, $search)
+				&& !empty($search[ClienteRepository::SQL_NOMBRE]) ) {
+				$list->where(ClienteRepository::SQL_NOMBRE, "like", "%".$search[ClienteRepository::SQL_NOMBRE]."%");
+			}
+
+    	}
     	    	
         return $list;
     }
