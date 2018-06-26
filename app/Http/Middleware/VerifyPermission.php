@@ -10,8 +10,6 @@ use App\Repositories\MenuRepository;
 
 class VerifyPermission
 {
-
-    const URL_HOME = "home";
     private $menuModel;
 
     /**
@@ -33,12 +31,7 @@ class VerifyPermission
     public function handle($request, Closure $next)
     {
         $base = env('APP_BASE_URL', 'http://localhost:8000/');
-
-        //$base = env('APP_BASE_URL', 'http://localhost/sim/public/');
         Log::debug("VerifyPermission - Base: ".$base);
-
-        //$url  = $request->fullUrl();
-
         $url  = $request->url();
 
         $url = str_replace($base, "", $url);
