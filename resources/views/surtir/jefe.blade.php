@@ -56,7 +56,7 @@
                                         class="form-control inputFiltro"
                                         id="formaCliente"
                                         placeholder="cliente"
-                                    @if ( Session::has('sc_cliente') && Session::get('sc_cliente') != '0' )
+                                    @if ( Session::has('sc_cliente') && Session::get('sc_cliente') != '-' )
                                         value="{{ Session::get('sc_cliente') }}"
                                     @endif>
                             </th>
@@ -105,7 +105,7 @@
                                     <i class="material-icons">search</i>
                                 </button>
 
-                                <button class="btn btn-sm btn-warning"
+                                <button class="btn btn-sm btn-warning btnLimpiar"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Limpiar filtros">
@@ -170,14 +170,19 @@
                                 </a>
                             </td>
                             <td style="text-align: center;">
-                                <button class="btn btn-sm btn-success asignarPersonal"
-                                        data-id="{{ $ped->idOrd }}"                                        
-                                        data-codeOrd="{{ $ped->codeOrder }}"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Asignar personal">
-                                    <i class="material-icons">person_add</i>
-                                </button>
+
+                                @if ($ped->ordStatus < 3)
+
+                                        <button class="btn btn-sm btn-success asignarPersonal"
+                                                data-id="{{ $ped->idOrd }}"                                        
+                                                data-codeOrd="{{ $ped->codeOrder }}"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Asignar personal">
+                                            <i class="material-icons">person_add</i>
+                                        </button>
+
+                                @endif
                                 @if ($ped->ordStatus == 3)
 
                                     <button class="btn btn-sm btn-success checarProyecto"
@@ -210,7 +215,7 @@
         action="{{ route('listadoPedidosJefe') }}">
         {{ csrf_field() }}
         <input type="hidden" name="sc_id"       id="busquedaId"       value="0">
-        <input type="hidden" name="sc_cliente"  id="busquedaCliente"  value="NA">
+        <input type="hidden" name="sc_cliente"  id="busquedaCliente"  value="-">
         <input type="hidden" name="sc_estatus"  id="busquedaEstatus"  value="-1">
         <input type="hidden" name="sc_fec_prog" id="busquedafecProg"  value="0">
         <input type="hidden" name="sc_fec_ini"  id="busquedafecIni"   value="NA">
@@ -233,7 +238,7 @@
             //alert("Fecha: "+$( '#formaFecProg'    ).val());
 
             $( '#busquedaId'       ).val( $( '#formaId'       ).val() ? $( '#formaId'       ).val() : '0'  );
-            $( '#busquedaCliente' ).val( $( '#formaCliente' ).val() ? $( '#formaCliente' ).val() : 'NA' );
+            $( '#busquedaCliente' ).val( $( '#formaCliente' ).val() ? $( '#formaCliente' ).val() : '-' );
             $( '#busquedaEstatus'    ).val( $( '#grupoEst'    ).val() ? $( '#grupoEst'    ).val() : '-1' );
             $( '#busquedafecProg'    ).val( $( '#formaFecProg'    ).val() ? $( '#formaFecProg'    ).val() : '0'  );
             $( '#busquedafecIni'  ).val( $( '#formaFecIni'  ).val() ? $( '#formaFecIni'  ).val() : 'NA' );
@@ -245,9 +250,9 @@
             $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
 
-            $( '#btnLimpiar' ).click(function () {
+            $( '.btnLimpiar' ).click(function () {
                 $( '#busquedaId'       ).val( '0'  );
-                $( '#busquedaCliente' ).val( 'NA' );
+                $( '#busquedaCliente' ).val( '-' );
                 $( '#busquedafecProg'    ).val( 'NA'  );
                 $( '#busquedafecIni'    ).val( 'NA'  );
                 $( '#busquedafecFin'    ).val( 'NA'  );

@@ -77,7 +77,7 @@ class EloquentCalculation implements CalculationRepository
 
 			if(array_key_exists(OrderRepository::SQL_ESTATUS, $search)
 				&& !empty($search[OrderRepository::SQL_ESTATUS]) ) {
-				$list->where(OrderRepository::SQL_ESTATUS, "=",$search[OrderRepository::SQL_ESTATUS]);
+				$list->where("orders.".OrderRepository::SQL_ESTATUS, "=",$search[OrderRepository::SQL_ESTATUS]);
 			}
 
 			if(array_key_exists(ClienteRepository::SQL_NOMBRE, $search)

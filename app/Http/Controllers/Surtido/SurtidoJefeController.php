@@ -96,7 +96,7 @@ class SurtidoJefeController extends Controller
                 $search[OrderRepository::SQL_CODIGO_ORDEN] = $request->session()->get(self::SESSION_ID);
             }
             if ($request->session()->has(self::SESSION_CLIENTE)
-                    && $request->session()->get(self::SESSION_CLIENTE) != 'NA' ) {
+                    && $request->session()->get(self::SESSION_CLIENTE) != '-' ) {
                 $search[ClienteRepository::SQL_NOMBRE] = $request->session()->get(self::SESSION_CLIENTE);
             }
             if ($request->session()->has(self::SESSION_FECHA_PROG)
