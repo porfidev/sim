@@ -48,7 +48,7 @@ class VerifyPermission
             $rol = $user->rol;
             $permission = $rol
                 ->getMenuItems()
-                ->where(MenuRepository::SQL_URL, 'like', $url."%")
+                ->whereRaw("'$url' rlike CONCAT( '^',".MenuRepository::SQL_URL.", '$')")
                 ->first();
             Log::debug("VerifyPermission - permission: ".json_encode($permission));
             if(empty($permission)) {
