@@ -14,6 +14,7 @@ class Controller extends BaseController
 	const JSON_MESSAGE  = "mensajes";
     const JSON_RESPONSE = "resultado";
     const JSON_DATA     = "datos";
+    const JSON_CERRADO  = "cerrado";
 
     public static $messages = array(
 		'required'           => 'El campo :attribute, es requerido',

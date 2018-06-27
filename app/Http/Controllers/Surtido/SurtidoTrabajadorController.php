@@ -120,6 +120,7 @@ class SurtidoTrabajadorController extends Controller
 
         $resultado = "OK";
         $mensajes  = "NA";
+        $cerrado  = 0;
         $cantidad = 0;
 
         try {
@@ -184,6 +185,9 @@ class SurtidoTrabajadorController extends Controller
                                 $datosW[OrderRepository::SQL_ESTATUS] = 3;
 
                                 $this->orderModel->update($detalleOrder->idOrder,$datosW);
+
+                                $cerrado = $detalleOrder->idOrder;
+                                $mensajes  = array( "Pedido surtido" );
                             }
                         }
 
@@ -191,7 +195,10 @@ class SurtidoTrabajadorController extends Controller
                         $resultado = "ERROR";
                         $mensajes  = array( "Cantidad excedida" );
                     }
-                }
+                } else {
+                        $resultado = "ERROR";
+                        $mensajes  = array( "Codigo incorrecto" );
+                    }
 
             } else {
                 $resultado = "ERROR";
@@ -204,7 +211,8 @@ class SurtidoTrabajadorController extends Controller
         }
         return response()->json(array(
             Controller::JSON_RESPONSE => $resultado,
-            Controller::JSON_MESSAGE  => $mensajes
+            Controller::JSON_MESSAGE  => $mensajes,
+            Controller::JSON_CERRADO  => $cerrado
         ));
     }
 

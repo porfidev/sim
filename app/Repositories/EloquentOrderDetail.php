@@ -50,7 +50,14 @@ class EloquentOrderDetail implements OrderDetailRepository
 
     public function getByIdOrd($id)
 	{
-		return $this->model->where("idOrder","=",$id)->get();
+		return $this->model->select("orders.status as sta",
+									"order_details.*",
+									"orders.id as idD",
+									"products.alias as nom",
+									"products.concept as con")
+						   ->leftJoin("orders","orders.id","=","order_details.idOrder")
+						   ->leftJoin("products","products.sku","=","order_details.itemcode")
+						   ->where("idOrder","=",$id)->get();
     }
 
     public function getDetExt($it,$qua,$pack,$idOrd){

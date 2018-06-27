@@ -11,84 +11,26 @@
             {{ $listado->links('pagination.default') }}
             <div class="table-responsive mt-2">
                 <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col" style="text-align: center;">
-                                #
-                            </th>
-                            <th scope="col" style="min-width: 250px;">
-                                Cliente
-                            </th>                            
-                            <th scope="col" style="min-width: 200px; text-align: center;">
-                                Fecha Programada
-                            </th>                            
-                            <th scope="col" style="min-width: 200px; text-align: center;">
-                                Prioridad
-                            </th>
-                            <th scope="col" style="min-width: 200px; text-align: center;">
-                                Productos
-                            </th>
-                            <th scope="col" style="min-width: 130px; text-align: center;">
-                                Acci&oacute;n
-                            </th>
-                        </tr>
-                        <tr class="table-dark">
-                            <th>
-                                <input type="text" class="form-control" value="#">
-                            </th>
-                            <th>
-                                <input type="text" class="form-control" value="Cliente">
-                            </th>                            
-                            <th>
-                                <input type="date" class="form-control">
-                            </th>
-                            <th> &nbsp; </th>
-                            <th> &nbsp; </th>
-                            <th style="text-align: center;">
-                                <button class="btn btn-sm btn-info"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Buscar">
-                                    <i class="material-icons">search</i>
-                                </button>
 
-                                <button class="btn btn-sm btn-warning"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Limpiar filtros">
-                                    <i class="material-icons">settings_backup_restore</i>
-                                </button>
-                            </th>
-                        </tr>
-                    </thead>
                     <tbody>
                         @foreach ($listado as $ped)
                         <tr>
-                            <td style="text-align: center;">
-                                {{ $ped->codeOrder }}
-                            </td>
-                            <td>
-                                {{ $ped->name }}
-                            </td>
-                            <td>
-                                {{ $ped->FP }}
-                            </td>                             
-                            <td>
-                                {{ $ped->prio }}
-                            </td>
-                            <td>
-                                <span class="proAssi"
-                                    data-id="{{ $ped->id }}" id="prod{{ $ped->id }}">-</span>
-                            </td>
-                            <td style="text-align: center;"> 
-                                <button class="btn btn-sm btn-success cierraPed"
+                            <td style="text-align: center;background-color: #80d4ff;"> 
+                                C&oacute;digo: {{ $ped->codeOrder }} 
+                                <button class="btn btn-sm btn-success cierraPed btnCierra{{ $ped->idOrdW }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         data-id="{{ $ped->idOrdW }}"
                                         title="Cerrar pedido">
                                     <i class="material-icons">offline_pin</i>
-                                </button>
-                            </td>                            
+                                </button> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;background-color: #ccffff;">
+                                <span class="proAssi"
+                                    data-id="{{ $ped->id }}" id="prod{{ $ped->id }}">-</span>
+                            </td>                          
                         </tr>
             @endforeach
             @if (count($listado) === 0)
@@ -134,7 +76,8 @@
 
                     //console.log(data);
 
-                    var tt = "<table><tr><th>SKU</th><th>cantidad</th><th>codigo</th></tr>";
+                    //var tt = "<table><tr><th>SKU</th><th>cantidad</th><th>codigo</th></tr>";
+                    var tt = "<table>";
 
                     
                     data.forEach(function(element) {
@@ -142,15 +85,38 @@
                         var cantUsr = (((element.quantity_user) == null)?0:element.quantity_user);
                         
 
-                        console.log(element);
+                        console.log(element.sta);
 
-                        tt += "<tr><td>"+element.itemcode+"</td>"+
-                              "<td><span id='canti"+element.id+"'>"+cantUsr+
-                              "</span> / "+element.quantity+"<input type='hidden' value='"+cantUsr+"' id='cantiU"+element.id+"'></td>";
+                        if(element.nom == null){
 
-                        tt += '<td><input class="codigines" '+
+                            tt += "<tr><td colspan=2 style='background-color: #99ffdd;'>"+element.con+"</td></tr>";
+
+                        }else{
+
+                            tt += "<tr><td colspan=2 style='background-color: #99ffdd;'>"+element.nom+"</td></tr>";
+                        }
+
+                        
+
+                        tt += "<tr><td style='width:50%;'>"+element.itemcode+"</td>"+
+                              "<td style='width:50%;'><span id='canti"+element.id+"'>"+cantUsr+
+                              "</span> / "+element.quantity+"<input type='hidden' value='"+cantUsr+"' id='cantiU"+element.id+"'></td></tr>";
+
+                        tt += '<tr><td colspan=2 style="text-align:center;"><input class="codigines codeSku'+element.idD+'" '+
                               'onkeypress="return runScript(event,'+element.id+','+element.quantity+','+cantUsr+',\''+element.itemcode+'\')"'+
-                              ' id="cod'+element.id+'"></td></tr>';
+                              ' id="cod'+element.id+'" ';
+
+                        if(element.sta > 2){
+
+                            tt += 'disabled></td></tr>';
+                            $(".btnCierra"+element.idD).hide();
+
+
+                        }else{
+
+                            tt += '></td></tr>';
+
+                        }      
                     
                     
                     });
@@ -164,10 +130,13 @@
 
             });
 
+            var codEsp = "";
+
             $(".cierraPed").click(function() {
 
                   var parametros = [];
                     parametros["id"] = $(this).attr( "data-id" );
+                    parametros["borra"] = $(this).attr( "data-id" );
                      abrirConfirmacion(
                         "Confirmaci&oacute;n",
                         "¿Estás seguro de que deseas cerrar este pedido?",
@@ -224,6 +193,15 @@
 
                     $("#canti"+id).html(data.resultado);
                     $("#cantiU"+id).val(data.resultado);
+
+                    if(data.cerrado != 0){
+
+                        alert(data.mensajes);
+                        $(".btnCierra"+data.cerrado).hide();
+                        $(".codeSku"+data.cerrado).prop('disabled', true);
+                        return;
+
+                    }
 
                 });
 
