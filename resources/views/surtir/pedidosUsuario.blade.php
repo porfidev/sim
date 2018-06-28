@@ -16,7 +16,7 @@
                         @foreach ($listado as $ped)
                         <tr>
                             <td style="text-align: center;background-color: #80d4ff;"> 
-                                C&oacute;digo: {{ $ped->codeOrder }} 
+                                Pedido: {{ $ped->codeOrder }} 
                                 <button class="btn btn-sm btn-success cierraPed btnCierra{{ $ped->idOrdW }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
@@ -27,9 +27,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align: center;background-color: #ccffff;">
-                                <span class="proAssi"
-                                    data-id="{{ $ped->id }}" id="prod{{ $ped->id }}">-</span>
+                            <td class="proAssi"
+                                data-id="{{ $ped->id }}"
+                                id="prod{{ $ped->id }}" 
+                                style="text-align: center;background-color: #ccffff;">
                             </td>                          
                         </tr>
             @endforeach
@@ -77,7 +78,7 @@
                     //console.log(data);
 
                     //var tt = "<table><tr><th>SKU</th><th>cantidad</th><th>codigo</th></tr>";
-                    var tt = "<table>";
+                    var tt = "<table style='width:100%;'>";
 
                     
                     data.forEach(function(element) {
@@ -199,7 +200,6 @@
                         alert(data.mensajes);
                         $(".btnCierra"+data.cerrado).hide();
                         $(".codeSku"+data.cerrado).prop('disabled', true);
-                        return;
 
                     }
 

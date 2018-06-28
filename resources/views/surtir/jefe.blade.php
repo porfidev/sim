@@ -171,7 +171,7 @@
                             </td>
                             <td style="text-align: center;">
 
-                                @if ($ped->ordStatus < 3)
+                                @if ($ped->ordStatus < 2)
 
                                         <button class="btn btn-sm btn-success asignarPersonal"
                                                 data-id="{{ $ped->idOrd }}"                                        
@@ -307,7 +307,7 @@
                     data.forEach(function(element) {
                         //console.log(element);
                         tt += element.name;
-                              if(status == 1){
+                              /*if(status == 1){
                                 tt += ' <button class="btn btn-sm btn-danger borrarAsignado"'+
                                         'onclick="desasigna('+element.id+')"'+
                                         'data-toggle="tooltip"'+
@@ -315,7 +315,7 @@
                                         'title="Eliminar">'+
                                     '<i class="material-icons">delete</i>'+
                                 '</button>';
-                              }
+                              }*/
                         tt += "<br><br>";
                     });
 

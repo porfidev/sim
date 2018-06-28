@@ -51,7 +51,8 @@ class DownloadOrders extends Command
                     U_CANTREQ,
                     ShipToCode,
                     Confirmed,
-	                Address2
+	                Address2,
+                    U_PRESREQ
                 FROM ORDR
                 LEFT JOIN RDR1
                     ON ORDR.DocEntry = RDR1.DocEntry
@@ -102,7 +103,7 @@ class DownloadOrders extends Command
                 if($row['CARDCODE'] == "CLN-0044-0001") {
                     Log::info(" pedido:  ".$row['DOCNUM']." , ".$row['CARDCODE']." , ".$row['U_VIGENCIAINI'].
                             " , ".$row['U_VIGENCIAFIN']." , ".$row['DOCSTATUS']." , ".$row['Confirmed']." , ".$row['ITEMCODE'].
-                            " , ".$row['QUANTITY']." , ".$row['U_CANTREQ']." , ".$row['ShipToCode']);
+                            " , ".$row['QUANTITY']." , ".$row['U_CANTREQ']." , ".$row['ShipToCode']." , ".$row['U_PRESREQ']);
 
                     $fechaI = strtotime($row['U_VIGENCIAINI']);
                     $fechaF = strtotime($row['U_VIGENCIAFIN']);
@@ -259,6 +260,7 @@ class DownloadOrders extends Command
                         OrderDetailRepository::SQL_CODIGOP   => $row['ITEMCODE'],
                         OrderDetailRepository::SQL_CANTIDAD  => $row['QUANTITY'],
                         OrderDetailRepository::SQL_CANTIDADP => $row['U_CANTREQ'],
+                        OrderDetailRepository::SQL_PRES_REQ => $row['U_PRESREQ'],
                         OrderDetailRepository::SQL_ORDEN_ID  => $idOrder
                     );
 
