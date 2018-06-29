@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\ProductRepository;
 use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
+use App\Repositories\ClienteRepository;
 use App\Repositories\historySupplyRepository;
 
 use App\Http\Controllers\Base\ProductController;
@@ -26,6 +27,14 @@ class SurtidoJefeController extends Controller
     private $ordDetModel;
     private $orderModel;
     private $histModel;
+    private $cliModel;
+
+    const SESSION_ID         = "sc_id";
+    const SESSION_CLIENTE    = "sc_cliente";
+    const SESSION_ESTATUS    = "sc_estatus";
+    const SESSION_FECHA_PROG = "sc_fec_prog";
+    const SESSION_FECHA_INI  = "sc_fec_ini";
+    const SESSION_FECHA_FIN  = "sc_fec_fin";
 
     /**
      * Create a new controller instance.
@@ -34,7 +43,7 @@ class SurtidoJefeController extends Controller
      */
     public function __construct(CalculationRepository $cal, ProductRepository $product,
                                  OrderDetailRepository $det, OrderRepository $ord,
-                                historySupplyRepository $hist)
+                                historySupplyRepository $hist, ClienteRepository $cli)
     {
         $this->middleware(['auth', 'permission']);
         $this->calcModel = $cal;
@@ -42,6 +51,7 @@ class SurtidoJefeController extends Controller
         $this->ordDetModel = $det;
         $this->orderModel = $ord;
         $this->histModel = $hist;
+        $this->cliModel = $cli;
     }
 
     /**
@@ -49,13 +59,66 @@ class SurtidoJefeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function listadoPedidos(){
+    public function listadoPedidos(Request $request){
 
         try {
 
             Log::info(" listadoPedidos - listado ");
 
-            $listado = $this->calcModel->getAllOrd();
+            if ( $request->isMethod('post') ) {
+                if( $request->has(self::SESSION_ID)) {
+                    $request->session()->put(self::SESSION_ID, $request->input(self::SESSION_ID));
+                }
+
+                if( $request->has(self::SESSION_CLIENTE)) {
+                    $request->session()->put(self::SESSION_CLIENTE, $request->input(self::SESSION_CLIENTE));
+                }
+
+                if( $request->has(self::SESSION_FECHA_PROG)) {
+                    $request->session()->put(self::SESSION_FECHA_PROG, $request->input(self::SESSION_FECHA_PROG));
+                }
+
+                if( $request->has(self::SESSION_FECHA_INI)) {
+                    $request->session()->put(self::SESSION_FECHA_INI, $request->input(self::SESSION_FECHA_INI));
+                }
+
+                if( $request->has(self::SESSION_FECHA_FIN)) {
+                    $request->session()->put(self::SESSION_FECHA_FIN, $request->input(self::SESSION_FECHA_FIN));
+                }
+
+                if( $request->has(self::SESSION_ESTATUS)) {
+                    $request->session()->put(self::SESSION_ESTATUS, $request->input(self::SESSION_ESTATUS));
+                }
+            }
+            $search = array();
+            if ( $request->session()->has(self::SESSION_ID)
+                    && $request->session()->get(self::SESSION_ID) != '0' ) {
+                $search[OrderRepository::SQL_CODIGO_ORDEN] = $request->session()->get(self::SESSION_ID);
+            }
+            if ($request->session()->has(self::SESSION_CLIENTE)
+                    && $request->session()->get(self::SESSION_CLIENTE) != '-' ) {
+                $search[ClienteRepository::SQL_NOMBRE] = $request->session()->get(self::SESSION_CLIENTE);
+            }
+            if ($request->session()->has(self::SESSION_FECHA_PROG)
+                    && $request->session()->get(self::SESSION_FECHA_PROG) != 'NA' ) {
+                $search[CalculationRepository::SQL_FP] = $request->session()->get(self::SESSION_FECHA_PROG);
+            }
+            if ($request->session()->has(self::SESSION_FECHA_INI)
+                    && $request->session()->get(self::SESSION_FECHA_INI) != 'NA' ) {
+                $search[OrderRepository::SQL_INICIO] = $request->session()->get(self::SESSION_FECHA_INI);
+            }
+            if ($request->session()->has(self::SESSION_FECHA_FIN)
+                    && $request->session()->get(self::SESSION_FECHA_FIN) != 'NA' ) {
+                $search[OrderRepository::SQL_FIN] = $request->session()->get(self::SESSION_FECHA_FIN);
+            }
+            if ($request->session()->has(self::SESSION_ESTATUS)
+                    && $request->session()->get(self::SESSION_ESTATUS) != '-1' ) {
+                $search[OrderRepository::SQL_ESTATUS] = $request->session()->get(self::SESSION_ESTATUS);
+            }
+            Log::info(" UsuariosController - listado - search: ".json_encode($search));
+
+
+            $listado = $this->calcModel->getAllOrd($search);
 
             //Log::info(" listadoPedidos - listado - Listita: ".$listado->get());
 

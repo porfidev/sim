@@ -4,11 +4,12 @@ namespace App\Repositories;
 
 interface OrderDetailRepository
 {
-	const SQL_ID    = "id";	
-	const SQL_CODIGOP  = "itemcode";
-	const SQL_CANTIDAD  = "quantity";
-	const SQL_CANTIDADP  = "quantitypack";
-	const SQL_ORDEN_ID  = "idOrder";
+	const SQL_ID          = "id";
+	const SQL_CODIGOP     = "itemcode";
+	const SQL_CANTIDAD    = "quantity";
+	const SQL_CANTIDADP   = "quantitypack";
+	const SQL_ORDEN_ID    = "idOrder";
+	const SQL_PRES_REQ    = "pres_req";
 	const SQL_CANTIDAD_U  = "quantity_user";
 	const SQL_CANTIDAD_B  = "quantity_boss";
 

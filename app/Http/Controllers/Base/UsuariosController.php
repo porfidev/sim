@@ -380,6 +380,13 @@ class UsuariosController extends Controller
             Log::info(" UsuariosController - asignarUsuario - idUsuario: ".
                 $request->get('userId')." idOrder: ".$request->get('orderId'));
 
+            $listaTotal = $this->assiModel->getListAsi( $request->orderId);
+
+            foreach ($listaTotal as $ele) {
+                
+                $this->assiModel->delete( $ele->order_id);
+            }
+
 
             $typedocs = $request->typedoc;
 
