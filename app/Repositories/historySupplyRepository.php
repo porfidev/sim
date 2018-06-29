@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-interface historySupplyRepository
+interface HistorySupplyRepository
 {
-	const SQL_USRID     = "user_id";	
+	const SQL_USRID     = "user_id";
 	const SQL_ORDID  	= "order_id";
-	const SQL_DETID     = "detail_id";	
+	const SQL_DETID     = "detail_id";
 	const SQL_PROID  	= "product_id";
-	const SQL_QUANTITY  = "quantity";	
+	const SQL_QUANTITY  = "quantity";
 	const SQL_DATIME  	= "hist_date_time";
 
 	function getAll();
