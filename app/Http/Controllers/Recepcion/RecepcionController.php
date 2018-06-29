@@ -16,11 +16,18 @@ use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\Controller;
 use App\Repositories\PurchaseRepository;
 
+use App\Repositories\ProductRepository;
+use App\Repositories\EloquentProduct;
 
-
+use App\Repositories\ArrivalItemRepository;
+use App\Repositories\EloquentArrivalItem;
 
 use App\Purchase;
 use App\PurchaseItems;
+use App\Product;
+use App\ArrivalItem;
+
+use Carbon\Carbon;
 
 class RecepcionController extends Controller
 {
@@ -34,7 +41,7 @@ class RecepcionController extends Controller
 
     public function __construct(PurchaseRepository $cli)
     {
-        $this->middleware(['auth', 'permission']);
+        //$this->middleware(['auth', 'permission']);
         $this->purchaseModel = $cli;
     }
 
@@ -134,5 +141,143 @@ class RecepcionController extends Controller
         return view('recepcion.listadoItemsHH',['data' => $data,'proveedor' => $proveedor] );
     }
 
+
+    static function validaCodigo($codigo){
+
+        
+        $mensajes  = "NA";
+        $cantidadTot = -1;
+        $sku=0;
+        $response = [];
+        
+        $modelo =  new Product;
+        $productModelE = new EloquentProduct($modelo);
+
+        try {
+
+            Log::info(" RecepcionController - validaBarcode codigo : ".$codigo);
+            $product = $productModelE->getByCode( $codigo );
+
+            if( $product != null ) {
+
+                Log::debug(" RecepcionController - validaBarcode: ".json_encode($product) );
+
+                $sku=$product->sku;
+
+                if($codigo == $product->corrugated_barcode){
+
+                    $cantidadTot = intval($product->display_per_box)*intval($product->items_per_display);
+
+                } else if($codigo == $product->display_barcode){
+
+                    $cantidadTot = intval($product->items_per_display);
+
+                } else if($codigo == $product->barcode){
+
+                    $cantidadTot = 1;
+                } 
+            } else {
+
+                Log::error("RecepcionController - validaBarcode: El objeto product esta vacío");
+                $resultado = "No existe el producto";
+                $mensajes  = "No se encontro ese producto";
+            }
+        } catch (\Exception $e) {
+            Log::error( 'RecepcionController - validaBarcode - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+
+        $response[2] = $sku;
+        $response[1] = $mensajes;
+        $response[0] = $cantidadTot;
+
+        return $response;
+      
+    }
+
+    static function validaCaducidad($sku, $caducidad, $canTotal, $recibido, $lote){
+
+        
+        $mensajes  = "NA";
+        $cantidadTot = -1;
+        $sku=0;
+        $response = [];
+        
+        $modeloP =  new Product;
+        $modeloA =  new ArrivalItem;
+
+        $productModelE = new EloquentProduct($modeloP);
+        $productModelA = new EloquentProduct($modeloA);
+
+        try {
+
+            Log::info(" RecepcionController - validaBarcode codigo : ".$sku);
+            $product = $productModelE->getByCode( $sku );
+            $arrivalItem = $productModelA->getByItemCodeLote( $sku, $lote );
+
+            if( $product->caducidad_minima != null ) {
+
+                Log::debug(" RecepcionController - validaBarcode: ".json_encode($product) );
+
+                if($caducidad <= $product->caducidad_minima ){
+
+                    $mensajes  = "La caducidad del producto recibido no respeta la caducidad minima";
+
+                    if($arrivalItem != null){
+
+                        if ($caducidad > $product->caducidad_minima){
+
+                            $arrivalItem->quantity + $canTotal;
+
+                            }else{
+
+                                $mensajes  = "La caducidad del producto recibido es menor al ultimo producto recibido";
+
+                            }
+
+
+                    } else {
+
+                        $modelPurchaseItem = new PurchaseItem;
+                        $modeloNewA =  new ArrivalItem;
+                        $nuevoArrivalItem = new EloquentArrivalItem($modeloNewA);
+
+                        $purchaseItem = $modelPurchaseItem->getByCode( $sku );
+
+                        $nuevoArrivalItem->purchase_id  = ($purchaseItem -> $purchase_id);
+                        $nuevoArrivalItem->ItemCode     = ($purchaseItem -> $sku);
+                        $nuevoArrivalItem->pedimento    = ($purchaseItem -> $ItemCode);
+                        $nuevoArrivalItem->product_id   = ($purchaseItem -> $product_id);
+                        $nuevoArrivalItem->quantity     = ($recibido);
+                        $nuevoArrivalItem->cantidad_rec = ($purchaseItem -> $u_CantReq);
+                        $nuevoArrivalItem->u_Caducidad  = ($caducidad);
+                        $nuevoArrivalItem->DistNumber   = ($lote);
+  
+                    }
+
+                } 
+
+            } else {
+
+                Log::error("RecepcionController - validaBarcode: El objeto product esta vacío");
+                $resultado = "La caducidad del producto recibido excede la caducidad minima";
+                $mensajes  = "La caducidad del producto recibido excede la caducidad minima";
+            }
+        } catch (\Exception $e) {
+            Log::error( 'RecepcionController - validaBarcode - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+
+        $response[2] = $sku;
+        $response[1] = $mensajes;
+        $response[0] = $cantidadTot;
+
+        return $response;
+      
+    }
+
+   
 
 }

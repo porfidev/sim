@@ -48,16 +48,16 @@ class EloquentPurchase implements PurchaseRepository
 				$list->where(self::SQL_CARDNAME, "like", "%".$search[self::SQL_CARDNAME]."%");
 			}
 			if(array_key_exists(self::SQL_DOCDUEDATE, $search)
-				&& $search[self::DocDueDate] != "NA") {
-				$list->where(self::DocDueDate, "like", "%".$search[self::DocDueDate]."%");
+				&& $search[self::SQL_DOCDUEDATE] != "NA") {
+				$list->where(self::SQL_DOCDUEDATE, "like", "%".$search[self::SQL_DOCDUEDATE]."%");
 			}
 			if(array_key_exists(self::SQL_ARRIVAL, $search)
-				&& $search[self::arrival] != "NA") {
-				$list->where(self::arrival, "like", "%".$search[self::arrival]."%");
+				&& $search[self::SQL_ARRIVAL] != "NA") {
+				$list->where(self::SQL_ARRIVAL, "like", "%".$search[self::SQL_ARRIVAL]."%");
 			}
 			if(array_key_exists(self::SQL_STATUS, $search)
-				&& $search[self::status] != "NA") {
-				$list->where(self::status, "like", "%".$search[self::status]."%");
+				&& $search[self::SQL_STATUS] != "NA") {
+				$list->where(self::SQL_STATUS, "like", "%".$search[self::SQL_STATUS]."%");
 			}
 		}
 		Log::debug("EloquentPurchases - getList - SQL: ".$list->toSql());

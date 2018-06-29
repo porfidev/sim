@@ -71,6 +71,15 @@ class EloquentProduct implements ProductRepository
 		return $this->model->where("sku","=",$sku)->get()->first();
 	}
 
+
+	public function getByCode($codigo)
+	{
+		return $this->model->where("barcode","=",$codigo)
+				->orWhere("display_barcode","=",$codigo)
+				->orWhere("corrugated_barcode","=",$codigo)
+				->get()->first();
+	}
+
     /**
 	 * Create a Product.
 	 *

@@ -95,6 +95,7 @@ Route::get('/hh/recepcion/listadoHH',    '\App\Http\Controllers\Recepcion\Recepc
 Route::post('/hh/recepcion/listadoHH',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoHH'    )->name('ordenes.listadoHH');
 Route::get('/hh/recepcion/listadoItemsHH/{purchase}',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'    );
 Route::post('/hh/recepcion/listadoItemsHH/{purchase}',    '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'    )->name('ordenes.listadoItemsHH');
+Route::get('hh/recepcion/validacionHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
 
 // Preparación de pedido o embalaje
 

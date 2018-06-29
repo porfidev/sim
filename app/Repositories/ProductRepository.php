@@ -28,6 +28,8 @@ interface ProductRepository
 
     function getBySku($sku);
 
+    function getByCode($barcode);
+
 	function create(array $attributes);
 
 	function update($id, array $attributes);

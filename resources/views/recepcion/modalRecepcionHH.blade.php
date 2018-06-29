@@ -68,7 +68,7 @@
                     <div class="form-group row">
                         <label for="inputCaducidad" class="col-sm-3 col-form-label">Caducidad</label>
                         <div class="col-sm-6">
-                        <input type="text" 
+                        <input type="date" 
                                class="form-control" 
                                id="inputCaducidad" 
                                placeholder="Caducidad"
@@ -102,7 +102,7 @@
                                         class="btn btn-primary",
                                         id="btnGuardarmodalCaptura">
                                         Aceptar
-                               </button>
+                               </button>                    
                         </div>
 
                     </div>
@@ -110,56 +110,53 @@
             </div>
                 <!--Modal 2-->
                 <div id="success" style="display:none" >
-                <form id="formDatosActualizados">
-                <div class="form-group row">
-                        <p class="text-justify col-sm-12">El producto <b> PULPATON PATRICIO </b> ha sido actualizado</p>
-                    </div>
-                    <div class="form-group row">  
-                        <label for="sku_success" class="col-sm-3 col-form-label">SKU</label>
-                        <div class="col-sm-6">
-                                <b>PPR-0904 </b>
+                    <form id="formDatosActualizados">
+                        <div class="form-group row">
+                            <p class="text-justify col-sm-12">El producto <b> PULPATON PATRICIO </b> ha sido actualizado</p>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                       
-                        <label for="lote_success" class="col-sm-3 col-form-label">Lote</label>
-                        <div class="col-sm-6">
-                                <b>01</b>
+                        <div class="form-group row">  
+                            <label for="sku_success" class="col-sm-3 col-form-label">SKU</label>
+                            <div class="col-sm-6">
+                                    <b>PPR-0904 </b>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="caducidad_success" class="col-sm-3 col-form-label">Caducidad</label>
-                        <div class="col-sm-6">
-                                <b>2018-06-12</b>
+                        <div class="form-group row">
+                            <label for="lote_success" class="col-sm-3 col-form-label">Lote</label>
+                            <div class="col-sm-6">
+                                    <b>01</b>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="cantreq_success" class="col-sm-3 col-form-label">Cantidad Requerida</label>
-                         <div class="col-sm-6">
-                                <b>678</b>
-                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="cantrec_success" class="col-sm-3 col-form-label">Cantidad Recibida</label>
-                        <div class="col-sm-6">
-                                <b>679</b>
-                         </div>
-                    </div>
-                        <button type="button"
-                                    class="btn btn-primary float-right ",
-                                    id="btnGuardarmodalSuccess"
-                                    data-dismiss="modal">
-                                    Aceptar
-                        </button>
+                        <div class="form-group row">
+                            <label for="caducidad_success" class="col-sm-3 col-form-label">Caducidad</label>
+                            <div class="col-sm-6">
+                                    <b>2018-06-12</b>
+                            </div>
                         </div>
-
-                    </div>
-                </form>
-                
+                        <div class="form-group row">
+                            <label for="cantreq_success" class="col-sm-3 col-form-label">Cantidad Requerida</label>
+                            <div class="col-sm-6">
+                                    <b>678</b>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="cantrec_success" class="col-sm-3 col-form-label">Cantidad Recibida</label>
+                            <div class="col-sm-6">
+                                    <b>679</b>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <button type="button"
+                                        class="btn btn-primary float-right ",
+                                        id="btnGuardarmodalSuccess"
+                                        data-dismiss="modal">
+                                        Aceptar
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <!--Modal error no existe producto-->
                  <div id="invalidCode" style="display:none" >
-                <p class="text-justify">El producto <b> 123 </b> no existe</p>
+                    <p class="text-justify">El producto <b> 123 </b> no existe</p>
                     <button type="button"
                             class="btn btn-primary float-right ",
                             id="btnGuardarmodalError1"
@@ -169,7 +166,7 @@
                 </div>
                 <!--Modal error la caducidad es menor-->
                 <div id="invalidCadM" style="display:none" >
-                <p class="text-justify">La fecha de caducidad es menor a la caducidad del ultimo
+                    <p class="text-justify">La fecha de caducidad es menor a la caducidad del ultimo
                                        producto</p>
                     <button type="button"
                             class="btn btn-primary float-right ",
@@ -270,7 +267,7 @@ function validaCaducidad() {
     }
     else if(x == 9) {
         cadT.style.display = "block";
-        sampleElem.style.display = "none";   
+        capDat.style.display = "none";   
     } 
     else if(x == 321) {
         success.style.display = "block";
