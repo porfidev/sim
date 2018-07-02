@@ -10,3 +10,38 @@ button > i {
     cursor:default !important;
     z-index:2147483647 !important;
 }
+
+.table-fixed {
+    /*font-size: 13px;*/
+}
+
+tbody.size-2  {
+    height: 252px !important;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.table-fixed tbody {
+    height: 189px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr,
+.table-fixed td,
+.table-fixed th {
+    display: block;
+}
+.table-fixed tr:after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.table-fixed tbody td,
+.table-fixed thead > tr > th {
+    float: left;
+    height: 63px;
+}

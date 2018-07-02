@@ -1,8 +1,6 @@
 @extends('layouts.sim')
 
 @section('content')
-
-<meta name="csrf-token" content="{{ csrf_token() }}">
     <br>
     <h2 class="mt-2">Listado de Pedidos</h2>
     <br>

@@ -41,7 +41,7 @@ use App\Repositories\EloquentPurchaseItems;
 use App\Repositories\PurchaseRepository;
 use App\Repositories\EloquentPurchase;
 
-use App\Repositories\historySupplyRepository;
+use App\Repositories\HistorySupplyRepository;
 use App\Repositories\EloquenthistorySupply;
 
 class AppServiceProvider extends ServiceProvider
