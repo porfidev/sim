@@ -14,7 +14,7 @@ use App\Repositories\AssignmentRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
-use App\Repositories\historySupplyRepository;
+use App\Repositories\HistorySupplyRepository;
 
 use Illuminate\Support\Facades\Log;
 
@@ -31,16 +31,16 @@ class SurtidoTrabajadorController extends Controller
      *
      * @return void
      */
-    public function __construct(AssignmentRepository $as, ProductRepository $product,
-                                 OrderDetailRepository $det, OrderRepository $ord,
-                                historySupplyRepository $hist)
+    public function __construct(AssignmentRepository $as,
+        OrderDetailRepository $det, OrderRepository $ord,
+        HistorySupplyRepository $hist, ProductRepository $product )
     {
         $this->middleware(['auth', 'permission']);
         $this->assiModel    = $as;
         $this->productModel = $product;
-        $this->ordDetModel = $det;
-        $this->orderModel = $ord;
-        $this->histModel = $hist;
+        $this->ordDetModel  = $det;
+        $this->orderModel   = $ord;
+        $this->histModel    = $hist;
     }
 
     /**
@@ -56,11 +56,8 @@ class SurtidoTrabajadorController extends Controller
             Log::info(" listadoPedidos - listado ");
 
             $userId = Auth::id();
-            //$userId = 2;
 
             $listado = $this->assiModel->getPedUser($userId);
-
-            //Log::info(" listadoPedidos - listado - Listita: ".$listado->get());
 
             $listado = $listado->paginate(10);
 
@@ -169,12 +166,12 @@ class SurtidoTrabajadorController extends Controller
                             $fecHor = date("Y-m-d H:i:s");
 
                             $dataHist = array(
-                                historySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
-                                historySupplyRepository::SQL_DETID     => $request->get('idDet'),
-                                historySupplyRepository::SQL_PROID     => $product->id,
-                                historySupplyRepository::SQL_USRID     => Auth::id(),
-                                historySupplyRepository::SQL_QUANTITY  => $resp[0],
-                                historySupplyRepository::SQL_DATIME    => $fecHor
+                                HistorySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
+                                HistorySupplyRepository::SQL_DETID     => $request->get('idDet'),
+                                HistorySupplyRepository::SQL_PROID     => $product->id,
+                                HistorySupplyRepository::SQL_USRID     => Auth::id(),
+                                HistorySupplyRepository::SQL_QUANTITY  => $resp[0],
+                                HistorySupplyRepository::SQL_DATIME    => $fecHor
                             );
 
                             $this->histModel->create($dataHist);
