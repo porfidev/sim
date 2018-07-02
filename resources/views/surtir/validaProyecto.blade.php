@@ -5,14 +5,14 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
     <br>
     <h2 class="mt-2" style="text-align: center;">
-        <button class="btn btn-secondary atrasPed"
+        <button class="btn btn-sm btn-secondary atrasPed"
                 data-toggle="tooltip"
                 data-placement="top"
-                title="Cerrar pedido">
+                title="Regresar">
             <i class="material-icons">reply</i>
-        </button> 
+        </button>
 
-        Codigo: {{ $cod }}
+        Pedido: #{{ $cod }}
 
         @if($statusPed < 4)
         <button class="btn btn-sm btn-success cierraPed"
@@ -26,8 +26,8 @@
     </h2>
     <br>
     <div class="card">
-        <div class="card-body">
-            <div class="table-responsive mt-2">
+        <div class="card-body pl-0 pr-0 pb-0 pt-0">
+            <div class="table-responsive">
                 <table class="table table-striped">
                     <tbody>
                         @foreach ($listado as $ped)
@@ -157,29 +157,25 @@
                             <td style="text-align: center;" colspan=2>
                                 @if( $ped->sta < 4)
                                 <div class="form-group">
-                                <input class="codigines" 
-                                onkeypress="return runScript(
-                                    event,
-                                 {{ $ped->id }},
-                                 {{ $ped->quantity }},
-                                 @if ( empty($ped->quantity_boss))
+                                    <input class="codigines form-control"
+                                        onkeypress="return runScript(
+                                        event,
+                                    {{ $ped->id }},
+                                    {{ $ped->quantity }},
+                                    @if ( empty($ped->quantity_boss))
+                                            0
+                                        @endif
 
-                                        0
-                        
-                                    @endif
-
-                                    @if ( !empty($ped->quantity_boss))
-
-                                        {{ $ped->quantity_boss }}
-                        
-                                    @endif
-                                    ,
-                                '{{ $ped->itemcode }}',
-                                '{{ $ped->pres_req }}',
-                                {{ $ped->itemsDisp }},
-                                {{ $ped->dispBox }})"
-                                id="cod{{ $ped->id }}">
-                            </div>
+                                        @if ( !empty($ped->quantity_boss))
+                                            {{ $ped->quantity_boss }}
+                                        @endif
+                                        ,
+                                    '{{ $ped->itemcode }}',
+                                    '{{ $ped->pres_req }}',
+                                    {{ $ped->itemsDisp }},
+                                    {{ $ped->dispBox }})"
+                                    id="cod{{ $ped->id }}">
+                                </div>
                                 @endif
                             </td>
                         </tr>
