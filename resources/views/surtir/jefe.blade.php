@@ -71,7 +71,7 @@
                                 </select>
                             </th>
                             <th>
-                                <input type="date" 
+                                <input type="date"
                                        class="form-control inputFiltro"
                                        id="formaFecProg"
                                     @if ( Session::has('sc_fec_prog') && Session::get('sc_fec_prog') != 'NA' )

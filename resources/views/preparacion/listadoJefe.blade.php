@@ -18,7 +18,7 @@
                                 class="col-3">
                                 Cliente
                             </th>
-                            <th scope="col" style="text-align: center;"
+                            <th scope="col"
                                 class="col-2">
                                 Estatus
                             </th>
@@ -41,10 +41,61 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <td style="text-align: center;"
-                            class="col">
-                            No hay pedidos que mostrar
-                        </td>
+                @foreach ($anteriores as $pedido)
+                        <tr>
+                            <td class="col-1">
+                                {{ $pedido->codeOrder }}
+                            </td>
+                            <td class="col-3">
+                                {{ $pedido->client->name }}
+                            </td>
+                            <td class="col-2">
+                        @if ($pedido->status == 2)
+                                En Proceso de Surtido
+                        @endif
+
+                        @if ($pedido->status == 3)
+                                Por Validar Surtido
+                        @endif
+
+                        @if ($pedido->status == 4)
+                                Surtido
+                        @endif
+                            </td>
+                            <td class="col-2" style="text-align: center;">
+                                {{ $pedido->start }}
+                            </td>
+                            <td class="col-2" style="text-align: center;">
+                                {{ $pedido->end }}
+                            </td>
+                            <td class="col-1" style="text-align: center;">
+                                <a href="#"
+                                    data-toggle="popover"
+                                    data-placement="top"
+                                    title="C&aacute;lculos"
+                                    data-content="P: {{ $pedido->calculation->P }}
+                                                  D: {{ $pedido->calculation->D }}
+                                                  V: {{ $pedido->calculation->V }}">
+                                    {{ $pedido->calculation->priority }}
+                                 </a>
+                            </td>
+                            <td class="col-1" style="text-align: center;">
+                        @if ($pedido->status == 4)
+                                <button type="button" class="btn btn-sm btn-primary">
+                                    Recibir
+                                </button>
+                        @endif
+                            </td>
+                        </tr>
+                @endforeach
+                @if (count($anteriores) === 0)
+                        <tr>
+                            <td style="text-align: center;"
+                                class="col">
+                                No hay pedidos que mostrar
+                            </td>
+                        </tr>
+                @endif
                     </tbody>
                 </table>
             </div>
@@ -88,9 +139,56 @@
                         </tr>
                     </thead>
                     <tbody class="size-2">
-                        <td class="col" style="text-align: center;">
-                            No hay pedidos que mostrar
-                        </td>
+                            @foreach ($listado as $pedido)
+                            <tr>
+                                <td class="col-1">
+                                    {{ $pedido->codeOrder }}
+                                </td>
+                                <td class="col-3">
+                                    {{ $pedido->client->name }}
+                                </td>
+                                <td class="col-2">
+                            @if ($pedido->status == 5)
+                                    Recibido
+                            @endif
+
+                            @if ($pedido->status == 6)
+                                    En Proceso
+                            @endif
+
+                            @if ($pedido->status == 7)
+                                    Por Validar
+                            @endif
+                                </td>
+                                <td class="col-2" style="text-align: center;">
+                                    {{ $pedido->start }}
+                                </td>
+                                <td class="col-2" style="text-align: center;">
+                                    {{ $pedido->end }}
+                                </td>
+                                <td class="col-1" style="text-align: center;">
+                                    <a href="#"
+                                        data-toggle="popover"
+                                        data-placement="top"
+                                        title="C&aacute;lculos"
+                                        data-content="P: {{ $pedido->calculation->P }}
+                                                      D: {{ $pedido->calculation->D }}
+                                                      V: {{ $pedido->calculation->V }}">
+                                        {{ $pedido->calculation->priority }}
+                                     </a>
+                                </td>
+                                <td class="col-1" style="text-align: center;">
+
+                                </td>
+                            </tr>
+                    @endforeach
+                    @if (count($listado) === 0)
+                            <tr>
+                                <td class="col" style="text-align: center;">
+                                    No hay pedidos que mostrar
+                                </td>
+                            </tr>
+                    @endif
                     </tbody>
                 </table>
             </div>
@@ -106,6 +204,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').popover();
         });
     </script>
 @endsection

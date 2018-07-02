@@ -44,7 +44,29 @@ class PreparacionJefeController extends Controller
      */
     public function listadoPedidos(Request $request){
         try {
-            return view('preparacion.listadoJefe');
+            $pedidosAnteriores = $this->orderModel->getAll(
+                array(
+                    OrderRepository::SQL_ESTATUS       => OrderRepository::SURTIDO_PROCESO,
+                    OrderRepository::STATUS_OPERATOR   => ">",
+                    OrderRepository::SQL_ESTATUS_2     => OrderRepository::PREPARADO_RECIBIDO,
+                    OrderRepository::STATUS_OPERATOR_2 => "<",
+                )
+            );
+
+            $pedidos = $this->orderModel->getAll(
+                array(
+                    OrderRepository::SQL_ESTATUS       => OrderRepository::SURTIDO_VALIDO,
+                    OrderRepository::STATUS_OPERATOR   => ">",
+                    OrderRepository::SQL_ESTATUS_2     => OrderRepository::PREPARADO_VALIDADO,
+                    OrderRepository::STATUS_OPERATOR_2 => "<",
+                )
+            );
+            return view('preparacion.listadoJefe',
+                array(
+                    "anteriores" => $pedidosAnteriores,
+                    "listado"    => $pedidos
+                )
+            );
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - listadoPedidos - Error'.$e->getMessage() );
             return view('error',
