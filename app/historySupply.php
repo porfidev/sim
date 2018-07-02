@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class historySupply extends Model
+class HistorySupply extends Model
 {
     protected $table = 'history_supply';
 
