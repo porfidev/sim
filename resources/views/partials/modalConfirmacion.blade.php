@@ -85,13 +85,6 @@
                 $('#modalConfirmation').modal('toggle');
                 location.reload();
 
-                if( $(".borra") ){
-
-                    alert("si entro");
-
-                    $(".btnCierra"+$(".borra").val()).hide();
-                }
-
             } else {
                 var errorMsg = "<p>Error al eliminar el elemento.<p><ul>";
                 $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );

@@ -148,9 +148,36 @@ class SurtidoJefeController extends Controller
             Log::info(" listadoTareasJ - listado ");
 
             $idOrd = $idPed;
+            Log::info(" listadoPedidos - listadoTareasJ - buscando: idOrd: ".$idPed);
+            $codigo = $this->orderModel->getById($idOrd)->codeOrder;
+            $status = $this->orderModel->getById($idOrd)->status;
             //$userId = 2;
 
-            $listado = $this->ordDetModel->getByIdOrd($idOrd);
+            $listado = $this->ordDetModel->getByIdOrd($idPed);
+            Log::info(" listadoPedidos - listadoTareasJ - obtuve: ".$listado);
+
+            /*foreach ($listado as $ped) {
+
+                if( $ped->pres_req == "BOX"){
+
+                    $cantU = ($ped->quantity_user / $ped->itemsDisp) / $ped->dispBox;
+                    $cantT = ($ped->quantity / $ped->itemsDisp) / $ped->dispBox;
+                    $cantB = ($ped->quantity_boss / $ped->itemsDisp) / $ped->dispBox;
+
+                }elseif ($ped->pres_req == "DSP"){
+
+                    $cantU = ($ped->quantity_user / $ped->itemsDisp);
+                    $cantT = ($ped->quantity / $ped->itemsDisp);
+                    $cantB = ($ped->quantity_boss / $ped->itemsDisp);
+
+                }else{
+
+                    $cantU = $ped->quantity_user;
+                    $cantT = $ped->quantity;
+                    $cantB = $ped->quantity_boss;
+
+                }
+            }*/
 
             //Log::info(" listadoTareasJ - listado - Listita: ".$listado->get());
 
@@ -158,7 +185,9 @@ class SurtidoJefeController extends Controller
                 array(
 
                     "listado" => $listado,
-                    "idP" => $idOrd
+                    "idP" => $idOrd,
+                    "cod" => $codigo,
+                    "statusPed" => $status
                 ));
 
         } catch (\Exception $e) {

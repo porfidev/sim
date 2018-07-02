@@ -84,6 +84,25 @@
                     data.forEach(function(element) {
 
                         var cantUsr = (((element.quantity_user) == null)?0:element.quantity_user);
+
+                        var cantTotal = 0;
+                        var cantUser = 0;
+
+                        if(element.pres_req == "BOX"){
+
+                            cantTotal = (element.quantity / element.itemsDisp) / element.dispBox;
+                            cantUser = (cantUsr / element.itemsDisp) / element.dispBox;
+
+                        }else if(element.pres_req == "DSP"){
+
+                            cantTotal = (element.quantity / element.itemsDisp);
+                            cantUser = (cantUsr / element.itemsDisp);
+
+                        }else{
+
+                            cantTotal = element.quantity;
+                            cantUser = cantUsr;
+                        }
                         
 
                         console.log(element.sta);
@@ -100,16 +119,17 @@
                         
 
                         tt += "<tr><td style='width:50%;'>"+element.itemcode+"</td>"+
-                              "<td style='width:50%;'><span id='canti"+element.id+"'>"+cantUsr+
-                              "</span> / "+element.quantity+"<input type='hidden' value='"+cantUsr+"' id='cantiU"+element.id+"'></td></tr>";
+                              "<td style='width:50%;'><span id='canti"+element.id+"'>"+cantUser+
+                              "</span> / "+cantTotal+"<input type='hidden' value='"+cantUsr+"' id='cantiU"+element.id+"'></td></tr>";
 
                         tt += '<tr><td colspan=2 style="text-align:center;"><input class="codigines codeSku'+element.idD+'" '+
-                              'onkeypress="return runScript(event,'+element.id+','+element.quantity+','+cantUsr+',\''+element.itemcode+'\')"'+
+                              'onkeypress="return runScript(event,'+element.id+','+element.quantity+','+cantUsr+
+                              ',\''+element.itemcode+'\''+',\''+element.pres_req+'\','+element.itemsDisp+','+element.dispBox+')"'+
                               ' id="cod'+element.id+'" ';
 
                         if(element.sta > 2){
 
-                            tt += 'disabled></td></tr>';
+                            tt += ' style="display:none;"></td></tr>';
                             $(".btnCierra"+element.idD).hide();
 
 
@@ -150,7 +170,9 @@
         });  
 
 
-        function runScript(e,id,cantidad,cantUsu,skus) {
+        function runScript(e,id,cantidad,cantUsu,skus,presReq,disp,box) {
+
+            presReq = (presReq == undefined)?"":presReq;
 
             cantUsu = $("#cantiU"+id).val();
 
@@ -190,16 +212,31 @@
 
                     }
 
+                    cantUser = 0;
+
                     console.log("Datitos regreso: "+data.resultado);
 
-                    $("#canti"+id).html(data.resultado);
-                    $("#cantiU"+id).val(data.resultado);
+                    if(presReq == "BOX"){
+                            
+                        cantUser = (data.resultado / disp) / box;
+
+                    }else if(presReq == "DSP"){
+
+                        cantUser = (data.resultado / disp);
+
+                    }else{
+
+                        cantUser = data.resultado;
+                    }
+
+                    $("#canti"+id).html(cantUser);
+                    $("#cantiU"+id).val(cantUser);
 
                     if(data.cerrado != 0){
 
                         alert(data.mensajes);
                         $(".btnCierra"+data.cerrado).hide();
-                        $(".codeSku"+data.cerrado).prop('disabled', true);
+                        $(".codeSku"+data.cerrado).hide();
 
                     }
 

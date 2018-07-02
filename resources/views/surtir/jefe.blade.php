@@ -224,8 +224,7 @@
 @endsection
 
 @section('final')
-
-    @include('surtir.modalTrabajadores')
+   
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('surtir.asignaUsuarios')
