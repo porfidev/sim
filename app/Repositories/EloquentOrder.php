@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Order;
 use App\OrderTrace;
+use App\OrderDesign;
 
 use Illuminate\Support\Facades\Log;
 
@@ -19,16 +20,37 @@ class EloquentOrder implements OrderRepository
 	 */
 	private $trace;
 
+	/**
+	 * @var $design
+	 */
+	private $design;
+
     /**
 	 * EloquentRol constructor.
 	 *
 	 * @param App\Catalogo $model
 	 */
-	public function __construct(Order $model, OrderTrace $trace)
+	public function __construct(
+		Order $model,
+		OrderTrace $trace,
+		OrderDesign $design)
 	{
-		$this->model = $model;
-		$this->trace = $trace;
+		$this->model  = $model;
+		$this->trace  = $trace;
+		$this->design = $design;
     }
+
+	/**
+	 * Create a new Order Design.
+	 *
+	 * @param array $attributes
+	 *
+	 * @return App\OrderDesign
+	 */
+	public function createDesign(array $attributes)
+	{
+		return $this->design->create($attributes);
+	}
 
     /**
 	 * Get the order´s list fiter by the search parameters
@@ -75,9 +97,16 @@ class EloquentOrder implements OrderRepository
 		return $this->model->find($id);
     }
 
+	/**
+	 * Función que obtiene la primer orden por código
+	 *
+	 * @param String $code
+	 * @return App\Order
+	 */
     public function getByCode($code){
 
-    	return $this->model->where("codeOrder","=",$code)->get()->first();
+		return $this->model->where(self::SQL_CODIGO_ORDEN, "=", $code)
+			->first();
     }
 
     /**

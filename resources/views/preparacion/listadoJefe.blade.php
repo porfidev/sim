@@ -50,15 +50,15 @@
                                 {{ $pedido->client->name }}
                             </td>
                             <td class="col-2">
-                        @if ($pedido->status == 2)
+                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_PROCESO)
                                 En Proceso de Surtido
                         @endif
 
-                        @if ($pedido->status == 3)
+                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_POR_V)
                                 Por Validar Surtido
                         @endif
 
-                        @if ($pedido->status == 4)
+                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_VALIDO)
                                 Surtido
                         @endif
                             </td>
@@ -150,16 +150,28 @@
                                     {{ $pedido->client->name }}
                                 </td>
                                 <td class="col-2">
-                            @if ($pedido->status == 5)
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
                                     Recibido
                             @endif
 
-                            @if ($pedido->status == 6)
-                                    En Proceso
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
+                                    Por validar dise&ntilde;o
                             @endif
 
-                            @if ($pedido->status == 7)
-                                    Por Validar
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
+                                    En espera
+                            @endif
+
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
+                                    En proceso
+                            @endif
+
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
+                                    Por validar
+                            @endif
+
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_VALIDADO)
+                                    Validado
                             @endif
                                 </td>
                                 <td class="col-2" style="text-align: center;">

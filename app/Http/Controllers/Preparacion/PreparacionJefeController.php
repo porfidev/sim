@@ -13,6 +13,8 @@ use App\Http\Controllers\Controller;
 use App\Repositories\ProductRepository;
 use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
+use App\Repositories\CatalogoRepository;
+use App\Repositories\BoxesRepository;
 
 class PreparacionJefeController extends Controller
 {
@@ -20,6 +22,8 @@ class PreparacionJefeController extends Controller
     private $productModel;
     private $orderDetailModel;
     private $orderModel;
+    private $catalogModel;
+    private $boxModel;
 
     /**
      * Create a new controller instance.
@@ -29,12 +33,16 @@ class PreparacionJefeController extends Controller
     public function __construct(
         ProductRepository $product,
         OrderDetailRepository $detail,
-        OrderRepository $order )
+        OrderRepository $order,
+        CatalogoRepository $catalog,
+        BoxesRepository $box)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
         $this->productModel     = $product;
         $this->orderDetailModel = $detail;
         $this->orderModel       = $order;
+        $this->catalogModel     = $catalog;
+        $this->boxModel         = $box;
     }
 
     /**
@@ -56,9 +64,9 @@ class PreparacionJefeController extends Controller
 
             $pedidos = $this->orderModel->getAll(
                 array(
-                    OrderRepository::SQL_ESTATUS       => OrderRepository::SURTIDO_VALIDO,
+                    OrderRepository::SQL_ESTATUS       => OrderRepository::PREPARADO_RECIBIDO,
                     OrderRepository::STATUS_OPERATOR   => ">",
-                    OrderRepository::SQL_ESTATUS_2     => OrderRepository::PREPARADO_VALIDADO,
+                    OrderRepository::SQL_ESTATUS_2     => OrderRepository::DISTRIBUCION_RECIBIDO,
                     OrderRepository::STATUS_OPERATOR_2 => "<",
                 )
             );
@@ -90,24 +98,42 @@ class PreparacionJefeController extends Controller
         $resultado = "ERROR";
         $mensajes  = "NA";
         try {
-            Log::info(" PreparacionJefeController - recibirPedido ");
+            Log::info("PreparacionJefeController - recibirPedido ");
             if($request->has('id')){
-                Log::info(" PreparacionJefeController - recibirPedido: ".$request->get('id'));
+                Log::info("PreparacionJefeController - recibirPedido: ".$request->get('id'));
                 $pedido = $this->orderModel->getById($request->get('id'));
                 if(!empty($pedido)) {
                     DB::beginTransaction();
-                    $this->orderModel->update($request->get('id'),
-                        array(
-                            OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_RECIBIDO,
-                        )
-                    );
-                    $this->orderModel->addTrace(
-                        array(
-                            OrderRepository::TRACE_SQL_ORER => $request->get('id'),
-                            OrderRepository::TRACE_SQL_USER => Auth::id(),
-                            OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
-                        )
-                    );
+                    $client = $pedido->client;
+                    $boxType = $this->catalogModel->searchGroupItem();
+                    if($client->te === $boxType->id){
+                        $this->procesoPedidoEnCaja($pedido);
+                        $this->orderModel->update($request->get('id'),
+                            array(
+                                OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_ESPERA,
+                            )
+                        );
+                        $this->orderModel->addTrace(
+                            array(
+                                OrderRepository::TRACE_SQL_ORER => $request->get('id'),
+                                OrderRepository::TRACE_SQL_USER => Auth::id(),
+                                OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
+                            )
+                        );
+                    } else {
+                        $this->orderModel->update($request->get('id'),
+                            array(
+                                OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_RECIBIDO,
+                            )
+                        );
+                        $this->orderModel->addTrace(
+                            array(
+                                OrderRepository::TRACE_SQL_ORER => $request->get('id'),
+                                OrderRepository::TRACE_SQL_USER => Auth::id(),
+                                OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
+                            )
+                        );
+                    }
                     DB::commit();
                     $resultado = "OK";
                 } else {
@@ -126,5 +152,26 @@ class PreparacionJefeController extends Controller
             Controller::JSON_RESPONSE => $resultado,
             Controller::JSON_MESSAGE  => $mensajes
         ));
+    }
+
+    private function procesoPedidoEnCaja($pedido)
+    {
+        $orderList = $this->orderDetailModel->getByIdOrd($pedido->id);
+        foreach ($orderList as $orderItem) {
+            Log::info("____________________________________________________________________________");
+            $itemsPerBox = ($orderItem->itemsDisp * $orderItem->dispBox);
+            $boxQuantity = $orderItem->quantity / $itemsPerBox;
+            Log::info("PreparacionJefeController - recibirPedido - Cajas por Item: ".$orderItem->itemcode." - ".$boxQuantity);
+            $boxQuantity = floor($boxQuantity);
+            for ($i=0; $i < $boxQuantity; $i++) {
+                $this->orderModel->createDesign(
+                    array(
+                        OrderRepository::DESIGN_ORDER        => $pedido->id,
+                        OrderRepository::DESIGN_ORDER_DETAIL => $orderItem->id,
+                        OrderRepository::DESIGN_QUANTITY     => $itemsPerBox
+                    )
+                );
+            }
+        }
     }
 }

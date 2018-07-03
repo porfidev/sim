@@ -2,7 +2,7 @@
 
 @section('content')
     <br>
-    <h2 class="mt-2">Listado de Catalogos</h2>
+    <h2 class="mt-2">Listado de Tipos de Caja</h2>
     <br>
     <div class="card">
         <div class="card-body">
@@ -17,13 +17,13 @@
                                 Descripci&oacute;n
                             </th>
                             <th scope="col" style="min-width: 270px;">
-                                width
+                                Ancho
                             </th>
                             <th scope="col" style="min-width: 220px;">
-                                height
+                                Alto
                             </th>
                             <th scope="col" style="min-width: 220px;">
-                                depth
+                                Profundidad
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
                                 <button class="btn btn-sm btn-primary nuevaCaja"
@@ -45,15 +45,15 @@
                                 {{ $cat->description }}
                             </td>
                             <td>
-                                {{ $cat->width }}
+                                {{ $cat->width }} cm
                             </td>
                             <td>
-                                {{ $cat->height }}
+                                {{ $cat->height }} cm
                             </td>
                             <td>
-                                {{ $cat->depth }}
+                                {{ $cat->depth }} cm
                             </td>
-                            <td style="text-align: center;">                          
+                            <td style="text-align: center;">
                                 <button class="btn btn-sm btn-danger borrarBox"
                                         data-id="{{ $cat->id }}"
                                         data-toggle="tooltip"
@@ -99,7 +99,6 @@
                     parametros
                 );
             });
-            
         });
     </script>
 @endsection

@@ -20,6 +20,11 @@ interface OrderRepository
 	const TRACE_SQL_USER = "user_id";
 	const TRACE_SQL_TYPE = "trace_type";
 
+	const DESIGN_ORDER        = "order_id";
+	const DESIGN_ORDER_DETAIL = "order_detail_id";
+	const DESIGN_BOX          = "box_id";
+	const DESIGN_QUANTITY     = "quantity";
+
 	/**
 	 * Tipos de seguimiento
 	 */
@@ -27,6 +32,7 @@ interface OrderRepository
 	const TRACE_RECIBIR_SURTIDO = 2;
 	const TRACE_VALIDAR_DPP     = 3;
 	const TRACE_VALIDAR_PP      = 4;
+	const TRACE_RECIBIR_DIST    = 5;
 
 	/**
 	 * Estados de error
@@ -66,6 +72,8 @@ interface OrderRepository
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
+
+	function createDesign(array $attributes);
 
 	function getAll(array $search = null);
 

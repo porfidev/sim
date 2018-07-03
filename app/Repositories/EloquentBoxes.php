@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Box;
+use App\BoxId;
 
 use Illuminate\Support\Facades\Log;
 
@@ -11,17 +12,45 @@ class EloquentBoxes implements BoxesRepository
     /**
 	 * @var $model
 	 */
-    private $model;
+	private $model;
+
+	/**
+	 * @var $boxId
+	 */
+	private $boxId;
 
     /**
-	 * EloquentRol constructor.
+	 * EloquentBoxes constructor.
 	 *
 	 * @param App\Catalogo $model
 	 */
-	public function __construct(Box $model)
+	public function __construct(Box $model, BoxId $boxId)
 	{
 		$this->model = $model;
+		$this->boxId = $boxId;
     }
+
+	/**
+	 * Función para cerar un registro en la tabla de
+	 * box_ids.
+	 *
+	 * @return App\BoxId
+	 */
+	public function createBoxId(array $attributes)
+	{
+		return $this->boxId->create($attributes);
+	}
+
+	/**
+	 * Función para buscar una caja por nombre
+	 *
+	 * @param String $name
+	 * @return App\Box
+	 */
+	public function searchByName($name)
+	{
+		return $this->model->where(self::SQL_DESCRIPCION, 'like', $name)->first();
+	}
 
     /**
 	 * Get all Catalogos.
@@ -29,9 +58,7 @@ class EloquentBoxes implements BoxesRepository
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
     function getAll(){
-
     	$list = $this->model->orderBy('id', 'desc');
-    	
         return $list->get();
     }
 
@@ -40,7 +67,7 @@ class EloquentBoxes implements BoxesRepository
 	 *
 	 * @param integer $id
 	 *
-	 * @return App\Task
+	 * @return App\Box
 	 */
 	public function getById($id)
 	{
@@ -52,7 +79,7 @@ class EloquentBoxes implements BoxesRepository
 	 *
 	 * @param array $attributes
 	 *
-	 * @return App\Catalogo
+	 * @return App\Box
 	 */
 	public function create(array $attributes)
 	{
@@ -65,7 +92,7 @@ class EloquentBoxes implements BoxesRepository
 	 * @param integer $id
 	 * @param array $attributes
 	 *
-	 * @return App\Catalogo
+	 * @return App\Box
 	 */
 	public function update($id, array $attributes)
 	{

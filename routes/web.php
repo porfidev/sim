@@ -45,8 +45,7 @@ Route::post('/productos/eliminar',      '\App\Http\Controllers\Base\ProductContr
 Route::post('/productos/CSVPro',        '\App\Http\Controllers\Base\ProductController@CSVPro'   )->name('productos.CSV');
 
 // Cajas
-
-Route::get('/cajas/listado',       '\App\Http\Controllers\Base\BoxesController@listado'  )->name('cajas.listado');
+Route::get('/cajas/listado',    '\App\Http\Controllers\Base\BoxesController@listado'  )->name('cajas.listado');
 Route::post('/cajas/agregar',   '\App\Http\Controllers\Base\BoxesController@agregar'  )->name('cajas.agregar');
 Route::post('/cajas/eliminar',  '\App\Http\Controllers\Base\BoxesController@eliminar' )->name('cajas.eliminar');
 

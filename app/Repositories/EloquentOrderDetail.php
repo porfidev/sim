@@ -16,7 +16,7 @@ class EloquentOrderDetail implements OrderDetailRepository
     /**
 	 * EloquentRol constructor.
 	 *
-	 * @param App\Catalogo $model
+	 * @param App\OrderDetail $model
 	 */
 	public function __construct(OrderDetail $model)
 	{
@@ -31,7 +31,6 @@ class EloquentOrderDetail implements OrderDetailRepository
     function getAll(array $search = null){
 
     	$list = $this->model->orderBy('id', 'desc');
-    	    	
         return $list->paginate(10);
     }
 
@@ -41,25 +40,34 @@ class EloquentOrderDetail implements OrderDetailRepository
 	 *
 	 * @param integer $id
 	 *
-	 * @return App\Task
+	 * @return App\OrderDetail
 	 */
 	public function getById($id)
 	{
 		return $this->model->find($id);
     }
 
+	/**
+	 * Función para obtener el listado de elementos de la orden
+	 *
+	 * @param integer $id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
     public function getByIdOrd($id)
 	{
-		return $this->model->select("orders.status as sta",
-									"order_details.*",
-									"orders.id as idD",
-									"products.alias as nom",
-									"products.items_per_display as itemsDisp",
-									"products.display_per_box as dispBox",
-									"products.concept as con")
-						   ->leftJoin("orders","orders.id","=","order_details.idOrder")
-						   ->leftJoin("products","products.sku","=","order_details.itemcode")
-						   ->where("idOrder","=",$id)->get();
+		$orderList = $this->model->select(
+				"orders.status as sta",
+				"order_details.*",
+				"orders.id as idD",
+				"products.alias as nom",
+				"products.items_per_display as itemsDisp",
+				"products.display_per_box as dispBox",
+				"products.concept as con")
+			->leftJoin("orders","orders.id","=","order_details.idOrder")
+			->leftJoin("products","products.sku","=","order_details.itemcode")
+			->where("idOrder","=",$id);
+		Log::info("EloquentOrderDetail - getByIdOrd - SQL: ".$orderList->toSql());
+		return $orderList->get();
     }
 
     public function getDetExt($it,$qua,$pack,$idOrd){
@@ -72,11 +80,11 @@ class EloquentOrderDetail implements OrderDetailRepository
     }
 
     /**
-	 * Create a new Catalogo.
+	 * Create a new OrderDetail.
 	 *
 	 * @param array $attributes
 	 *
-	 * @return App\Catalogo
+	 * @return App\OrderDetail
 	 */
 	public function create(array $attributes)
 	{
@@ -84,12 +92,12 @@ class EloquentOrderDetail implements OrderDetailRepository
     }
 
     /**
-	 * Update a Catalogo.
+	 * Update a OrderDetail.
 	 *
 	 * @param integer $id
 	 * @param array $attributes
 	 *
-	 * @return App\Catalogo
+	 * @return App\OrderDetail
 	 */
 	public function update($id, array $attributes)
 	{
@@ -97,7 +105,7 @@ class EloquentOrderDetail implements OrderDetailRepository
 	}
 
 	/**
-	 * Delete a Catalogo.
+	 * Delete a OrderDetail.
 	 *
 	 * @param integer $id
 	 *

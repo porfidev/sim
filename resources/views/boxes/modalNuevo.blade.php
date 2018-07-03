@@ -1,17 +1,18 @@
-<!-- Modal para Usuario Nuevo -->
+<!-- Modal para Caja Nueva -->
 <div class="modal fade"
     id="modalNuevaCaja"
     tabindex="-1"
     role="dialog"
-    aria-labelledby="modalNuevoUsuarioTitle"
+    aria-labelledby="modalNuevaCajaTitle"
     aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-lg"
         role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">
-                    Nueva caja 
+                <h4 class="modal-title"
+                    id="modalNuevaCajaTitle">
+                    Nuevo tipo de caja
                 </h4>
                 <button type="button"
                     class="close"
@@ -37,7 +38,7 @@
                     </div>
                     <div class="form-group">
                         <label for="modalNewAnchura">
-                            Anchura
+                            Ancho
                         </label>
                         <input type="number"
                                 class="form-control"
@@ -47,7 +48,7 @@
                     </div>
                     <div class="form-group">
                         <label for="modalNewAltura">
-                            Altura
+                            Alto
                         </label>
                         <input type="number"
                                 class="form-control"
@@ -82,9 +83,9 @@
         </div>
     </div>
 </div>
-<!-- Fin de Modal para Usuario Nuevo -->
+<!-- Fin de Modal para Caja Nueva -->
 
-<!-- Script de Modal para Usuario Nuevo -->
+<!-- Script de Modal para Caja Nueva -->
 <script type="text/javascript">
     $(document).ready(function () {
         $( '.nuevaCaja' ).click(function () {
@@ -118,4 +119,4 @@
         });
     });
 </script>
-<!-- Fin de Modal para Usuario Nuevo -->
+<!-- Fin de Modal para Caja Nueva -->
