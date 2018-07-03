@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\historySupply;
+use App\HistorySupply;
 
 use Illuminate\Support\Facades\Log;
 
-class EloquenthistorySupply implements historySupplyRepository
+class EloquentHistorySupply implements HistorySupplyRepository
 {
     /**
 	 * @var $model
@@ -18,7 +18,7 @@ class EloquenthistorySupply implements historySupplyRepository
 	 *
 	 * @param App\Catalogo $model
 	 */
-	public function __construct(historySupply $model)
+	public function __construct(HistorySupply $model)
 	{
 		$this->model = $model;
     }

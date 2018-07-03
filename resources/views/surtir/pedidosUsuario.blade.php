@@ -230,7 +230,7 @@
                     }
 
                     $("#canti"+id).html(cantUser);
-                    $("#cantiU"+id).val(cantUser);
+                    $("#cantiU"+id).val(data.resultado);
 
                     if(data.cerrado != 0){
 

@@ -37,7 +37,7 @@ class EloquentAssignment implements AssignmentRepository
 
     public function getListAsi($idOrd){
 
-    	$list = $this->model->select("assignments.id as idA","assignments.*","users.name as name")
+    	$list = $this->model->select("assignments.id as idA","assignments.*","users.name as name","users.id as idUsu")
     						->leftJoin("users","users.id","=","assignments.user_id")
     						->where("assignments.order_id","=",$idOrd);
     	    	

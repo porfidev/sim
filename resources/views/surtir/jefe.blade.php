@@ -178,7 +178,7 @@
                                                 data-codeOrd="{{ $ped->codeOrder }}"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
-                                                title="Asignar personal">
+                                                title="Asignar Personal">
                                             <i class="material-icons">person_add</i>
                                         </button>
 
@@ -190,7 +190,7 @@
                                         data-codeOrd="{{ $ped->codeOrder }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="validar proyecto">
+                                        title="Validar Pedido">
                                     <i class="material-icons">done_all</i>
                                     </button>
                         

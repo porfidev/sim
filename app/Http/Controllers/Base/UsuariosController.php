@@ -70,14 +70,10 @@ class UsuariosController extends Controller
         return response()->json($response, 200);
     }
 
-    public function buscaUsuarios(Request $request) {
+    public function buscaUsuarios($ord) {
         $response = array();
         $nombre = "";
         try {
-
-            if($request->has("term")) {
-                $nombre = $request->input("term");
-            }
 
             Log::info(" UsuariosController - buscaUsuarios ");
 
@@ -86,7 +82,33 @@ class UsuariosController extends Controller
 
             $listado = $this->userModel->getListBusUsu($nombre, $jefeId);
 
-            $response = $listado->toArray();
+            $assig = $this->assiModel->getListAsi($ord);
+
+            $arr = array();
+
+            foreach ($listado as $usu) {
+
+                $check = 0;
+                
+                foreach ($assig as $assi) {
+                    
+                    if($usu->value == $assi->idUsu){
+
+                        $check = 1;
+                    }
+                }
+
+                $arrayS = array();
+
+                $arrayS["value"] = $usu->value;
+                $arrayS["label"] = $usu->label;
+                $arrayS["check"] = $check;
+
+                $arr[] = $arrayS;
+
+            }
+
+            $response = $arr;
 
             Log::info(" array especial: ".$listado);
 

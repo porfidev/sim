@@ -34,18 +34,34 @@
                         <tr>
                             <td style="text-align: center;" colspan=2>
                                 @if( !empty($ped->nom ))
-                                    {{ $ped->nom }} 
+                                   {{ $ped->itemcode }} - {{ $ped->nom }} 
                                 @else
-                                    {{ $ped->con }} 
+                                   {{ $ped->itemcode }} - {{ $ped->con }} 
                                 @endif
 
                             </td>
                         </tr><tr>
                             <td style="text-align: center;">
-                                {{ $ped->itemcode }}
+                                Trabajador: 
                             </td>
                             <td style="text-align: center;">
-                                <?php $cantU = 0; $cantT = 0; $cantB =0; ?>
+                                <?php $cantU = 0; $cantT = 0; $cantB =0; $uni = "" ?>
+                                @if( $ped->pres_req == "BOX")
+
+                                     <?php  
+                                            $uni = "cajas"; ?>
+
+                                        @elseif ($ped->pres_req == "DSP")
+
+                                     <?php  
+                                            $uni = "displays"; ?>
+
+                                        @else
+
+                                      <?php 
+                                            $uni = "piezas"; ?>
+
+                                        @endif
                                 @if ( !empty($ped->quantity))
 
                                         @if( $ped->pres_req == "BOX")
@@ -97,12 +113,15 @@
                         
                                     @endif
 
-                                     / {{ $cantT }}
+                                     / {{ $cantT }} {{ $uni }}
                                 
 
                             </td>
                         </tr>
-                            <td style="text-align: center;" colspan=2>
+                            <td style="text-align: center;">
+                                Jefe: 
+                            </td>
+                            <td style="text-align: center;">
                                 
 
                                     @if ( !empty($ped->quantity_boss))
@@ -151,7 +170,7 @@
                         
                                     @endif
                                     
-                                </span> / {{ $cantT }}
+                                </span> / {{ $cantT }} {{ $uni }}
                             </td>
                         </tr><tr>
                             <td style="text-align: center;" colspan=2>
@@ -294,7 +313,7 @@
                     console.log("Datitos regreso: "+data.resultado);
 
                     $("#canti"+id).html(cantUser);
-                    $("#cantU"+id).val(cantUser);
+                    $("#cantU"+id).val(data.resultado);
 
                 });
 

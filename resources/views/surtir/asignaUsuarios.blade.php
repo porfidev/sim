@@ -75,7 +75,7 @@
 
             $.ajax({
                type : 'GET',
-               url : "{{ URL::to('usuarios/obtenerNombresJefe') }}",
+               url : "{{ URL::to('usuarios/obtenerNombresJefe') }}/"+$(this).attr( "data-id" ),
                dataType : 'json',
                success : function(data) {
 
@@ -85,7 +85,18 @@
 
                         contadorEsp = 0;
                         ter += "<div class=\"form-check\">";
-                        ter += ("<input type=\"checkbox\" class=\"form-check-input\" name=\"typedoc[]\" value=\""+item.value+"\">");
+                        ter += ("<input type=\"checkbox\" class=\"form-check-input\" name=\"typedoc[]\" value=\""+item.value+"\"");
+
+                        if(item.check ==1){
+
+                            ter += ' checked >';
+
+                        }else{
+
+                            ter += ' >';
+
+                        }
+                        
                         ter += ("<label class=\"form-check-label\">" + item.label + "</label>");
                         ter += "</div>";
 

@@ -41,8 +41,11 @@ use App\Repositories\EloquentPurchaseItems;
 use App\Repositories\PurchaseRepository;
 use App\Repositories\EloquentPurchase;
 
-use App\Repositories\historySupplyRepository;
-use App\Repositories\EloquenthistorySupply;
+use App\Repositories\HistorySupplyRepository;
+use App\Repositories\EloquentHistorySupply;
+
+use App\Repositories\BoxesRepository;
+use App\Repositories\EloquentBoxes;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -75,6 +78,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AssignmentRepository::class,  EloquentAssignment::class);
         $this->app->singleton(PurchaseItemsRepository::class,  EloquentPurchaseItems::class);
         $this->app->singleton(PurchaseRepository::class,  EloquentPurchase::class);
-        $this->app->singleton(historySupplyRepository::class,  EloquenthistorySupply::class);
+        $this->app->singleton(HistorySupplyRepository::class,  EloquentHistorySupply::class);
+        $this->app->singleton(BoxesRepository::class,  EloquentBoxes::class);
     }
 }

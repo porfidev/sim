@@ -26,7 +26,7 @@ Route::post('/usuarios/agregar',           '\App\Http\Controllers\Base\UsuariosC
 Route::post('/usuarios/consultar',         '\App\Http\Controllers\Base\UsuariosController@consultar'         )->name('usuarios.consultar');
 Route::post('/usuarios/editar',            '\App\Http\Controllers\Base\UsuariosController@editar'            )->name('usuarios.editar');
 Route::get('/usuarios/obtenerNombre',      '\App\Http\Controllers\Base\UsuariosController@buscaJefe'         )->name('usuarios.nom');
-Route::get('/usuarios/obtenerNombresJefe', '\App\Http\Controllers\Base\UsuariosController@buscaUsuarios'     )->name('usuarios.usu');
+Route::get('/usuarios/obtenerNombresJefe/{ord}', '\App\Http\Controllers\Base\UsuariosController@buscaUsuarios')->name('usuarios.usu');
 Route::post('/usuarios/asignarJefe',       '\App\Http\Controllers\Base\UsuariosController@asignarJefe'       )->name('usuarios.asignarJ');
 Route::post('/usuarios/asignarUsuario',    '\App\Http\Controllers\Base\UsuariosController@asignarUsuario'    )->name('usuarios.asignarU');
 Route::post('/usuarios/listaAsig',         '\App\Http\Controllers\Base\UsuariosController@listaAsig'         )->name('usuarios.listaAsig');
@@ -43,6 +43,12 @@ Route::post('/productos/consultar',     '\App\Http\Controllers\Base\ProductContr
 Route::post('/productos/editar',        '\App\Http\Controllers\Base\ProductController@editar'   )->name('productos.editar');
 Route::post('/productos/eliminar',      '\App\Http\Controllers\Base\ProductController@eliminar' )->name('productos.eliminar');
 Route::post('/productos/CSVPro',        '\App\Http\Controllers\Base\ProductController@CSVPro'   )->name('productos.CSV');
+
+// Cajas
+
+Route::get('/cajas/listado',       '\App\Http\Controllers\Base\BoxesController@listado'  )->name('cajas.listado');
+Route::post('/cajas/agregar',   '\App\Http\Controllers\Base\BoxesController@agregar'  )->name('cajas.agregar');
+Route::post('/cajas/eliminar',  '\App\Http\Controllers\Base\BoxesController@eliminar' )->name('cajas.eliminar');
 
 // Administración de menu
 Route::get('/menu/listado',            '\App\Http\Controllers\Base\MenuController@listado'          );
