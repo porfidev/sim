@@ -45,22 +45,24 @@ interface OrderRepository
 	/**
 	 * Estados de preparación de pedidos
 	 */
-	const PREPARADO_RECIBIDO = 5;
-	const PREPARADO_PROCESO  = 6;
-	const PREPARADO_POR_V    = 7;
-	const PREPARADO_VALIDADO = 8;
+	const PREPARADO_RECIBIDO = 10;
+	const PREPARADO_DISENIO  = 11;
+	const PREPARADO_ESPERA   = 12;
+	const PREPARADO_PROCESO  = 13;
+	const PREPARADO_POR_V    = 14;
+	const PREPARADO_VALIDADO = 15;
 
 	/**
 	 * Estados de preparación de pedidos
 	 */
-	const DISTRIBUCION_RECIBIDO  = 9;
-	const DISTRIBUCION_CITA      = 10;
-	const DISTRIBUCION_PROCESO   = 11;
-	const DISTRIBUCION_CAMION    = 12;
-	const DISTRIBUCION_EXTERNO   = 13;
-	const DISTRIBUCION_CLIENTE   = 14;
-	const DISTRIBUCION_RECHAZO_T = 15;
-	const DISTRIBUCION_RECHAZO_P = 16;
+	const DISTRIBUCION_RECIBIDO  = 20;
+	const DISTRIBUCION_CITA      = 21;
+	const DISTRIBUCION_PROCESO   = 22;
+	const DISTRIBUCION_CAMION    = 23;
+	const DISTRIBUCION_EXTERNO   = 24;
+	const DISTRIBUCION_CLIENTE   = 25;
+	const DISTRIBUCION_RECHAZO_T = 26;
+	const DISTRIBUCION_RECHAZO_P = 27;
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
