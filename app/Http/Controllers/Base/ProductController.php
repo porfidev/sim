@@ -38,7 +38,7 @@ class ProductController extends Controller
      */
     public function __construct(ProductRepository $product, OrderDetailRepository $det, OrderRepository $ord)
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->productModel = $product;
         $this->ordDetModel = $det;
         $this->orderModel = $ord;

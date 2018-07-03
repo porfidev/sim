@@ -31,7 +31,7 @@ class PreparacionJefeController extends Controller
         OrderDetailRepository $detail,
         OrderRepository $order )
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->productModel     = $product;
         $this->orderDetailModel = $detail;
         $this->orderModel       = $order;

@@ -180,7 +180,13 @@
                                      </a>
                                 </td>
                                 <td class="col-1" style="text-align: center;">
-
+                                    <button class="btn btn-sm btn-success asignarPersonal"
+                                            data-id="{{ $pedido->id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Asignar personal">
+                                        <i class="material-icons">person_add</i>
+                                    </button>
                                 </td>
                             </tr>
                     @endforeach

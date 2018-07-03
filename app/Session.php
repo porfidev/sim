@@ -31,6 +31,6 @@ class Session extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'ip'
+        'user_id', 'ip', 'token'
     ];
 }

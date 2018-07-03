@@ -14,6 +14,7 @@ interface UserRepository
 
 	const SQL_SESSION_USER_ID = "user_id";
 	const SQL_SESSION_IP      = "ip";
+	const SQL_SESSION_TOKEN   = "token";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
@@ -21,6 +22,8 @@ interface UserRepository
 	function getSession($user_id, $old=false);
 
 	function createSession($user_id, $ip);
+
+	function updateSession($id, array $attributes);
 
 	function getList($itemsPerPage, array $search = null);
 

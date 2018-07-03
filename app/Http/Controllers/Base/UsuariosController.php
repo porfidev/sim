@@ -39,7 +39,7 @@ class UsuariosController extends Controller
         RolRepository $rol,
         AssignmentRepository $as)
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->userModel = $user;
         $this->rolModel  = $rol;
         $this->assiModel = $as;
@@ -70,30 +70,27 @@ class UsuariosController extends Controller
         return response()->json($response, 200);
     }
 
+    /**
+     * Función para buscar los trabajadores asignados a un jefe
+     * que estén conectados (tengan sesión abierta).
+     *
+     * @return json
+     */
     public function buscaUsuarios(Request $request) {
         $response = array();
         $nombre = "";
         try {
-
+            Log::info(" UsuariosController - buscaUsuarios ");
             if($request->has("term")) {
                 $nombre = $request->input("term");
             }
-
-            Log::info(" UsuariosController - buscaUsuarios ");
-
-            $jefeId = Auth::id();
-            //$jefeId = 1;
-
-            $listado = $this->userModel->getListBusUsu($nombre, $jefeId);
-
+            $listado  = $this->userModel->getListBusUsu($nombre, Auth::id());
             $response = $listado->toArray();
-
-            Log::info(" array especial: ".$listado);
+            Log::info(" UsuariosController - buscaUsuarios - listado: ".$listado);
 
         } catch (\Exception $e) {
-            Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
+            Log::error( 'UsuariosController - buscaUsuarios - Error: '.$e->getMessage() );
             $response = array();
-
         }
         return response()->json($response, 200);
     }
