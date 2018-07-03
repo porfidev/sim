@@ -101,5 +101,7 @@ Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Re
 Route::get('hh/recepcion/validacionHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
 
 // Preparación de pedido o embalaje
+Route::get('/preparacion/listado',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos' );
+Route::post('/preparacion/recibir', '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'  )->name('preparacion.recibir');
 
 // Embarque o distribución de pedido

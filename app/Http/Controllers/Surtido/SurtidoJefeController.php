@@ -46,7 +46,7 @@ class SurtidoJefeController extends Controller
         OrderRepository $ord, HistorySupplyRepository $hist,
         ClienteRepository $cli)
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->calcModel    = $cal;
         $this->productModel = $product;
         $this->ordDetModel  = $det;

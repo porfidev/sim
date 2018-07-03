@@ -80,6 +80,23 @@ class EloquentUser implements UserRepository
 		return $this->modelSession->find($id)->delete();
 	}
 
+	/**
+	 * Función que actualiza la sesión.
+	 * Lo que se busca es que updated_at se actualice para
+	 * dar más tiempo de sessión al usuario.
+	 *
+	 * @param integer $id
+	 * @param integer $user_id
+	 *
+	 * @return App\Session
+	 */
+	public function updateSession($id, array $attributes)
+	{
+		return $this->modelSession
+			->find($id)
+			->update($attributes);
+	}
+
     /**
 	 * Get all users.
 	 *
@@ -121,11 +138,25 @@ class EloquentUser implements UserRepository
 		return $list->get();
 	}
 
-	public function getListBusUsu($nombre,$idJefe)
+	/**
+	 * Función para obtener la lista de usuarios que están asignados
+	 * al jefe seleccionado y que están conectados.
+	 *
+	 * @param String  $name
+	 * @param integer $idJefe
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getListBusUsu($idJefe)
 	{
-		$list = $this->model->select("id as value", "name as label")
-							->where("users.name","like","%".$nombre."%")
-							->where("users.boss_id","=",$idJefe);
+		$list = $this->model->select("users.id as value", "users.name as label")
+					->leftJoin("sessions", function ($join) {
+						$join->on("users.id", "=", "sessions.user_id")
+							->whereNull("sessions.deleted_at");
+					})
+					->where("users.boss_id","=",$idJefe)
+					->whereNotNull("sessions.id");
+		Log::info("EloquentUser - getListBusUsu - SQL: ".$list->toSql());
 		return $list->get();
 	}
 

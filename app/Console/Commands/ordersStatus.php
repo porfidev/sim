@@ -11,7 +11,7 @@ use App\Repositories\CalculationRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\CatalogoRepository;
 
-class ordersStatus extends Command
+class OrdersStatus extends Command
 {
     /**
      * The name and signature of the console command.

@@ -69,7 +69,8 @@
 
             $( "#idOrd" ).val($(this).attr( "data-id" ));
 
-            listita = "{{ URL::to('usuarios/obtenerNombresJefe') }}";
+            listita = "{{ URL::to('usuarios/obtenerNombresJefe') }}/"+$(this).attr( "data-id" );
+            console.log(listita);
 
             ter = "";
 
@@ -119,7 +120,7 @@
 
         });
 
-        console.log("Listita: "+"{{ URL::to('usuarios/obtenerNombresJefe') }}");
+        //console.log("Listita: "+"{{ URL::to('usuarios/obtenerNombresJefe') }}");
 
         $( "#usuarioAutocompleteEsp" ).autocomplete({
             minLength: 2,

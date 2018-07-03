@@ -47,6 +47,7 @@ use App\Repositories\EloquentHistorySupply;
 use App\Repositories\BoxesRepository;
 use App\Repositories\EloquentBoxes;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**

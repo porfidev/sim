@@ -1,8 +1,6 @@
 @extends('layouts.sim')
 
 @section('content')
-
-<meta name="csrf-token" content="{{ csrf_token() }}">
     <br>
     <h2 class="mt-2">Listado de Pedidos</h2>
     <br>
@@ -73,7 +71,7 @@
                                 </select>
                             </th>
                             <th>
-                                <input type="date" 
+                                <input type="date"
                                        class="form-control inputFiltro"
                                        id="formaFecProg"
                                     @if ( Session::has('sc_fec_prog') && Session::get('sc_fec_prog') != 'NA' )

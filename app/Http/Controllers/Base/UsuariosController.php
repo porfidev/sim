@@ -39,7 +39,7 @@ class UsuariosController extends Controller
         RolRepository $rol,
         AssignmentRepository $as)
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->userModel = $user;
         $this->rolModel  = $rol;
         $this->assiModel = $as;
@@ -70,7 +70,14 @@ class UsuariosController extends Controller
         return response()->json($response, 200);
     }
 
-    public function buscaUsuarios($ord) {
+    /**
+     * Función para buscar los trabajadores asignados a un jefe
+     * que estén conectados (tengan sesión abierta).
+     *
+     * @return json
+     */
+
+    public function buscaUsuarios($ord,Request $request) {
         $response = array();
         $nombre = "";
         try {
@@ -80,7 +87,7 @@ class UsuariosController extends Controller
             $jefeId = Auth::id();
             //$jefeId = 1;
 
-            $listado = $this->userModel->getListBusUsu($nombre, $jefeId);
+            $listado = $this->userModel->getListBusUsu($jefeId);
 
             $assig = $this->assiModel->getListAsi($ord);
 
@@ -113,9 +120,8 @@ class UsuariosController extends Controller
             Log::info(" array especial: ".$listado);
 
         } catch (\Exception $e) {
-            Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
+            Log::error( 'UsuariosController - buscaUsuarios - Error: '.$e->getMessage() );
             $response = array();
-
         }
         return response()->json($response, 200);
     }
