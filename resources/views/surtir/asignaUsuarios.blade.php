@@ -11,7 +11,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    <span id="modalEditarUsuarioTitle">Asignacion de Tarea</span>
+                    <span id="modalEditarUsuarioTitle">Asignaci&oacute;n de Tarea</span>
                 </h4>
                 <button type="button"
                     class="close"
@@ -32,8 +32,26 @@
                 <form id="formGuardarAsignarPed">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Listado de Trabajadores</label>
-                        <div id="espTrab"></div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;">
+                                            Asignado
+                                        </th>
+                                        <th>
+                                            Nombre
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Conectado
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="espTrab">
+
+                                </tbody>
+                            </table>
+                        </div>
                         <input type="hidden" name="userId" id="idUsr"/>
                         <input type="hidden" name="orderId" id="idOrd"/>
                     </div>
@@ -75,40 +93,37 @@
             ter = "";
 
             $.ajax({
-               type : 'GET',
-               url : "{{ URL::to('usuarios/obtenerNombresJefe') }}/"+$(this).attr( "data-id" ),
+               type     : 'GET',
+               url      : "{{ URL::to('usuarios/obtenerNombresJefe') }}/"+$(this).attr( "data-id" ),
                dataType : 'json',
-               success : function(data) {
-
+               success  : function(data) {
                     $.each(data, function(i,item){
-
-                        console.log(item.value);
-
+                        //console.log(item.value);
                         contadorEsp = 0;
+                        ter += "<tr><td style=\"text-align: center;\">";
                         ter += "<div class=\"form-check\">";
                         ter += ("<input type=\"checkbox\" class=\"form-check-input\" name=\"typedoc[]\" value=\""+item.value+"\"");
-
                         if(item.check ==1){
-
-                            ter += ' checked >';
-
-                        }else{
-
-                            ter += ' >';
-
+                            ter += ' checked';
                         }
-                        
-                        ter += ("<label class=\"form-check-label\">" + item.label + "</label>");
+                        if(item.online == null){
+                            ter += ' disabled';
+                        }
+                        ter += " >";
                         ter += "</div>";
-
+                        ter += "</td><td>"
+                        ter += item.label;
+                        ter += "</td><td style=\"text-align: center;\">"
+                        if(item.online != null){
+                            ter += "Si";
+                        } else {
+                            ter += "No";
+                        }
+                        ter += "</td></tr>"
                         contadorEsp++;
-
                     });
-
-                    console.log(ter);
-
+                    //console.log(ter);
                     $("#espTrab").html(ter);
-
                },
             });
 

@@ -149,13 +149,15 @@ class EloquentUser implements UserRepository
 	 */
 	public function getListBusUsu($idJefe)
 	{
-		$list = $this->model->select("users.id as value", "users.name as label")
+		$list = $this->model->select(
+						"users.id as value",
+						"users.name as label",
+						"sessions.id as connected")
 					->leftJoin("sessions", function ($join) {
 						$join->on("users.id", "=", "sessions.user_id")
 							->whereNull("sessions.deleted_at");
 					})
-					->where("users.boss_id","=",$idJefe)
-					->whereNotNull("sessions.id");
+					->where("users.boss_id","=",$idJefe);
 		Log::info("EloquentUser - getListBusUsu - SQL: ".$list->toSql());
 		return $list->get();
 	}

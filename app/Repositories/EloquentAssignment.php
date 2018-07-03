@@ -29,18 +29,26 @@ class EloquentAssignment implements AssignmentRepository
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
     public function getAll(array $search = null){
-
     	$list = $this->model->orderBy('id', 'desc');
-    	    	
         return $list->paginate(10);
     }
 
+	/**
+	 * Función para obtener la lista de trabajadores asignados a un pedido.
+	 *
+	 * @param integer $idOrd
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
     public function getListAsi($idOrd){
-
-    	$list = $this->model->select("assignments.id as idA","assignments.*","users.name as name","users.id as idUsu")
-    						->leftJoin("users","users.id","=","assignments.user_id")
-    						->where("assignments.order_id","=",$idOrd);
-    	    	
+		Log::info("EloquentAssignment - getListAsi - idOrd: $idOrd");
+    	$list = $this->model->select(
+						"assignments.id as idA",
+						"assignments.*",
+						"users.name as name",
+						"users.id as idUsu" )
+					->leftJoin("users","users.id","=","assignments.user_id")
+					->where("assignments.order_id","=",$idOrd);
+		Log::info("EloquentAssignment - getListAsi - SQL: ".$list->toSql());
         return $list->get();
     }
 

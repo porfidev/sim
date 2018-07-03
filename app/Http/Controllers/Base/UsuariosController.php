@@ -76,48 +76,32 @@ class UsuariosController extends Controller
      *
      * @return json
      */
-
-    public function buscaUsuarios($ord,Request $request) {
+    public function buscaUsuarios($ord, Request $request) {
         $response = array();
-        $nombre = "";
         try {
+            Log::info("UsuariosController - buscaUsuarios ");
+            $listado = $this->userModel->getListBusUsu(Auth::id());
+            $assig   = $this->assiModel->getListAsi($ord);
 
-            Log::info(" UsuariosController - buscaUsuarios ");
-
-            $jefeId = Auth::id();
-            //$jefeId = 1;
-
-            $listado = $this->userModel->getListBusUsu($jefeId);
-
-            $assig = $this->assiModel->getListAsi($ord);
-
-            $arr = array();
-
-            foreach ($listado as $usu) {
-
+            foreach ($listado as $usuario) {
                 $check = 0;
-                
+                $box   = 0;
                 foreach ($assig as $assi) {
-                    
-                    if($usu->value == $assi->idUsu){
-
+                    if($usuario->value == $assi->idUsu){
                         $check = 1;
+                        $box   = $assi->box_id;
+                        break;
                     }
                 }
-
-                $arrayS = array();
-
-                $arrayS["value"] = $usu->value;
-                $arrayS["label"] = $usu->label;
-                $arrayS["check"] = $check;
-
-                $arr[] = $arrayS;
-
+                $response[] = array(
+                    "value"  => $usuario->value,
+                    "label"  => $usuario->label,
+                    "box"    => $box,
+                    "check"  => $check,
+                    "online" => $usuario->connected
+                );
             }
-
-            $response = $arr;
-
-            Log::info(" array especial: ".$listado);
+            Log::info("UsuariosController - buscaUsuarios - array: ".json_encode($response));
 
         } catch (\Exception $e) {
             Log::error( 'UsuariosController - buscaUsuarios - Error: '.$e->getMessage() );
