@@ -81,7 +81,9 @@
                             </td>
                             <td class="col-1" style="text-align: center;">
                         @if ($pedido->status == 4)
-                                <button type="button" class="btn btn-sm btn-primary">
+                                <button type="button"
+                                    class="btn btn-sm btn-primary recibirSurtido"
+                                    data-id="{{ $pedido->id }}">
                                     Recibir
                                 </button>
                         @endif
@@ -205,6 +207,17 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
+
+            $( '.recibirSurtido' ).click(function () {
+                var parametros = [];
+                parametros["id"] = $(this).attr("data-id");
+                abrirConfirmacion(
+                    'Recibir Pedido',
+                    'Favor de verificar que la mercancía sea la correcta y corresponde al pedido. ¿Deseas recibir los productos?',
+                    '{{ route("preparacion.recibir") }}',
+                    parametros
+                );
+            });
         });
     </script>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Order;
+use App\OrderTrace;
 
 use Illuminate\Support\Facades\Log;
 
@@ -11,16 +12,22 @@ class EloquentOrder implements OrderRepository
     /**
 	 * @var $model
 	 */
-    private $model;
+	private $model;
+
+	/**
+	 * @var $trace
+	 */
+	private $trace;
 
     /**
 	 * EloquentRol constructor.
 	 *
 	 * @param App\Catalogo $model
 	 */
-	public function __construct(Order $model)
+	public function __construct(Order $model, OrderTrace $trace)
 	{
 		$this->model = $model;
+		$this->trace = $trace;
     }
 
     /**
@@ -108,5 +115,16 @@ class EloquentOrder implements OrderRepository
 	public function delete($id)
 	{
 		return $this->model->find($id)->delete();
+	}
+
+	/**
+	 * Add a order`s trace
+	 *
+	 * @param array $attributes
+	 * @return App\OrderTrace
+	 */
+	public function addTrace(array $attributes)
+	{
+		return $this->trace->create($attributes);
 	}
 }

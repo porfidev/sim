@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Preparacion;
 
+use DB;
 use Log;
 use Auth;
 
@@ -76,5 +77,54 @@ class PreparacionJefeController extends Controller
                 )
             );
         }
+    }
+
+    /**
+     * Función para cambiar el estatus del pedido a recibido en el área
+     * de preparación de pedido.
+     *
+     * @return json
+     */
+    public function recibirPedido(Request $request)
+    {
+        $resultado = "ERROR";
+        $mensajes  = "NA";
+        try {
+            Log::info(" PreparacionJefeController - recibirPedido ");
+            if($request->has('id')){
+                Log::info(" PreparacionJefeController - recibirPedido: ".$request->get('id'));
+                $pedido = $this->orderModel->getById($request->get('id'));
+                if(!empty($pedido)) {
+                    DB::beginTransaction();
+                    $this->orderModel->update($request->get('id'),
+                        array(
+                            OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_RECIBIDO,
+                        )
+                    );
+                    $this->orderModel->addTrace(
+                        array(
+                            OrderRepository::TRACE_SQL_ORER => $request->get('id'),
+                            OrderRepository::TRACE_SQL_USER => Auth::id(),
+                            OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
+                        )
+                    );
+                    DB::commit();
+                    $resultado = "OK";
+                } else {
+                    $mensajes  = array( "No se encontró el pedido" );
+                }
+            } else {
+                $mensajes  = array( "No se cuenta con los datos para poder recibir el pedido" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - recibirPedido - Error: '.$e->getMessage() );
+            DB::rollback();
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 }
