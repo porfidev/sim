@@ -156,7 +156,7 @@
                                 {{ $ped->end }}
                             </td>
                             <td style="text-align: center;">
-                                <a class="btn btn-sm btn-info"
+                                <a class="btn btn-sm btn-info text-white"
                                     role="button"
                                     data-toggle="popover"
                                     title="C&aacute;lculos"

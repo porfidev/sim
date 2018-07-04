@@ -43,13 +43,13 @@
                     <tbody>
                 @foreach ($anteriores as $pedido)
                         <tr>
-                            <td class="col-1">
+                            <td class="col-sm-1">
                                 {{ $pedido->codeOrder }}
                             </td>
-                            <td class="col-3">
+                            <td class="col-sm-3">
                                 {{ $pedido->client->name }}
                             </td>
-                            <td class="col-2">
+                            <td class="col-sm-2">
                         @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_PROCESO)
                                 En Proceso de Surtido
                         @endif
@@ -62,14 +62,14 @@
                                 Surtido
                         @endif
                             </td>
-                            <td class="col-2" style="text-align: center;">
+                            <td class="col-sm-2" style="text-align: center;">
                                 {{ $pedido->start }}
                             </td>
-                            <td class="col-2" style="text-align: center;">
+                            <td class="col-sm-2" style="text-align: center;">
                                 {{ $pedido->end }}
                             </td>
-                            <td class="col-1" style="text-align: center;">
-                                <a class="btn btn-sm btn-info"
+                            <td class="col-sm-1" style="text-align: center;">
+                                <a class="btn btn-sm btn-info text-white"
                                     role="button"
                                     data-toggle="popover"
                                     data-placement="top"
@@ -80,7 +80,7 @@
                                     {{ $pedido->calculation->priority }}
                                  </a>
                             </td>
-                            <td class="col-1" style="text-align: center;">
+                            <td class="col-sm-1" style="text-align: center;">
                         @if ($pedido->status == 4)
                                 <button type="button"
                                     class="btn btn-sm btn-primary recibirSurtido"
@@ -112,31 +112,31 @@
                     <thead>
                         <tr>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 #
                             </th>
                             <th scope="col"
-                                class="col-3">
+                                class="col-sm-3">
                                 Cliente
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-2">
+                                class="col-sm-2">
                                 Estatus
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-2">
+                                class="col-sm-2">
                                 Inicio de Vigencia
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-2">
+                                class="col-sm-2">
                                 Fin de Vigencia
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 Prioridad
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 Acci&oacute;n
                             </th>
                         </tr>
@@ -182,7 +182,7 @@
                                     {{ $pedido->end }}
                                 </td>
                                 <td class="col-1" style="text-align: center;">
-                                    <a class="btn btn-sm btn-info"
+                                    <a class="btn btn-sm btn-info text-white"
                                         role="button"
                                         data-toggle="popover"
                                         data-placement="top"
