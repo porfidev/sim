@@ -66,8 +66,6 @@
                                     <option value="1">En espera</option>
                                     <option value="2">En proceso</option>
                                     <option value="3">Por validar</option>
-                                    <option value="4">Surtido</option>
-                                    <option value="0">Faltan datos</option>
                                 </select>
                             </th>
                             <th>
