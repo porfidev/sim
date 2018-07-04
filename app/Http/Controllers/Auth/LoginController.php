@@ -92,6 +92,8 @@ class LoginController extends Controller
                 // Authentication passed...
                 return redirect()->intended('home');
             }
+        } else {
+            return redirect()->route('login')->with('error', 'Usuario o contraseña incorrectos');
         }
     }
 
