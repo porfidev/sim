@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\Order;
 use App\OrderTrace;
 use App\OrderDesign;
@@ -50,6 +52,41 @@ class EloquentOrder implements OrderRepository
 	public function createDesign(array $attributes)
 	{
 		return $this->design->create($attributes);
+	}
+
+	/**
+	 * Función para obtener la lista de tareas de un pedido
+	 * en preparación cuado es por producto (item).
+	 *
+	 * @param integer $order_id
+	 */
+	public function getDesignGroupByItem($order_id)
+	{
+		$order = $this->design->select(
+				'order_designs.order_detail_id',
+				DB::raw('count(*) as cajas'),
+				DB::raw('MAX(assignments.user_id) as usuario'))
+			->with('orderDetail')
+			->leftJoin('assignments', 'order_designs.id', '=', 'assignments.order_design_id')
+			->where('order_designs.'.self::DESIGN_ORDER, '=', $order_id)
+			->groupBy('order_detail_id');
+
+		Log::info("EloquentOrder getDesignByItem - SQL: ".$order->toSql());
+		return $order->get();
+	}
+
+	/**
+	 * Función para obtener la lista de registro de diseño de pedido
+	 * asisiados al detalle del pedido proporcionado.
+	 *
+	 * @param integer $order_detail_id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDesignsByDetail($order_detail_id)
+	{
+		$order = $this->design->where(self::DESIGN_ORDER_DETAIL, '=', $order_detail_id);
+		Log::info("EloquentOrder getDesignsByDetail - SQL: ".$order->toSql());
+		return $order->get();
 	}
 
     /**

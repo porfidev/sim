@@ -15,6 +15,7 @@ use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\CatalogoRepository;
 use App\Repositories\BoxesRepository;
+use App\Repositories\AssignmentRepository;
 
 class PreparacionJefeController extends Controller
 {
@@ -24,6 +25,7 @@ class PreparacionJefeController extends Controller
     private $orderModel;
     private $catalogModel;
     private $boxModel;
+    private $assigmentModel;
 
     /**
      * Create a new controller instance.
@@ -35,7 +37,8 @@ class PreparacionJefeController extends Controller
         OrderDetailRepository $detail,
         OrderRepository $order,
         CatalogoRepository $catalog,
-        BoxesRepository $box)
+        BoxesRepository $box,
+        AssignmentRepository $assigment)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
         $this->productModel     = $product;
@@ -43,6 +46,7 @@ class PreparacionJefeController extends Controller
         $this->orderModel       = $order;
         $this->catalogModel     = $catalog;
         $this->boxModel         = $box;
+        $this->assigmentModel   = $assigment;
     }
 
     /**
@@ -56,7 +60,7 @@ class PreparacionJefeController extends Controller
             $pedidosAnteriores = $this->orderModel->getAll(
                 array(
                     OrderRepository::SQL_ESTATUS       => OrderRepository::SURTIDO_PROCESO,
-                    OrderRepository::STATUS_OPERATOR   => ">",
+                    OrderRepository::STATUS_OPERATOR   => ">=",
                     OrderRepository::SQL_ESTATUS_2     => OrderRepository::PREPARADO_RECIBIDO,
                     OrderRepository::STATUS_OPERATOR_2 => "<",
                 )
@@ -65,7 +69,7 @@ class PreparacionJefeController extends Controller
             $pedidos = $this->orderModel->getAll(
                 array(
                     OrderRepository::SQL_ESTATUS       => OrderRepository::PREPARADO_RECIBIDO,
-                    OrderRepository::STATUS_OPERATOR   => ">",
+                    OrderRepository::STATUS_OPERATOR   => ">=",
                     OrderRepository::SQL_ESTATUS_2     => OrderRepository::DISTRIBUCION_RECIBIDO,
                     OrderRepository::STATUS_OPERATOR_2 => "<",
                 )
@@ -103,39 +107,46 @@ class PreparacionJefeController extends Controller
                 Log::info("PreparacionJefeController - recibirPedido: ".$request->get('id'));
                 $pedido = $this->orderModel->getById($request->get('id'));
                 if(!empty($pedido)) {
+                    Log::info("PreparacionJefeController - recibirPedido - pedido: ".json_encode($pedido));
                     DB::beginTransaction();
                     $client = $pedido->client;
-                    $boxType = $this->catalogModel->searchGroupItem();
-                    if($client->te === $boxType->id){
-                        $this->procesoPedidoEnCaja($pedido);
-                        $this->orderModel->update($request->get('id'),
-                            array(
-                                OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_ESPERA,
-                            )
-                        );
-                        $this->orderModel->addTrace(
-                            array(
-                                OrderRepository::TRACE_SQL_ORER => $request->get('id'),
-                                OrderRepository::TRACE_SQL_USER => Auth::id(),
-                                OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
-                            )
-                        );
+                    Log::info("PreparacionJefeController - recibirPedido - cliente: ".json_encode($client));
+                    $boxType = $this->catalogModel->searchGroupItem(CatalogoRepository::TE_GROUP, "Caja");
+                    if(!empty($boxType)) {
+                        Log::info("PreparacionJefeController - recibirPedido - caja: ".$boxType->id);
+                        if(intval($client->TE) === intval($boxType->id)){
+                            $this->procesoPedidoEnCaja($pedido);
+                            $this->orderModel->update($request->get('id'),
+                                array(
+                                    OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_ESPERA,
+                                )
+                            );
+                            $this->orderModel->addTrace(
+                                array(
+                                    OrderRepository::TRACE_SQL_ORER => $request->get('id'),
+                                    OrderRepository::TRACE_SQL_USER => Auth::id(),
+                                    OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
+                                )
+                            );
+                        } else {
+                            $this->orderModel->update($request->get('id'),
+                                array(
+                                    OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_RECIBIDO,
+                                )
+                            );
+                            $this->orderModel->addTrace(
+                                array(
+                                    OrderRepository::TRACE_SQL_ORER => $request->get('id'),
+                                    OrderRepository::TRACE_SQL_USER => Auth::id(),
+                                    OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
+                                )
+                            );
+                        }
+                        DB::commit();
+                        $resultado = "OK";
                     } else {
-                        $this->orderModel->update($request->get('id'),
-                            array(
-                                OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_RECIBIDO,
-                            )
-                        );
-                        $this->orderModel->addTrace(
-                            array(
-                                OrderRepository::TRACE_SQL_ORER => $request->get('id'),
-                                OrderRepository::TRACE_SQL_USER => Auth::id(),
-                                OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_RECIBIR_SURTIDO
-                            )
-                        );
+                        $mensajes  = array( "Falta configurar tipo de empaque" );
                     }
-                    DB::commit();
-                    $resultado = "OK";
                 } else {
                     $mensajes  = array( "No se encontró el pedido" );
                 }
@@ -154,6 +165,12 @@ class PreparacionJefeController extends Controller
         ));
     }
 
+    /**
+     * Función para recibir un pedido en caja.
+     * El diseño de pedido es solo las cajas por producto.
+     *
+     * @param App\Order $pedido
+     */
     private function procesoPedidoEnCaja($pedido)
     {
         $orderList = $this->orderDetailModel->getByIdOrd($pedido->id);
@@ -173,5 +190,74 @@ class PreparacionJefeController extends Controller
                 );
             }
         }
+    }
+
+    /**
+     * Función que obtiene las cajas que se tienen que armar por pedido
+     * para ser asignadas a lo trabajadores.
+     *
+     * @return json
+     */
+    public function tareasDelPedidoPorItem(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info("PreparacionJefeController - tareasDelPedidoPorItem ");
+            if($request->has('id')) {
+                $datos = $this->orderModel->getDesignGroupByItem($request->id);
+            } else {
+                $mensajes = array("No se tienen los datos necesarios");
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - tareasDelPedidoPorItem - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes,
+            Controller::JSON_DATA     => $datos
+        ));
+    }
+
+    /**
+     * Función para realizar la asignación de tareas por Item
+     *
+     * @return json
+     */
+    public function asignacionPorItem(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - asignacionPorItem");
+            if($request->has('id')
+                && $request->has('usuario')) {
+                Log::info("PreparacionJefeController - asignacionPorItem: ".$request->id." - ".$request->usuario);
+                $designList = $this->orderModel->getDesignsByDetail($request->id);
+                foreach ($designList as $item) {
+                    $data = array(
+                        AssignmentRepository::SQL_ORDID         => $item->order_id,
+                        AssignmentRepository::SQL_ORDER_DETAIL  => $item->order_detail_id,
+                        AssignmentRepository::SQL_ORDER_DESIGN  => $item->id,
+                        AssignmentRepository::SQL_USRID         => $request->usuario
+                    );
+                    Log::info(" PreparacionJefeController - asignacionPorItem - data: ".json_encode($data));
+                    $this->assigmentModel->create($data);
+                }
+            } else {
+                $mensajes = array("No se tienen los datos necesarios para realizar la asignación de tareas");
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - asignacionPorItem - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 }

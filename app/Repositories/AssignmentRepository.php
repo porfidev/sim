@@ -4,8 +4,10 @@ namespace App\Repositories;
 
 interface AssignmentRepository
 {
-	const SQL_ORDID    = "order_id";	
-	const SQL_USRID  = "user_id";
+	const SQL_ORDID        = "order_id";
+	const SQL_ORDER_DETAIL = "order_detail_id";
+	const SQL_ORDER_DESIGN = "order_design_id";
+	const SQL_USRID        = "user_id";
 
 	function getAll();
 

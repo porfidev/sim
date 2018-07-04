@@ -192,7 +192,7 @@
                                      </a>
                                 </td>
                                 <td class="col-1" style="text-align: center;">
-                                    <button class="btn btn-sm btn-success asignarPersonal"
+                                    <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
                                             data-placement="top"
@@ -220,6 +220,8 @@
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('partials.modalConfirmacion')
+
+    @include('preparacion.modalTareas')
 
     <script type="text/javascript">
         $(document).ready(function () {

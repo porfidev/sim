@@ -24,4 +24,12 @@ class OrderDesign extends Model
     protected $fillable = [
         'box_id', 'order_id', 'order_detail_id', 'quantity', 'quantity_validation'
     ];
+
+    /**
+     * Get the order detail for order design.
+     */
+    public function orderDetail()
+    {
+        return $this->belongsTo('App\OrderDetail', 'order_detail_id');
+    }
 }

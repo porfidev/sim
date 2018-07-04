@@ -100,7 +100,9 @@ Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Re
 Route::get('hh/recepcion/validacionHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
 
 // Preparación de pedido o embalaje
-Route::get('/preparacion/listado',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos' );
-Route::post('/preparacion/recibir', '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'  )->name('preparacion.recibir');
+Route::get('/preparacion/listado',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos' );
+Route::post('/preparacion/recibir',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'  )->name('preparacion.recibir');
+Route::post('/preparacion/tareas',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorItem')->name('preparacion.tareas');
+Route::post('/preparacion/asignacionDetalle', '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem')->name('preparacion.asignacionDetalle');
 
 // Embarque o distribución de pedido

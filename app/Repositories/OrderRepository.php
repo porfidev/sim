@@ -75,6 +75,10 @@ interface OrderRepository
 
 	function createDesign(array $attributes);
 
+	function getDesignGroupByItem($order_id);
+
+	function getDesignsByDetail($order_detail_id);
+
 	function getAll(array $search = null);
 
 	function getById($id);
