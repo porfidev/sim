@@ -158,11 +158,12 @@
                                 {{ $ped->end }}
                             </td>
                             <td style="text-align: center;">
-                                <a href="#" 
-                                   data-toggle="popover" 
-                                   title="Calculos" 
-                                   data-content="P: {{ $ped->P }} 
-                                                 D: {{ $ped->D }} 
+                                <a class="btn btn-sm btn-info"
+                                    role="button"
+                                    data-toggle="popover"
+                                    title="C&aacute;lculos"
+                                    data-content="P: {{ $ped->P }}
+                                                 D: {{ $ped->D }}
                                                  V: {{ $ped->V }}">
                                     {{ $ped->priority }}
                                 </a>

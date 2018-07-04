@@ -69,7 +69,8 @@
                                 {{ $pedido->end }}
                             </td>
                             <td class="col-1" style="text-align: center;">
-                                <a href="#"
+                                <a class="btn btn-sm btn-info"
+                                    role="button"
                                     data-toggle="popover"
                                     data-placement="top"
                                     title="C&aacute;lculos"
@@ -181,7 +182,8 @@
                                     {{ $pedido->end }}
                                 </td>
                                 <td class="col-1" style="text-align: center;">
-                                    <a href="#"
+                                    <a class="btn btn-sm btn-info"
+                                        role="button"
                                         data-toggle="popover"
                                         data-placement="top"
                                         title="C&aacute;lculos"

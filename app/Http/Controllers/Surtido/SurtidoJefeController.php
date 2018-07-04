@@ -114,7 +114,10 @@ class SurtidoJefeController extends Controller
             }
             if ($request->session()->has(self::SESSION_ESTATUS)
                     && $request->session()->get(self::SESSION_ESTATUS) != '-1' ) {
-                $search[OrderRepository::SQL_ESTATUS] = $request->session()->get(self::SESSION_ESTATUS);
+                $search[OrderRepository::SQL_ESTATUS]     = $request->session()->get(self::SESSION_ESTATUS);
+            } else {
+                $search[OrderRepository::SQL_ESTATUS]     = OrderRepository::PREPARADO_RECIBIDO;
+                $search[OrderRepository::STATUS_OPERATOR] = "<";
             }
             Log::info(" UsuariosController - listado - search: ".json_encode($search));
 
