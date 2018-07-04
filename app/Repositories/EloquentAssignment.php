@@ -52,14 +52,44 @@ class EloquentAssignment implements AssignmentRepository
         return $list->get();
     }
 
+	public function getWorks($user_id, $itemsPerPage)
+	{
+		$list = $this->model->select(
+			"orders.*",
+			"orders.id as idOrdW",
+			"calculations.fP as FP",
+			"calculations.priority as prio",
+			"clients.name as name")
+		->leftJoin("orders","orders.id","=","assignments.order_id")
+		->leftJoin("calculations","orders.id","=","calculations.order_id")
+		->leftJoin("clients","clients.code","=","orders.code")
+		->where("assignments.user_id","=",$idUsr)
+		->whereNotNull("assignments.order_design_id");
+
+		Log::info("EloquentAssignment - getWorks - SQL: ".$list->toSql());
+    	return $list->paginate($itemsPerPage);
+	}
+
+	/**
+	 * Obtenemos el query de la lista de tareas por trabajador
+	 * en la etapa de surtido.
+	 *
+	 * @param integer $idUsr
+	 * @return Illuminate\Database\Query\Builder
+	 */
     public function getPedUser($idUsr){
-
-    	$list = $this->model->select("orders.*","orders.id as idOrdW","calculations.fP as FP","calculations.priority as prio","clients.name as name")
-    						->leftJoin("orders","orders.id","=","assignments.order_id")
-    						->leftJoin("calculations","orders.id","=","calculations.order_id")
-    						->leftJoin("clients","clients.code","=","orders.code")
-    						->where("assignments.user_id","=",$idUsr);
-
+    	$list = $this->model->select(
+				"orders.*",
+				"orders.id as idOrdW",
+				"calculations.fP as FP",
+				"calculations.priority as prio",
+				"clients.name as name")
+			->leftJoin("orders","orders.id","=","assignments.order_id")
+			->leftJoin("calculations","orders.id","=","calculations.order_id")
+			->leftJoin("clients","clients.code","=","orders.code")
+			->where("assignments.user_id","=",$idUsr)
+			->whereNull("assignments.order_design_id");
+		Log::info("EloquentAssignment - getPedUser - SQL: ".$list->toSql());
     	return $list;
     }
 

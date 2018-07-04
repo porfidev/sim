@@ -44,20 +44,15 @@ class SurtidoTrabajadorController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Mostramos el listado de tareas que debe realizar un trabajador en
+     * el proceso de surtido.
      *
      * @return \Illuminate\Http\Response
      */
-
      public function listadoTareas(){
-
         try {
-
             Log::info(" listadoPedidos - listado ");
-
-            $userId = Auth::id();
-
-            $listado = $this->assiModel->getPedUser($userId);
+            $listado = $this->assiModel->getPedUser(Auth::id());
 
             $listado = $listado->paginate(10);
 
@@ -118,7 +113,6 @@ class SurtidoTrabajadorController extends Controller
         $resultado = "OK";
         $mensajes  = "NA";
         $cerrado  = 0;
-        $cantidad = 0;
 
         try {
             Log::info(" SurtidoTrabajadorController - addDet sku : ".$request->get('sku'));

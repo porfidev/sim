@@ -17,14 +17,35 @@
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
             <div class="table-responsive">
                 <table class="table table-striped table-fixed mb-0">
-                    <thead>
+                    <tbody>
+            @foreach ($listado as $pedido)
                         <tr>
-                            <th scope="col" style="text-align: center;"
-                                class="col-1">
-                                #
-                            </th>
+                            <td style="text-align: center;" class="table-primary">
+                                <div class="row">
+                                    <div class="col">
+                                        Pedido: #{{ $pedido->codeOrder }}
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn btn-sm btn-success terminaTareas"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                data-id="{{ $pedido->codeOrder }}"
+                                                title="Cerrar pedido">
+                                            <i class="material-icons">offline_pin</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
+                        <tr>
+                            <td class="tareasDelPedido"
+                                data-id="{{ $pedido->id }}"
+                                style="text-align: center;">
+                            </td>
+                        </tr>
+            @endforeach
+                    </tbody>
+
                 </table>
             </div>
         </div>

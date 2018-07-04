@@ -15,6 +15,8 @@ interface AssignmentRepository
 
 	function getListAsi($idOrd);
 
+	function getWorks($user_id, $itemsPerPage);
+
 	function getPedUser($idUsr);
 
 	function search($idOrd,$idUsr);
