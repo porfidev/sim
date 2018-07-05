@@ -1,8 +1,6 @@
 @extends('layouts.sim')
 
 @section('content')
-
-<meta name="csrf-token" content="{{ csrf_token() }}">
     <br>
     <h2 class="mt-2">Listado de Pedidos</h2>
     <br>
@@ -68,12 +66,10 @@
                                     <option value="1">En espera</option>
                                     <option value="2">En proceso</option>
                                     <option value="3">Por validar</option>
-                                    <option value="4">Surtido</option>
-                                    <option value="0">Faltan datos</option>
                                 </select>
                             </th>
                             <th>
-                                <input type="date" 
+                                <input type="date"
                                        class="form-control inputFiltro"
                                        id="formaFecProg"
                                     @if ( Session::has('sc_fec_prog') && Session::get('sc_fec_prog') != 'NA' )
@@ -160,11 +156,12 @@
                                 {{ $ped->end }}
                             </td>
                             <td style="text-align: center;">
-                                <a href="#" 
-                                   data-toggle="popover" 
-                                   title="Calculos" 
-                                   data-content="P: {{ $ped->P }} 
-                                                 D: {{ $ped->D }} 
+                                <a class="btn btn-sm btn-info text-white"
+                                    role="button"
+                                    data-toggle="popover"
+                                    title="C&aacute;lculos"
+                                    data-content="P: {{ $ped->P }}
+                                                 D: {{ $ped->D }}
                                                  V: {{ $ped->V }}">
                                     {{ $ped->priority }}
                                 </a>
@@ -178,7 +175,7 @@
                                                 data-codeOrd="{{ $ped->codeOrder }}"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
-                                                title="Asignar personal">
+                                                title="Asignar Personal">
                                             <i class="material-icons">person_add</i>
                                         </button>
 
@@ -190,7 +187,7 @@
                                         data-codeOrd="{{ $ped->codeOrder }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="validar proyecto">
+                                        title="Validar Pedido">
                                     <i class="material-icons">done_all</i>
                                     </button>
                         
@@ -224,8 +221,7 @@
 @endsection
 
 @section('final')
-
-    @include('surtir.modalTrabajadores')
+   
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('surtir.asignaUsuarios')

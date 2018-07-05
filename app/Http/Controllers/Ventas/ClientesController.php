@@ -52,7 +52,7 @@ class ClientesController extends Controller{
      */
     public function __construct(ClienteRepository $cli, CatalogoRepository $cata)
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->clienteModel = $cli;
         $this->cat = $cata;
     }

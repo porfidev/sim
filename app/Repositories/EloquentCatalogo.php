@@ -28,7 +28,7 @@ class EloquentCatalogo implements CatalogoRepository
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-    function getAll(array $search = null){
+    public function getAll(array $search = null){
 
     	$list = $this->model->with('myParent')->orderBy('id', 'desc');
 
@@ -47,10 +47,6 @@ class EloquentCatalogo implements CatalogoRepository
 			if(array_key_exists(self::SQL_GRUPO_ID, $search)
 				&& !empty($search[self::SQL_GRUPO_ID]) ) {
 
-
-				//Log::debug("EloquentCatalogo - getList - si entrooooooo ");
-				//$list->whereNull(self::SQL_GRUPO_ID);
-
 				if($search[self::SQL_GRUPO_ID] == -1){
 
 					$list->whereNull(self::SQL_GRUPO_ID);
@@ -58,7 +54,7 @@ class EloquentCatalogo implements CatalogoRepository
 				}else{
 
 					$list->where(self::SQL_GRUPO_ID, "like", "%".$search[self::SQL_GRUPO_ID]."%");
-				}				
+				}
 			}
 
 			if(array_key_exists(self::SQL_VALOR, $search)
@@ -112,16 +108,41 @@ class EloquentCatalogo implements CatalogoRepository
 	}
 
 	/**
+	 * Función para buscar un elemento de un grupo
+	 * a partir de los nombres del grupo y del elemento
+	 *
+	 * @param String $group
+	 * @param String $text
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function searchGroupItem($group, $text)
+	{
+		Log::info("EloquentCatalogo - searchGroupItem: $group - $text");
+		$groupParent = $this->model->where(self::SQL_ETIQUETA, '=', $group)
+			->whereNull(self::SQL_GRUPO_ID)
+			->first();
+
+		$catalog = null;
+		if(!empty($groupParent)) {
+			$catalog = $this->model->where(self::SQL_GRUPO_ID, '=', $groupParent->id)
+				->where(self::SQL_ETIQUETA, 'like', $text)
+				->first();
+		}
+		return $catalog;
+	}
+
+	/**
 	 * Get the group catalog items.
 	 *
 	 * @return Illuminate\Database\Eloquent\Collection
 	 */
-	public function getByLabel($label){		
+	public function getByLabel($label){
 
 		return $this->model->where(self::SQL_ETIQUETA, '=', $label)->first()->value;
 	}
 
-	public function getByLabelFull($label){		
+	public function getByLabelFull($label){
 
 		return $this->model->where(self::SQL_ETIQUETA, '=', $label)->first()->value;
 	}

@@ -21,6 +21,7 @@ class VerifyPermission
     {
         $this->menuModel = $menu;
     }
+
     /**
      * Handle an incoming request.
      *

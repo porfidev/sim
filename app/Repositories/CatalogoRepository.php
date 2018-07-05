@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 interface CatalogoRepository
 {
+	const TE_GROUP = "Tipo Empaque";
+
 	const SQL_ID        = "id";
 	const SQL_ETIQUETA  = "label";
 	const SQL_VALOR     = "value";
@@ -17,6 +19,8 @@ interface CatalogoRepository
 	function getGroup($group);
 
 	function getGroupById($group_id);
+
+	function searchGroupItem($group, $text);
 
 	function getById($id);
 

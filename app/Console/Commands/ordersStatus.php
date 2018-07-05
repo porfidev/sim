@@ -11,7 +11,7 @@ use App\Repositories\CalculationRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\CatalogoRepository;
 
-class ordersStatus extends Command
+class OrdersStatus extends Command
 {
     /**
      * The name and signature of the console command.
@@ -52,8 +52,7 @@ class ordersStatus extends Command
      */
     public function handle()
     {
-        
-        $listado = $this->order->getAll();        
+        $listado = $this->order->getAll();
 
         foreach ($listado as $element) {
 
@@ -82,47 +81,27 @@ class ordersStatus extends Command
             $validity = 0;
 
             if($daysValidity > $c1){
-
                 $validity = (($daysValidity/$c2)+$daysLeft+$c3);
-
-            }else if($daysValidity < $c1){
-
+            } else if($daysValidity < $c1){
                 $validity = (($daysValidity/$c2)+$daysLeft);
-
             }
 
             $V = 0;
-
             if($validity == 1){
-
                 $V = 90;
-
-            }else if($validity == 2){
-
+            } else if($validity == 2) {
                 $V = 50;
-
-            }else if($validity > 3){
-
+            } else if($validity > 3) {
                 $V = (50 - (2*($validity - 2)));
-
-                if($V < 0){
-
+                if($V < 0) {
                     $V = 0;
                 }
-
             }
-
-            /*$fechaHoy = date('Y-m-j');
-
-            $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
-
-            $fp = date('Y-m-d', $fp);*/
 
             $priority = (($idCalc->P + $V + $idCalc->D) / 2);
 
             $datos = array();
             $datos[CalculationRepository::SQL_V]   = $V;
-            //$datos[CalculationRepository::SQL_FP]  = $fp;
             $datos[CalculationRepository::SQL_PRIORITY]  = $priority;
 
             $this->calc->update( $idCalc->id, $datos);

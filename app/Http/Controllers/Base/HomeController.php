@@ -22,7 +22,7 @@ class HomeController extends Controller
      */
     public function __construct(MenuRepository $menu, RolRepository $rol)
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->menuModel = $menu;
         $this->rolModel  = $rol;
     }

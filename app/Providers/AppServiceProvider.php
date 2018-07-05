@@ -41,11 +41,20 @@ use App\Repositories\EloquentPurchaseItems;
 use App\Repositories\PurchaseRepository;
 use App\Repositories\EloquentPurchase;
 
+<<<<<<< HEAD
 use App\Repositories\ArrivalItemRepository;
 use App\Repositories\EloquentArrivalItem;
 
 use App\Repositories\historySupplyRepository;
 use App\Repositories\EloquenthistorySupply;
+=======
+use App\Repositories\HistorySupplyRepository;
+use App\Repositories\EloquentHistorySupply;
+
+use App\Repositories\BoxesRepository;
+use App\Repositories\EloquentBoxes;
+
+>>>>>>> 37ec80d46e76aae4d10df28bbce5a1e795787b95
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -76,9 +85,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(CalculationRepository::class, EloquentCalculation::class);
         $this->app->singleton(ProductRepository::class,     EloquentProduct::class);
         $this->app->singleton(AssignmentRepository::class,  EloquentAssignment::class);
+
         $this->app->singleton(PurchaseItemsRepository::class,  EloquentPurchaseItems::class);
         $this->app->singleton(PurchaseRepository::class,       EloquentPurchase::class);
         $this->app->singleton(ArrivalItemRepository::class,    EloquentArrivalItem::class);
         $this->app->singleton(historySupplyRepository::class,  EloquenthistorySupply::class);
+        $this->app->singleton(BoxesRepository::class,          EloquentBoxes::class);
     }
 }

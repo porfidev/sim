@@ -77,7 +77,17 @@ class EloquentCalculation implements CalculationRepository
 
 			if(array_key_exists(OrderRepository::SQL_ESTATUS, $search)
 				&& !empty($search[OrderRepository::SQL_ESTATUS]) ) {
-				$list->where("orders.".OrderRepository::SQL_ESTATUS, "=",$search[OrderRepository::SQL_ESTATUS]);
+				$operator = "=";
+				if(array_key_exists(OrderRepository::STATUS_OPERATOR, $search)
+					&& !empty($search[OrderRepository::STATUS_OPERATOR]) ) {
+					$operator = $search[OrderRepository::STATUS_OPERATOR];
+				}
+				$list->where("orders.".OrderRepository::SQL_ESTATUS, $operator, $search[OrderRepository::SQL_ESTATUS]);
+
+				if(array_key_exists(OrderRepository::STATUS_OPERATOR_2, $search)) {
+					$operator = $search[OrderRepository::STATUS_OPERATOR_2];
+					$list->where("orders.".OrderRepository::SQL_ESTATUS, $operator, $search[OrderRepository::SQL_ESTATUS_2]);
+				}
 			}
 
 			if(array_key_exists(ClienteRepository::SQL_NOMBRE, $search)
@@ -86,7 +96,7 @@ class EloquentCalculation implements CalculationRepository
 			}
 
     	}
-    	    	
+
         return $list;
     }
 

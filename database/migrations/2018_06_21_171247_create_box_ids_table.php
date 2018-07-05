@@ -15,7 +15,7 @@ class CreateBoxIdsTable extends Migration
     {
         Schema::create('box_ids', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('box_type_id')->unsigned();
+            $table->integer('box_type_id')->unsigned()->nullable();
             $table->foreign('box_type_id')->references('id')->on('boxes');
             $table->integer('status');
             $table->timestamps();

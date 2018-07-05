@@ -125,12 +125,13 @@ class DownloadOrders extends Command
                         $distanciaEsp = $this->cat->getByLabelFull($row['ShipToCode']);
                     }
 
-                    
-
                     $cliente = $this->cli->getByCodigo($row['CARDCODE']);
 
-                    if($cliente != null && $distanciaEsp->value != -1 && $cliente->CE != '-' && 
-                        $cliente->TP != '-' && $cliente->P != '-'){
+                    if($cliente != null
+                        && $distanciaEsp->value != -1
+                        && $cliente->CE != '-'
+                        && $cliente->TP != '-'
+                        && $cliente->P != '-'){
 
                         //función para restar fechas, regresa los dias restantes
 
@@ -138,13 +139,13 @@ class DownloadOrders extends Command
                         $datetime1 = new DateTime(date('Y-m-d', $fechaI));
                         $datetime2 = new DateTime(date('Y-m-d', $fechaF));
                         $interval = $datetime1->diff($datetime2);
-                        //DV
+                        // DV => Días de vigencia
                         $daysValidity = intval($interval->format("%d"));
 
                         //------------------------------------------------------
                         $datetime3 = new DateTime("now");
                         $interval1 = $datetime1->diff($datetime3);
-                        //DF
+                        // DF => Días faltantes
                         $daysLeft = intval($interval1->format("%d"));
 
                         $c1 = $this->cat->getByLabel('c1');
@@ -152,36 +153,31 @@ class DownloadOrders extends Command
                         $c3 = $this->cat->getByLabel('c3');
                         $c6 = $this->cat->getByLabel('c6');
 
+                        /**
+                         * Cálculo de días para fecha programada
+                         */
                         $validity = 0;
-
                         if($daysValidity > $c1) {
-
                             $validity = (($daysValidity/$c2)+$daysLeft+$c3);
-
                         } else if($daysValidity < $c1) {
-
                             $validity = (($daysValidity/$c2)+$daysLeft);
 
                         }
 
+                        /**
+                         * Regla 2: Cálculo de puntaje para vigencia
+                         *
+                         */
                         $V = 0;
-
                         if($validity == 1){
-
                             $V = 90;
-
-                        } else if($validity == 2){
-
+                        } else if($validity == 2) {
                             $V = 50;
-
-                        } else if($validity > 3){
-
+                        } else if($validity > 3) {
                             $V = (50 - (2*($validity - 2)));
-
-                            if($V < 0){
+                            if($V < 0) {
                                 $V = 0;
                             }
-
                         }
 
                         $data1 = array(
@@ -193,16 +189,30 @@ class DownloadOrders extends Command
                             OrderRepository::SQL_DIST_ID        => $distanciaEsp->id
                         );
 
+                        /**
+                         * Cálculo de fecha programada de atención del pedido
+                         */
                         $fechaHoy = date('Y-m-j');
-
                         $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
-
                         $fp = date('Y-m-d', $fp);
 
+                        /**
+                         * Regla 5: Cálculo de detalle del pedido
+                         *
+                         * (Complejidad de empaque * Tamaño del pedido) / 2600
+                         */
                         $D = floor(($cliente->CE * $cliente->TP) / $c6);
 
+                        /**
+                         * Regla 6: Puntaje por distancia
+                         */
                         $dist = $distanciaEsp->value;
 
+                        /**
+                         * Regla general: Prioridad del pedido
+                         *
+                         * ((P + V + D) / 2 ) + Dist
+                         */
                         $priority = floor((($cliente->P + $V + $D) / 2) + $dist);
 
                         if($this->order->getByCode($row['DOCNUM']) == null){

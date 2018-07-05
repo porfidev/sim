@@ -39,7 +39,7 @@ class UsuariosController extends Controller
         RolRepository $rol,
         AssignmentRepository $as)
     {
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->userModel = $user;
         $this->rolModel  = $rol;
         $this->assiModel = $as;
@@ -70,30 +70,42 @@ class UsuariosController extends Controller
         return response()->json($response, 200);
     }
 
-    public function buscaUsuarios(Request $request) {
+    /**
+     * Función para buscar los trabajadores asignados a un jefe
+     * que estén conectados (tengan sesión abierta).
+     *
+     * @return json
+     */
+    public function buscaUsuarios($ord, Request $request) {
         $response = array();
-        $nombre = "";
         try {
+            Log::info("UsuariosController - buscaUsuarios ");
+            $listado = $this->userModel->getListBusUsu(Auth::id());
+            $assig   = $this->assiModel->getListAsi($ord);
 
-            if($request->has("term")) {
-                $nombre = $request->input("term");
+            foreach ($listado as $usuario) {
+                $check = 0;
+                $box   = 0;
+                foreach ($assig as $assi) {
+                    if($usuario->value == $assi->idUsu){
+                        $check = 1;
+                        $box   = $assi->box_id;
+                        break;
+                    }
+                }
+                $response[] = array(
+                    "value"  => $usuario->value,
+                    "label"  => $usuario->label,
+                    "box"    => $box,
+                    "check"  => $check,
+                    "online" => $usuario->connected
+                );
             }
-
-            Log::info(" UsuariosController - buscaUsuarios ");
-
-            $jefeId = Auth::id();
-            //$jefeId = 1;
-
-            $listado = $this->userModel->getListBusUsu($nombre, $jefeId);
-
-            $response = $listado->toArray();
-
-            Log::info(" array especial: ".$listado);
+            Log::info("UsuariosController - buscaUsuarios - array: ".json_encode($response));
 
         } catch (\Exception $e) {
-            Log::error( 'UsuariosController - obtenerNombre - Error: '.$e->getMessage() );
+            Log::error( 'UsuariosController - buscaUsuarios - Error: '.$e->getMessage() );
             $response = array();
-
         }
         return response()->json($response, 200);
     }

@@ -15,7 +15,7 @@ use App\Repositories\ProductRepository;
 use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ClienteRepository;
-use App\Repositories\historySupplyRepository;
+use App\Repositories\HistorySupplyRepository;
 
 use App\Http\Controllers\Base\ProductController;
 
@@ -41,17 +41,18 @@ class SurtidoJefeController extends Controller
      *
      * @return void
      */
-    public function __construct(CalculationRepository $cal, ProductRepository $product,
-                                 OrderDetailRepository $det, OrderRepository $ord,
-                                historySupplyRepository $hist, ClienteRepository $cli)
+    public function __construct(CalculationRepository $cal,
+        ProductRepository $product, OrderDetailRepository $det,
+        OrderRepository $ord, HistorySupplyRepository $hist,
+        ClienteRepository $cli)
     {
-        $this->middleware(['auth', 'permission']);
-        $this->calcModel = $cal;
+        $this->middleware(['auth', 'permission', 'update.session']);
+        $this->calcModel    = $cal;
         $this->productModel = $product;
-        $this->ordDetModel = $det;
-        $this->orderModel = $ord;
-        $this->histModel = $hist;
-        $this->cliModel = $cli;
+        $this->ordDetModel  = $det;
+        $this->orderModel   = $ord;
+        $this->histModel    = $hist;
+        $this->cliModel     = $cli;
     }
 
     /**
@@ -113,7 +114,10 @@ class SurtidoJefeController extends Controller
             }
             if ($request->session()->has(self::SESSION_ESTATUS)
                     && $request->session()->get(self::SESSION_ESTATUS) != '-1' ) {
-                $search[OrderRepository::SQL_ESTATUS] = $request->session()->get(self::SESSION_ESTATUS);
+                $search[OrderRepository::SQL_ESTATUS]     = $request->session()->get(self::SESSION_ESTATUS);
+            } else {
+                $search[OrderRepository::SQL_ESTATUS]     = OrderRepository::PREPARADO_RECIBIDO;
+                $search[OrderRepository::STATUS_OPERATOR] = "<";
             }
             Log::info(" UsuariosController - listado - search: ".json_encode($search));
 
@@ -148,9 +152,36 @@ class SurtidoJefeController extends Controller
             Log::info(" listadoTareasJ - listado ");
 
             $idOrd = $idPed;
+            Log::info(" listadoPedidos - listadoTareasJ - buscando: idOrd: ".$idPed);
+            $codigo = $this->orderModel->getById($idOrd)->codeOrder;
+            $status = $this->orderModel->getById($idOrd)->status;
             //$userId = 2;
 
-            $listado = $this->ordDetModel->getByIdOrd($idOrd);
+            $listado = $this->ordDetModel->getByIdOrd($idPed);
+            Log::info(" listadoPedidos - listadoTareasJ - obtuve: ".$listado);
+
+            /*foreach ($listado as $ped) {
+
+                if( $ped->pres_req == "BOX"){
+
+                    $cantU = ($ped->quantity_user / $ped->itemsDisp) / $ped->dispBox;
+                    $cantT = ($ped->quantity / $ped->itemsDisp) / $ped->dispBox;
+                    $cantB = ($ped->quantity_boss / $ped->itemsDisp) / $ped->dispBox;
+
+                }elseif ($ped->pres_req == "DSP"){
+
+                    $cantU = ($ped->quantity_user / $ped->itemsDisp);
+                    $cantT = ($ped->quantity / $ped->itemsDisp);
+                    $cantB = ($ped->quantity_boss / $ped->itemsDisp);
+
+                }else{
+
+                    $cantU = $ped->quantity_user;
+                    $cantT = $ped->quantity;
+                    $cantB = $ped->quantity_boss;
+
+                }
+            }*/
 
             //Log::info(" listadoTareasJ - listado - Listita: ".$listado->get());
 
@@ -158,7 +189,9 @@ class SurtidoJefeController extends Controller
                 array(
 
                     "listado" => $listado,
-                    "idP" => $idOrd
+                    "idP" => $idOrd,
+                    "cod" => $codigo,
+                    "statusPed" => $status
                 ));
 
         } catch (\Exception $e) {
@@ -219,12 +252,12 @@ class SurtidoJefeController extends Controller
                             $fecHor = date("Y-m-d H:i:s");
 
                             $dataHist = array(
-                                historySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
-                                historySupplyRepository::SQL_DETID     => $request->get('idDet'),
-                                historySupplyRepository::SQL_PROID     => $product->id,
-                                historySupplyRepository::SQL_USRID     => Auth::id(),
-                                historySupplyRepository::SQL_QUANTITY  => $resp[0],
-                                historySupplyRepository::SQL_DATIME    => $fecHor
+                                HistorySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
+                                HistorySupplyRepository::SQL_DETID     => $request->get('idDet'),
+                                HistorySupplyRepository::SQL_PROID     => $product->id,
+                                HistorySupplyRepository::SQL_USRID     => Auth::id(),
+                                HistorySupplyRepository::SQL_QUANTITY  => $resp[0],
+                                HistorySupplyRepository::SQL_DATIME    => $fecHor
                             );
 
                             $this->histModel->create($dataHist);

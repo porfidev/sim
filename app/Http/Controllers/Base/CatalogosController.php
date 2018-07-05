@@ -29,7 +29,7 @@ class CatalogosController extends Controller{
      */
     public function __construct(CatalogoRepository $cat){
 
-        $this->middleware(['auth', 'permission']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->catalogoModel  = $cat;
     }
 
