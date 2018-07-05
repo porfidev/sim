@@ -172,7 +172,7 @@ class PreparacionTrabajadorController extends Controller
                 $order = $task->order;
                 if($order->status === OrderRepository::PREPARADO_ESPERA){
                     $this->orderModel->update(
-                        $task->id,
+                        $order->id,
                         array(
                             OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_PROCESO
                         )
