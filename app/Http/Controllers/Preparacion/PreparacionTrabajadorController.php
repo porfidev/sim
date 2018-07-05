@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Preparacion;
 use DB;
 use Log;
 use Auth;
+use Validator;
 
 use Illuminate\Http\Request;
 
@@ -57,6 +58,13 @@ class PreparacionTrabajadorController extends Controller
     public function listadoTareas(Request $request)
     {
         try {
+            $listado = $this->assigmentModel->getOPWorks(Auth::id(), 5);
+
+            return view('preparacion.trabajador',
+                array(
+                    "listado"    => $listado
+                )
+            );
 
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - listadoPedidos - Error'.$e->getMessage() );
@@ -68,4 +76,44 @@ class PreparacionTrabajadorController extends Controller
             );
         }
     }
+
+    /**
+     * Función para asignar una caja a una tarea
+     */
+    public function asignaCaja(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info(" PreparacionJefeController - asignaCaja ");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'id'     => 'required|string|exists:order_designs,id',
+                    'caja'   => 'required|string|exists:box_ids,id',
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes = $validator->errors();
+            } else {
+                $this->orderModel->updateDesign(
+                    $request->id,
+                    array(
+                        OrderRepository::DESIGN_BOX => $request->caja
+                    )
+                );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - asignaCaja - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
 }

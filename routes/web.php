@@ -99,10 +99,14 @@ Route::get('/hh/recepcion/listadoItemsHH/{purchase}',  '\App\Http\Controllers\Re
 Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH' )->name('ordenes.listadoItemsHH');
 Route::get('hh/recepcion/validacionHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
 
-// Preparación de pedido o embalaje
+// Preparación de pedido o embalaje Jefe
 Route::get('/preparacion/listado',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos' );
 Route::post('/preparacion/recibir',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'  )->name('preparacion.recibir');
 Route::post('/preparacion/tareas',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorItem')->name('preparacion.tareas');
 Route::post('/preparacion/asignacionDetalle', '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem')->name('preparacion.asignacionDetalle');
+
+// Preparación de pedido o embalaje trabajador
+Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );
+Route::post('/preparacion/asignaCaja',   '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@asignaCaja'    )->name('preparacion.asigna.caja');
 
 // Embarque o distribución de pedido

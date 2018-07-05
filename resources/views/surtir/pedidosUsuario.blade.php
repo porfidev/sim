@@ -1,8 +1,6 @@
 @extends('layouts.sim')
 
 @section('content')
-
-<meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="card mb-3">
         <div class="card-body pl-0 pr-0 pb-0 pt-3">
             {{ $listado->links('pagination.default') }}

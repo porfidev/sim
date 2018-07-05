@@ -79,6 +79,8 @@ interface OrderRepository
 
 	function getDesignsByDetail($order_detail_id);
 
+	function updateDesign($id, array $attributes);
+
 	function getAll(array $search = null);
 
 	function getById($id);

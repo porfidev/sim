@@ -52,22 +52,35 @@ class EloquentAssignment implements AssignmentRepository
         return $list->get();
     }
 
-	public function getWorks($user_id, $itemsPerPage)
+	/**
+	 * Función que obtiene las tareas definidas para un trabajador
+	 * en el área de preparación de pedidos.
+	 *
+	 * @param integer $user_id
+	 * @param integer $itemsPerPage
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getOPWorks($user_id, $itemsPerPage)
 	{
-		$list = $this->model->select(
-			"orders.*",
-			"orders.id as idOrdW",
-			"calculations.fP as FP",
-			"calculations.priority as prio",
-			"clients.name as name")
-		->leftJoin("orders","orders.id","=","assignments.order_id")
-		->leftJoin("calculations","orders.id","=","calculations.order_id")
-		->leftJoin("clients","clients.code","=","orders.code")
-		->where("assignments.user_id","=",$idUsr)
-		->whereNotNull("assignments.order_design_id");
+		$order = $this->model->select(
+			'orders.codeOrder',
+			'assignments.*',
+			'products.sku',
+			'products.concept',
+			'order_designs.box_id'
+		)
+		->leftJoin('orders', 'assignments.order_id', '=', 'orders.id')
+		->leftJoin('order_designs', 'assignments.order_design_id', '=', 'order_designs.id')
+		->leftJoin('order_details', 'assignments.order_detail_id', '=', 'order_details.id')
+		->leftJoin('products', 'order_details.itemcode', '=', 'products.sku')
+		->where('assignments.'.self::SQL_USRID, '=', $user_id)
+		->where('assignments.'.self::SQL_STATUS, '=', self::STATUS_CREATED)
+		->orderBy('order_id')
+		->orderBy('id');
 
-		Log::info("EloquentAssignment - getWorks - SQL: ".$list->toSql());
-    	return $list->paginate($itemsPerPage);
+	Log::info("EloquentAssignment - getWorks - SQL: ".$order->toSql());
+	return $order->paginate($itemsPerPage);
 	}
 
 	/**

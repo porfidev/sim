@@ -100,13 +100,17 @@
                     row += ("data-id=\"" + item.order_detail_id + "\" >");
                     row += "<option value=\"0\"> -- Selecciona un trabajador -- </option>";
                     for (index = 0; index < usuarios.length; index++) {
-                        row += ("<option value=\"" + usuarios[index].value + "\"");
+                        row += ("<option value=\"" + usuarios[index].value + "\" ");
+                        if(usuarios[index].online == null) {
+                            row += "disabled=\"true\"";
+                        }
                         if( usuarios[index].value == item.usuario){
                             row += "selected >";
                         } else {
                             row += ">";
                         }
-                        row += (usuarios[index].label + " </option>");
+                        row += usuarios[index].label;
+                        row += " </option>";
                     }
                     row += "</select>";
                     row += "</td></tr>";

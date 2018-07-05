@@ -89,6 +89,19 @@ class EloquentOrder implements OrderRepository
 		return $order->get();
 	}
 
+	/**
+	 * Update a OrderDesign.
+	 *
+	 * @param integer $id
+	 * @param array $attributes
+	 *
+	 * @return App\OrderDesign
+	 */
+	public function updateDesign($id, array $attributes)
+	{
+		return $this->design->find($id)->update($attributes);
+	}
+
     /**
 	 * Get the order´s list fiter by the search parameters
 	 *
