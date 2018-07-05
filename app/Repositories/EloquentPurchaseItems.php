@@ -48,7 +48,15 @@ class EloquentPurchaseItems implements PurchaseItemsRepository
     public function getByCode($ItemCode){
 
     	return $this->model->where("ItemCode","=",$ItemCode)->get()->first();
-    }
+	}
+	
+	public function getByCodeLote($CodeBars, $DistNumber){
+
+		return $this->model->where("CodeBars","=",$CodeBars)
+        ->Where("DistNumber","=",$DistNumber)
+        ->get()->first();
+	}
+	
 
     /**
 	 * Create a new Catalogo.

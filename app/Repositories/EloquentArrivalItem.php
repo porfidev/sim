@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\ArrivalItem;
 
 use Illuminate\Support\Facades\Log;
@@ -76,29 +78,17 @@ class EloquentArrivalItem implements ArrivalItemRepository
 	}
 
 
-    function getAll(array $search = null){
-
-    	$list = $this->model->orderBy('id', 'desc');
-    	    	
-        return $list->paginate(10);
-    }
-
-
 	public function getById($id)
 	{
 		return $this->model->find($id);
     }
 
-    public function getBySKU($ItemCode){
-
-    	return $this->model->where("ItemCode","=",$ItemCode)->get()->first();
-    }
-
     public function getByItemCodeLote($itemCode, $distNumber){
 
         return $this->model->where("ItemCode","=",$itemCode)
-        ->andWhere("DistNumber","=",$distNumber)
-        ->get()->first();
+        ->Where("DistNumber","=",$distNumber)
+		->get()->first();
+		
     }
 
 	public function create(array $attributes)

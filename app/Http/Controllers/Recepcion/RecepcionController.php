@@ -22,6 +22,9 @@ use App\Repositories\EloquentProduct;
 use App\Repositories\ArrivalItemRepository;
 use App\Repositories\EloquentArrivalItem;
 
+use App\Repositories\PurchaseItemsRepository;
+use App\Repositories\EloquentPurchaseItems;
+
 use App\Purchase;
 use App\PurchaseItems;
 use App\Product;
@@ -143,7 +146,6 @@ class RecepcionController extends Controller
 
 
     static function validaCodigo($codigo){
-
         
         $mensajes  = "NA";
         $cantidadTot = -1;
@@ -196,88 +198,123 @@ class RecepcionController extends Controller
       
     }
 
-    static function validaCaducidad($sku, $caducidad, $canTotal, $recibido, $lote){
-
-        
-        $mensajes  = "NA";
-        $cantidadTot = -1;
-        $sku=0;
+    static function capturaDatos($sku,$caducidad, $cantidadCapturada, $lote){
+  
+        $resultado  = "NA";
+        $mensajes  = "";
         $response = [];
         
         $modeloP =  new Product;
-        $modeloA =  new ArrivalItem;
+        $modeloAI =  new ArrivalItem;
 
         $productModelE = new EloquentProduct($modeloP);
-        $productModelA = new EloquentProduct($modeloA);
+        $arrivalItemModelE = new EloquentArrivalItem($modeloAI);
+
+        $carbon = new Carbon();  
 
         try {
 
-            Log::info(" RecepcionController - validaBarcode codigo : ".$sku);
-            $product = $productModelE->getByCode( $sku );
-            $arrivalItem = $productModelA->getByItemCodeLote( $sku, $lote );
+            Log::info(" RecepcionController - capturaDatos codigo : ".$sku);
+            $product = $productModelE->getBySku( $sku );
+            $arrivalItem = $arrivalItemModelE->getByItemCodeLote( $sku, $lote );
 
-            if( $product->caducidad_minima != null ) {
 
-                Log::debug(" RecepcionController - validaBarcode: ".json_encode($product) );
+            if ($product != null) {
+                    $caducidad_minima = Carbon::now();
+                    $caducidad_minima->addDays($product->caducidad_minima);
 
-                if($caducidad <= $product->caducidad_minima ){
+                    if( $product->caducidad_minima != null ) {
 
-                    $mensajes  = "La caducidad del producto recibido no respeta la caducidad minima";
+                        Log::debug(" RecepcionController - capturaDatos: ".json_encode($product) );
 
-                    if($arrivalItem != null){
 
-                        if ($caducidad > $product->caducidad_minima){
+                            if($arrivalItem != null){
 
-                            $arrivalItem->quantity + $canTotal;
+                                $caducidad_minima = Carbon::now();
+                                $caducidad_minima = $arrivalItem->u_Caducidad;
 
-                            }else{
+                                if($caducidad >= $caducidad_minima ){
 
-                                $mensajes  = "La caducidad del producto recibido es menor al ultimo producto recibido";
+                                    $data = array(
+                                    'quantity'      => $arrivalItem->quantity + $cantidadCapturada,
+                                    'u_Caducidad'   => $caducidad,
+                                    );
+                            
+                                    $resultado = $arrivalItemModelE->update($arrivalItem->id, $data);
+                                    $mensajes  = "Se ha actualizado el arrival item: " .  $arrivalItem->ItemCode;
 
+                                } else {
+                                    Log::error( 'RecepcionController - capturaDatos - Error:  La caducidad del producto recibido es menor al ultimo producto recibido.' );
+                                    $resultado = "ERROR.";
+                                    $mensajes  = "La caducidad del producto recibido es menor al ultimo producto recibido";
+                                }
+
+                            } else {
+
+                                // Modelos
+                                $modeloPI = new PurchaseItems;
+                                $purchaseItemModelE = new EloquentPurchaseItems($modeloPI);
+
+                                //Buscar purchase item
+                                $purchaseItem = $purchaseItemModelE->getByCode( $sku );
+
+                                $caducidad_minima = Carbon::now();
+                                $caducidad_minima->addDays($product->caducidad_minima);
+                                
+                                if($caducidad-> format('D') >= $caducidad_minima-> format('D') ){
+                
+                                    if($purchaseItem != null) {
+
+                                        $data = array(
+                                        'purchase_id'        => $purchaseItem->purchase_id,
+                                        'ItemCode'           => $purchaseItem->ItemCode,
+                                        'product_id'         => $purchaseItem->product_id,
+                                        'quantity'           => $cantidadCapturada,
+                                        'cantidad_rec'       => $purchaseItem->u_CantReq,
+                                        'DistNumber'         => $lote,
+                                        'u_Caducidad'        => $caducidad,
+                                        );
+                                
+                                    $nuevoArrivalItem =$arrivalItemModelE ->create($data);
+                                    $mensajes  = "Se ha creado un nuevo arrival item.";
+
+                                    }else{
+                                        Log::error( 'No existe el purchase item' );
+                                        $resultado = "ERROR";
+                                        $mensajes  = "No existe el purchase item";
+                                    }
+                                }else{
+                                    Log::error( 'La caducidad es menor a la minima' );
+                                    $resultado = "ERROR";
+                                    $mensajes  = "La caducidad es menor a la minima";
+                                }
                             }
 
-
                     } else {
-
-                        $modelPurchaseItem = new PurchaseItem;
-                        $modeloNewA =  new ArrivalItem;
-                        $nuevoArrivalItem = new EloquentArrivalItem($modeloNewA);
-
-                        $purchaseItem = $modelPurchaseItem->getByCode( $sku );
-
-                        $nuevoArrivalItem->purchase_id  = ($purchaseItem -> $purchase_id);
-                        $nuevoArrivalItem->ItemCode     = ($purchaseItem -> $sku);
-                        $nuevoArrivalItem->pedimento    = ($purchaseItem -> $ItemCode);
-                        $nuevoArrivalItem->product_id   = ($purchaseItem -> $product_id);
-                        $nuevoArrivalItem->quantity     = ($recibido);
-                        $nuevoArrivalItem->cantidad_rec = ($purchaseItem -> $u_CantReq);
-                        $nuevoArrivalItem->u_Caducidad  = ($caducidad);
-                        $nuevoArrivalItem->DistNumber   = ($lote);
-  
+                        Log::error( 'RecepcionController - capturaDatos - Error:  El item no tiene caducidad minima definida.' );
+                        $resultado = "ERROR..";
+                        $mensajes  = " El item no tiene caducidad minima definida.";
                     }
+                } else {
+                   Log::error( 'RecepcionController - capturaDatos - Error:  El producto no existe' );
+                   $resultado = "ERROR..";
+                   $mensajes  = " El producto no existe.";
+                }
+          
 
-                } 
-
-            } else {
-
-                Log::error("RecepcionController - validaBarcode: El objeto product esta vacío");
-                $resultado = "La caducidad del producto recibido excede la caducidad minima";
-                $mensajes  = "La caducidad del producto recibido excede la caducidad minima";
-            }
         } catch (\Exception $e) {
-            Log::error( 'RecepcionController - validaBarcode - Error: '.$e->getMessage() );
-            $resultado = "ERROR";
+            Log::error( 'RecepcionController - capturaDatos - Error: '.$e->getMessage() );
+            $resultado = "ERROR...";
             $mensajes  = array( $e->getMessage() );
         }
 
-        $response[2] = $sku;
+        $response[4] = $caducidad;
+        $response[3] = $caducidad_minima;
+        $response[2] = $product->caducidad_minima;
         $response[1] = $mensajes;
-        $response[0] = $cantidadTot;
+        $response[0] = $resultado;
 
-        return $response;
-      
+        return $response;    
     }
-
-   
 
 }

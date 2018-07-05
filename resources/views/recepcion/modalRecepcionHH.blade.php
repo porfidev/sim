@@ -85,13 +85,8 @@
                     </div>
                     <div class="form-group row">
                         <label for="inputRecibida" class="col-sm-3 col-form-label">Cantidad Recibida</label>
-                        <div class="col-sm-6">
-                        <input type="text" 
-                               class="form-control" 
-                               id="inputRecibida" 
-                               placeholder="Cantidad Recibida"
-                               name="recibida"
-                               required>
+                        <div class="col-sm-6">1
+                               <br>
                                <br>
                                <button type="button"
                                       class="btn btn-secondary"

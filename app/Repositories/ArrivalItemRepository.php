@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-interface ArrivalItem
+interface ArrivalItemRepository
 {
     const SQL_ID              = "id";
     const SQL_PURCHASEID      = "purchase_id";
@@ -19,13 +19,11 @@ interface ArrivalItem
 
     function getById($id);
 
-    function getBySku($ItemCode);
-
-    function getByItemCodeLote($ItemCode, $DistNumber);
+    function getByItemCodeLote($itemCode, $distNumber);
 
 	function create(array $attributes);
 
 	function update($id, array $attributes);
 
-	function delete($id, $user_id);
+	function delete($id);
 }

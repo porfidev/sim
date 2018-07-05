@@ -24,6 +24,8 @@ interface PurchaseItemsRepository
 
 	function getByCode($ItemCode);
 
+	function getByCodeLote($CodeBars, $DistNumber);
+
 	function create(array $attributes);
 
 	function update($id, array $attributes);

@@ -62,10 +62,15 @@ class DownloadPurchaseOrders extends Command
             $con = sqlsrv_connect($servername,$connectionInfo);
 
             if($con){
-
                 $sql = "select OPOR.DocEntry, DocNum, CardCode, CardName, DocDueDate, ItemCode, Quantity, CodeBars, LineNum, U_CANTREQ from OPOR".
                        "  join POR1 ON OPOR.DocEntry = POR1.DocEntry where OPOR.DocStatus = 'O' ";
+                
+                       echo $con;
+                       echo $sql;       
+                
                 $stmt = sqlsrv_query( $con, $sql );
+
+                echo $stmt;
 
 
                 $cuentaRegistros = 0;
@@ -88,9 +93,14 @@ class DownloadPurchaseOrders extends Command
                         $cuentaPurchases++;
                     }
 
+                    //$modelo =  new Product;
+                    //$productModelE = new EloquentProduct($modelo);
+                    //$product = $productModelE->getIdBySku( 'ItemCode' );
+
                     $data2 = array(
                         PurchasesRepository::SQL_DOCENTRY  => $row['DocEntry'],
                         PurchaseItemsRepository::SQL_ITEMCODE => $row['ItemCode'],
+                        //PurchaseItemsRepository::SQL_PRODUCTID => $row[$product->Id],
                         PurchaseItemsRepository::SQL_QUANTITY => $row['Quantity'],
                         PurchaseItemsRepository::SQL_CODEBARS => $row['CodeBars'],
                         PurchaseItemsRepository::SQL_CANTREQ => $row['U_CANTREQ'],  

@@ -80,6 +80,12 @@ class EloquentProduct implements ProductRepository
 				->get()->first();
 	}
 
+	public function getIdBySku($sku)
+    {
+		return $this->id->where("sku","=",$sku)->get()->first();
+	}
+
+
     /**
 	 * Create a Product.
 	 *
