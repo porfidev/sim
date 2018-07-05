@@ -108,5 +108,6 @@ Route::post('/preparacion/asignacionDetalle', '\App\Http\Controllers\Preparacion
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );
 Route::post('/preparacion/asignaCaja',   '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@asignaCaja'    )->name('preparacion.asigna.caja');
+Route::post('/preparacion/terminaTarea', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@terminarTarea' )->name('preparacion.terminarTarea');
 
 // Embarque o distribución de pedido

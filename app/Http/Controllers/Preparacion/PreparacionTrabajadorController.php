@@ -79,6 +79,8 @@ class PreparacionTrabajadorController extends Controller
 
     /**
      * Función para asignar una caja a una tarea
+     *
+     * @return json
      */
     public function asignaCaja(Request $request)
     {
@@ -107,6 +109,46 @@ class PreparacionTrabajadorController extends Controller
             }
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - asignaCaja - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    /**
+     * Función que cambia de estatus la asignación a terminada
+     *
+     * @return json
+     */
+    public function terminarTarea(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info(" PreparacionJefeController - terminarTarea ");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'tarea' => 'required|string|exists:assignments,id',
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes = $validator->errors();
+            } else {
+                $this->assigmentModel->update(
+                    $request->tarea,
+                    array(
+                        AssignmentRepository::SQL_STATUS => AssignmentRepository::STATUS_FINISH
+                    )
+                );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - terminarTarea - Error: '.$e->getMessage() );
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }

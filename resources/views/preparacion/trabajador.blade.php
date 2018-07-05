@@ -74,7 +74,6 @@
 
     <script type="text/javascript">
         function asignaCaja(id, caja){
-            console.log(id + " - " + caja);
             $( '#overlay' ).show();
             $.ajax({
                 headers: {
@@ -105,13 +104,47 @@
                 $( '#overlay' ).hide();
             });
         }
+        function terminaTarea(id) {
+            $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.terminarTarea') }}",
+                dataType : 'json',
+                data     : {
+                    tarea   : id
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    location.reload();
+                } else {
+                    var errorMsg = "<p>Error al terminar la tarea.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresTrabajador", errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresTrabajador", "Error al terminar la tarea." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });
+        }
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
+            $( '[data-toggle="tooltip"]' ).tooltip();
 
             $( '.registroCaja' ).keyup(function(e){
                 if(e.keyCode == 13) {
                     asignaCaja($(this).attr('data-id'), $(this).val());
                 }
+            });
+
+            $( '.terminaTarea' ).click(function (){
+                terminaTarea($(this).attr('data-id'));
             });
         });
     </script>

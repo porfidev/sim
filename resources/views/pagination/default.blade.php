@@ -1,4 +1,4 @@
-@if ($paginator->count() > 1)
+@if ($paginator->lastPage() > 1)
 <div class="float-right">
     <nav aria-label="Paginacion"
         class="mr-2">

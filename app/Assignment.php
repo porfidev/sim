@@ -17,7 +17,8 @@ class Assignment extends Model
      * @var array
      */
     protected $fillable = [
-        'order_id', 'order_detail_id', 'order_design_id', 'user_id'
+        'order_id', 'order_detail_id', 'order_design_id',
+        'user_id', 'status'
     ];
 
 }
