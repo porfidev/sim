@@ -97,18 +97,38 @@ class PreparacionTrabajadorController extends Controller
                 Controller::$messages
             );
             if ($validator->fails()) {
+                Log::error("PreparacionJefeController - asignaCaja - Error en validator");
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
-                $this->orderModel->updateDesign(
-                    $request->id,
-                    array(
-                        OrderRepository::DESIGN_BOX => $request->caja
-                    )
-                );
+                $box = $this->boxModel->findBoxId($request->caja);
+                Log::info("PreparacionJefeController - asignaCaja - caja: ".$box->status);
+                if( intval($box->status) < BoxesRepository::BOX_ASSIGN ) {
+                    Log::info("PreparacionJefeController - asignaCaja - Cambio de estatus");
+                    DB::beginTransaction();
+                    $this->boxModel->updateBoxId(
+                        $request->caja,
+                        array(
+                            BoxesRepository::SQL_BOX_ID_STATUS => BoxesRepository::BOX_ASSIGN
+                        )
+                    );
+                    $this->orderModel->updateDesign(
+                        $request->id,
+                        array(
+                            OrderRepository::DESIGN_BOX => $request->caja
+                        )
+                    );
+                    DB::commit();
+                } else {
+                    Log::error("PreparacionJefeController - asignaCaja - CAJA USADA");
+                    $resultado = "ERROR";
+                    $mensajes = array( "La caja seleccionada ya ha sido usada" );
+                }
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - asignaCaja - Error: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - asignaCaja - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - asignaCaja - Trace: \n".$e->getTraceAsString() );
+            DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
@@ -140,15 +160,28 @@ class PreparacionTrabajadorController extends Controller
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
+                DB::beginTransaction();
                 $this->assigmentModel->update(
                     $request->tarea,
                     array(
                         AssignmentRepository::SQL_STATUS => AssignmentRepository::STATUS_FINISH
                     )
                 );
+                $task  = $this->assigmentModel->getById($request->tarea);
+                $order = $task->order;
+                if($order->status === OrderRepository::PREPARADO_ESPERA){
+                    $this->orderModel->update(
+                        $task->id,
+                        array(
+                            OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_PROCESO
+                        )
+                    );
+                }
+                DB::commit();
             }
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - terminarTarea - Error: '.$e->getMessage() );
+            DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }

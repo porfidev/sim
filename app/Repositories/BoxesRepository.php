@@ -23,7 +23,11 @@ interface BoxesRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function findBoxId($id);
+
 	function createBoxId(array $attributes);
+
+	function updateBoxId($id, array $attributes);
 
 	function searchByName($name);
 

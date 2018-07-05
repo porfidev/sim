@@ -31,14 +31,38 @@ class EloquentBoxes implements BoxesRepository
     }
 
 	/**
+	 * Encontramos una etiqueta por id
+	 *
+	 * @param integer $id
+	 * @return App\BoxId
+	 */
+	public function findBoxId($id)
+	{
+		return $this->boxId->find($id);
+	}
+
+	/**
 	 * Función para cerar un registro en la tabla de
 	 * box_ids.
 	 *
+	 * @param array $attributes
 	 * @return App\BoxId
 	 */
 	public function createBoxId(array $attributes)
 	{
 		return $this->boxId->create($attributes);
+	}
+
+	/**
+	 * Función para actualizar los valores de una etiqueta.
+	 *
+	 * @param  integer $id
+	 * @param  Array   $attributes
+	 * @return App\BoxId
+	 */
+	public function updateBoxId($id, array $attributes)
+	{
+		return $this->boxId->find($id)->update($attributes);
 	}
 
 	/**

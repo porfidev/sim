@@ -21,4 +21,12 @@ class Assignment extends Model
         'user_id', 'status'
     ];
 
+    /**
+     * Get the order for the assignment.
+     */
+    public function order()
+    {
+        return $this->belongsTo('App\Order', 'order_id');
+    }
+
 }
