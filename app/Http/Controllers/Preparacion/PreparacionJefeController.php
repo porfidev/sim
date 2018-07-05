@@ -260,4 +260,27 @@ class PreparacionJefeController extends Controller
             Controller::JSON_MESSAGE  => $mensajes
         ));
     }
+
+    /**
+     * Se muestra la pantalla para validación de un pedido.
+     * Se puede consultar el contenido de una caja y su estado.
+     * Al concluir la revisión de las cajas se debe realizar la
+     * acción de validación
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function mostrarValidacion(Request $request)
+    {
+        try {
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - mostrarValidacion - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - mostrarValidacion - Trace: \n".$e->getTraceAsString() );
+            return view('error',
+                array(
+                    "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
+                    "titulo" => "Error inesperado"
+                )
+            );
+        }
+    }
 }

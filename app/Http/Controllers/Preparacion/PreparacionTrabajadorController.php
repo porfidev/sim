@@ -67,7 +67,8 @@ class PreparacionTrabajadorController extends Controller
             );
 
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - listadoPedidos - Error'.$e->getMessage() );
+            Log::error( 'PreparacionTrabajadorController - listadoPedidos - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - listadoPedidos - Trace: \n".$e->getTraceAsString() );
             return view('error',
                 array(
                     "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
@@ -87,7 +88,7 @@ class PreparacionTrabajadorController extends Controller
         $resultado = "OK";
         $mensajes  = "NA";
         try {
-            Log::info(" PreparacionJefeController - asignaCaja ");
+            Log::info(" PreparacionTrabajadorController - asignaCaja ");
             $validator = Validator::make(
                 $request->all(),
                 array(
@@ -97,14 +98,14 @@ class PreparacionTrabajadorController extends Controller
                 Controller::$messages
             );
             if ($validator->fails()) {
-                Log::error("PreparacionJefeController - asignaCaja - Error en validator");
+                Log::error("PreparacionTrabajadorController - asignaCaja - Error en validator");
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
                 $box = $this->boxModel->findBoxId($request->caja);
-                Log::info("PreparacionJefeController - asignaCaja - caja: ".$box->status);
+                Log::info("PreparacionTrabajadorController - asignaCaja - caja: ".$box->status);
                 if( intval($box->status) < BoxesRepository::BOX_ASSIGN ) {
-                    Log::info("PreparacionJefeController - asignaCaja - Cambio de estatus");
+                    Log::info("PreparacionTrabajadorController - asignaCaja - Cambio de estatus");
                     DB::beginTransaction();
                     $this->boxModel->updateBoxId(
                         $request->caja,
@@ -120,14 +121,14 @@ class PreparacionTrabajadorController extends Controller
                     );
                     DB::commit();
                 } else {
-                    Log::error("PreparacionJefeController - asignaCaja - CAJA USADA");
+                    Log::error("PreparacionTrabajadorController - asignaCaja - CAJA USADA");
                     $resultado = "ERROR";
                     $mensajes = array( "La caja seleccionada ya ha sido usada" );
                 }
             }
         } catch (\Exception $e) {
-            Log::error( "PreparacionJefeController - asignaCaja - Exception: ".$e->getMessage() );
-            Log::error( "PreparacionJefeController - asignaCaja - Trace: \n".$e->getTraceAsString() );
+            Log::error( "PreparacionTrabajadorController - asignaCaja - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - asignaCaja - Trace: \n".$e->getTraceAsString() );
             DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
@@ -148,7 +149,7 @@ class PreparacionTrabajadorController extends Controller
         $resultado = "OK";
         $mensajes  = "NA";
         try {
-            Log::info(" PreparacionJefeController - terminarTarea ");
+            Log::info(" PreparacionTrabajadorController - terminarTarea ");
             $validator = Validator::make(
                 $request->all(),
                 array(
@@ -180,7 +181,8 @@ class PreparacionTrabajadorController extends Controller
                 DB::commit();
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - terminarTarea - Error: '.$e->getMessage() );
+            Log::error( 'PreparacionTrabajadorController - terminarTarea - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - terminarTarea - Trace: \n".$e->getTraceAsString() );
             DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
