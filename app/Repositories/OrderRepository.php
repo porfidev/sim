@@ -73,6 +73,8 @@ interface OrderRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getDesignListByBox($box_id);
+
 	function createDesign(array $attributes);
 
 	function getDesignGroupByItem($order_id);

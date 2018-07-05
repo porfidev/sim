@@ -43,6 +43,20 @@ class EloquentOrder implements OrderRepository
     }
 
 	/**
+	 * Función para traer la lista de elemtos registrados en una caja
+	 *
+	 * @param integer $box_id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDesignListByBox($box_id)
+	{
+		Log::info("EloquentOrder - getDesignListByBox: $box_id");
+		return $this->design->with('orderDetail', 'order')
+			->where(self::DESIGN_BOX, '=', $box_id)
+			->get();
+	}
+
+	/**
 	 * Create a new Order Design.
 	 *
 	 * @param array $attributes

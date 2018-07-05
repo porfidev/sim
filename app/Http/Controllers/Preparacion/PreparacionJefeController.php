@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Preparacion;
 use DB;
 use Log;
 use Auth;
+use Validator;
 
 use Illuminate\Http\Request;
 
@@ -272,6 +273,7 @@ class PreparacionJefeController extends Controller
     public function mostrarValidacion(Request $request)
     {
         try {
+            return view('preparacion.validacion');
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - mostrarValidacion - Exception: '.$e->getMessage() );
             Log::error( "PreparacionJefeController - mostrarValidacion - Trace: \n".$e->getTraceAsString() );
@@ -282,5 +284,101 @@ class PreparacionJefeController extends Controller
                 )
             );
         }
+    }
+
+    /**
+     * Función para obtener información de una caja.
+     * Orden a la que pertence y que productos contiene.
+     *
+     * @return json
+     */
+    public function obtenerInformacion(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info("PreparacionJefeController - obtenerInformacion");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'caja' => 'required|string|exists:box_ids,id',
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes = $validator->errors();
+            } else {
+                $datos = $this->orderModel->getDesignListByBox($request->caja);
+                foreach ($datos as $item) {
+                    Log::info("PreparacionJefeController - obtenerInformacion: \n".json_encode($item));
+                    if(isset($item->orderDetail)) {
+                        Log::info("PreparacionJefeController - obtenerInformacion - Obtenemos producto: \n".json_encode($item->orderDetail));
+                        $item->orderDetail->product;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - obtenerInformacion - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - obtenerInformacion - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes,
+            Controller::JSON_DATA     => $datos
+        ));
+    }
+
+    /**
+     * Función para cambiar el estatus de la orden a validado
+     *
+     * @return json
+     */
+    public function valida(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - valida");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'pedido' => 'required|string|exists:orders,id',
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes = $validator->errors();
+            } else {
+                DB::beginTransaction();
+                $this->orderModel->update(
+                    $request->pedido,
+                    array(
+                        OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_VALIDADO
+                    )
+                );
+                $this->orderModel->addTrace(
+                    array(
+                        OrderRepository::TRACE_SQL_ORER => $request->pedido,
+                        OrderRepository::TRACE_SQL_USER => Auth::id(),
+                        OrderRepository::TRACE_SQL_TYPE => OrderRepository::TRACE_VALIDAR_PP
+                    )
+                );
+                DB::commit();
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - valida - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - valida - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 }

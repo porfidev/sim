@@ -119,8 +119,7 @@
                                 class="col-sm-3">
                                 Cliente
                             </th>
-                            <th scope="col" style="text-align: center;"
-                                class="col-sm-2">
+                            <th scope="col" class="col-sm-2">
                                 Estatus
                             </th>
                             <th scope="col" style="text-align: center;"

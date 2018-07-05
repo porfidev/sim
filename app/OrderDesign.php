@@ -22,7 +22,8 @@ class OrderDesign extends Model
      * @var array
      */
     protected $fillable = [
-        'box_id', 'order_id', 'order_detail_id', 'quantity', 'quantity_validation'
+        'box_id', 'order_id', 'order_detail_id', 'quantity',
+        'quantity_validation'
     ];
 
     /**
@@ -31,5 +32,13 @@ class OrderDesign extends Model
     public function orderDetail()
     {
         return $this->belongsTo('App\OrderDetail', 'order_detail_id');
+    }
+
+    /**
+     * Get the order for order design.
+     */
+    public function order()
+    {
+        return $this->belongsTo('App\Order', 'order_id');
     }
 }
