@@ -64,7 +64,7 @@ class SurtidoJefeController extends Controller
 
         try {
 
-            Log::info(" listadoPedidos - listado ");
+            Log::info("SurtidoJefeController - listadoPedidos - listado ");
 
             if ( $request->isMethod('post') ) {
                 if( $request->has(self::SESSION_ID)) {
@@ -119,23 +119,23 @@ class SurtidoJefeController extends Controller
                 $search[OrderRepository::SQL_ESTATUS]     = OrderRepository::PREPARADO_RECIBIDO;
                 $search[OrderRepository::STATUS_OPERATOR] = "<";
             }
-            Log::info(" UsuariosController - listado - search: ".json_encode($search));
+            Log::info(" SurtidoJefeController - listadoPedidos - search: ".json_encode($search));
 
 
             $listado = $this->calcModel->getAllOrd($search);
-
-            //Log::info(" listadoPedidos - listado - Listita: ".$listado->get());
+            Log::info(" SurtidoJefeController-  listadoPedidos - listado - count: ".$listado->count());
 
             $listado = $listado->paginate(10);
 
             return view('surtir.jefe',
                 array(
-
                     "listado" => $listado
-                ));
+                )
+            );
 
         } catch (\Exception $e) {
-            Log::error( 'listadoPedidos - listado - Error'.$e->getMessage() );
+            Log::error( 'SurtidoJefeController - listadoPedidos - Exception: '.$e->getMessage() );
+            Log::error( "SurtidoJefeController - listadoPedidos - Trace: \n".$e->getTraceAsString() );
             return view('error',
                 array(
                     "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),

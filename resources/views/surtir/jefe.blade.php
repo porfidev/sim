@@ -53,7 +53,7 @@
                                 <input type="text"
                                         class="form-control inputFiltro"
                                         id="formaCliente"
-                                        placeholder="cliente"
+                                        placeholder="Nombre del cliente"
                                     @if ( Session::has('sc_cliente') && Session::get('sc_cliente') != '-' )
                                         value="{{ Session::get('sc_cliente') }}"
                                     @endif>
@@ -171,7 +171,7 @@
                                 @if ($ped->ordStatus < 2)
 
                                         <button class="btn btn-sm btn-success asignarPersonal"
-                                                data-id="{{ $ped->idOrd }}"                                        
+                                                data-id="{{ $ped->idOrd }}"
                                                 data-codeOrd="{{ $ped->codeOrder }}"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
@@ -183,14 +183,14 @@
                                 @if ($ped->ordStatus == 3)
 
                                     <button class="btn btn-sm btn-success checarProyecto"
-                                        data-id="{{ $ped->idOrd }}"                                        
+                                        data-id="{{ $ped->idOrd }}"
                                         data-codeOrd="{{ $ped->codeOrder }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Validar Pedido">
                                     <i class="material-icons">done_all</i>
                                     </button>
-                        
+
                                 @endif
                             </td>
                         </tr>
@@ -233,10 +233,10 @@
 
             //alert("Fecha: "+$( '#formaFecProg'    ).val());
 
-            $( '#busquedaId'       ).val( $( '#formaId'       ).val() ? $( '#formaId'       ).val() : '0'  );
+            $( '#busquedaId'      ).val( $( '#formaId'      ).val() ? $( '#formaId'      ).val() : '0'  );
             $( '#busquedaCliente' ).val( $( '#formaCliente' ).val() ? $( '#formaCliente' ).val() : '-' );
-            $( '#busquedaEstatus'    ).val( $( '#grupoEst'    ).val() ? $( '#grupoEst'    ).val() : '-1' );
-            $( '#busquedafecProg'    ).val( $( '#formaFecProg'    ).val() ? $( '#formaFecProg'    ).val() : '0'  );
+            $( '#busquedaEstatus' ).val( $( '#grupoEst'     ).val() ? $( '#grupoEst'     ).val() : '-1' );
+            $( '#busquedafecProg' ).val( $( '#formaFecProg' ).val() ? $( '#formaFecProg' ).val() : '0'  );
             $( '#busquedafecIni'  ).val( $( '#formaFecIni'  ).val() ? $( '#formaFecIni'  ).val() : 'NA' );
             $( '#busquedafecFin'  ).val( $( '#formaFecFin'  ).val() ? $( '#formaFecFin'  ).val() : 'NA' );
             $( '#searchForm' ).submit();
@@ -262,7 +262,10 @@
                 }
             });
 
-            $('#grupoEst').val($('#grupoSelEsp').val());
+            if( $('#grupoSelEsp').val()
+                && $('#grupoSelEsp').val() != -1 ) {
+                $('#grupoEst').val($('#grupoSelEsp').val());
+            }
 
             $( "#grupoEst" ).change(function() {
                 ejecutaBusquedasFiltros();
