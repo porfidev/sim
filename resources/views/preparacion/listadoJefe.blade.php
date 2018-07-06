@@ -2,13 +2,16 @@
 
 @section('content')
     <br>
-    <h2 class="mt-2">Listado de Pedidos</h2>
-    <br>
     <div class="card mb-3">
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
             <div class="table-responsive">
                 <table class="table table-striped table-fixed mb-0">
                     <thead>
+                        <tr class="table-secondary">
+                            <th>
+                                <h5>Pedidos en Etapa de Surtido</h5>
+                            </th>
+                        </tr>
                         <tr>
                             <th scope="col" style="text-align: center;"
                                 class="col-1">
@@ -110,6 +113,11 @@
             <div class="table-responsive">
                 <table class="table table-striped table-fixed">
                     <thead>
+                        <tr class="table-secondary">
+                            <th class="col-12">
+                                <h5>Pedidos en Etapa de Preparaci&oacute;n</h5>
+                            </th>
+                        </tr>
                         <tr>
                             <th scope="col" style="text-align: center;"
                                 class="col-sm-1">
