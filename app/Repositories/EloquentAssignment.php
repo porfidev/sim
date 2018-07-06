@@ -180,7 +180,6 @@ class EloquentAssignment implements AssignmentRepository
 	 */
 
 	public function delete($id){
-
 		return $this->model->find($id)->delete();
 	}
 }

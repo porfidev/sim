@@ -384,6 +384,11 @@ class UsuariosController extends Controller
         return response()->json(array('resultado' => $resultado, 'mensajes' => $mensajes, 'datos' => $datos));
     }
 
+    /**
+     * Función para asignar un usuario a una tarea en surtido del pedido
+     *
+     * @return json
+     */
     public function asignarUsuario(Request $request) {
         $resultado = "OK";
         $mensajes  = "NA";
@@ -395,20 +400,14 @@ class UsuariosController extends Controller
             $listaTotal = $this->assiModel->getListAsi( $request->orderId);
 
             foreach ($listaTotal as $ele) {
-                
-                $this->assiModel->delete( $ele->order_id);
+                $this->assiModel->delete($ele->idA);
             }
 
-
             $typedocs = $request->typedoc;
-
             if(!empty($typedocs)){
-
                 foreach($typedocs as $value){
-
-                  $assignment = $this->assiModel->search( $request->orderId, $value );
-
-                    if( empty($assignment) ){                    
+                    $assignment = $this->assiModel->search( $request->orderId, $value );
+                    if( empty($assignment) ){
 
                             $data = array(
                                 AssignmentRepository::SQL_ORDID  => $request->orderId,
@@ -417,17 +416,11 @@ class UsuariosController extends Controller
 
                     Log::info(" UsuariosController - asignarUsuario - data: ".json_encode($data));
                     $this->assiModel->create($data);
-                        
                     } else {
                         $resultado = "ERROR";
                         $mensajes  = array( "Ese usuario ya esta asignado" );
                     }
                 }
-
-            }else {
-
-                $resultado = "ERROR";
-                $mensajes  = array( "No se selecciono usuario" );
             }
 
         } catch (\Exception $e) {
