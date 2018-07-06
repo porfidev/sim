@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\Assignment;
 
 use Illuminate\Support\Facades\Log;
@@ -79,8 +81,26 @@ class EloquentAssignment implements AssignmentRepository
 		->orderBy('order_id')
 		->orderBy('id');
 
-	Log::info("EloquentAssignment - getWorks - SQL: ".$order->toSql());
-	return $order->paginate($itemsPerPage);
+		Log::info("EloquentAssignment - getWorks - SQL: ".$order->toSql());
+		return $order->paginate($itemsPerPage);
+	}
+
+	/**
+	 * Función para obtener el número de caja del pedido
+	 *
+	 * @param integer $user_id
+	 * @param integer $order_id
+	 */
+	public function getMaxMin($user_id, $order_id) {
+		return $this->model->select(
+				"order_id",
+				DB::raw("MAX(order_design_id) as max"),
+				DB::raw("MIN(order_design_id) as min")
+			)
+			->where(self::SQL_USRID, '=', $user_id)
+			->where(self::SQL_ORDID, '=', $order_id)
+			->groupBy("order_id")
+			->first();
 	}
 
 	/**

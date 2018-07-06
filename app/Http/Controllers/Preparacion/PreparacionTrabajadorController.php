@@ -59,6 +59,22 @@ class PreparacionTrabajadorController extends Controller
     {
         try {
             $listado = $this->assigmentModel->getOPWorks(Auth::id(), 5);
+            $pedidos = array();
+            foreach ($listado as $item) {
+                if(array_key_exists($item->order_id, $pedidos)){
+                    $item->max = $pedidos[$item->order_id]["max"];
+                    $item->min = $pedidos[$item->order_id]["min"];
+                } else {
+                    $data = $this->assigmentModel->getMaxMin(Auth::id(), $item->order_id);
+                    Log::info("PreparacionTrabajadorController - listadoTareas - consulta: ".json_encode($data));
+                    $item->max = $data->max;
+                    $item->min = $data->min;
+                    $pedidos[$item->order_id] = array(
+                        "max" => $data->max,
+                        "min" => $data->min
+                    );
+                }
+            }
 
             return view('preparacion.trabajador',
                 array(

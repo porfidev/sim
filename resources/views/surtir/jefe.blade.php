@@ -221,7 +221,7 @@
 @endsection
 
 @section('final')
-   
+
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('surtir.asignaUsuarios')
@@ -242,16 +242,28 @@
             $( '#searchForm' ).submit();
         }
 
+        function desasigna(idO) {
+            //console.log("idAssi: "+idO);
+            var parametros = [];
+            parametros["id"] = idO;
+            abrirConfirmacion(
+                "Confirmaci&oacute;n",
+                "¿Estás seguro de desasignar este usuario?",
+                "{{ route('usuarios.desasignar') }}",
+                parametros
+            );
+        }
+
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
 
             $( '.btnLimpiar' ).click(function () {
                 $( '#busquedaId'       ).val( '0'  );
-                $( '#busquedaCliente' ).val( '-' );
-                $( '#busquedafecProg'    ).val( 'NA'  );
-                $( '#busquedafecIni'    ).val( 'NA'  );
-                $( '#busquedafecFin'    ).val( 'NA'  );
+                $( '#busquedaCliente'  ).val( '-' );
+                $( '#busquedafecProg'  ).val( 'NA'  );
+                $( '#busquedafecIni'   ).val( 'NA'  );
+                $( '#busquedafecFin'   ).val( 'NA'  );
                 $( '#busquedaEstatus'  ).val( '-1' );
                 $( '#searchForm' ).submit();
             });
@@ -301,20 +313,9 @@
                         ord  : idOrd
                               }
                 }).done(function( data ) {
-                    //console.log(data);
                     var tt = "";
                     data.forEach(function(element) {
-                        //console.log(element);
                         tt += element.name;
-                              /*if(status == 1){
-                                tt += ' <button class="btn btn-sm btn-danger borrarAsignado"'+
-                                        'onclick="desasigna('+element.id+')"'+
-                                        'data-toggle="tooltip"'+
-                                        'data-placement="top"'+
-                                        'title="Eliminar">'+
-                                    '<i class="material-icons">delete</i>'+
-                                '</button>';
-                              }*/
                         tt += "<br><br>";
                     });
 
@@ -324,20 +325,8 @@
 
             $( '.checarProyecto' ).click(function () {
                 idPed = $(this).attr( "data-id" );
-                window.location.href = "listadoTareasJ/"+idPed;
+                window.location.href = "{{ URL::to('listadoTareasJ') }}/"+idPed;
             });
         });
-
-        function desasigna(idO) {
-            //console.log("idAssi: "+idO);
-            var parametros = [];
-            parametros["id"] = idO;
-            abrirConfirmacion(
-                "Confirmaci&oacute;n",
-                "¿Estás seguro de desasignar este usuario?",
-                "{{ route('usuarios.desasignar') }}",
-                parametros
-            );
-        }
     </script>
 @endsection

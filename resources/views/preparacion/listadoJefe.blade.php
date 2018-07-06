@@ -151,23 +151,23 @@
                                 </td>
                                 <td class="col-2">
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
-                                    Recibido
+                                    Recibido en Preparaci&oacute;n
                             @endif
 
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
-                                    Por validar dise&ntilde;o
+                                    Por validar Dise&ntilde;o
                             @endif
 
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
-                                    En espera
+                                    En espera de Preparaci&oacute;n
                             @endif
 
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
-                                    En proceso
+                                    En proceso de Preparaci&oacute;n
                             @endif
 
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
-                                    Por validar
+                                    Por validar Preparaci&oacute;n
                             @endif
 
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_VALIDADO)

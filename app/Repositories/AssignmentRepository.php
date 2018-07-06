@@ -21,6 +21,8 @@ interface AssignmentRepository
 
 	function getOPWorks($user_id, $itemsPerPage);
 
+	function getMaxMin($user_id, $order_id);
+
 	function getPedUser($idUsr);
 
 	function search($idOrd,$idUsr);
