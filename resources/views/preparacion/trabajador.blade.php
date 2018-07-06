@@ -63,8 +63,12 @@
                             </td>
                         </tr>
             @endforeach
+            @if(count($listado) == 0)
+                        <tr style="text-align: center;">
+                            <td>No hay tareas pendientes</td>
+                        </tr>
+            @endif
                     </tbody>
-
                 </table>
             </div>
         </div>
