@@ -153,7 +153,7 @@ class SurtidoTrabajadorController extends Controller
                             $resultado = $cantidadTot;
 
                             $datosE = array();
-                            $datosE[OrderRepository::SQL_ESTATUS] = 2;
+                            $datosE[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_PROCESO;
 
                             $this->orderModel->update($detalleOrder->idOrder,$datosE);
 
@@ -173,7 +173,7 @@ class SurtidoTrabajadorController extends Controller
                             if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
 
                                 $datosW = array();
-                                $datosW[OrderRepository::SQL_ESTATUS] = 3;
+                                $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
 
                                 $this->orderModel->update($detalleOrder->idOrder,$datosW);
 
