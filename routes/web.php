@@ -101,7 +101,7 @@ Route::get('hh/recepcion/validacionHH/{purchase}', '\App\Http\Controllers\Recepc
 
 // Preparación de pedido o embalaje Jefe
 Route::get('/preparacion/listado',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos'     );
-Route::get('/preparacion/validacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarValidacion' );
+Route::get('/preparacion/informacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarInformacion' );
 Route::post('/preparacion/recibir',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'                )->name('preparacion.recibir');
 Route::post('/preparacion/tareas',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorItem'       )->name('preparacion.tareas');
 Route::post('/preparacion/asignacionDetalle',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem'  )->name('preparacion.asignacionDetalle');

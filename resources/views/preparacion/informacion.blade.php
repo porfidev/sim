@@ -104,10 +104,8 @@
                         item = data.datos[0];
                         var row = "<tr>";
                         row += "<td class=\"table-primary\" colspan=2 style=\"text-align: center;\">";
-                        row += ("<div class=\"row\"><div class=\"col\">Pedido: #" + item.order.codeOrder + "</div>");
-                        row += ("<div class=\"col\"><button class=\"btn btn-sm btn-success validaPedido\"");
-                        row += ("data-toggle=\"tooltip\" data-placement=\"top\" data-id=\"" + item.order_id + "\"");
-                        row += "title=\"Validar Pedido\"><i class=\"material-icons\">offline_pin</i></button></div>";
+                        row += ("<div class=\"row\"><div class=\"col\">Pedido: #" + item.order.codeOrder
+                            + " Caja " + (item.id - item.min + 1) + " de " + (item.max - item.min +1) + "</div>");
                         row += "</td>";
                         row += "</tr>";
                         $( "#searchResults" ).append(row);
@@ -120,12 +118,20 @@
                         row += "Sin informaci&oacute;n";
                         row += "</td>";
                         row += "</tr>";
+                        $( "#searchResults" ).append(row);
                     }
                     $( '[data-toggle="tooltip"]' ).tooltip();
                 } else {
-                    var errorMsg = "Error al obtner información de la caja. \n";
+                    var errorMsg = "Error al obtener información de la caja. \n";
                     $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
                     alert(errorMsg);
+                    $( "#searchResults tr" ).remove();
+                    var row = "<tr>";
+                    row += "<td style=\"text-align: center;\">";
+                    row += "Sin informaci&oacute;n";
+                    row += "</td>";
+                    row += "</tr>";
+                    $( "#searchResults" ).append(row);
                 }
             }).fail(function (jqXHR, textStatus) {
                 errorDetalle = "";
