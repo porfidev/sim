@@ -189,7 +189,7 @@ class SurtidoTrabajadorController extends Controller
                 } else {
                         $resultado = "ERROR";
                         $mensajes  = array( "Codigo incorrecto" );
-                    }
+                }
 
             } else {
                 $resultado = "ERROR";
