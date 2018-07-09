@@ -99,7 +99,7 @@ class EloquentCatalogo implements CatalogoRepository
 		$groupList = array();
 		$group = $this->model->find($group_id);
 		if(!empty($group)) {
-			$groupList = $this->model->where(self::SQL_GRUPO_ID, '=', $group->value)
+			$groupList = $this->model->where(self::SQL_GRUPO_ID, '=', $group_id)
 				->orderBy(self::SQL_VALOR)
 				->get();
 		}

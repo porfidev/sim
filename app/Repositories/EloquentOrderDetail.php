@@ -62,7 +62,10 @@ class EloquentOrderDetail implements OrderDetailRepository
 				"products.alias as nom",
 				"products.items_per_display as itemsDisp",
 				"products.display_per_box as dispBox",
-				"products.concept as con")
+				"products.concept as con",
+				"products.barcode as barcode",
+				"products.display_barcode as disBarcode",
+				"products.corrugated_barcode as boxBarcode")
 			->leftJoin("orders","orders.id","=","order_details.idOrder")
 			->leftJoin("products","products.sku","=","order_details.itemcode")
 			->where("idOrder","=",$id);

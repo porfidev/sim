@@ -19,9 +19,21 @@
                 data-toggle="tooltip"
                 data-placement="top"
                 data-id="{{ $idP }}"
+                id="btnCerrar"
+                @if($terminado == 0)
+                style="display: none;"
+                @endif
                 title="Cerrar pedido">
             <i class="material-icons">offline_pin</i>
-        </button>
+        </button><br><br>
+        <div class="form-group">
+            <input class="codigines form-control"
+                onkeypress="return runScript(
+                event,
+            {{ $idP }})"
+            id="cod{{ $idP }}">
+        </div>
+
         @endif
     </h2>
     <br>
@@ -32,7 +44,7 @@
                     <tbody>
                         @foreach ($listado as $ped)
                         <tr>
-                            <td style="text-align: center;" colspan=2>
+                            <td style="text-align: center;">
                                 @if( !empty($ped->nom ))
                                    {{ $ped->itemcode }} - {{ $ped->nom }} 
                                 @else
@@ -40,28 +52,25 @@
                                 @endif
 
                             </td>
-                        </tr><tr>
-                            <td style="text-align: center;">
-                                Trabajador: 
-                            </td>
-                            <td style="text-align: center;">
+                        </tr>
                                 <?php $cantU = 0; $cantT = 0; $cantB =0; $uni = "" ?>
                                 @if( $ped->pres_req == "BOX")
 
                                      <?php  
                                             $uni = "cajas"; ?>
 
-                                        @elseif ($ped->pres_req == "DSP")
+                                @elseif ($ped->pres_req == "DSP")
 
                                      <?php  
                                             $uni = "displays"; ?>
 
-                                        @else
+                                @else
 
                                       <?php 
                                             $uni = "piezas"; ?>
 
-                                        @endif
+                                @endif
+
                                 @if ( !empty($ped->quantity))
 
                                         @if( $ped->pres_req == "BOX")
@@ -81,46 +90,7 @@
 
                                         @endif
                                 @endif
-                                @if ( empty($ped->quantity_user))
-
-                                        0
-                        
-                                    @endif
-
-                                    @if ( !empty($ped->quantity_user))
-
-                                        @if( $ped->pres_req == "BOX")
-
-                                     <?php  $cantU = ($ped->quantity_user / $ped->itemsDisp) / $ped->dispBox;
-                                            $cantT = ($ped->quantity / $ped->itemsDisp) / $ped->dispBox;
-                                            $cantB = ($ped->quantity_boss / $ped->itemsDisp) / $ped->dispBox; ?>
-
-                                        @elseif ($ped->pres_req == "DSP")
-
-                                     <?php  $cantU = ($ped->quantity_user / $ped->itemsDisp);
-                                            $cantT = ($ped->quantity / $ped->itemsDisp);
-                                            $cantB = ($ped->quantity_boss / $ped->itemsDisp); ?>
-
-                                        @else
-
-                                      <?php $cantU = $ped->quantity_user;
-                                            $cantT = $ped->quantity;
-                                            $cantB = $ped->quantity_boss; ?>
-
-                                        @endif
-
-                                        {{ $cantU }}
-                        
-                                    @endif
-
-                                     / {{ $cantT }} {{ $uni }}
-                                
-
-                            </td>
-                        </tr>
-                            <td style="text-align: center;">
-                                Jefe: 
-                            </td>
+                         <tr>
                             <td style="text-align: center;">
                                 
 
@@ -172,31 +142,6 @@
                                     
                                 </span> / {{ $cantT }} {{ $uni }}
                             </td>
-                        </tr><tr>
-                            <td style="text-align: center;" colspan=2>
-                                @if( $ped->sta < 4)
-                                <div class="form-group">
-                                    <input class="codigines form-control"
-                                        onkeypress="return runScript(
-                                        event,
-                                    {{ $ped->id }},
-                                    {{ $ped->quantity }},
-                                    @if ( empty($ped->quantity_boss))
-                                            0
-                                        @endif
-
-                                        @if ( !empty($ped->quantity_boss))
-                                            {{ $ped->quantity_boss }}
-                                        @endif
-                                        ,
-                                    '{{ $ped->itemcode }}',
-                                    '{{ $ped->pres_req }}',
-                                    {{ $ped->itemsDisp }},
-                                    {{ $ped->dispBox }})"
-                                    id="cod{{ $ped->id }}">
-                                </div>
-                                @endif
-                            </td>
                         </tr>
             @endforeach
             @if (count($listado) === 0)
@@ -247,13 +192,13 @@
         
 
 
-        function runScript(e,id,cantidad,cantUsu,skus,presReq,disp,box) {
+        function runScript(e,id) {
 
-            presReq = (presReq == undefined)?"":presReq;
+            //presReq = (presReq == undefined)?"":presReq;
 
-            //alert("id: "+id+" cantidad: "+cantidad+" cantaJefe: "+cantUsu+" sku: "+skus);
+            //alert("id: "+id);
 
-            cantUsu = $("#cantU"+id).val();
+            //cantUsu = $("#cantU"+id).val();
 
             if (e.keyCode == 13) {
 
@@ -265,7 +210,7 @@
                     return;
                 }
         
-                console.log("entro, id: "+id+", codigo: "+codigo+" cantidad: "+cantidad+" cantUsu: "+cantUsu+" sku: "+skus);
+                console.log("entro, id: "+id);
 
                 $("#cod"+id).val("");
 
@@ -276,11 +221,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data    : {
-                        idDet  : id,
-                        sku    : skus,
-                        cod    : codigo,
-                        cant   : cantidad,
-                        cantU  : cantUsu
+                        idOrd  : id,
+                        cod : codigo
                               }
                 }).done(function( data ) {
 
@@ -291,25 +233,15 @@
 
                     }
 
-                    cantUser = 0;
-
-                    if(presReq == "BOX"){
-                            
-                        cantUser = (data.resultado / disp) / box;
-
-                    }else if(presReq == "DSP"){
-
-                        cantUser = (data.resultado / disp);
-
-                    }else{
-
-                        cantUser = data.resultado;
-                    }
-
                     console.log("Datitos regreso: "+data.resultado);
 
-                    $("#canti"+id).html(cantUser);
-                    $("#cantU"+id).val(data.resultado);
+                    $("#canti"+data.resultado.idDet).html(data.resultado.cantEsp);
+
+                    if(data.mensajes == "Terminado"){
+
+                        $("#btnCerrar").show();
+
+                    }
 
                 });
 

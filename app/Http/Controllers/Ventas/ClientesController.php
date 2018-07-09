@@ -233,9 +233,14 @@ class ClientesController extends Controller{
             Log::info(" ClientesController - listado - search: ".json_encode($search));
 
             $listado = $this->clienteModel->getAll($search);
+            $empaques = $this->cat->getGroupById(13);
+
+            Log::info(" ClientesController - listado - empaques: ".count($empaques));
+
             return view('clientes.listado',
                 array(
-                    "listado" => $listado
+                    "listado"  => $listado,
+                    "empaques" => $empaques
                 ));
         } catch (\Exception $e) {
             Log::error( 'ClientesController - listado - Error'.$e->getMessage() );
@@ -267,13 +272,13 @@ class ClientesController extends Controller{
                     'p'         => 'required|numeric|max:10',
                     'tiendas'   => 'required|numeric|max:10',
                     'sku'       => 'required|numeric|max:10',
-                    'pack'      => 'required|numeric|max:10',
+                    //'pack'      => 'required|numeric|max:10',
                     'd2'        => 'required|numeric|max:10',
                     'te'        => 'required|numeric|max:10',
-                    'ce'        => 'required|numeric|max:10',
-                    'tp'        => 'required|numeric|max:10',
+                    //'ce'        => 'required|numeric|max:10',
+                    //'tp'        => 'required|numeric|max:10',
                     'promedio'  => 'required|numeric|max:10',
-                    'd'         => 'required|numeric|max:10'
+                    //'d'         => 'required|numeric|max:10'
                 ),
                 Controller::$messages
             );
@@ -282,6 +287,14 @@ class ClientesController extends Controller{
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
+
+                $te = $this->cat->getById($request->te);
+                $c5 = $this->cat->getByLabel('c5');
+                $c4 = $this->cat->getByLabel('c4');
+
+                $ce = ($request->tiendas * $request->sku) * ($te * $request->d2);
+                $tp = floor(($request->promedio/$c4)*$c5);
+
                 $data = array(
                     ClienteRepository::SQL_NOMBRE    => $request->nombre,
                     ClienteRepository::SQL_CORREO    => $request->email,
@@ -294,13 +307,13 @@ class ClientesController extends Controller{
                     ClienteRepository::SQL_P         => $request->p,
                     ClienteRepository::SQL_SHOPS     => $request->tiendas,
                     ClienteRepository::SQL_SKU       => $request->sku,
-                    ClienteRepository::SQL_PACK      => $request->pack,
+                    //ClienteRepository::SQL_PACK      => $request->pack,
                     ClienteRepository::SQL_D2        => $request->d2,
                     ClienteRepository::SQL_TE        => $request->te,
-                    ClienteRepository::SQL_CE        => $request->ce,
-                    ClienteRepository::SQL_TP        => $request->tp,
+                    ClienteRepository::SQL_CE        => $ce,
+                    ClienteRepository::SQL_TP        => $tp,
                     ClienteRepository::SQL_AVERAGE   => $request->promedio,
-                    ClienteRepository::SQL_D         => $request->d,
+                    //ClienteRepository::SQL_D         => $request->d,
                     ClienteRepository::SQL_ESTATUS   => ClienteRepository::ACTIVE
                 );
                 Log::info(" ClientesController - agregar - data: ".json_encode($data));
@@ -339,13 +352,13 @@ class ClientesController extends Controller{
                             'p'         => 'required|numeric|max:10',
                             'tiendas'   => 'required|numeric|max:10',
                             'sku'       => 'required|numeric|max:10',
-                            'pack'      => 'required|numeric|max:10',
+                            //'pack'      => 'required|numeric|max:10',
                             'd2'        => 'required|numeric|max:10',
                             'te'        => 'required|numeric|max:10',
-                            'ce'        => 'required|numeric|max:10',
-                            'tp'        => 'required|numeric|max:10',
+                            //'ce'        => 'required|numeric|max:10',
+                            //'tp'        => 'required|numeric|max:10',
                             'promedio'  => 'required|numeric|max:10',
-                            'd'         => 'required|numeric|max:10',
+                            //'d'         => 'required|numeric|max:10',
                             'estatus'   => 'required|boolean'
                         ),
                         Controller::$messages
@@ -355,6 +368,14 @@ class ClientesController extends Controller{
                         $resultado = "ERROR";
                         $mensajes = $validator->errors();
                     } else {
+
+                        $te = $this->cat->getById($request->te);
+                        $c5 = $this->cat->getByLabel('c5');
+                        $c4 = $this->cat->getByLabel('c4');
+
+                        $ce = ($request->tiendas * $request->sku) * ($te * $request->d2);
+                        $tp = floor(($request->promedio/$c4)*$c5);
+
                         $datos = array();
                         $datos[ClienteRepository::SQL_NOMBRE]    = $request->nombre;
                         $datos[ClienteRepository::SQL_CORREO]    = $request->correo;
@@ -368,13 +389,13 @@ class ClientesController extends Controller{
                         $datos[ClienteRepository::SQL_P]         = $request->p;
                         $datos[ClienteRepository::SQL_SHOPS]     = $request->tiendas;
                         $datos[ClienteRepository::SQL_SKU]       = $request->sku;
-                        $datos[ClienteRepository::SQL_PACK]      = $request->pack;
+                        //$datos[ClienteRepository::SQL_PACK]      = $request->pack;
                         $datos[ClienteRepository::SQL_D2]        = $request->d2;
                         $datos[ClienteRepository::SQL_TE]        = $request->te;
-                        $datos[ClienteRepository::SQL_CE]        = $request->ce;
-                        $datos[ClienteRepository::SQL_TP]        = $request->tp;
+                        $datos[ClienteRepository::SQL_CE]        = $ce;
+                        $datos[ClienteRepository::SQL_TP]        = $tp;
                         $datos[ClienteRepository::SQL_AVERAGE]   = $request->promedio;
-                        $datos[ClienteRepository::SQL_D]         = $request->d;
+                        //$datos[ClienteRepository::SQL_D]         = $request->d;
 
                         if(!$this->clienteModel->update( $request->get('id'), $datos)) {
                             $resultado = "ERROR";

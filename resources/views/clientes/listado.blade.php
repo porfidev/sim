@@ -67,7 +67,7 @@
                                 C&oacute;digo
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                P
+                                Prioridad
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
                                 Tiendas
@@ -76,25 +76,19 @@
                                 Sku
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Empaque
+                                Prioridad 2
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                D2
+                                Tipo de empaque
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                TE
+                                Complejidad de empaque
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                CE
-                            </th>
-                            <th scope="col" style="min-width: 150px; text-align: center;">
-                                TP
+                                Tamaño de pedido
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
                                 Promedio
-                            </th>
-                            <th scope="col" style="min-width: 150px; text-align: center;">
-                                D
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
                                 Estatus
@@ -228,15 +222,6 @@
                             <th>
                                 <input type="number"
                                         class="form-control inputFiltro"
-                                        id="formaPack"
-                                        placeholder="Empaque"
-                                    @if ( Session::has('scl_pack') && Session::get('scl_pack') != 'NA' )
-                                        value="{{ Session::get('scl_pack') }}"
-                                    @endif>
-                            </th>
-                            <th>
-                                <input type="number"
-                                        class="form-control inputFiltro"
                                         id="formaD2"
                                         placeholder="D2"
                                     @if ( Session::has('scl_d2') && Session::get('scl_d2') != 'NA' )
@@ -244,13 +229,15 @@
                                     @endif>
                             </th>
                             <th>
-                                <input type="number"
-                                        class="form-control inputFiltro"
-                                        id="formaTe"
-                                        placeholder="TE"
-                                    @if ( Session::has('scl_te') && Session::get('scl_te') != 'NA' )
-                                        value="{{ Session::get('scl_te') }}"
-                                    @endif>
+                                <input type="hidden" id="grupoSelEsp" value="{{ Session::get('scl_te') }}">
+                                <select class="form-control" id="seleccionaGrup">
+                                    <option value="0">Todos</option>
+                                    @if (count($empaques) != 0)
+                                        @foreach ($empaques as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->label }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>    
                             </th>
                             <th>
                                 <input type="number"
@@ -277,15 +264,6 @@
                                         placeholder="Promedio"
                                     @if ( Session::has('scl_average') && Session::get('scl_average') != 'NA' )
                                         value="{{ Session::get('scl_average') }}"
-                                    @endif>
-                            </th>
-                            <th>
-                                <input type="number"
-                                        class="form-control inputFiltro"
-                                        id="formaD"
-                                        placeholder="D"
-                                    @if ( Session::has('scl_d') && Session::get('scl_d') != 'NA' )
-                                        value="{{ Session::get('scl_d') }}"
                                     @endif>
                             </th>
                             <th>
@@ -367,9 +345,6 @@
                                 {{ $cli->sku }}
                             </td>
                             <td>
-                                {{ $cli->package }}
-                            </td>
-                            <td>
                                 {{ $cli->D2 }}
                             </td>
                             <td>
@@ -383,9 +358,6 @@
                             </td>
                             <td>
                                 {{ $cli->average }}
-                            </td>
-                            <td>
-                                {{ $cli->D }}
                             </td>
                             <td style="text-align: center;">
                     @if ($cli->estatus == 0)
@@ -409,13 +381,9 @@
                                         data-p="{{ $cli->P }}"
                                         data-tienda="{{ $cli->shops }}"
                                         data-sku="{{ $cli->sku }}"
-                                        data-pack="{{ $cli->package }}"
                                         data-d2="{{ $cli->D2 }}"
-                                        data-te="{{ $cli->TE }}"
-                                        data-ce="{{ $cli->CE }}"
                                         data-tp="{{ $cli->TP }}"
                                         data-promedio="{{ $cli->average }}"
-                                        data-d="{{ $cli->D }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Editar">
@@ -567,6 +535,11 @@
         $(document).ready(function () {
 
             $( '[data-toggle="tooltip"]' ).tooltip();
+
+            $( "#seleccionaGrup" ).change(function() {
+                ejecutaBusquedasFiltros();
+            });
+
             $( '#btnLimpiar' ).click(function () {
                 $( '#busquedaId'        ).val( '0'  );
                 $( '#busquedaNombre'    ).val( 'NA' );

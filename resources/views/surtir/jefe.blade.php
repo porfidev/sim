@@ -156,15 +156,16 @@
                                 {{ $ped->end }}
                             </td>
                             <td style="text-align: center;">
-                                <a class="btn btn-sm btn-info text-white"
+                                <button type="button" 
+                                    class="btn btn-sm btn-info text-white"
                                     role="button"
                                     data-toggle="popover"
                                     title="C&aacute;lculos"
-                                    data-content="P: {{ $ped->P }}
-                                                 D: {{ $ped->D }}
-                                                 V: {{ $ped->V }}">
+                                    data-content="Prioridad: {{ $ped->P }}
+                                                 Detalle: {{ $ped->D }}
+                                                 Vigencia: {{ $ped->V }}">
                                     {{ $ped->priority }}
-                                </a>
+                                </button>
                             </td>
                             <td style="text-align: center;">
 
