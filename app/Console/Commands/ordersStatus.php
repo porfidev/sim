@@ -78,16 +78,21 @@ class OrdersStatus extends Command
             $c2 = $this->cat->getByLabel('c2');
             $c3 = $this->cat->getByLabel('c3');
 
-            $validity = 0;
+            //$validity = diasFechaProgramada - Fecha hoy
 
-            if($daysValidity > $c1){
+            $validity = $daysLeft;
+
+            $distanciaEsp = $this->cat->getById($element->dist_id);
+
+            /*if($daysValidity > $c1){
                 $validity = (($daysValidity/$c2)+$daysLeft+$c3);
+
             } else if($daysValidity < $c1){
                 $validity = (($daysValidity/$c2)+$daysLeft);
-            }
+            }*/
 
             $V = 0;
-            if($validity == 1){
+            if($validity <= 1){
                 $V = 90;
             } else if($validity == 2) {
                 $V = 50;
@@ -98,7 +103,10 @@ class OrdersStatus extends Command
                 }
             }
 
-            $priority = (($idCalc->P + $V + $idCalc->D) / 2);
+            $dist = $distanciaEsp->value;
+
+            //$priority = (($idCalc->P + $V + $idCalc->D) / 2);
+            $priority = floor((($idCalc->P + $V + $idCalc->D) / 2) + $dist);
 
             $datos = array();
             $datos[CalculationRepository::SQL_V]   = $V;

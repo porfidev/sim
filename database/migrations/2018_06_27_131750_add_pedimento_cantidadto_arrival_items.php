@@ -15,7 +15,7 @@ class AddPedimentoCantidadtoArrivalItems extends Migration
     {
         Schema::table('arrival_items', function (Blueprint $table) {
             $table->string('pedimento')->after('ItemCode')->nullable(); 
-            $table->timestamp('caducidad_minima')->after('u_Caducidad')->nullable();
+            $table->dateTime('caducidad_minima')->after('u_Caducidad')->nullable();
             $table->integer('cantidad_rec')->after('quantity')->unsigned()->nullable();
 
         });

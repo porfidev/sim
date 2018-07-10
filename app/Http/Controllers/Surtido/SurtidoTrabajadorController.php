@@ -78,6 +78,7 @@ class SurtidoTrabajadorController extends Controller
      */
     public function listaAsig(Request $request) {
         $response = array();
+        $mensajes = array();
         $ordId = "";
         try {
 
@@ -91,6 +92,18 @@ class SurtidoTrabajadorController extends Controller
 
             $response = $listado->toArray();
 
+            if(ProductController::checaPedUsr($ordId,$this->ordDetModel)){
+
+                $terminado  = 1;
+
+            }else{
+
+                $terminado  = 0;
+
+            }
+
+            $mensajes = $terminado;
+
             Log::info(" array especial: ".$listado);
 
         } catch (\Exception $e) {
@@ -98,7 +111,11 @@ class SurtidoTrabajadorController extends Controller
             $response = array();
 
         }
-        return response()->json($response, 200);
+        //return response()->json($response, 200);
+        return response()->json(array(
+                Controller::JSON_RESPONSE => $response,
+                Controller::JSON_MESSAGE  => $mensajes
+                ));
     }
 
     /**
@@ -172,10 +189,10 @@ class SurtidoTrabajadorController extends Controller
 
                             if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
 
-                                $datosW = array();
+                                /*$datosW = array();
                                 $datosW[OrderRepository::SQL_ESTATUS] = 3;
 
-                                $this->orderModel->update($detalleOrder->idOrder,$datosW);
+                                $this->orderModel->update($detalleOrder->idOrder,$datosW);*/
 
                                 $cerrado = $detalleOrder->idOrder;
                                 $mensajes  = array( "Pedido surtido" );

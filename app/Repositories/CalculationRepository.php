@@ -29,4 +29,9 @@ interface CalculationRepository
 	function update($id, array $attributes);
 
 	function delete($id);
+
+	/*public static function validity(){
+
+
+	}*/
 }

@@ -46,9 +46,12 @@ class DownloadClients extends Command
     public function handle()
     {
 
-        $servername = '192.168.71.4';
-        $connectionInfo = array('Database' =>  'MARCOPOLO_PROD' , 'UID' => 'sim',
-                                'PWD' => '~Cs_z~Ww','ReturnDatesAsStrings'=>true, 'CharacterSet' => 'UTF-8');
+        $servername = env('SQL_SERVER_NAME', '');
+        $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME', '') , 
+                                'UID' => env('SQL_USER', ''),
+                                'PWD' => env('SQL_PASS', ''),
+                                'ReturnDatesAsStrings'=>true, 
+                                'CharacterSet' => 'UTF-8');
 
         $con = sqlsrv_connect($servername,$connectionInfo);
 
