@@ -238,6 +238,7 @@ class PreparacionJefeController extends Controller
                 && $request->has('usuario')) {
                 Log::info("PreparacionJefeController - asignacionPorItem: ".$request->id." - ".$request->usuario);
                 $designList = $this->orderModel->getDesignsByDetail($request->id);
+                DB::beginTransaction();
                 foreach ($designList as $item) {
                     $data = array(
                         AssignmentRepository::SQL_ORDID         => $item->order_id,
@@ -248,11 +249,13 @@ class PreparacionJefeController extends Controller
                     Log::info(" PreparacionJefeController - asignacionPorItem - data: ".json_encode($data));
                     $this->assigmentModel->create($data);
                 }
+                DB::commit();
             } else {
                 $mensajes = array("No se tienen los datos necesarios para realizar la asignación de tareas");
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - asignacionPorItem - Error: '.$e->getMessage() );
+            Log::error( 'PreparacionJefeController - asignacionPorItem - Exception: '.$e->getMessage() );
+            DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
@@ -299,7 +302,7 @@ class PreparacionJefeController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 array(
-                    'caja' => 'required|string|exists:box_ids,id',
+                    'caja' => 'required|string|exists:box_ids,label',
                 ),
                 Controller::$messages
             );
@@ -307,22 +310,29 @@ class PreparacionJefeController extends Controller
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
-                $datos = $this->orderModel->getDesignListByBox($request->caja);
-                $data  = null;
-                if(count($datos) > 0){
-                    $data = $this->orderModel->getMaxMin($datos[0]->order_id);
-                    Log::info("PreparacionJefeController - obtenerInformacion - min: ".$data->min." max: ".$data->max);
-                }
-                foreach ($datos as $item) {
-                    Log::info("PreparacionJefeController - obtenerInformacion: \n".json_encode($item));
-                    if(isset($data)) {
-                        $item->min = $data->min;
-                        $item->max = $data->max;
+                $box = $this->boxModel->getBoxByLabel($request->caja);
+                Log::info("PreparacionJefeController - obtenerInformacion - caja: ".json_encode($box));
+                if( !empty($box) ) {
+                    $datos = $this->orderModel->getDesignListByBox($box->id);
+                    $data  = null;
+                    if(count($datos) > 0){
+                        $data = $this->orderModel->getMaxMin($datos[0]->order_id);
+                        Log::info("PreparacionJefeController - obtenerInformacion - min: ".$data->min." max: ".$data->max);
                     }
-                    if(isset($item->orderDetail)) {
-                        Log::info("PreparacionJefeController - obtenerInformacion - Obtenemos producto: \n".json_encode($item->orderDetail));
-                        $item->orderDetail->product;
+                    foreach ($datos as $item) {
+                        Log::info("PreparacionJefeController - obtenerInformacion: \n".json_encode($item));
+                        if(isset($data)) {
+                            $item->min = $data->min;
+                            $item->max = $data->max;
+                        }
+                        if(isset($item->orderDetail)) {
+                            Log::info("PreparacionJefeController - obtenerInformacion - Obtenemos producto: \n".json_encode($item->orderDetail));
+                            $item->orderDetail->product;
+                        }
                     }
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se encotró caja" );
                 }
             }
         } catch (\Exception $e) {
@@ -338,6 +348,18 @@ class PreparacionJefeController extends Controller
         ));
     }
 
+    public static function isFinish($order){
+        $ans = 0;
+        $details = $order->details;
+        foreach ($details as $detail) {
+            if($detail->quantity != $detail->quantity_op_boss){
+                $ans += 1;
+                break;
+            }
+        }
+        return $ans;
+    }
+
     /**
      * Mostramos el listado de productos a ser validados por un jefe
      * en preparación de pedidos
@@ -350,10 +372,11 @@ class PreparacionJefeController extends Controller
         try {
             $order = $this->orderModel->getById($order_id);
             if(!empty($order)) {
+                $terminado = self::isFinish($order);
                 return view('preparacion.validacion',
                     array(
                         "order"     => $order,
-                        "terminado" => 0,
+                        "terminado" => $terminado,
                         "listado"   => $order->details()->with('product')->get()
                     )
                 );
@@ -372,6 +395,47 @@ class PreparacionJefeController extends Controller
                 )
             );
         }
+    }
+
+    /**
+     * Agrega a la cuenta del jefe de preparación lo que hay
+     * en una caja para terminar de validar el pedido.
+     *
+     * @return json
+     */
+    public function agregarCaja(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - agregarCaja");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'pedido' => 'required|string|exists:orders,id',
+                    'caja'   => 'required|string|exists:box_ids,label'
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes = $validator->errors();
+            } else {
+                DB::beginTransaction();
+
+                DB::commit();
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - agregarCaja - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - agregarCaja - Trace: \n".$e->getTraceAsString() );
+            DB::rollback();
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 
     /**
@@ -415,6 +479,7 @@ class PreparacionJefeController extends Controller
         } catch (\Exception $e) {
             Log::error( "PreparacionJefeController - valida - Exception: ".$e->getMessage() );
             Log::error( "PreparacionJefeController - valida - Trace: \n".$e->getTraceAsString() );
+            DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }

@@ -186,11 +186,20 @@ class PreparacionTrabajadorController extends Controller
                         )
                     );
                 }
-                
+                $missings = $this->assigmentModel->getMissings($order->id);
+                Log::info("PreparacionTrabajadorController - terminarTarea - faltan: ".count($missings));
+                if(count($missings) == 0) {
+                    $this->orderModel->update(
+                        $order->id,
+                        array(
+                            OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_POR_V
+                        )
+                    );
+                }
                 DB::commit();
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionTrabajadorController - terminarTarea - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - terminarTarea - Exception: ".$e->getMessage() );
             Log::error( "PreparacionTrabajadorController - terminarTarea - Trace: \n".$e->getTraceAsString() );
             DB::rollback();
             $resultado = "ERROR";

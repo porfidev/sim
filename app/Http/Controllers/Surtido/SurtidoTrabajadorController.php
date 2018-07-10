@@ -58,7 +58,6 @@ class SurtidoTrabajadorController extends Controller
 
             return view('surtir.pedidosUsuario',
                 array(
-
                     "listado" => $listado
                 ));
 
@@ -112,10 +111,12 @@ class SurtidoTrabajadorController extends Controller
 
         }
         //return response()->json($response, 200);
-        return response()->json(array(
+        return response()->json(
+            array(
                 Controller::JSON_RESPONSE => $response,
                 Controller::JSON_MESSAGE  => $mensajes
-                ));
+            )
+        );
     }
 
     /**
@@ -140,15 +141,15 @@ class SurtidoTrabajadorController extends Controller
 
             $modPed = $this->orderModel->getById($detalleOrder->idOrder);
 
-            if($modPed->status < 3){
+            if($modPed->status < OrderRepository::SURTIDO_POR_V){
 
                 $codigo = $request->get('cod');
                 $cantU = intval($request->get('cantU'));
                 $cantT = intval($request->get('cant'));
 
-                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel); 
+                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel);
 
-                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );                   
+                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );
 
                 if($resp[0] != -1) {
 
@@ -189,13 +190,8 @@ class SurtidoTrabajadorController extends Controller
 
                             if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
 
-<<<<<<< HEAD
                                 /*$datosW = array();
-                                $datosW[OrderRepository::SQL_ESTATUS] = 3;
-=======
-                                $datosW = array();
                                 $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
->>>>>>> 64fee531fcd609902cd877aba875f80aa034d51c
 
                                 $this->orderModel->update($detalleOrder->idOrder,$datosW);*/
 
@@ -241,7 +237,7 @@ class SurtidoTrabajadorController extends Controller
             $idPed = $request->get('id');
 
             $datosW = array();
-            $datosW[OrderRepository::SQL_ESTATUS] = 3;
+            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
 
             if(!$this->orderModel->update($idPed,$datosW)) {
 

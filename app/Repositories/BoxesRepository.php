@@ -24,6 +24,8 @@ interface BoxesRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getBoxByLabel($label);
+
 	function findBoxId($id);
 
 	function createBoxId(array $attributes);

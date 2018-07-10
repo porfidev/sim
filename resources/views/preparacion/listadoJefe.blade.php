@@ -201,6 +201,12 @@
                                     </button>
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
                                     <a href="{{ route('preparacion.mostrarValidacion', [ 'order_id' => $pedido->id ]) }}"
+                                        class="btn btn-sm btn-success"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Validar Pedido">
+                                        <i class="material-icons">done_all</i>
+                                    </a>
                             @endif
                                 </td>
                             </tr>

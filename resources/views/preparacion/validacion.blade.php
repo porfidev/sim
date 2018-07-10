@@ -3,12 +3,13 @@
 @section('content')
     <br>
     <h2 class="mt-2" style="text-align: center;">
-        <button class="btn btn-sm btn-secondary atrasPed"
+        <a href="{{ route('preparacion.listado') }}"
+                class="btn btn-sm btn-secondary"
                 data-toggle="tooltip"
                 data-placement="top"
                 title="Regresar">
             <i class="material-icons">reply</i>
-        </button>
+        </a>
 
         Pedido: #{{ $order->codeOrder }}
 
@@ -26,10 +27,8 @@
         <br><br>
         <div class="form-group">
             <input class="codigines form-control"
-                onkeypress="return runScript(
-                event,
-                {{ $order->id }})"
-                id="cod{{ $order->id }}">
+                data-id="{{ $order->id }}"
+                placeholder="Identificador de la caja">
         </div>
     @endif
     </h2>
