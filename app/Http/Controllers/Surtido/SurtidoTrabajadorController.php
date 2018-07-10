@@ -170,7 +170,7 @@ class SurtidoTrabajadorController extends Controller
                             $resultado = $cantidadTot;
 
                             $datosE = array();
-                            $datosE[OrderRepository::SQL_ESTATUS] = 2;
+                            $datosE[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_PROCESO;
 
                             $this->orderModel->update($detalleOrder->idOrder,$datosE);
 
@@ -189,8 +189,13 @@ class SurtidoTrabajadorController extends Controller
 
                             if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
 
+<<<<<<< HEAD
                                 /*$datosW = array();
                                 $datosW[OrderRepository::SQL_ESTATUS] = 3;
+=======
+                                $datosW = array();
+                                $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
+>>>>>>> 64fee531fcd609902cd877aba875f80aa034d51c
 
                                 $this->orderModel->update($detalleOrder->idOrder,$datosW);*/
 
@@ -206,7 +211,7 @@ class SurtidoTrabajadorController extends Controller
                 } else {
                         $resultado = "ERROR";
                         $mensajes  = array( "Codigo incorrecto" );
-                    }
+                }
 
             } else {
                 $resultado = "ERROR";

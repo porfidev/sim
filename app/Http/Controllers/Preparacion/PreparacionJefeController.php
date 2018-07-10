@@ -270,10 +270,10 @@ class PreparacionJefeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function mostrarValidacion(Request $request)
+    public function mostrarInformacion(Request $request)
     {
         try {
-            return view('preparacion.validacion');
+            return view('preparacion.informacion');
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - mostrarValidacion - Exception: '.$e->getMessage() );
             Log::error( "PreparacionJefeController - mostrarValidacion - Trace: \n".$e->getTraceAsString() );
@@ -311,8 +311,17 @@ class PreparacionJefeController extends Controller
                 $mensajes = $validator->errors();
             } else {
                 $datos = $this->orderModel->getDesignListByBox($request->caja);
+                $data  = null;
+                if(count($datos) > 0){
+                    $data = $this->orderModel->getMaxMin($datos[0]->order_id);
+                    Log::info("PreparacionJefeController - obtenerInformacion - min: ".$data->min." max: ".$data->max);
+                }
                 foreach ($datos as $item) {
                     Log::info("PreparacionJefeController - obtenerInformacion: \n".json_encode($item));
+                    if(isset($data)) {
+                        $item->min = $data->min;
+                        $item->max = $data->max;
+                    }
                     if(isset($item->orderDetail)) {
                         Log::info("PreparacionJefeController - obtenerInformacion - Obtenemos producto: \n".json_encode($item->orderDetail));
                         $item->orderDetail->product;

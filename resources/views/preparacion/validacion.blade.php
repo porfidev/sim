@@ -1,188 +1,110 @@
 @extends('layouts.sim')
 
 @section('content')
-@if(Session::has('errores'))
-    <div class="alert alert-danger alert-dismissible fade show mt-3 mb-2"
-        role="alert">
-        <button type="button"
-            class="close"
-            data-dismiss="alert"
-            aria-label="Cerrar">
-            <span aria-hidden="true">&times;</span>
+    <br>
+    <h2 class="mt-2" style="text-align: center;">
+        <button class="btn btn-sm btn-secondary atrasPed"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Regresar">
+            <i class="material-icons">reply</i>
         </button>
-        {{ Session::get('errores') }}
-    </div>
-@endif
-    <div id="erroresValidacion" class="mt-3"></div>
 
-    <div class="card mb-3">
-        <div class="card-body pl-0 pr-0 pb-0 pt-0">
-            <div class="table-responsive">
-                <table class="table table-striped mb-0">
-                    <tbody>
-                        <tr>
-                            <td style="text-align: center;"
-                                class="table-primary">
-                                <h5>
-                                    Consulta de informaci&oacute;n
-                                </h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="input-group mb-3">
-                                    <input type="text"
-                                        class="form-control"
-                                        id="searchBox">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary"
-                                            type="button"
-                                            id="searchBoxBtn">
-                                            <i class="material-icons">search</i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        Pedido: #{{ $order->codeOrder }}
+
+    @if($order->status <  \App\Repositories\OrderRepository::PREPARADO_VALIDADO )
+        @if($terminado == 0)
+        <button class="btn btn-sm btn-success validaPedido"
+                data-toggle="tooltip"
+                data-placement="top"
+                data-id="{{ $order->id }}"
+                id="btnCerrar"
+                title="Validar pedido">
+            <i class="material-icons">offline_pin</i>
+        </button>
+        @endif
+        <br><br>
+        <div class="form-group">
+            <input class="codigines form-control"
+                onkeypress="return runScript(
+                event,
+                {{ $order->id }})"
+                id="cod{{ $order->id }}">
         </div>
-    </div>
+    @endif
+    </h2>
 
-    <div class="card mb-3">
+    <br>
+    <div class="card">
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
             <div class="table-responsive">
-                <table class="table table-striped mb-0">
-                    <tbody id="searchResults">
+                <table class="table table-striped">
+                    <tbody>
+            @foreach ($listado as $ped)
                         <tr>
                             <td style="text-align: center;">
-                                Sin informaci&oacute;n
+                                @if( !empty($ped->nom ))
+                                   {{ $ped->itemcode }} - {{ $ped->nom }}
+                                @else
+                                   {{ $ped->itemcode }} - {{ $ped->con }}
+                                @endif
                             </td>
                         </tr>
+                        <?php $cantU = 0; $cantT = 0; $cantB =0; $uni = "" ?>
+                        @if( $ped->pres_req == "BOX")
+                            <?php $uni = "cajas"; ?>
+                        @elseif ($ped->pres_req == "DSP")
+                            <?php $uni = "displays"; ?>
+                        @else
+                            <?php $uni = "piezas"; ?>
+                        @endif
+
+                        @if (!empty($ped->quantity))
+                            @if( $ped->pres_req == "BOX")
+                                <?php $cantT = ($ped->quantity / $ped->itemsDisp) / $ped->dispBox; ?>
+                            @elseif ($ped->pres_req == "DSP")
+                                <?php $cantT = ($ped->quantity / $ped->itemsDisp); ?>
+                            @else
+                                <?php $cantT = $ped->quantity; ?>
+                            @endif
+                        @endif
+                         <tr>
+                            <td style="text-align: center;">
+                        @if ( !empty($ped->quantity_boss))
+                            @if( $ped->pres_req == "BOX")
+                                <?php $cantB = ($ped->quantity_boss / $ped->itemsDisp) / $ped->dispBox; ?>
+                            @elseif ($ped->pres_req == "DSP")
+                                <?php $cantB = ($ped->quantity_boss / $ped->itemsDisp); ?>
+                            @else
+                                <?php $cantB = $ped->quantity_boss; ?>
+                            @endif
+                        @endif
+                                <input type="hidden" id="cantU{{ $ped->id }}" value="
+                                @if (empty($cantB))
+                                    0
+                                @else
+                                    {{ $cantB }}
+                                @endif">
+                                <span id='canti{{ $ped->id }}'>
+                                @if ( empty($cantB))
+                                    0
+                                @else
+                                    {{ $cantB }}
+                                @endif
+                                </span> / {{ $cantT }} {{ $uni }}
+                            </td>
+                        </tr>
+            @endforeach
+            @if (count($listado) === 0)
+                        <tr style="text-align: center;">
+                            <td>
+                                No hay detalles que mostrar
+                            </td>
+                        </tr>
+            @endif
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-@endsection
-
-@section('final')
-    @include('partials.modalComun')
-    @include('partials.modalMensaje')
-    @include('partials.modalConfirmacion')
-
-    <script type="text/javascript">
-        function obtenerFila(item){
-            var row = "<tr>";
-            row += "<td width=\"80%\">";
-            row += (item.order_detail.product.sku
-                + " - " + item.order_detail.product.concept);
-            row += "</td>";
-            row += "<td width=\"20%\">";
-            row += (item.quantity);
-            row += "</td>";
-            row += "</tr>";
-            return row;
-        }
-        function buscaInformacion(caja) {
-            $( '#overlay' ).show();
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type     : 'POST',
-                url      : "{{ route('preparacion.obtenerInformacion') }}",
-                dataType : 'json',
-                data     : {
-                    caja : caja
-                }
-            }).done(function (data) {
-                if(data.resultado === 'OK') {
-                    $( "#searchResults tr" ).remove();
-                    if(data.datos.length > 0){
-                        item = data.datos[0];
-                        var row = "<tr>";
-                        row += "<td class=\"table-primary\" colspan=2 style=\"text-align: center;\">";
-                        row += ("<div class=\"row\"><div class=\"col\">Pedido: #" + item.order.codeOrder + "</div>");
-                        row += ("<div class=\"col\"><button class=\"btn btn-sm btn-success validaPedido\"");
-                        row += ("data-toggle=\"tooltip\" data-placement=\"top\" data-id=\"" + item.order_id + "\"");
-                        row += "title=\"Validar Pedido\"><i class=\"material-icons\">offline_pin</i></button></div>";
-                        row += "</td>";
-                        row += "</tr>";
-                        $( "#searchResults" ).append(row);
-                        for (var index = 0; index < data.datos.length; index++) {
-                            $( "#searchResults" ).append(obtenerFila(data.datos[index]));
-                        }
-                    } else {
-                        var row = "<tr>";
-                        row += "<td style=\"text-align: center;\">";
-                        row += "Sin informaci&oacute;n";
-                        row += "</td>";
-                        row += "</tr>";
-                    }
-                    $( '[data-toggle="tooltip"]' ).tooltip();
-                } else {
-                    var errorMsg = "Error al obtner información de la caja. \n";
-                    $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
-                    alert(errorMsg);
-                }
-            }).fail(function (jqXHR, textStatus) {
-                errorDetalle = "";
-                // If req debug show errorDetalle
-                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
-                alert("Error al llamar el servicio para obtener información de la caja." );
-            }).always(function() {
-                $( '#overlay' ).hide();
-            });
-        }
-        $(document).ready(function () {
-            $( "#searchBoxBtn" ).click(function () {
-                var id = $( "#searchBox" ).val()
-                if(id.length > 0){
-                    buscaInformacion(id);
-                }
-            });
-
-            $( '#searchBox' ).keyup(function(e){
-                if(e.keyCode == 13) {
-                    var id = $( "#searchBox" ).val()
-                    if(id.length > 0){
-                        buscaInformacion(id);
-                    }
-                }
-            });
-
-            $(document.body).on('click', '.validaPedido', function (){
-                $( '#overlay' ).show();
-                var pedido = $(this).attr("data-id");
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type     : 'POST',
-                    url      : "{{ route('preparacion.validar') }}",
-                    dataType : 'json',
-                    data     : {
-                        pedido : pedido
-                    }
-                }).done(function (data) {
-                    if(data.resultado === 'OK') {
-                        alert('Se ha validado el pedido');
-                    } else {
-                        var errorMsg = "Error al validar el pedido. \n";
-                        $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
-                        alert(errorMsg);
-                    }
-                }).fail(function (jqXHR, textStatus) {
-                    errorDetalle = "";
-                    // If req debug show errorDetalle
-                    $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
-                    alert("Error al llamar el servicio para validar el pedido." );
-                }).always(function() {
-                    $( '#overlay' ).hide();
-                });
-            });
-        });
-    </script>
 @endsection

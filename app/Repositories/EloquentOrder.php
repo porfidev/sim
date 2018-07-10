@@ -43,6 +43,24 @@ class EloquentOrder implements OrderRepository
     }
 
 	/**
+	 * Obtener los mínimos y máximos de los id`s un pedido
+	 * esto para saber que número de caja es
+	 *
+	 * @param integer $order_id
+	 * @return Object
+	 */
+	public function getMaxMin($order_id){
+		return $this->design->select(
+				"order_id",
+				DB::raw("MAX(id) as max"),
+				DB::raw("MIN(id) as min")
+			)
+			->where(self::DESIGN_ORDER, '=', $order_id)
+			->groupBy("order_id")
+			->first();
+	}
+
+	/**
 	 * Función para traer la lista de elemtos registrados en una caja
 	 *
 	 * @param integer $box_id

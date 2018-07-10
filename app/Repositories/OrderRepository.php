@@ -73,6 +73,8 @@ interface OrderRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getMaxMin($order_id);
+
 	function getDesignListByBox($box_id);
 
 	function createDesign(array $attributes);

@@ -1,8 +1,6 @@
 @extends('layouts.sim')
 
 @section('content')
-
-<meta name="csrf-token" content="{{ csrf_token() }}">
     <br>
     <h2 class="mt-2" style="text-align: center;">
         <button class="btn btn-sm btn-secondary atrasPed"
@@ -14,7 +12,7 @@
 
         Pedido: #{{ $cod }}
 
-        @if($statusPed < 4)
+        @if($statusPed < \App\Repositories\OrderRepository::SURTIDO_VALIDO)
         <button class="btn btn-sm btn-success cierraPed"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -30,8 +28,9 @@
             <input class="codigines form-control"
                 onkeypress="return runScript(
                 event,
-            {{ $idP }})"
-            id="cod{{ $idP }}">
+                {{ $idP }})"
+                id="cod{{ $idP }}"
+                placeholder="C&oacute;digo de barras">
         </div>
 
         @endif
