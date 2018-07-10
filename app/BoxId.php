@@ -12,6 +12,6 @@ class BoxId extends Model
      * @var array
      */
     protected $fillable = [
-        'box_type_id', 'status'
+        'box_type_id', 'status', 'label'
     ];
 }

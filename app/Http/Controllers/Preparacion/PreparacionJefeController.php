@@ -263,10 +263,7 @@ class PreparacionJefeController extends Controller
     }
 
     /**
-     * Se muestra la pantalla para validación de un pedido.
      * Se puede consultar el contenido de una caja y su estado.
-     * Al concluir la revisión de las cajas se debe realizar la
-     * acción de validación
      *
      * @return \Illuminate\Http\Response
      */
@@ -339,6 +336,42 @@ class PreparacionJefeController extends Controller
             Controller::JSON_MESSAGE  => $mensajes,
             Controller::JSON_DATA     => $datos
         ));
+    }
+
+    /**
+     * Mostramos el listado de productos a ser validados por un jefe
+     * en preparación de pedidos
+     *
+     * @param integer $order_id
+     * @return View
+     */
+    public function mostrarValidacion(Request $request, $order_id)
+    {
+        try {
+            $order = $this->orderModel->getById($order_id);
+            if(!empty($order)) {
+                return view('preparacion.validacion',
+                    array(
+                        "order"     => $order,
+                        "terminado" => 0,
+                        "listado"   => $order->details()->with('product')->get()
+                    )
+                );
+            } else {
+                Log::error("PreparacionJefeController - mostrarValidacion - No se encontró orden: $order_id");
+                return redirect()->route('preparacion.listado');
+            }
+
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - mostrarValidacion - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - mostrarValidacion - Trace: \n".$e->getTraceAsString() );
+            return view('error',
+                array(
+                    "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
+                    "titulo" => "Error inesperado"
+                )
+            );
+        }
     }
 
     /**

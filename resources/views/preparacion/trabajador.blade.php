@@ -31,7 +31,7 @@
                                     </div>
                                     <div class="col"
                                         id="finishBtn_{{ $pedido->id }}"
-                            @if( !isset($pedido->box_id) )
+                            @if( !isset($pedido->label) )
                                         style="display: none;"
                             @endif>
                                         <button class="btn btn-sm btn-success terminaTarea"
@@ -57,8 +57,8 @@
                                     placeholder="Registro de identificador de caja"
                                     data-find="{{ $pedido->id }}"
                                     data-id="{{ $pedido->order_design_id }}"
-                                @isset($pedido->box_id)
-                                    value="{{ $pedido->box_id }}"
+                                @isset($pedido->label)
+                                    value="{{ $pedido->label }}"
                                 @endisset>
                             </td>
                         </tr>

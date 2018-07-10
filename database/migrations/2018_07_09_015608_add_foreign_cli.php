@@ -15,15 +15,12 @@ class AddForeignCli extends Migration
     {
 
         Schema::table('clients', function (Blueprint $table) {
-
             $table->dropColumn('D');
             $table->dropColumn('TE');
             $table->dropColumn('package');
-
         });
 
         Schema::table('clients', function (Blueprint $table) {
-            
             $table->integer('TE')->unsigned()->after('average')->nullable();
             $table->foreign('TE')->references('id')->on('catalogs');
         });

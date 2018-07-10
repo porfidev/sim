@@ -160,25 +160,15 @@
                                 <td class="col-2">
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
                                     Recibido en Preparaci&oacute;n
-                            @endif
-
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
                                     Por validar Dise&ntilde;o
-                            @endif
-
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
                                     En espera de Preparaci&oacute;n
-                            @endif
-
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
                                     En proceso de Preparaci&oacute;n
-                            @endif
-
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
                                     Por validar Preparaci&oacute;n
-                            @endif
-
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_VALIDADO)
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_VALIDADO)
                                     Validado
                             @endif
                                 </td>
@@ -201,6 +191,7 @@
                                      </a>
                                 </td>
                                 <td class="col-1" style="text-align: center;">
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
                                     <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
@@ -208,6 +199,9 @@
                                             title="Asignar personal">
                                         <i class="material-icons">person_add</i>
                                     </button>
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
+                                    <a href="{{ route('preparacion.mostrarValidacion', [ 'order_id' => $pedido->id ]) }}"
+                            @endif
                                 </td>
                             </tr>
                     @endforeach

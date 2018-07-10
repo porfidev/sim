@@ -22,8 +22,19 @@ class Order extends Model
         return $this->hasOne('App\Calculation');
     }
 
+    /**
+     * Get the client of the order
+     */
     public function client()
     {
         return $this->belongsTo('App\Cliente', 'code', 'code');
+    }
+
+    /**
+     * Get the details for the order.
+     */
+    public function details()
+    {
+        return $this->hasMany('App\OrderDetail', 'idOrder', 'id');
     }
 }

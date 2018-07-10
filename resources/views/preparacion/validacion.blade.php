@@ -43,10 +43,14 @@
             @foreach ($listado as $ped)
                         <tr>
                             <td style="text-align: center;">
-                                @if( !empty($ped->nom ))
-                                   {{ $ped->itemcode }} - {{ $ped->nom }}
+                                @if( isset($ped->product)
+                                    && !empty($ped->product->concept ))
+                                    {{ $ped->itemcode }} - {{ $ped->product->concept }}
+                                @elseif(isset($ped->product)
+                                    && !empty($ped->product->alias ))
+                                    {{ $ped->itemcode }} - {{ $ped->product->alias }}
                                 @else
-                                   {{ $ped->itemcode }} - {{ $ped->con }}
+                                    {{ $ped->itemcode }}
                                 @endif
                             </td>
                         </tr>
@@ -61,22 +65,22 @@
 
                         @if (!empty($ped->quantity))
                             @if( $ped->pres_req == "BOX")
-                                <?php $cantT = ($ped->quantity / $ped->itemsDisp) / $ped->dispBox; ?>
+                                <?php $cantT = ($ped->quantity / $ped->product->items_per_display) / $ped->product->display_per_box; ?>
                             @elseif ($ped->pres_req == "DSP")
-                                <?php $cantT = ($ped->quantity / $ped->itemsDisp); ?>
+                                <?php $cantT = ($ped->quantity / $ped->product->items_per_display); ?>
                             @else
                                 <?php $cantT = $ped->quantity; ?>
                             @endif
                         @endif
                          <tr>
                             <td style="text-align: center;">
-                        @if ( !empty($ped->quantity_boss))
+                        @if ( !empty($ped->quantity_op_boss))
                             @if( $ped->pres_req == "BOX")
-                                <?php $cantB = ($ped->quantity_boss / $ped->itemsDisp) / $ped->dispBox; ?>
+                                <?php $cantB = ($ped->quantity_op_boss / $ped->product->items_per_display) / $ped->product->display_per_box; ?>
                             @elseif ($ped->pres_req == "DSP")
-                                <?php $cantB = ($ped->quantity_boss / $ped->itemsDisp); ?>
+                                <?php $cantB = ($ped->quantity_op_boss / $ped->product->items_per_display); ?>
                             @else
-                                <?php $cantB = $ped->quantity_boss; ?>
+                                <?php $cantB = $ped->quantity_op_boss; ?>
                             @endif
                         @endif
                                 <input type="hidden" id="cantU{{ $ped->id }}" value="

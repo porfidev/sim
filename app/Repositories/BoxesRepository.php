@@ -19,6 +19,7 @@ interface BoxesRepository
 
 	const SQL_BOX_ID_TYPE   = "box_type_id";
 	const SQL_BOX_ID_STATUS = "status";
+	const SQL_BOX_ID_LABEL  = "label";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;

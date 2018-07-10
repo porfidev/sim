@@ -25,6 +25,8 @@ class Controller extends BaseController
 		'password.min'       => 'El campo contraseña debe tener como mínimo :min caracteres',
 		'confirmed'          => 'La confirmación del campo :attribute no coincide.',
 		'password.confirmed' => 'La confirmación de la contraseña no coincide.',
-		'exists'             => 'El valor del campo :attribute, no es válido'
+		'exists'             => 'El valor del campo :attribute, no es válido',
+		'caja.unique'        => 'La caja ya ha sido registrada',
+		'unique'             => 'El campo :attribute, ya ha sido utilizado.',
 	);
 }
