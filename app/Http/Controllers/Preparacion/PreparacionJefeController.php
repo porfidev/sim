@@ -419,10 +419,19 @@ class PreparacionJefeController extends Controller
             );
             if ($validator->fails()) {
                 $resultado = "ERROR";
-                $mensajes = $validator->errors();
+                $mensajes  = $validator->errors();
             } else {
                 DB::beginTransaction();
-
+                $box = $this->boxModel->getBoxByLabel($request->caja);
+                if( !empty($box) ){
+                    $designs = $box->orderDesigns();
+                    if(count($designs) > 0) {
+                        Log::info("PreparacionJefeController - agregarCaja: ".json_encode($designs[0]));
+                    }
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array("No se encontró caja");
+                }
                 DB::commit();
             }
         } catch (\Exception $e) {

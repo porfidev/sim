@@ -26,7 +26,7 @@
         @endif
         <br><br>
         <div class="form-group">
-            <input class="codigines form-control"
+            <input class="form-control addBoxEvent"
                 data-id="{{ $order->id }}"
                 placeholder="Identificador de la caja">
         </div>
@@ -110,4 +110,25 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('final')
+<script type="text/javascript">
+    function registraCaja(orden, caja){
+
+    }
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $( '.addBoxEvent' ).keyup(function(e){
+                if(e.keyCode == 13) {
+                    registraCaja(
+                        $(this).attr('data-id'),
+                        $(this).val()
+                    );
+                }
+            }
+        );
+    });
+</script>
 @endsection

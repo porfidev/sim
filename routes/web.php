@@ -108,6 +108,7 @@ Route::post('/preparacion/asignacionDetalle',  '\App\Http\Controllers\Preparacio
 Route::post('/preparacion/obtenerInformacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@obtenerInformacion' )->name('preparacion.obtenerInformacion');
 Route::post('/preparacion/validar',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@valida'             )->name('preparacion.validar');
 Route::get('/preparacion/mostrarValidacion/{order_id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarValidacion'  )->name('preparacion.mostrarValidacion');
+Route::post('/preparacion/agregar/caja', '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarCaja' )->name('preparacion.agregar.caja');
 
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );
