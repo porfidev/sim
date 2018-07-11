@@ -115,7 +115,34 @@
 @section('final')
 <script type="text/javascript">
     function registraCaja(orden, caja){
-
+        $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.agregar.caja') }}",
+                dataType : 'json',
+                data     : {
+                    pedido : orden,
+                    caja   : caja
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    location.reload();
+                } else {
+                    var errorMsg = "Error al terminar la tarea. \n";
+                    $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
+                    alert(errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                alert("Error al llamar el servicio para terminar la tarea." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });
     }
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();

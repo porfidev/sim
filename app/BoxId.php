@@ -20,6 +20,6 @@ class BoxId extends Model
      */
     public function orderDesigns()
     {
-        return $this->hasMany('App\OrderDesign');
+        return $this->hasMany('App\OrderDesign', 'box_id');
     }
 }

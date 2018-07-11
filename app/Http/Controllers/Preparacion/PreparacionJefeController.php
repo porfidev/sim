@@ -424,9 +424,44 @@ class PreparacionJefeController extends Controller
                 DB::beginTransaction();
                 $box = $this->boxModel->getBoxByLabel($request->caja);
                 if( !empty($box) ){
-                    $designs = $box->orderDesigns();
+                    $designs = $box->orderDesigns;
+                    Log::info("PreparacionJefeController - agregarCaja - count: ".count($designs));
                     if(count($designs) > 0) {
                         Log::info("PreparacionJefeController - agregarCaja: ".json_encode($designs[0]));
+                        Log::info("PreparacionJefeController - agregarCaja - pedido: ".$request->pedido);
+                        if($request->pedido == $designs[0]->order_id){
+                            if($box->status == BoxesRepository::BOX_ASSIGN) {
+                                // Cambiamos el estado de la caja para saber que ya fue validada
+                                $this->boxModel->updateBoxId(
+                                    $box->id,
+                                    array(
+                                        BoxesRepository::SQL_BOX_ID_STATUS => BoxesRepository::BOX_VALID
+                                    )
+                                );
+                                // Registramos lo que esta en la caja
+                                $datos = $this->orderModel->getDesignListByBox($box->id);
+                                foreach ($datos as $item) {
+                                    $detail = $this->orderDetailModel->getById($item->order_detail_id);
+                                    $quantity = 0;
+                                    if(!empty($detail->quantity_op_boss)){
+                                        $quantity = $detail->quantity_op_boss;
+                                    }
+                                    $this->orderDetailModel->update(
+                                        $item->order_detail_id,
+                                        array(
+                                            OrderDetailRepository::SQL_CANTIDAD_OPB
+                                                => ($quantity + $item->quantity)
+                                        )
+                                    );
+                                }
+                            } else {
+                                $resultado = "ERROR";
+                                $mensajes  = array("La caja ya ha sido validada");
+                            }
+                        } else {
+                            $resultado = "ERROR";
+                            $mensajes  = array("La caja no corresponde al pedido");
+                        }
                     }
                 } else {
                     $resultado = "ERROR";

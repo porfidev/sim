@@ -8,6 +8,7 @@ interface BoxesRepository
 	const BOX_CREATED = 0;
 	const BOX_CONFIRM = 1;
 	const BOX_ASSIGN  = 2;
+	const BOX_VALID   = 3;
 
 	const ORIGIN_BOX = "Caja Origen";
 

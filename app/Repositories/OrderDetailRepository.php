@@ -12,6 +12,7 @@ interface OrderDetailRepository
 	const SQL_PRES_REQ    = "pres_req";
 	const SQL_CANTIDAD_U  = "quantity_user";
 	const SQL_CANTIDAD_B  = "quantity_boss";
+	const SQL_CANTIDAD_OPB= "quantity_op_boss";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
