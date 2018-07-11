@@ -179,6 +179,18 @@ class EloquentOrder implements OrderRepository
 		return $this->model->find($id);
     }
 
+    /**
+	 * Get Catalogo by numat.
+	 *
+	 * @param integer $id
+	 *
+	 * @return App\Order
+	 */
+	public function getByNumat($numat)
+	{
+		return $this->model->where($this::SQL_NUMAT,"=",$numat)->get()->first();
+    }
+
 	/**
 	 * Función que obtiene la primer orden por código
 	 *
