@@ -109,7 +109,7 @@ class PreparacionTrabajadorController extends Controller
                 $request->all(),
                 array(
                     'id'     => 'required|string|exists:order_designs,id',
-                    'caja'   => 'required|string|exists:box_ids,id',
+                    'caja'   => 'required|string|unique:box_ids,label',
                 ),
                 Controller::$messages
             );
@@ -118,29 +118,21 @@ class PreparacionTrabajadorController extends Controller
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
-                $box = $this->boxModel->findBoxId($request->caja);
-                Log::info("PreparacionTrabajadorController - asignaCaja - caja: ".$box->status);
-                if( intval($box->status) < BoxesRepository::BOX_ASSIGN ) {
-                    Log::info("PreparacionTrabajadorController - asignaCaja - Cambio de estatus");
-                    DB::beginTransaction();
-                    $this->boxModel->updateBoxId(
-                        $request->caja,
-                        array(
-                            BoxesRepository::SQL_BOX_ID_STATUS => BoxesRepository::BOX_ASSIGN
-                        )
-                    );
-                    $this->orderModel->updateDesign(
-                        $request->id,
-                        array(
-                            OrderRepository::DESIGN_BOX => $request->caja
-                        )
-                    );
-                    DB::commit();
-                } else {
-                    Log::error("PreparacionTrabajadorController - asignaCaja - CAJA USADA");
-                    $resultado = "ERROR";
-                    $mensajes = array( "La caja seleccionada ya ha sido usada" );
-                }
+                Log::info("PreparacionTrabajadorController - asignaCaja - Cambio de estatus");
+                DB::beginTransaction();
+                $box = $this->boxModel->createBoxId(
+                    array(
+                        BoxesRepository::SQL_BOX_ID_LABEL  => $request->caja,
+                        BoxesRepository::SQL_BOX_ID_STATUS => BoxesRepository::BOX_ASSIGN
+                    )
+                );
+                $this->orderModel->updateDesign(
+                    $request->id,
+                    array(
+                        OrderRepository::DESIGN_BOX => $box->id
+                    )
+                );
+                DB::commit();
             }
         } catch (\Exception $e) {
             Log::error( "PreparacionTrabajadorController - asignaCaja - Exception: ".$e->getMessage() );
@@ -194,10 +186,20 @@ class PreparacionTrabajadorController extends Controller
                         )
                     );
                 }
+                $missings = $this->assigmentModel->getMissings($order->id);
+                Log::info("PreparacionTrabajadorController - terminarTarea - faltan: ".count($missings));
+                if(count($missings) == 0) {
+                    $this->orderModel->update(
+                        $order->id,
+                        array(
+                            OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_POR_V
+                        )
+                    );
+                }
                 DB::commit();
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionTrabajadorController - terminarTarea - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - terminarTarea - Exception: ".$e->getMessage() );
             Log::error( "PreparacionTrabajadorController - terminarTarea - Trace: \n".$e->getTraceAsString() );
             DB::rollback();
             $resultado = "ERROR";

@@ -13,15 +13,17 @@ class CreateCatalogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalogs', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('group_id')->nullable()->unsigned();
-            $table->foreign('group_id')->references('id')->on('catalogs');
-            $table->string('label');
-            $table->string('value');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        if (!Schema::hasTable('catalogs')) {
+            Schema::create('catalogs', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('group_id')->nullable()->unsigned();
+                $table->foreign('group_id')->references('id')->on('catalogs');
+                $table->string('label');
+                $table->string('value');
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
     }
 
     /**

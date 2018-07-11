@@ -55,6 +55,22 @@ class EloquentAssignment implements AssignmentRepository
     }
 
 	/**
+	 * Función para obtener las tareas faltantes de un pedido.
+	 * En la etapa de preparación de pedidos
+	 *
+	 * @param integer $order_id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getMissings($order_id)
+	{
+		return $this->model
+			->whereNotNull(self::SQL_ORDER_DESIGN)
+			->where(self::SQL_ORDID, '=', $order_id)
+			->where(self::SQL_STATUS, '=', self::STATUS_CREATED)
+			->get();
+	}
+
+	/**
 	 * Función que obtiene las tareas definidas para un trabajador
 	 * en el área de preparación de pedidos.
 	 *
@@ -70,12 +86,13 @@ class EloquentAssignment implements AssignmentRepository
 			'assignments.*',
 			'products.sku',
 			'products.concept',
-			'order_designs.box_id'
+			'box_ids.label'
 		)
 		->leftJoin('orders', 'assignments.order_id', '=', 'orders.id')
 		->leftJoin('order_designs', 'assignments.order_design_id', '=', 'order_designs.id')
 		->leftJoin('order_details', 'assignments.order_detail_id', '=', 'order_details.id')
 		->leftJoin('products', 'order_details.itemcode', '=', 'products.sku')
+		->leftJoin('box_ids', 'order_designs.box_id', '=', 'box_ids.id')
 		->where('assignments.'.self::SQL_USRID, '=', $user_id)
 		->where('assignments.'.self::SQL_STATUS, '=', self::STATUS_CREATED)
 		->orderBy('order_id')

@@ -31,6 +31,20 @@ class EloquentBoxes implements BoxesRepository
     }
 
 	/**
+	 * Se búsca una caja por la etiqueta con que se
+	 * registró.
+	 *
+	 * @param String $label
+	 * @return App\BoxId
+	 */
+	public function getBoxByLabel($label)
+	{
+		return $this->boxId
+			->where(self::SQL_BOX_ID_LABEL, '=', $label)
+			->first();
+	}
+
+	/**
 	 * Encontramos una etiqueta por id
 	 *
 	 * @param integer $id

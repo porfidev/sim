@@ -3,12 +3,13 @@
 @section('content')
     <br>
     <h2 class="mt-2" style="text-align: center;">
-        <button class="btn btn-sm btn-secondary atrasPed"
+        <a href="{{ route('preparacion.listado') }}"
+                class="btn btn-sm btn-secondary"
                 data-toggle="tooltip"
                 data-placement="top"
                 title="Regresar">
             <i class="material-icons">reply</i>
-        </button>
+        </a>
 
         Pedido: #{{ $order->codeOrder }}
 
@@ -25,11 +26,9 @@
         @endif
         <br><br>
         <div class="form-group">
-            <input class="codigines form-control"
-                onkeypress="return runScript(
-                event,
-                {{ $order->id }})"
-                id="cod{{ $order->id }}">
+            <input class="form-control addBoxEvent"
+                data-id="{{ $order->id }}"
+                placeholder="Identificador de la caja">
         </div>
     @endif
     </h2>
@@ -43,10 +42,14 @@
             @foreach ($listado as $ped)
                         <tr>
                             <td style="text-align: center;">
-                                @if( !empty($ped->nom ))
-                                   {{ $ped->itemcode }} - {{ $ped->nom }}
+                                @if( isset($ped->product)
+                                    && !empty($ped->product->concept ))
+                                    {{ $ped->itemcode }} - {{ $ped->product->concept }}
+                                @elseif(isset($ped->product)
+                                    && !empty($ped->product->alias ))
+                                    {{ $ped->itemcode }} - {{ $ped->product->alias }}
                                 @else
-                                   {{ $ped->itemcode }} - {{ $ped->con }}
+                                    {{ $ped->itemcode }}
                                 @endif
                             </td>
                         </tr>
@@ -61,22 +64,22 @@
 
                         @if (!empty($ped->quantity))
                             @if( $ped->pres_req == "BOX")
-                                <?php $cantT = ($ped->quantity / $ped->itemsDisp) / $ped->dispBox; ?>
+                                <?php $cantT = ($ped->quantity / $ped->product->items_per_display) / $ped->product->display_per_box; ?>
                             @elseif ($ped->pres_req == "DSP")
-                                <?php $cantT = ($ped->quantity / $ped->itemsDisp); ?>
+                                <?php $cantT = ($ped->quantity / $ped->product->items_per_display); ?>
                             @else
                                 <?php $cantT = $ped->quantity; ?>
                             @endif
                         @endif
                          <tr>
                             <td style="text-align: center;">
-                        @if ( !empty($ped->quantity_boss))
+                        @if ( !empty($ped->quantity_op_boss))
                             @if( $ped->pres_req == "BOX")
-                                <?php $cantB = ($ped->quantity_boss / $ped->itemsDisp) / $ped->dispBox; ?>
+                                <?php $cantB = ($ped->quantity_op_boss / $ped->product->items_per_display) / $ped->product->display_per_box; ?>
                             @elseif ($ped->pres_req == "DSP")
-                                <?php $cantB = ($ped->quantity_boss / $ped->itemsDisp); ?>
+                                <?php $cantB = ($ped->quantity_op_boss / $ped->product->items_per_display); ?>
                             @else
-                                <?php $cantB = $ped->quantity_boss; ?>
+                                <?php $cantB = $ped->quantity_op_boss; ?>
                             @endif
                         @endif
                                 <input type="hidden" id="cantU{{ $ped->id }}" value="
@@ -107,4 +110,52 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('final')
+<script type="text/javascript">
+    function registraCaja(orden, caja){
+        $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.agregar.caja') }}",
+                dataType : 'json',
+                data     : {
+                    pedido : orden,
+                    caja   : caja
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    location.reload();
+                } else {
+                    var errorMsg = "Error al terminar la tarea. \n";
+                    $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
+                    alert(errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                alert("Error al llamar el servicio para terminar la tarea." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });
+    }
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $( '.addBoxEvent' ).keyup(function(e){
+                if(e.keyCode == 13) {
+                    registraCaja(
+                        $(this).attr('data-id'),
+                        $(this).val()
+                    );
+                }
+            }
+        );
+    });
+</script>
 @endsection

@@ -13,16 +13,18 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('codeOrder')->unique();
-            $table->date('start');
-            $table->date('end');
-            $table->string('code');
-            $table->foreign('code')->references('code')->on('clients');
-            $table->integer('status');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('orders')) {
+            Schema::create('orders', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('codeOrder')->unique();
+                $table->date('start');
+                $table->date('end');
+                $table->string('code');
+                $table->foreign('code')->references('code')->on('clients');
+                $table->integer('status');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
