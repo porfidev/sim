@@ -100,6 +100,7 @@ Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Re
 Route::get('hh/recepcion/validacionHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
 
 // Preparación de pedido o embalaje Jefe
+
 Route::get('/preparacion/listado',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos'     )->name('preparacion.listado');
 Route::get('/preparacion/informacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarInformacion' );
 Route::post('/preparacion/recibir',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'                )->name('preparacion.recibir');
@@ -107,6 +108,9 @@ Route::post('/preparacion/tareas',   '\App\Http\Controllers\Preparacion\Preparac
 Route::post('/preparacion/asignacionDetalle',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem'  )->name('preparacion.asignacionDetalle');
 Route::post('/preparacion/obtenerInformacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@obtenerInformacion' )->name('preparacion.obtenerInformacion');
 Route::post('/preparacion/validar',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@valida'             )->name('preparacion.validar');
+
+Route::post('/preparacion/CSVReparto', '\App\Http\Controllers\Preparacion\PreparacionJefeController@CSVReparto')->name('preparacion.reparto');
+
 Route::get('/preparacion/mostrarValidacion/{order_id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarValidacion'  )->name('preparacion.mostrarValidacion');
 Route::post('/preparacion/agregar/caja', '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarCaja' )->name('preparacion.agregar.caja');
 

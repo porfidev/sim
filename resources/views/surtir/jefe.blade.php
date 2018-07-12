@@ -157,13 +157,14 @@
                             </td>
                             <td style="text-align: center;">
                                 <button type="button" 
-                                    class="btn btn-sm btn-info text-white"
+                                    class="btn btn-sm btn-info text-white popoverEsp"
                                     role="button"
                                     data-toggle="popover"
-                                    title="C&aacute;lculos"
-                                    data-content="Prioridad: {{ $ped->P }}
-                                                 Detalle: {{ $ped->D }}
-                                                 Vigencia: {{ $ped->V }}">
+                                    data-html="true"
+                                    title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
+                                    data-content="<ul><li>Prioridad: {{ $ped->P }}</li>
+                                                 <li>Dificultad: {{ $ped->D }}</li>
+                                                 <li>Vigencia: {{ $ped->V }}</li></ul>">
                                     {{ $ped->priority }}
                                 </button>
                             </td>
@@ -258,6 +259,7 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
+            //$(".popoverEsp").css('white-space','pre-wrap');
 
             $( '.btnLimpiar' ).click(function () {
                 $( '#busquedaId'       ).val( '0'  );

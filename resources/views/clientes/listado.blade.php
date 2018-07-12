@@ -586,16 +586,16 @@
             });
 
             $("#btnCSV").click(function () {
-            $( "#labelCSV" ).text('Seleccina un archivo CSV');
-            $( "#CSVModal" ).modal({
-                keyboard : false,
-                backdrop : 'static'
+                $( "#labelCSV" ).text('Seleccina un archivo CSV');
+                $( "#CSVModal" ).modal({
+                    keyboard : false,
+                    backdrop : 'static'
+                });
             });
 
             $( "#CSVFile3" ).change(function () {
                 $( "#labelCSV" ).text($( "#CSVFile3" ).val().replace(/C:\\fakepath\\/i, ''));
-            });
-        });
+            });        
 
         });
     </script>
