@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCodeClients extends Migration
+class DropOrdersGroupTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,7 @@ class AddCodeClients extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('code')) {
-            Schema::table('clients', function (Blueprint $table) {
-                $table->string('code')->unique()->after('status');
-            });
-        }
+        Schema::drop('order_by_stores');
     }
 
     /**

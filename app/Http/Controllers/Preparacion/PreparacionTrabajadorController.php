@@ -59,6 +59,22 @@ class PreparacionTrabajadorController extends Controller
     {
         try {
             $listado = $this->assigmentModel->getOPWorks(Auth::id(), 5);
+            $pedidos = array();
+            foreach ($listado as $item) {
+                if(array_key_exists($item->order_id, $pedidos)){
+                    $item->max = $pedidos[$item->order_id]["max"];
+                    $item->min = $pedidos[$item->order_id]["min"];
+                } else {
+                    $data = $this->assigmentModel->getMaxMin(Auth::id(), $item->order_id);
+                    Log::info("PreparacionTrabajadorController - listadoTareas - consulta: ".json_encode($data));
+                    $item->max = $data->max;
+                    $item->min = $data->min;
+                    $pedidos[$item->order_id] = array(
+                        "max" => $data->max,
+                        "min" => $data->min
+                    );
+                }
+            }
 
             return view('preparacion.trabajador',
                 array(
@@ -67,7 +83,8 @@ class PreparacionTrabajadorController extends Controller
             );
 
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - listadoPedidos - Error'.$e->getMessage() );
+            Log::error( 'PreparacionTrabajadorController - listadoPedidos - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - listadoPedidos - Trace: \n".$e->getTraceAsString() );
             return view('error',
                 array(
                     "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
@@ -87,28 +104,40 @@ class PreparacionTrabajadorController extends Controller
         $resultado = "OK";
         $mensajes  = "NA";
         try {
-            Log::info(" PreparacionJefeController - asignaCaja ");
+            Log::info(" PreparacionTrabajadorController - asignaCaja ");
             $validator = Validator::make(
                 $request->all(),
                 array(
                     'id'     => 'required|string|exists:order_designs,id',
-                    'caja'   => 'required|string|exists:box_ids,id',
+                    'caja'   => 'required|string|unique:box_ids,label',
                 ),
                 Controller::$messages
             );
             if ($validator->fails()) {
+                Log::error("PreparacionTrabajadorController - asignaCaja - Error en validator");
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
+                Log::info("PreparacionTrabajadorController - asignaCaja - Cambio de estatus");
+                DB::beginTransaction();
+                $box = $this->boxModel->createBoxId(
+                    array(
+                        BoxesRepository::SQL_BOX_ID_LABEL  => $request->caja,
+                        BoxesRepository::SQL_BOX_ID_STATUS => BoxesRepository::BOX_ASSIGN
+                    )
+                );
                 $this->orderModel->updateDesign(
                     $request->id,
                     array(
-                        OrderRepository::DESIGN_BOX => $request->caja
+                        OrderRepository::DESIGN_BOX => $box->id
                     )
                 );
+                DB::commit();
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - asignaCaja - Error: '.$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - asignaCaja - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - asignaCaja - Trace: \n".$e->getTraceAsString() );
+            DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
@@ -128,7 +157,7 @@ class PreparacionTrabajadorController extends Controller
         $resultado = "OK";
         $mensajes  = "NA";
         try {
-            Log::info(" PreparacionJefeController - terminarTarea ");
+            Log::info(" PreparacionTrabajadorController - terminarTarea ");
             $validator = Validator::make(
                 $request->all(),
                 array(
@@ -140,15 +169,39 @@ class PreparacionTrabajadorController extends Controller
                 $resultado = "ERROR";
                 $mensajes = $validator->errors();
             } else {
+                DB::beginTransaction();
                 $this->assigmentModel->update(
                     $request->tarea,
                     array(
                         AssignmentRepository::SQL_STATUS => AssignmentRepository::STATUS_FINISH
                     )
                 );
+                $task  = $this->assigmentModel->getById($request->tarea);
+                $order = $task->order;
+                if($order->status === OrderRepository::PREPARADO_ESPERA){
+                    $this->orderModel->update(
+                        $order->id,
+                        array(
+                            OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_PROCESO
+                        )
+                    );
+                }
+                $missings = $this->assigmentModel->getMissings($order->id);
+                Log::info("PreparacionTrabajadorController - terminarTarea - faltan: ".count($missings));
+                if(count($missings) == 0) {
+                    $this->orderModel->update(
+                        $order->id,
+                        array(
+                            OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_POR_V
+                        )
+                    );
+                }
+                DB::commit();
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - terminarTarea - Error: '.$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - terminarTarea - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionTrabajadorController - terminarTarea - Trace: \n".$e->getTraceAsString() );
+            DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }

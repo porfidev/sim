@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPedimentoCantidadtoArrivalItems extends Migration
+class AddDetailIdDistribution extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class AddPedimentoCantidadtoArrivalItems extends Migration
      */
     public function up()
     {
-        Schema::table('arrival_items', function (Blueprint $table) {
-            $table->string('pedimento')->after('ItemCode')->nullable(); 
-            $table->dateTime('caducidad_minima')->after('u_Caducidad')->nullable();
-            $table->integer('cantidad_rec')->after('quantity')->unsigned()->nullable();
-
+        Schema::table('distribution', function (Blueprint $table) {
+            $table->integer('order_detail_id')->after('shop')->unsigned();
         });
 
+        Schema::table('distribution', function (Blueprint $table) {
+            
+            $table->foreign('order_detail_id')->references('id')->on('order_details');
+
+        });
     }
 
     /**

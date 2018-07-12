@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\Assignment;
 
 use Illuminate\Support\Facades\Log;
@@ -53,6 +55,22 @@ class EloquentAssignment implements AssignmentRepository
     }
 
 	/**
+	 * Función para obtener las tareas faltantes de un pedido.
+	 * En la etapa de preparación de pedidos
+	 *
+	 * @param integer $order_id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getMissings($order_id)
+	{
+		return $this->model
+			->whereNotNull(self::SQL_ORDER_DESIGN)
+			->where(self::SQL_ORDID, '=', $order_id)
+			->where(self::SQL_STATUS, '=', self::STATUS_CREATED)
+			->get();
+	}
+
+	/**
 	 * Función que obtiene las tareas definidas para un trabajador
 	 * en el área de preparación de pedidos.
 	 *
@@ -68,19 +86,38 @@ class EloquentAssignment implements AssignmentRepository
 			'assignments.*',
 			'products.sku',
 			'products.concept',
-			'order_designs.box_id'
+			'box_ids.label'
 		)
 		->leftJoin('orders', 'assignments.order_id', '=', 'orders.id')
 		->leftJoin('order_designs', 'assignments.order_design_id', '=', 'order_designs.id')
 		->leftJoin('order_details', 'assignments.order_detail_id', '=', 'order_details.id')
 		->leftJoin('products', 'order_details.itemcode', '=', 'products.sku')
+		->leftJoin('box_ids', 'order_designs.box_id', '=', 'box_ids.id')
 		->where('assignments.'.self::SQL_USRID, '=', $user_id)
 		->where('assignments.'.self::SQL_STATUS, '=', self::STATUS_CREATED)
 		->orderBy('order_id')
 		->orderBy('id');
 
-	Log::info("EloquentAssignment - getWorks - SQL: ".$order->toSql());
-	return $order->paginate($itemsPerPage);
+		Log::info("EloquentAssignment - getWorks - SQL: ".$order->toSql());
+		return $order->paginate($itemsPerPage);
+	}
+
+	/**
+	 * Función para obtener el número de caja del pedido
+	 *
+	 * @param integer $user_id
+	 * @param integer $order_id
+	 */
+	public function getMaxMin($user_id, $order_id) {
+		return $this->model->select(
+				"order_id",
+				DB::raw("MAX(order_design_id) as max"),
+				DB::raw("MIN(order_design_id) as min")
+			)
+			->where(self::SQL_USRID, '=', $user_id)
+			->where(self::SQL_ORDID, '=', $order_id)
+			->groupBy("order_id")
+			->first();
 	}
 
 	/**
@@ -101,7 +138,8 @@ class EloquentAssignment implements AssignmentRepository
 			->leftJoin("calculations","orders.id","=","calculations.order_id")
 			->leftJoin("clients","clients.code","=","orders.code")
 			->where("assignments.user_id","=",$idUsr)
-			->whereNull("assignments.order_design_id");
+			->whereNull("assignments.order_design_id")
+			->where("orders.status","<",3);
 		Log::info("EloquentAssignment - getPedUser - SQL: ".$list->toSql());
     	return $list;
     }
@@ -160,7 +198,6 @@ class EloquentAssignment implements AssignmentRepository
 	 */
 
 	public function delete($id){
-
 		return $this->model->find($id)->delete();
 	}
 }

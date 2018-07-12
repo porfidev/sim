@@ -52,10 +52,13 @@ class DownloadOrders extends Command
                     ShipToCode,
                     Confirmed,
 	                Address2,
-                    U_PRESREQ
+                    U_PRESREQ,
+                    INVNTITEM
                 FROM ORDR
                 LEFT JOIN RDR1
                     ON ORDR.DocEntry = RDR1.DocEntry
+                LEFT JOIN OITM
+                    ON ORDR.ITEMCODE = OITM.ITEMCODE
                 WHERE ORDR.DocStatus = 'O'
                     AND ORDR.Confirmed = 'Y'";
 
@@ -84,14 +87,12 @@ class DownloadOrders extends Command
     {
         //Sericio del bajado de pedidos
         //---------------------------------------------------------------------------------------
-        $servername = '192.168.71.4';
-        $connectionInfo = array(
-            'Database'             =>  'MARCOPOLO_PROD' ,
-            'UID'                  => 'sim',
-            'PWD'                  => '~Cs_z~Ww',
-            'ReturnDatesAsStrings' => true,
-            'CharacterSet'         => 'UTF-8'
-        );
+        $servername = env('SQL_SERVER_NAME', '');
+        $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME', '') , 
+                                'UID' => env('SQL_USER', ''),
+                                'PWD' => env('SQL_PASS', ''),
+                                'ReturnDatesAsStrings'=>true, 
+                                'CharacterSet' => 'UTF-8');
 
         $con = sqlsrv_connect($servername, $connectionInfo);
 
@@ -103,7 +104,8 @@ class DownloadOrders extends Command
                 if($row['CARDCODE'] == "CLN-0044-0001") {
                     Log::info(" pedido:  ".$row['DOCNUM']." , ".$row['CARDCODE']." , ".$row['U_VIGENCIAINI'].
                             " , ".$row['U_VIGENCIAFIN']." , ".$row['DOCSTATUS']." , ".$row['Confirmed']." , ".$row['ITEMCODE'].
-                            " , ".$row['QUANTITY']." , ".$row['U_CANTREQ']." , ".$row['ShipToCode']." , ".$row['U_PRESREQ']);
+                            " , ".$row['QUANTITY']." , ".$row['U_CANTREQ']." , ".$row['ShipToCode']." , ".$row['U_PRESREQ'].
+                            " , ".$row['INVNTITEM']);
 
                     $fechaI = strtotime($row['U_VIGENCIAINI']);
                     $fechaF = strtotime($row['U_VIGENCIAFIN']);
@@ -127,154 +129,157 @@ class DownloadOrders extends Command
 
                     $cliente = $this->cli->getByCodigo($row['CARDCODE']);
 
-                    if($cliente != null
-                        && $distanciaEsp->value != -1
-                        && $cliente->CE != '-'
-                        && $cliente->TP != '-'
-                        && $cliente->P != '-'){
+                    if($row['INVNTITEM'] != 'N'){
 
-                        //función para restar fechas, regresa los dias restantes
+                        if($cliente != null
+                            && $distanciaEsp->value != -1
+                            && $cliente->CE != '-'
+                            && $cliente->TP != '-'
+                            && $cliente->P != '-'){
 
-                        //------------------------------------------------------
-                        $datetime1 = new DateTime(date('Y-m-d', $fechaI));
-                        $datetime2 = new DateTime(date('Y-m-d', $fechaF));
-                        $interval = $datetime1->diff($datetime2);
-                        // DV => Días de vigencia
-                        $daysValidity = intval($interval->format("%d"));
+                            //función para restar fechas, regresa los dias restantes
 
-                        //------------------------------------------------------
-                        $datetime3 = new DateTime("now");
-                        $interval1 = $datetime1->diff($datetime3);
-                        // DF => Días faltantes
-                        $daysLeft = intval($interval1->format("%d"));
+                            //------------------------------------------------------
+                            $datetime1 = new DateTime(date('Y-m-d', $fechaI));
+                            $datetime2 = new DateTime(date('Y-m-d', $fechaF));
+                            $interval = $datetime1->diff($datetime2);
+                            // DV => Días de vigencia
+                            $daysValidity = intval($interval->format("%d"));
 
-                        $c1 = $this->cat->getByLabel('c1');
-                        $c2 = $this->cat->getByLabel('c2');
-                        $c3 = $this->cat->getByLabel('c3');
-                        $c6 = $this->cat->getByLabel('c6');
+                            //------------------------------------------------------
+                            $datetime3 = new DateTime("now");
+                            $interval1 = $datetime1->diff($datetime3);
+                            // DF => Días faltantes
+                            $daysLeft = intval($interval1->format("%d"));
 
-                        /**
-                         * Cálculo de días para fecha programada
-                         */
-                        $validity = 0;
-                        if($daysValidity > $c1) {
-                            $validity = (($daysValidity/$c2)+$daysLeft+$c3);
-                        } else if($daysValidity < $c1) {
-                            $validity = (($daysValidity/$c2)+$daysLeft);
+                            $c1 = $this->cat->getByLabel('c1');
+                            $c2 = $this->cat->getByLabel('c2');
+                            $c3 = $this->cat->getByLabel('c3');
+                            $c6 = $this->cat->getByLabel('c6');
 
-                        }
+                            /**
+                             * Cálculo de días para fecha programada
+                             */
+                            $validity = 0;
+                            if($daysValidity > $c1) {
+                                $validity = (($daysValidity/$c2)+$daysLeft+$c3);
+                            } else if($daysValidity < $c1) {
+                                $validity = (($daysValidity/$c2)+$daysLeft);
 
-                        /**
-                         * Regla 2: Cálculo de puntaje para vigencia
-                         *
-                         */
-                        $V = 0;
-                        if($validity == 1){
-                            $V = 90;
-                        } else if($validity == 2) {
-                            $V = 50;
-                        } else if($validity > 3) {
-                            $V = (50 - (2*($validity - 2)));
-                            if($V < 0) {
-                                $V = 0;
+                            }
+
+                            /**
+                             * Regla 2: Cálculo de puntaje para vigencia
+                             *
+                             */
+                            $V = 0;
+                            if($validity == 1){
+                                $V = 90;
+                            } else if($validity == 2) {
+                                $V = 50;
+                            } else if($validity > 3) {
+                                $V = (50 - (2*($validity - 2)));
+                                if($V < 0) {
+                                    $V = 0;
+                                }
+                            }
+
+                            $data1 = array(
+                                OrderRepository::SQL_CODIGO_ORDEN   => $row['DOCNUM'],
+                                OrderRepository::SQL_INICIO         => date('Y-m-d', $fechaI),
+                                OrderRepository::SQL_FIN            => date('Y-m-d', $fechaF),
+                                OrderRepository::SQL_ESTATUS        => 1,
+                                OrderRepository::SQL_CODIGO         => $row['CARDCODE'],
+                                OrderRepository::SQL_DIST_ID        => $distanciaEsp->id
+                            );
+
+                            /**
+                             * Cálculo de fecha programada de atención del pedido
+                             */
+                            $fechaHoy = date('Y-m-j');
+                            $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
+                            $fp = date('Y-m-d', $fp);
+
+                            /**
+                             * Regla 5: Cálculo de detalle del pedido
+                             *
+                             * (Complejidad de empaque * Tamaño del pedido) / 2600
+                             */
+                            $D = floor(($cliente->CE * $cliente->TP) / $c6);
+
+                            /**
+                             * Regla 6: Puntaje por distancia
+                             */
+                            $dist = $distanciaEsp->value;
+
+                            /**
+                             * Regla general: Prioridad del pedido
+                             *
+                             * ((P + V + D) / 2 ) + Dist
+                             */
+                            $priority = floor((($cliente->P + $V + $D) / 2) + $dist);
+
+                            if($this->order->getByCode($row['DOCNUM']) == null){
+
+                                $this->order->create($data1);
+
+                                $idOrderEsp = $this->order->getByCode($row['DOCNUM'])->id;
+
+                                $data3 = array(
+                                    CalculationRepository::SQL_P        => $cliente->P,
+                                    CalculationRepository::SQL_V        => $V,
+                                    CalculationRepository::SQL_D        => $D,
+                                    CalculationRepository::SQL_PRIORITY => $priority,
+                                    CalculationRepository::SQL_DIST     => $distanciaEsp->id,
+                                    CalculationRepository::SQL_FP       => $fp,
+                                    CalculationRepository::SQL_ORDID    => $idOrderEsp
+                                );
+
+                                $this->calc->create($data3);
+                            }
+
+                        }else{
+
+                            $data1 = array(
+                                OrderRepository::SQL_CODIGO_ORDEN   => $row['DOCNUM'],
+                                OrderRepository::SQL_INICIO         => date('Y-m-d', $fechaI),
+                                OrderRepository::SQL_FIN            => date('Y-m-d', $fechaF),
+                                OrderRepository::SQL_ESTATUS        => 0,
+                                OrderRepository::SQL_CODIGO         => $row['CARDCODE'],
+                                OrderRepository::SQL_DIST_ID         => $distanciaEsp->id
+                            );
+
+                            if($this->order->getByCode($row['DOCNUM']) == null){
+
+                                $this->order->create($data1);
+
+                                $idOrderEsp = $this->order->getByCode($row['DOCNUM'])->id;
+
+                                $data3 = array(
+                                    CalculationRepository::SQL_P        => 0,
+                                    CalculationRepository::SQL_V        => 0,
+                                    CalculationRepository::SQL_D        => 0,
+                                    CalculationRepository::SQL_PRIORITY => 0,
+                                    CalculationRepository::SQL_DIST     => $distanciaEsp->id,
+                                    CalculationRepository::SQL_FP       => "0000-00-00",
+                                    CalculationRepository::SQL_ORDID    => $idOrderEsp
+                                );
+
+                                $this->calc->create($data3);
                             }
                         }
 
-                        $data1 = array(
-                            OrderRepository::SQL_CODIGO_ORDEN   => $row['DOCNUM'],
-                            OrderRepository::SQL_INICIO         => date('Y-m-d', $fechaI),
-                            OrderRepository::SQL_FIN            => date('Y-m-d', $fechaF),
-                            OrderRepository::SQL_ESTATUS        => 1,
-                            OrderRepository::SQL_CODIGO         => $row['CARDCODE'],
-                            OrderRepository::SQL_DIST_ID        => $distanciaEsp->id
+                        $idOrder = $this->order->getByCode($row['DOCNUM'])->id;
+                        $data2 = array(
+                            OrderDetailRepository::SQL_CODIGOP   => $row['ITEMCODE'],
+                            OrderDetailRepository::SQL_CANTIDAD  => $row['QUANTITY'],
+                            OrderDetailRepository::SQL_CANTIDADP => $row['U_CANTREQ'],
+                            OrderDetailRepository::SQL_PRES_REQ => $row['U_PRESREQ'],
+                            OrderDetailRepository::SQL_ORDEN_ID  => $idOrder
                         );
 
-                        /**
-                         * Cálculo de fecha programada de atención del pedido
-                         */
-                        $fechaHoy = date('Y-m-j');
-                        $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
-                        $fp = date('Y-m-d', $fp);
-
-                        /**
-                         * Regla 5: Cálculo de detalle del pedido
-                         *
-                         * (Complejidad de empaque * Tamaño del pedido) / 2600
-                         */
-                        $D = floor(($cliente->CE * $cliente->TP) / $c6);
-
-                        /**
-                         * Regla 6: Puntaje por distancia
-                         */
-                        $dist = $distanciaEsp->value;
-
-                        /**
-                         * Regla general: Prioridad del pedido
-                         *
-                         * ((P + V + D) / 2 ) + Dist
-                         */
-                        $priority = floor((($cliente->P + $V + $D) / 2) + $dist);
-
-                        if($this->order->getByCode($row['DOCNUM']) == null){
-
-                            $this->order->create($data1);
-
-                            $idOrderEsp = $this->order->getByCode($row['DOCNUM'])->id;
-
-                            $data3 = array(
-                                CalculationRepository::SQL_P        => $cliente->P,
-                                CalculationRepository::SQL_V        => $V,
-                                CalculationRepository::SQL_D        => $D,
-                                CalculationRepository::SQL_PRIORITY => $priority,
-                                CalculationRepository::SQL_DIST     => $distanciaEsp->id,
-                                CalculationRepository::SQL_FP       => $fp,
-                                CalculationRepository::SQL_ORDID    => $idOrderEsp
-                            );
-
-                            $this->calc->create($data3);
-                        }
-
-                    }else{
-
-                        $data1 = array(
-                            OrderRepository::SQL_CODIGO_ORDEN   => $row['DOCNUM'],
-                            OrderRepository::SQL_INICIO         => date('Y-m-d', $fechaI),
-                            OrderRepository::SQL_FIN            => date('Y-m-d', $fechaF),
-                            OrderRepository::SQL_ESTATUS        => 0,
-                            OrderRepository::SQL_CODIGO         => $row['CARDCODE'],
-                            OrderRepository::SQL_DIST_ID         => $distanciaEsp->id
-                        );
-
-                        if($this->order->getByCode($row['DOCNUM']) == null){
-
-                            $this->order->create($data1);
-
-                            $idOrderEsp = $this->order->getByCode($row['DOCNUM'])->id;
-
-                            $data3 = array(
-                                CalculationRepository::SQL_P        => 0,
-                                CalculationRepository::SQL_V        => 0,
-                                CalculationRepository::SQL_D        => 0,
-                                CalculationRepository::SQL_PRIORITY => 0,
-                                CalculationRepository::SQL_DIST     => $distanciaEsp->id,
-                                CalculationRepository::SQL_FP       => "0000-00-00",
-                                CalculationRepository::SQL_ORDID    => $idOrderEsp
-                            );
-
-                            $this->calc->create($data3);
-                        }
+                        $this->detail->create($data2);
                     }
-
-                    $idOrder = $this->order->getByCode($row['DOCNUM'])->id;
-                    $data2 = array(
-                        OrderDetailRepository::SQL_CODIGOP   => $row['ITEMCODE'],
-                        OrderDetailRepository::SQL_CANTIDAD  => $row['QUANTITY'],
-                        OrderDetailRepository::SQL_CANTIDADP => $row['U_CANTREQ'],
-                        OrderDetailRepository::SQL_PRES_REQ => $row['U_PRESREQ'],
-                        OrderDetailRepository::SQL_ORDEN_ID  => $idOrder
-                    );
-
-                    $this->detail->create($data2);
                 }
             }
         } else {

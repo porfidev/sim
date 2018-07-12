@@ -19,7 +19,11 @@ interface AssignmentRepository
 
 	function getListAsi($idOrd);
 
+	function getMissings($order_id);
+
 	function getOPWorks($user_id, $itemsPerPage);
+
+	function getMaxMin($user_id, $order_id);
 
 	function getPedUser($idUsr);
 

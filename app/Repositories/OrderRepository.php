@@ -10,6 +10,7 @@ interface OrderRepository
 	const SQL_FIN           = "end";
 	const SQL_CODIGO        = "code";
 	const SQL_ESTATUS       = "status";
+	const SQL_NUMAT         = "numat";
 	const SQL_DIST_ID       = "dist_id";
 
 	const STATUS_OPERATOR   = "operator";
@@ -24,6 +25,8 @@ interface OrderRepository
 	const DESIGN_ORDER_DETAIL = "order_detail_id";
 	const DESIGN_BOX          = "box_id";
 	const DESIGN_QUANTITY     = "quantity";
+	const DESIGN_BOX_TYPE     = "box_type_id";
+	const DESIGN_SEQUENCE     = "sequence";
 
 	/**
 	 * Tipos de seguimiento
@@ -72,6 +75,10 @@ interface OrderRepository
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
+
+	function getMaxMin($order_id);
+
+	function getDesignListByBox($box_id);
 
 	function createDesign(array $attributes);
 

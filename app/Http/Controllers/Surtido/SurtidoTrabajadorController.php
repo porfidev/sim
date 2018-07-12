@@ -58,7 +58,6 @@ class SurtidoTrabajadorController extends Controller
 
             return view('surtir.pedidosUsuario',
                 array(
-
                     "listado" => $listado
                 ));
 
@@ -78,6 +77,7 @@ class SurtidoTrabajadorController extends Controller
      */
     public function listaAsig(Request $request) {
         $response = array();
+        $mensajes = array();
         $ordId = "";
         try {
 
@@ -91,6 +91,18 @@ class SurtidoTrabajadorController extends Controller
 
             $response = $listado->toArray();
 
+            if(ProductController::checaPedUsr($ordId,$this->ordDetModel)){
+
+                $terminado  = 1;
+
+            }else{
+
+                $terminado  = 0;
+
+            }
+
+            $mensajes = $terminado;
+
             Log::info(" array especial: ".$listado);
 
         } catch (\Exception $e) {
@@ -98,7 +110,13 @@ class SurtidoTrabajadorController extends Controller
             $response = array();
 
         }
-        return response()->json($response, 200);
+        //return response()->json($response, 200);
+        return response()->json(
+            array(
+                Controller::JSON_RESPONSE => $response,
+                Controller::JSON_MESSAGE  => $mensajes
+            )
+        );
     }
 
     /**
@@ -123,15 +141,15 @@ class SurtidoTrabajadorController extends Controller
 
             $modPed = $this->orderModel->getById($detalleOrder->idOrder);
 
-            if($modPed->status < 3){
+            if($modPed->status < OrderRepository::SURTIDO_POR_V){
 
                 $codigo = $request->get('cod');
                 $cantU = intval($request->get('cantU'));
                 $cantT = intval($request->get('cant'));
 
-                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel); 
+                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel);
 
-                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );                   
+                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );
 
                 if($resp[0] != -1) {
 
@@ -153,7 +171,7 @@ class SurtidoTrabajadorController extends Controller
                             $resultado = $cantidadTot;
 
                             $datosE = array();
-                            $datosE[OrderRepository::SQL_ESTATUS] = 2;
+                            $datosE[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_PROCESO;
 
                             $this->orderModel->update($detalleOrder->idOrder,$datosE);
 
@@ -172,10 +190,10 @@ class SurtidoTrabajadorController extends Controller
 
                             if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
 
-                                $datosW = array();
-                                $datosW[OrderRepository::SQL_ESTATUS] = 3;
+                                /*$datosW = array();
+                                $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
 
-                                $this->orderModel->update($detalleOrder->idOrder,$datosW);
+                                $this->orderModel->update($detalleOrder->idOrder,$datosW);*/
 
                                 $cerrado = $detalleOrder->idOrder;
                                 $mensajes  = array( "Pedido surtido" );
@@ -189,7 +207,7 @@ class SurtidoTrabajadorController extends Controller
                 } else {
                         $resultado = "ERROR";
                         $mensajes  = array( "Codigo incorrecto" );
-                    }
+                }
 
             } else {
                 $resultado = "ERROR";
@@ -219,7 +237,7 @@ class SurtidoTrabajadorController extends Controller
             $idPed = $request->get('id');
 
             $datosW = array();
-            $datosW[OrderRepository::SQL_ESTATUS] = 3;
+            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
 
             if(!$this->orderModel->update($idPed,$datosW)) {
 

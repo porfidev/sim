@@ -64,7 +64,7 @@ class SurtidoJefeController extends Controller
 
         try {
 
-            Log::info(" listadoPedidos - listado ");
+            Log::info("SurtidoJefeController - listadoPedidos - listado ");
 
             if ( $request->isMethod('post') ) {
                 if( $request->has(self::SESSION_ID)) {
@@ -119,23 +119,23 @@ class SurtidoJefeController extends Controller
                 $search[OrderRepository::SQL_ESTATUS]     = OrderRepository::PREPARADO_RECIBIDO;
                 $search[OrderRepository::STATUS_OPERATOR] = "<";
             }
-            Log::info(" UsuariosController - listado - search: ".json_encode($search));
+            Log::info(" SurtidoJefeController - listadoPedidos - search: ".json_encode($search));
 
 
             $listado = $this->calcModel->getAllOrd($search);
-
-            //Log::info(" listadoPedidos - listado - Listita: ".$listado->get());
+            Log::info(" SurtidoJefeController-  listadoPedidos - listado - count: ".$listado->count());
 
             $listado = $listado->paginate(10);
 
             return view('surtir.jefe',
                 array(
-
                     "listado" => $listado
-                ));
+                )
+            );
 
         } catch (\Exception $e) {
-            Log::error( 'listadoPedidos - listado - Error'.$e->getMessage() );
+            Log::error( 'SurtidoJefeController - listadoPedidos - Exception: '.$e->getMessage() );
+            Log::error( "SurtidoJefeController - listadoPedidos - Trace: \n".$e->getTraceAsString() );
             return view('error',
                 array(
                     "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
@@ -155,6 +155,15 @@ class SurtidoJefeController extends Controller
             Log::info(" listadoPedidos - listadoTareasJ - buscando: idOrd: ".$idPed);
             $codigo = $this->orderModel->getById($idOrd)->codeOrder;
             $status = $this->orderModel->getById($idOrd)->status;
+            if(ProductController::checaPedUsrJ($idOrd,$this->ordDetModel)){
+
+                $terminado  = 1;
+
+            }else{
+
+                $terminado  = 0;
+
+            }
             //$userId = 2;
 
             $listado = $this->ordDetModel->getByIdOrd($idPed);
@@ -191,7 +200,8 @@ class SurtidoJefeController extends Controller
                     "listado" => $listado,
                     "idP" => $idOrd,
                     "cod" => $codigo,
-                    "statusPed" => $status
+                    "statusPed" => $status,
+                    "terminado" => $terminado
                 ));
 
         } catch (\Exception $e) {
@@ -212,21 +222,46 @@ class SurtidoJefeController extends Controller
         $cantidad = 0;
 
         try {
-            Log::info(" SurtidoTrabajadorController - addDet sku : ".$request->get('sku'));
-            $product = $this->productModel->getBySku( $request->get('sku') );
+
+            $buscaPro = $this->ordDetModel->getByIdOrd($request->get('idOrd'));
+            $codigo = $request->get('cod');
+            $ordEsp = null;
+
+            foreach ($buscaPro as $elem) {
+                
+                if($elem->barcode == $codigo || $elem->disBarcode == $codigo || $elem->boxBarcode == $codigo){
+
+                    $ordEsp = $elem;
+                    break;
+                }
+            }
+
+            if($ordEsp == null){
+
+                $resultado = "ERROR";
+                $mensajes  = array( "no existe ese codigo de barras" );
+
+                return response()->json(array(
+                Controller::JSON_RESPONSE => $resultado,
+                Controller::JSON_MESSAGE  => $mensajes
+                ));
+            }
+
+
+            Log::info(" SurtidoTrabajadorController - addDet sku : ".$ordEsp->itemcode);
+            $product = $this->productModel->getBySku( $ordEsp->itemcode );
             Log::debug(" SurtidoTrabajadorController - addDet: ".json_encode($product) );
 
-            $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
+            $detalleOrder = $this->ordDetModel->getById($ordEsp->id);
 
             $modPed = $this->orderModel->getById($detalleOrder->idOrder);
 
             if($modPed->status < 4){
+                
+                $cantU = intval($ordEsp->quantity_boss);
+                $cantT = intval($ordEsp->quantity);
 
-                $codigo = $request->get('cod');
-                $cantU = intval($request->get('cantU'));
-                $cantT = intval($request->get('cant'));
-
-                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel); 
+                $resp = ProductController::validaSku($ordEsp->itemcode,$codigo,$cantU,$this->productModel); 
 
                 Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );                   
 
@@ -236,24 +271,38 @@ class SurtidoJefeController extends Controller
 
                     if($cantidadTot <= $cantT){
 
-                        Log::info("SurtidoTrabajadorController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
+                        Log::info("SurtidoTrabajadorController - addDet: idDet: ".$ordEsp->id." cantidadTot: ".$cantidadTot);
                         $datos = array();
                         $datos[OrderDetailRepository::SQL_CANTIDAD_B] = intval($cantidadTot);
 
-                        if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
+                        if(!$this->ordDetModel->update($ordEsp->id,$datos)) {
 
                             $resultado = "ERROR";
                             $mensajes  = array( "No se pudo actualizar el detalle" );
 
                         }else{
 
-                            $resultado = $cantidadTot;
+                            if($ordEsp->pres_req == "BOX"){
+
+                                $cantidadTot = ($cantidadTot / $ordEsp->itemsDisp) / $ordEsp->dispBox; 
+
+                            }else if($ordEsp->pres_req == "DSP"){
+
+                                $cantidadTot = $cantidadTot / $ordEsp->itemsDisp; 
+
+                            }else{
+
+                                $cantidadTot = $cantidadTot; 
+
+                            }
+
+                            $resultado = array( "idDet" => $ordEsp->id, "cantEsp" => $cantidadTot);
 
                             $fecHor = date("Y-m-d H:i:s");
 
                             $dataHist = array(
                                 HistorySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
-                                HistorySupplyRepository::SQL_DETID     => $request->get('idDet'),
+                                HistorySupplyRepository::SQL_DETID     => $ordEsp->id,
                                 HistorySupplyRepository::SQL_PROID     => $product->id,
                                 HistorySupplyRepository::SQL_USRID     => Auth::id(),
                                 HistorySupplyRepository::SQL_QUANTITY  => $resp[0],
@@ -264,10 +313,11 @@ class SurtidoJefeController extends Controller
 
                             if(ProductController::checaPedUsrJ($detalleOrder->idOrder,$this->ordDetModel)){
 
-                                $datosW = array();
-                                $datosW[OrderRepository::SQL_ESTATUS] = 4;
+                                //$datosW = array();
+                                //$datosW[OrderRepository::SQL_ESTATUS] = 4;
 
-                                $this->orderModel->update($detalleOrder->idOrder,$datosW);
+                                //$this->orderModel->update($detalleOrder->idOrder,$datosW);
+                                $mensajes  = "Terminado";
                             }
                         }
 
@@ -313,7 +363,7 @@ class SurtidoJefeController extends Controller
             if(!$this->orderModel->update($idPed,$datosW)) {
 
                 $resultado = "ERROR";
-                $mensajes  = array( "No se pudo cerrar el pedido" );
+                $mensajes  = array( "No se pudo validar el pedido" );
 
             }
 

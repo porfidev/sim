@@ -17,13 +17,13 @@ class AddCalcClients extends Migration
             $table->string('P')->unique()->after('code');
             $table->string('shops')->unique()->after('P');
             $table->string('sku')->unique()->after('shops');
-            $table->string('package')->unique()->after('sku');
-            $table->string('D2')->unique()->after('package');
-            $table->string('TE')->unique()->after('D2');
-            $table->string('CE')->unique()->after('TE');
+            //$table->string('package')->unique()->after('sku');
+            $table->string('D2')->unique()->after('sku');
+            //$table->string('TE')->unique()->after('D2');
+            $table->string('CE')->unique()->after('D2');
             $table->string('TP')->unique()->after('CE');
             $table->string('average')->unique()->after('TP');
-            $table->string('D')->unique()->after('average');     
+            //$table->string('D')->unique()->after('average');     
         });
     }
 

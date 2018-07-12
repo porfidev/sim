@@ -124,7 +124,7 @@
                     </div>
                     <div class="form-group">
                         <label for="p">
-                            p
+                            Prioridad
                         </label>
                         <input type="number"
                                 class="form-control"
@@ -156,19 +156,8 @@
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="pack">
-                            Empaque
-                        </label>
-                        <input type="number"
-                                class="form-control"
-                                id="pack"
-                                placeholder="Escribe el empaque"
-                                name="pack"
-                                required>
-                    </div>
-                    <div class="form-group">
                         <label for="d2">
-                            D2
+                            Prioridad 2
                         </label>
                         <input type="number"
                                 class="form-control"
@@ -179,36 +168,16 @@
                     </div>
                     <div class="form-group">
                         <label for="te">
-                            TE
+                            Tipo de empaque
                         </label>
-                        <input type="number"
-                                class="form-control"
-                                id="te"
-                                placeholder="Escribe TE"
-                                name="te"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ce">
-                            CE
-                        </label>
-                        <input type="number"
-                                class="form-control"
-                                id="ce"
-                                placeholder="Escribe CE"
-                                name="ce"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tp">
-                            TP
-                        </label>
-                        <input type="number"
-                                class="form-control"
-                                id="tp"
-                                placeholder="Escribe TP"
-                                name="tp"
-                                required>
+                        <select class="form-control" id="te">
+                            <option value="0">Todos</option>
+                            @if (count($empaques) != 0)
+                                @foreach ($empaques as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->label }}</option>
+                                @endforeach
+                            @endif
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="promedio">
@@ -219,17 +188,6 @@
                                 id="promedio"
                                 placeholder="Escribe el Promedio"
                                 name="promedio"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="d">
-                            D
-                        </label>
-                        <input type="number"
-                                class="form-control"
-                                id="d"
-                                placeholder="Escribe D"
-                                name="d"
                                 required>
                     </div>
                     <div class="form-group">
@@ -290,13 +248,13 @@
             $( '#p' ).val($(this).attr( "data-p" ));
             $( '#tiendas' ).val($(this).attr( "data-tienda" ));
             $( '#sku' ).val($(this).attr( "data-sku" ));
-            $( '#pack' ).val($(this).attr( "data-pack" ));
+            //$( '#pack' ).val($(this).attr( "data-pack" ));
             $( '#d2' ).val($(this).attr( "data-d2" ));
             $( '#te' ).val($(this).attr( "data-te" ));
-            $( '#ce' ).val($(this).attr( "data-ce" ));
-            $( '#tp' ).val($(this).attr( "data-tp" ));
+            //$( '#ce' ).val($(this).attr( "data-ce" ));
+            //$( '#tp' ).val($(this).attr( "data-tp" ));
             $( '#promedio' ).val($(this).attr( "data-promedio" ));
-            $( '#d' ).val($(this).attr( "data-d" ));
+            //$( '#d' ).val($(this).attr( "data-d" ));
             $( '#estatus' ).val($(this).attr( "data-estatus" ));
             $( '#loading_modal_edit_user' ).hide();
             $( '#formGuardarEditar' ).show();

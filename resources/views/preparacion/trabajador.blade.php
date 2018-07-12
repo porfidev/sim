@@ -27,9 +27,13 @@
                                 <div class="row">
                                     <div class="col">
                                         Pedido: #{{ $pedido->codeOrder }}
+                                        Caja {{ $pedido->order_design_id - $pedido->min + 1 }} de {{ $pedido->max - $pedido->min + 1 }}
                                     </div>
-                                @isset($pedido->box_id)
-                                    <div class="col">
+                                    <div class="col"
+                                        id="finishBtn_{{ $pedido->id }}"
+                            @if( !isset($pedido->label) )
+                                        style="display: none;"
+                            @endif>
                                         <button class="btn btn-sm btn-success terminaTarea"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
@@ -38,7 +42,6 @@
                                             <i class="material-icons">offline_pin</i>
                                         </button>
                                     </div>
-                                @endisset
                                 </div>
                             </td>
                         </tr>
@@ -52,15 +55,20 @@
                                 <input type="text"
                                     class="form-control registroCaja"
                                     placeholder="Registro de identificador de caja"
+                                    data-find="{{ $pedido->id }}"
                                     data-id="{{ $pedido->order_design_id }}"
-                                @isset($pedido->box_id)
-                                    value="{{ $pedido->box_id }}"
+                                @isset($pedido->label)
+                                    value="{{ $pedido->label }}"
                                 @endisset>
                             </td>
                         </tr>
             @endforeach
+            @if(count($listado) == 0)
+                        <tr style="text-align: center;">
+                            <td>No hay tareas pendientes</td>
+                        </tr>
+            @endif
                     </tbody>
-
                 </table>
             </div>
         </div>
@@ -73,7 +81,7 @@
     @include('partials.modalConfirmacion')
 
     <script type="text/javascript">
-        function asignaCaja(id, caja){
+        function asignaCaja(id, find, caja){
             $( '#overlay' ).show();
             $.ajax({
                 headers: {
@@ -89,17 +97,17 @@
             }).done(function (data) {
                 if(data.resultado === 'OK') {
                     mensajeExito("erroresTrabajador", "Se asigno caja");
+                    $( "#finishBtn_" + find ).show();
                 } else {
-                    var errorMsg = "<p>Error al asignar la caja.<p><ul>";
-                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
-                    errorMsg += "</ul>";
-                    erroresValidacion("erroresTrabajador", errorMsg);
+                    var errorMsg = "Error al asignar la caja. \n";
+                    $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
+                    alert(errorMsg);
                 }
             }).fail(function (jqXHR, textStatus) {
                 errorDetalle = "";
                 // If req debug show errorDetalle
                 $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
-                erroresValidacion( "erroresTrabajador", "Error al asignar la caja." );
+                alert( "Error al llamar el servicio para asignar la caja." );
             }).always(function() {
                 $( '#overlay' ).hide();
             });
@@ -120,16 +128,15 @@
                 if(data.resultado === 'OK') {
                     location.reload();
                 } else {
-                    var errorMsg = "<p>Error al terminar la tarea.<p><ul>";
-                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
-                    errorMsg += "</ul>";
-                    erroresValidacion("erroresTrabajador", errorMsg);
+                    var errorMsg = "Error al terminar la tarea. \n";
+                    $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
+                    alert(errorMsg);
                 }
             }).fail(function (jqXHR, textStatus) {
                 errorDetalle = "";
                 // If req debug show errorDetalle
                 $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
-                erroresValidacion( "erroresTrabajador", "Error al terminar la tarea." );
+                alert("Error al llamar el servicio para terminar la tarea." );
             }).always(function() {
                 $( '#overlay' ).hide();
             });
@@ -139,7 +146,11 @@
 
             $( '.registroCaja' ).keyup(function(e){
                 if(e.keyCode == 13) {
-                    asignaCaja($(this).attr('data-id'), $(this).val());
+                    asignaCaja(
+                        $(this).attr('data-id'),
+                        $(this).attr('data-find'),
+                        $(this).val()
+                    );
                 }
             });
 

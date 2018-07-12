@@ -14,7 +14,7 @@ class ChangeProducts extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->timestamp('caducidad_minima')->change();
+            $table->dateTime('caducidad_minima')->change();
         });
     }
 

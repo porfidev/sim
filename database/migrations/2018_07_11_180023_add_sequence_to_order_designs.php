@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCodeClients extends Migration
+class AddSequenceToOrderDesigns extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class AddCodeClients extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('code')) {
-            Schema::table('clients', function (Blueprint $table) {
-                $table->string('code')->unique()->after('status');
-            });
-        }
+        Schema::table('order_designs', function (Blueprint $table) {
+            $table->integer('sequence')->unsigned()->nullable()->after('id');
+        });
     }
 
     /**
@@ -27,6 +25,8 @@ class AddCodeClients extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('order_designs', function (Blueprint $table) {
+            $table->dropColumn('sequence');
+        });
     }
 }

@@ -5,10 +5,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Assignment extends Model
+class Distribution extends Model
 {
 
-    protected $table = 'assignments';
+    protected $table = 'distribution';
 
 
     /**
@@ -17,8 +17,8 @@ class Assignment extends Model
      * @var array
      */
     protected $fillable = [
-        'order_id', 'order_detail_id', 'order_design_id',
-        'user_id', 'status'
+        'order_id', 'sku', 'quantity',
+        'shop','order_detail_id'
     ];
 
     /**
@@ -27,6 +27,14 @@ class Assignment extends Model
     public function order()
     {
         return $this->belongsTo('App\Order', 'order_id');
+    }
+
+    /**
+     * Get the order for the assignment.
+     */
+    public function product()
+    {
+        return $this->belongsTo('App\Product', 'sku');
     }
 
 }

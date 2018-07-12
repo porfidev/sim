@@ -46,12 +46,23 @@ class EloquentCalculation implements CalculationRepository
         return $list->get();
     }
 
-    function getAllOrd(array $search = null){
-
-    	$list = $this->model->select("*","orders.status as ordStatus","orders.id as idOrd")
-    						->leftJoin("orders","orders.id","=","calculations.order_id")
-    						->leftJoin("clients","orders.code","=","clients.code")
-    						->orderBy('priority', 'desc');
+	/**
+	 * Listado de pedidos ordenedas para la pantalla de jefe en surtido.
+	 * Se ordenan por prioridad, fecha de inicio de vigencia y fecha programada.
+	 *
+	 * @param array $search
+	 */
+    public function getAllOrd(array $search = null){
+    	$list = $this->model->select(
+				"*",
+				"orders.status as ordStatus",
+				"orders.id as idOrd")
+			->leftJoin("orders","orders.id","=","calculations.order_id")
+			->leftJoin("clients","orders.code","=","clients.code")
+			->orderBy('priority', 'desc')
+			->orderBy(OrderRepository::SQL_INICIO)
+			->orderBy(self::SQL_FP)
+			->orderBy(OrderRepository::SQL_CODIGO_ORDEN);
 
     	if(!empty($search)) {
 
@@ -96,7 +107,6 @@ class EloquentCalculation implements CalculationRepository
 			}
 
     	}
-
         return $list;
     }
 

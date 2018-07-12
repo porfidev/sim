@@ -84,7 +84,7 @@
         $( '.asignarPersonal' ).click(function () {
 
             $( '#loading_modal_edit_userEsp' ).hide();
-
+            $( '#erroresValidacionAsignarEsp' ).text('');
             $( "#idOrd" ).val($(this).attr( "data-id" ));
 
             listita = "{{ URL::to('usuarios/obtenerNombresJefe') }}/"+$(this).attr( "data-id" );
@@ -112,7 +112,13 @@
                         ter += " >";
                         ter += "</div>";
                         ter += "</td><td>"
+                        if(item.online != null){
+                            ter += "<span class=\"text-success\">";
+                        } else {
+                            ter += "<span class=\"text-danger\">";
+                        }
                         ter += item.label;
+                        ter += "</span>";
                         ter += "</td><td style=\"text-align: center;\">"
                         if(item.online != null){
                             ter += "Si";

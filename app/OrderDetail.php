@@ -9,8 +9,15 @@ class OrderDetail extends Model
 
     protected $table = 'order_details';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'itemcode','quantity', 'quantitypack','idOrder','quantity_user','quantity_boss'
+        'itemcode', 'quantity', 'quantitypack',
+        'idOrder', 'quantity_user', 'quantity_boss',
+        'quantity_op_boss'
     ];
 
     /**
@@ -18,6 +25,14 @@ class OrderDetail extends Model
      */
     public function product()
     {
-        return $this->belongsTo('App\Product', 'sku', 'itemcode');
+        return $this->belongsTo('App\Product', 'itemcode', 'sku');
+    }
+
+    /**
+     * Get the order for order detail.
+     */
+    public function order()
+    {
+        return $this->belongsTo('App\Order', 'idOrder');
     }
 }

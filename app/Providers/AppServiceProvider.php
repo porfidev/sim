@@ -50,6 +50,8 @@ use App\Repositories\EloquentHistorySupply;
 use App\Repositories\BoxesRepository;
 use App\Repositories\EloquentBoxes;
 
+use App\Repositories\DistributionRepository;
+use App\Repositories\EloquentDistribution;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -84,7 +86,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PurchaseItemsRepository::class,  EloquentPurchaseItems::class);
         $this->app->singleton(PurchaseRepository::class,       EloquentPurchase::class);
         $this->app->singleton(ArrivalItemRepository::class,    EloquentArrivalItem::class);
-        $this->app->singleton(historySupplyRepository::class,  EloquenthistorySupply::class);
+        $this->app->singleton(HistorySupplyRepository::class,  EloquentHistorySupply::class);
         $this->app->singleton(BoxesRepository::class,          EloquentBoxes::class);
+        $this->app->singleton(DistributionRepository::class,   EloquentDistribution::class);
     }
 }

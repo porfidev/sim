@@ -19,6 +19,7 @@
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 data-id="{{ $ped->idOrdW }}"
+                                                id="cierraPedido{{ $ped->idOrdW }}"
                                                 title="Cerrar pedido">
                                             <i class="material-icons">offline_pin</i>
                                         </button>
@@ -30,6 +31,7 @@
                             <td class="proAssi"
                                 data-id="{{ $ped->id }}"
                                 id="prod{{ $ped->id }}"
+                                status="{{ $ped->status }}"
                                 style="text-align: center;">
                             </td>
                         </tr>
@@ -59,7 +61,8 @@
             $('[data-toggle="tooltip"]').tooltip();
             $(".proAssi").each(function(){
                 var idOrd = $(this).attr( "data-id" );
-                //console.log(status);
+                var status = $(this).attr( "status" );
+                
                 $.ajax({
                     url     : "{{ URL::to('pedidos/listaAsig') }}",
                     method  : "POST",
@@ -71,10 +74,13 @@
                     }
                 }).done(function( data ) {
 
+                    console.log("id: "+idOrd+" estatus Ped: "+status+" pedidoLleno: "+data.mensajes);
+
+
                     //console.log(data);
                     var tt = "<table style='width:100%;'>";
 
-                    data.forEach(function(element) {
+                    data.resultado.forEach(function(element) {
 
                         var cantUsr = (((element.quantity_user) == null)?0:element.quantity_user);
 
@@ -123,6 +129,17 @@
                     });
                     tt += "</table>";
                     $("#prod"+idOrd).html(tt);
+
+                    if(data.mensajes == 1 && status < 3){
+
+                        $("#cierraPedido"+idOrd).show();
+                        $(".codeSku"+idOrd).hide();
+
+                    }else{
+
+                        $("#cierraPedido"+idOrd).hide();
+
+                    }
                 });
             });
 
@@ -199,7 +216,7 @@
 
                     if(data.cerrado != 0){
                         alert(data.mensajes);
-                        $(".btnCierra"+data.cerrado).hide();
+                        $("#cierraPedido"+data.cerrado).show();
                         $(".codeSku"+data.cerrado).hide();
                     }
                 });

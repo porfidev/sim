@@ -31,14 +31,65 @@ class EloquentBoxes implements BoxesRepository
     }
 
 	/**
+	 * Función que obtiene la caja de tamaño mas grande.
+	 */
+	public function getBiggestBox()
+	{
+		return $this->model
+			->select(
+				self::SQL_ID,
+				DB::raw('MAX(width*height*depth) as volumen')
+			)
+			->first();
+	}
+
+	/**
+	 * Se búsca una caja por la etiqueta con que se
+	 * registró.
+	 *
+	 * @param String $label
+	 * @return App\BoxId
+	 */
+	public function getBoxByLabel($label)
+	{
+		return $this->boxId
+			->where(self::SQL_BOX_ID_LABEL, '=', $label)
+			->first();
+	}
+
+	/**
+	 * Encontramos una etiqueta por id
+	 *
+	 * @param integer $id
+	 * @return App\BoxId
+	 */
+	public function findBoxId($id)
+	{
+		return $this->boxId->find($id);
+	}
+
+	/**
 	 * Función para cerar un registro en la tabla de
 	 * box_ids.
 	 *
+	 * @param array $attributes
 	 * @return App\BoxId
 	 */
 	public function createBoxId(array $attributes)
 	{
 		return $this->boxId->create($attributes);
+	}
+
+	/**
+	 * Función para actualizar los valores de una etiqueta.
+	 *
+	 * @param  integer $id
+	 * @param  Array   $attributes
+	 * @return App\BoxId
+	 */
+	public function updateBoxId($id, array $attributes)
+	{
+		return $this->boxId->find($id)->update($attributes);
 	}
 
 	/**

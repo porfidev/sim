@@ -53,7 +53,7 @@
                                 <input type="text"
                                         class="form-control inputFiltro"
                                         id="formaCliente"
-                                        placeholder="cliente"
+                                        placeholder="Nombre del cliente"
                                     @if ( Session::has('sc_cliente') && Session::get('sc_cliente') != '-' )
                                         value="{{ Session::get('sc_cliente') }}"
                                     @endif>
@@ -156,22 +156,24 @@
                                 {{ $ped->end }}
                             </td>
                             <td style="text-align: center;">
-                                <a class="btn btn-sm btn-info text-white"
+                                <button type="button" 
+                                    class="btn btn-sm btn-info text-white popoverEsp"
                                     role="button"
                                     data-toggle="popover"
-                                    title="C&aacute;lculos"
-                                    data-content="P: {{ $ped->P }}
-                                                 D: {{ $ped->D }}
-                                                 V: {{ $ped->V }}">
+                                    data-html="true"
+                                    title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
+                                    data-content="<ul><li>Prioridad: {{ $ped->P }}</li>
+                                                 <li>Dificultad: {{ $ped->D }}</li>
+                                                 <li>Vigencia: {{ $ped->V }}</li></ul>">
                                     {{ $ped->priority }}
-                                </a>
+                                </button>
                             </td>
                             <td style="text-align: center;">
 
                                 @if ($ped->ordStatus < 2)
 
                                         <button class="btn btn-sm btn-success asignarPersonal"
-                                                data-id="{{ $ped->idOrd }}"                                        
+                                                data-id="{{ $ped->idOrd }}"
                                                 data-codeOrd="{{ $ped->codeOrder }}"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
@@ -183,14 +185,14 @@
                                 @if ($ped->ordStatus == 3)
 
                                     <button class="btn btn-sm btn-success checarProyecto"
-                                        data-id="{{ $ped->idOrd }}"                                        
+                                        data-id="{{ $ped->idOrd }}"
                                         data-codeOrd="{{ $ped->codeOrder }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Validar Pedido">
                                     <i class="material-icons">done_all</i>
                                     </button>
-                        
+
                                 @endif
                             </td>
                         </tr>
@@ -221,7 +223,7 @@
 @endsection
 
 @section('final')
-   
+
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('surtir.asignaUsuarios')
@@ -233,25 +235,38 @@
 
             //alert("Fecha: "+$( '#formaFecProg'    ).val());
 
-            $( '#busquedaId'       ).val( $( '#formaId'       ).val() ? $( '#formaId'       ).val() : '0'  );
+            $( '#busquedaId'      ).val( $( '#formaId'      ).val() ? $( '#formaId'      ).val() : '0'  );
             $( '#busquedaCliente' ).val( $( '#formaCliente' ).val() ? $( '#formaCliente' ).val() : '-' );
-            $( '#busquedaEstatus'    ).val( $( '#grupoEst'    ).val() ? $( '#grupoEst'    ).val() : '-1' );
-            $( '#busquedafecProg'    ).val( $( '#formaFecProg'    ).val() ? $( '#formaFecProg'    ).val() : '0'  );
+            $( '#busquedaEstatus' ).val( $( '#grupoEst'     ).val() ? $( '#grupoEst'     ).val() : '-1' );
+            $( '#busquedafecProg' ).val( $( '#formaFecProg' ).val() ? $( '#formaFecProg' ).val() : '0'  );
             $( '#busquedafecIni'  ).val( $( '#formaFecIni'  ).val() ? $( '#formaFecIni'  ).val() : 'NA' );
             $( '#busquedafecFin'  ).val( $( '#formaFecFin'  ).val() ? $( '#formaFecFin'  ).val() : 'NA' );
             $( '#searchForm' ).submit();
         }
 
+        function desasigna(idO) {
+            //console.log("idAssi: "+idO);
+            var parametros = [];
+            parametros["id"] = idO;
+            abrirConfirmacion(
+                "Confirmaci&oacute;n",
+                "¿Estás seguro de desasignar este usuario?",
+                "{{ route('usuarios.desasignar') }}",
+                parametros
+            );
+        }
+
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
+            //$(".popoverEsp").css('white-space','pre-wrap');
 
             $( '.btnLimpiar' ).click(function () {
                 $( '#busquedaId'       ).val( '0'  );
-                $( '#busquedaCliente' ).val( '-' );
-                $( '#busquedafecProg'    ).val( 'NA'  );
-                $( '#busquedafecIni'    ).val( 'NA'  );
-                $( '#busquedafecFin'    ).val( 'NA'  );
+                $( '#busquedaCliente'  ).val( '-' );
+                $( '#busquedafecProg'  ).val( 'NA'  );
+                $( '#busquedafecIni'   ).val( 'NA'  );
+                $( '#busquedafecFin'   ).val( 'NA'  );
                 $( '#busquedaEstatus'  ).val( '-1' );
                 $( '#searchForm' ).submit();
             });
@@ -262,7 +277,10 @@
                 }
             });
 
-            $('#grupoEst').val($('#grupoSelEsp').val());
+            if( $('#grupoSelEsp').val()
+                && $('#grupoSelEsp').val() != -1 ) {
+                $('#grupoEst').val($('#grupoSelEsp').val());
+            }
 
             $( "#grupoEst" ).change(function() {
                 ejecutaBusquedasFiltros();
@@ -298,20 +316,9 @@
                         ord  : idOrd
                               }
                 }).done(function( data ) {
-                    //console.log(data);
                     var tt = "";
                     data.forEach(function(element) {
-                        //console.log(element);
                         tt += element.name;
-                              /*if(status == 1){
-                                tt += ' <button class="btn btn-sm btn-danger borrarAsignado"'+
-                                        'onclick="desasigna('+element.id+')"'+
-                                        'data-toggle="tooltip"'+
-                                        'data-placement="top"'+
-                                        'title="Eliminar">'+
-                                    '<i class="material-icons">delete</i>'+
-                                '</button>';
-                              }*/
                         tt += "<br><br>";
                     });
 
@@ -321,20 +328,8 @@
 
             $( '.checarProyecto' ).click(function () {
                 idPed = $(this).attr( "data-id" );
-                window.location.href = "listadoTareasJ/"+idPed;
+                window.location.href = "{{ URL::to('listadoTareasJ') }}/"+idPed;
             });
         });
-
-        function desasigna(idO) {
-            //console.log("idAssi: "+idO);
-            var parametros = [];
-            parametros["id"] = idO;
-            abrirConfirmacion(
-                "Confirmaci&oacute;n",
-                "¿Estás seguro de desasignar este usuario?",
-                "{{ route('usuarios.desasignar') }}",
-                parametros
-            );
-        }
     </script>
 @endsection
