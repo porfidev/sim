@@ -35,7 +35,18 @@ class EloquentDistribution implements DistributionRepository
         return $list->paginate(10);
     }
 
-	
+	/**
+	 * Get Distribution by id.
+	 *
+	 * @param integer $id
+	 *
+	 * @return App\Distribution
+	 */
+	public function getById($id)
+	{
+		return $this->model->find($id);
+	}
+
     /**
 	 *
 	 * @param array $attributes

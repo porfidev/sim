@@ -96,13 +96,13 @@
                                 {{ $pedido->end }}
                             </td>
                             <td class="col-sm-1" style="text-align: center;">
-                                <button type="button" 
+                                <button type="button"
                                     class="btn btn-sm btn-info text-white popoverEsp"
                                     role="button"
                                     data-toggle="popover"
                                     data-html="true"
                                     title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
-                                    data-content="<ul><li>Prioridad: {{ $pedido->calculation->P }}</li>
+                                    data-content="<ul style='padding-left: 20px;'><li>Prioridad: {{ $pedido->calculation->P }}</li>
                                                  <li>Dificultad: {{ $pedido->calculation->D }}</li>
                                                  <li>Vigencia: {{ $pedido->calculation->V }}</li></ul>">
                                 {{ $pedido->calculation->priority }}
@@ -203,37 +203,21 @@
                                 <td class="col-2" style="text-align: center;">
                                     {{ $pedido->end }}
                                 </td>
-                                <td class="col-1" style="text-align: center;">                                  
-                                    <button type="button" 
-                                    class="btn btn-sm btn-info text-white popoverEsp"
-                                    role="button"
-                                    data-toggle="popover"
-                                    data-html="true"
-                                    title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
-                                    data-content="<ul><li>Prioridad: {{ $pedido->calculation->P }}</li>
-                                                 <li>Dificultad: {{ $pedido->calculation->D }}</li>
-                                                 <li>Vigencia: {{ $pedido->calculation->V }}</li></ul>">
-                                    {{ $pedido->calculation->priority }}
-                                    </button>
-                                </td>                                
                                 <td class="col-1" style="text-align: center;">
-<<<<<<< HEAD
-                                    @if($pedido->status == 12)
-=======
-                                    <a class="btn btn-sm btn-info text-white"
+                                    <button type="button"
+                                        class="btn btn-sm btn-info text-white popoverEsp"
                                         role="button"
                                         data-toggle="popover"
-                                        data-placement="top"
-                                        title="C&aacute;lculos"
-                                        data-content="P: {{ $pedido->calculation->P }}
-                                                      D: {{ $pedido->calculation->D }}
-                                                      V: {{ $pedido->calculation->V }}">
+                                        data-html="true"
+                                        title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
+                                        data-content="<ul style='padding-left: 20px;'><li>Prioridad: {{ $pedido->calculation->P }}</li>
+                                                 <li>Dificultad: {{ $pedido->calculation->D }}</li>
+                                                 <li>Vigencia: {{ $pedido->calculation->V }}</li></ul>">
                                         {{ $pedido->calculation->priority }}
-                                     </a>
+                                    </button>
                                 </td>
                                 <td class="col-1" style="text-align: center;">
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
->>>>>>> c48be36d78284db94f8005ed9a14ab192a1615b5
                                     <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
@@ -241,8 +225,7 @@
                                             title="Asignar personal">
                                         <i class="material-icons">person_add</i>
                                     </button>
-<<<<<<< HEAD
-                                    @endif
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
                                     <button class="btn btn-primary btn-sm cargaCSVReparto"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
@@ -250,7 +233,6 @@
                                             title="subir reparto">
                                         <i class="material-icons">file_upload</i>
                                     </button>
-=======
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
                                     <a href="{{ route('preparacion.mostrarValidacion', [ 'order_id' => $pedido->id ]) }}"
                                         class="btn btn-sm btn-success"
@@ -260,7 +242,6 @@
                                         <i class="material-icons">done_all</i>
                                     </a>
                             @endif
->>>>>>> c48be36d78284db94f8005ed9a14ab192a1615b5
                                 </td>
                             </tr>
                     @endforeach
@@ -278,62 +259,64 @@
     </div>
 
     <div class="modal fade"
-    id="CSVModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="listaModalTitle"
-    aria-hidden="true">
+        id="CSVModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="listaModalTitle"
+        aria-hidden="true">
 
-    {{
-        Form::open(
-            array(
-                'url'    => 'preparacion/CSVReparto',
-                'id'     => 'CsvForm',
-                'method' => 'POST',
-                'enctype'=> 'multipart/form-data'
+        {{
+            Form::open(
+                array(
+                    'url'    => 'preparacion/CSVReparto',
+                    'id'     => 'CsvForm',
+                    'method' => 'POST',
+                    'enctype'=> 'multipart/form-data'
+                )
             )
-        )
-    }}
-    <!-- MODAL PARA CSV -->
-    <div class="modal-dialog modal-dialog-centered modal-lg"
-        role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"
-                    id="listaModalTitle">
-                        Archivo CSV
-                </h5>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <div class="custom-file">
-                        <input type="file"
-                            name="CSVFile3"
-                            id="CSVFile3"
-                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                            class="custom-file-input">
-                        <label class="custom-file-label"
-                                id="labelCSV"
-                                for="CSVFile3">
-                            Selecciona un archivo CSV
-                        </label>
+        }}
+        <!-- MODAL PARA CSV -->
+        <div class="modal-dialog modal-dialog-centered modal-lg"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="listaModalTitle">
+                            Archivo CSV
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="file"
+                                name="CSVFile3"
+                                id="CSVFile3"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                class="custom-file-input">
+                            <label class="custom-file-label"
+                                    id="labelCSV"
+                                    for="CSVFile3">
+                                Selecciona un archivo CSV
+                            </label>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button 
-                    type="submit" 
-                    class="btn btn-primary">
-                    Guardar
-                </button>
-                <button type="button"
-                    id="btnCerrar"
-                    class="btn btn-secondary"
-                    data-dismiss="modal">
-                    Cerrar
-                </button>
+                <div class="modal-footer">
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+                        Guardar
+                    </button>
+                    <button type="button"
+                        id="btnCerrar"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
             </div>
         </div>
+        {{ Form::close() }}
     </div>
 @endsection
 
@@ -359,7 +342,7 @@
 
             $( "#CSVFile3" ).change(function () {
                 $( "#labelCSV" ).text($( "#CSVFile3" ).val().replace(/C:\\fakepath\\/i, ''));
-            });      
+            });
 
             $( '.recibirSurtido' ).click(function () {
                 var parametros = [];
