@@ -87,17 +87,29 @@ Route::post('/cierraPed',               '\App\Http\Controllers\Surtido\SurtidoTr
 Route::post('/cierraPedJ',              '\App\Http\Controllers\Surtido\SurtidoJefeController@cierraPedJ'          )->name('surtir.cierraPedJ');
 
 // Recepción de mercancía
-Route::get('/ordenes/listado',                 '\App\Http\Controllers\Recepcion\RecepcionController@listado'      );
-Route::post('/ordenes/listado',                '\App\Http\Controllers\Recepcion\RecepcionController@listado'      )->name('ordenes.listado');
-Route::get('/ordenes/listadoItems/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@listadoItems' )->name('ordenes.listadoItems');
-Route::get('/ordenes/validacion',              '\App\Http\Controllers\Recepcion\RecepcionController@validacion'   )->name('ordenes.validacion');
+Route::get('/ordenes/listado',                 '\App\Http\Controllers\Recepcion\RecepcionController@listado'        );
+Route::post('/ordenes/listado',                '\App\Http\Controllers\Recepcion\RecepcionController@listado'        )->name('ordenes.listado');
+Route::get('/ordenes/listadoItems/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@listadoItems'   )->name('ordenes.listadoItems');
+Route::post('/ordenes/validar',                '\App\Http\Controllers\Recepcion\RecepcionController@validaCodigo'   )->name('ordenes.validar');
+Route::get('/ordenes/validar',                 '\App\Http\Controllers\Recepcion\RecepcionController@validaCodigo'   )->name('ordenes.validar');
+Route::get('/ordenes/validacion',              '\App\Http\Controllers\Recepcion\RecepcionController@validacion'     )->name('ordenes.validacion');
+
 
 //Funciones de HandHeld
 Route::get('/hh/recepcion/listadoHH',                  '\App\Http\Controllers\Recepcion\RecepcionController@listadoHH'      );
 Route::post('/hh/recepcion/listadoHH',                 '\App\Http\Controllers\Recepcion\RecepcionController@listadoHH'      )->name('ordenes.listadoHH');
 Route::get('/hh/recepcion/listadoItemsHH/{purchase}',  '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH' );
 Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH' )->name('ordenes.listadoItemsHH');
-Route::get('hh/recepcion/validacionHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
+Route::get('hh/recepcion/validacionHH/{purchase}',     '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
+
+Route::post('hh/recepcion/captura',                    '\App\Http\Controllers\Recepcion\RecepcionController@formularioDatos'   )->name('ordenes.captura');
+Route::get('hh/recepcion/captura',                     '\App\Http\Controllers\Recepcion\RecepcionController@formularioDatos'   )->name('ordenes.captura');
+
+Route::post('hh/recepcion/validaCaptura',              '\App\Http\Controllers\Recepcion\RecepcionController@formularioValidar'   )->name('ordenes.validaCaptura');
+Route::get('hh/recepcion/validaCaptura',               '\App\Http\Controllers\Recepcion\RecepcionController@formularioValidar'   )->name('ordenes.validaCaptura');
+
+
+
 
 // Preparación de pedido o embalaje Jefe
 Route::get('/preparacion/listado',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos' );

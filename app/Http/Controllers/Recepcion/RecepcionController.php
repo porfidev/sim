@@ -119,7 +119,6 @@ class RecepcionController extends Controller
 
     public function listadoHH(Request $request){
         $data = Purchase::paginate(10);
-
         return view('recepcion.listadoHH',['data' => $data] );
     }
 
@@ -141,30 +140,36 @@ class RecepcionController extends Controller
 
         $proveedor = Purchase::find($purchase_id);
 
-        return view('recepcion.listadoItemsHH',['data' => $data,'proveedor' => $proveedor] );
+        return view('recepcion.listadoItemsHH',['data' => $data,'leyendaTitulo' => $proveedor->CardName] );
     }
 
 
-    static function validaCodigo($codigo){
-        
-        $mensajes  = "NA";
+    public function validaCodigo($codigo){
+
+        $mensajes  = "OK";
         $cantidadTot = -1;
         $sku=0;
+        $concept="";
+        $cantidadRequerida="";
         $response = [];
         
         $modelo =  new Product;
         $productModelE = new EloquentProduct($modelo);
+        $modeloPI =  new PurchaseItems;
+        $purchaseItemModelE = new EloquentPurchaseItems($modeloPI);
 
         try {
-
-            Log::info(" RecepcionController - validaBarcode codigo : ".$codigo);
+            Log::info(" RecepcionController - validaCodigo codigo: " . $codigo);
+            
             $product = $productModelE->getByCode( $codigo );
 
             if( $product != null ) {
 
-                Log::debug(" RecepcionController - validaBarcode: ".json_encode($product) );
-
                 $sku=$product->sku;
+                $concept=$product->concept;
+
+                $lepurchaseItem = $purchaseItemModelE->getByCode($sku);
+                $cantidadRequerida = $lepurchaseItem->u_CantReq;
 
                 if($codigo == $product->corrugated_barcode){
 
@@ -177,25 +182,86 @@ class RecepcionController extends Controller
                 } else if($codigo == $product->barcode){
 
                     $cantidadTot = 1;
-                } 
+                }
+
             } else {
 
-                Log::error("RecepcionController - validaBarcode: El objeto product esta vacío");
+                Log::error("RecepcionController - validaCodigo: El objeto product esta vacío");
                 $resultado = "No existe el producto";
-                $mensajes  = "No se encontro ese producto";
+                $mensajes  = "No se encontr&oacute; el producto:  " . $codigo;
             }
         } catch (\Exception $e) {
-            Log::error( 'RecepcionController - validaBarcode - Error: '.$e->getMessage() );
+            Log::error( 'RecepcionController - validaCodigo - Error: '.$e->getMessage() );
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
 
-        $response[2] = $sku;
-        $response[1] = $mensajes;
-        $response[0] = $cantidadTot;
-
+        $response["sku"] = $sku;
+        $response["mensajes"] = $mensajes;
+        $response["cantidad"] = $cantidadTot;
+        $response["concept"] = $concept;
+        $response["cantidadRequerida"] = $cantidadRequerida;
+        
         return $response;
       
+    }
+
+    public function formularioDatos(Request $request){
+        $resultado = "recepcion.capturaRecepcion";
+        $codigo = "0";
+
+        if( $request->has("codigo")) {
+            $codigo = $request->input("codigo");
+        }
+
+        $data = $this->validaCodigo($codigo);
+
+        if ( $data["cantidad"] == -1 ) { 
+            $resultado = "recepcion.mensajesRecepcion";
+            $leyendaTitulo = "Sin registro";
+        } else {
+            $leyendaTitulo = $data["concept"];
+        }
+        
+        return view($resultado,['data' => $data,'leyendaTitulo' => $leyendaTitulo] );
+
+    }
+
+
+    public function formularioValidar(Request $request){
+        $resultado = "recepcion.actualizadoHH";
+        $lote="";
+        $sku="";
+        $caducidad="";
+        $recibida="";
+
+        $carbon = new Carbon();  
+
+
+        if( $request->has("lote")) {
+            $lote = $request->input("lote");
+        }
+
+        if( $request->has("caducidad")) {
+            $caducidad =  Carbon::createFromFormat('Y-m-d', $request->input("caducidad") );
+        }
+
+        if( $request->has("sku")) {
+            $sku = $request->input("sku");
+        }
+
+        if( $request->has("recibida")) {
+            $recibida = $request->input("recibida");
+        }
+
+
+        $data = $this->capturaDatos($sku,$caducidad,$recibida,$lote);
+    
+        $leyendaTitulo = $sku;
+
+        return view($resultado,['data' => $data,'leyendaTitulo' => $leyendaTitulo]  );
+
+
     }
 
     static function capturaDatos($sku,$caducidad, $cantidadCapturada, $lote){
@@ -240,8 +306,9 @@ class RecepcionController extends Controller
                                     'u_Caducidad'   => $caducidad,
                                     );
                             
+                                    $total= $arrivalItem->quantity;
                                     $resultado = $arrivalItemModelE->update($arrivalItem->id, $data);
-                                    $mensajes  = "Se ha actualizado el arrival item: " .  $arrivalItem->ItemCode;
+                                    $mensajes  = "El producto ha sido actualizado: " .  $arrivalItem->ItemCode;
 
                                 } else {
                                     Log::error( 'RecepcionController - capturaDatos - Error:  La caducidad del producto recibido es menor al ultimo producto recibido.' );
@@ -308,11 +375,15 @@ class RecepcionController extends Controller
             $mensajes  = array( $e->getMessage() );
         }
 
-        $response[4] = $caducidad;
-        $response[3] = $caducidad_minima;
-        $response[2] = $product->caducidad_minima;
-        $response[1] = $mensajes;
-        $response[0] = $resultado;
+        $response["sku"] = $sku;
+        $response["total"] = $total;
+        $response["cantidad"] = $cantidadCapturada;
+        $response["lote"] = $lote;
+        $response["caducidad"] = $caducidad;
+        $response["caducidad_minima"] = $caducidad_minima;
+        $response["pcaducidad_minima"] = $product->caducidad_minima;
+        $response["mensajes"] = $mensajes;
+        $response["resultado"] = $resultado;
 
         return $response;    
     }

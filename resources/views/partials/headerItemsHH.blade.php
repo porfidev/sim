@@ -8,7 +8,7 @@
                 class="d-inline-block align-top"
                 alt="Marco Polo">
         &nbsp;
-        {{ $proveedor->CardName }}
+        {{ $leyendaTitulo }}
     </a>
   
 </nav>
