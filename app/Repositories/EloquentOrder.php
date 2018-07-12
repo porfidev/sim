@@ -188,7 +188,7 @@ class EloquentOrder implements OrderRepository
 	 */
 	public function getByNumat($numat)
 	{
-		return $this->model->where($this::SQL_NUMAT,"=",$numat)->get()->first();
+		return $this->model->where($this::SQL_NUMAT, "=", $numat)->first();
     }
 
 	/**

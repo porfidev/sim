@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Preparacion;
 use DB;
 use Log;
 use Auth;
+use Session;
 use Validator;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Controller;
 
@@ -17,6 +20,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\CatalogoRepository;
 use App\Repositories\BoxesRepository;
 use App\Repositories\AssignmentRepository;
+use App\Repositories\DistributionRepository;
 
 class PreparacionJefeController extends Controller
 {
@@ -27,6 +31,7 @@ class PreparacionJefeController extends Controller
     private $catalogModel;
     private $boxModel;
     private $assigmentModel;
+    private $distributionModel;
 
     /**
      * Create a new controller instance.
@@ -39,15 +44,17 @@ class PreparacionJefeController extends Controller
         OrderRepository $order,
         CatalogoRepository $catalog,
         BoxesRepository $box,
-        AssignmentRepository $assigment)
+        AssignmentRepository $assigment,
+        DistributionRepository $distribution)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
-        $this->productModel     = $product;
-        $this->orderDetailModel = $detail;
-        $this->orderModel       = $order;
-        $this->catalogModel     = $catalog;
-        $this->boxModel         = $box;
-        $this->assigmentModel   = $assigment;
+        $this->productModel      = $product;
+        $this->orderDetailModel  = $detail;
+        $this->orderModel        = $order;
+        $this->catalogModel      = $catalog;
+        $this->boxModel          = $box;
+        $this->assigmentModel    = $assigment;
+        $this->distributionModel = $distribution;
     }
 
     /**
@@ -647,9 +654,8 @@ class PreparacionJefeController extends Controller
             Log::debug(" PreparacionJefeController - CSVReparto - NombreCSV: ".$file );
 
             if(empty($file)){
-
                 Session::flash('errores', 'No se selecciono un archivo CSV ');
-                Log::debug(" PreparacionJefeController - CSVReparto - archivo vacio " );
+                Log::error(" PreparacionJefeController - CSVReparto - archivo vacio " );
                 return Redirect::route('preparacion.listado');
             }
 
@@ -664,25 +670,30 @@ class PreparacionJefeController extends Controller
             }*/
 
             $gestor = fopen($file->getRealPath(), "r");
-            $deliminator = ";";
+            $deliminator = ",";
             $contador = 0;
-            $contMod = 0;
+            $contMod  = 0;
             $contadorArchivoCSV = 0;
             $producto = null;
-            $pedido = null;
+            $pedido   = null;
             DB::beginTransaction();
             while (($datos = fgetcsv($gestor, 10000, $deliminator)) !== FALSE) {
 
                 Log::info("_________________________________________________________________");
                 Log::info("Datos: ".json_encode($datos));
 
-                if($contadorArchivoCSV > 3){
+                if($contadorArchivoCSV > 3) {
 
-                    $producto = $this->ProductRepository->getByCode($datos[9]);
-                    $detail = $this->OrderDetailRepository->getByOrdSku($pedido->id,$producto->sku);
+                    $producto = $this->productModel->getByCode($datos[9]);
+                    $detail   = $this->orderDetailModel->getByOrdSku($pedido->id, $producto->sku);
+
+                    if(empty($producto) || empty($detail)) {
+                        Log::error("No se encontro producto o detalle del pedido correspondiente");
+                        continue;
+                    }
 
                     $data = array(
-                        DistributionRepository::SQL_ID_ORDER    => $pedido->numat,
+                        DistributionRepository::SQL_ID_ORDER    => $pedido->id,
                         DistributionRepository::SQL_SKU         => $producto->sku,
                         DistributionRepository::SQL_QUANTITY    => $datos[11],
                         DistributionRepository::SQL_SHOP        => $datos[0],
@@ -693,21 +704,27 @@ class PreparacionJefeController extends Controller
 
                     $contador++;
 
-                }elseif($contadorArchivoCSV == 1){
-
-                    $pedido = $this->OrderRepository->getByNumat($datos[0]);
+                } elseif($contadorArchivoCSV == 1) {
+                    Log::info("PreparacionJefeController - CSVReparto - numat: ".$datos[0]);
+                    $pedido = $this->orderModel->getByNumat($datos[0]);
+                    if(empty($pedido)){
+                        Session::flash('errores', 'No se encontro pedido con referencia: '.$datos[0]);
+                        Log::error(" PreparacionJefeController - CSVReparto - No hay referencia: ".$datos[0] );
+                        return Redirect::route('preparacion.listado');
+                    }
                 }
 
                 $contadorArchivoCSV++;
             }
             DB::commit();
-            Session::flash('exito', 'Se han agregado: '.$contador.' clientes y se modificaron:  '.$contMod);
+            Session::flash('exito', 'Se han agregado: '.$contador.' registros y se modificaron:  '.$contMod);
             return Redirect::route('preparacion.listado');
 
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - CSVReparto - Error: '.$e->getMessage() );
+            Log::error( 'PreparacionJefeController - CSVReparto - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - CSVReparto - Trace: \n".$e->getTraceAsString() );
             DB::rollback();
-            Session::flash('errores', 'ocurrio el siguiente error: '.$e->getMessage());
+            Session::flash('errores', 'Ocurrio el siguiente error: '.$e->getMessage());
             return Redirect::route('preparacion.listado');
         }
     }
