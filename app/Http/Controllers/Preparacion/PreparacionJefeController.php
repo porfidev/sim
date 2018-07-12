@@ -175,7 +175,8 @@ class PreparacionJefeController extends Controller
     private function procesoPedidoEnCaja($pedido)
     {
         $orderList = $this->orderDetailModel->getByIdOrd($pedido->id);
-        $boxType = $this->boxModel->searchByName(BoxesRepository::ORIGIN_BOX);
+        $boxType   = $this->boxModel->searchByName(BoxesRepository::ORIGIN_BOX);
+        $sequence  = 0;
         foreach ($orderList as $orderItem) {
             Log::info("____________________________________________________________________________");
             $itemsPerBox = ($orderItem->itemsDisp * $orderItem->dispBox);
@@ -183,9 +184,10 @@ class PreparacionJefeController extends Controller
             Log::info("PreparacionJefeController - recibirPedido - Cajas por Item: ".$orderItem->itemcode." - ".$boxQuantity);
             $boxQuantity = floor($boxQuantity);
             for ($i=0; $i < $boxQuantity; $i++) {
+                $sequence += 1;
                 $this->orderModel->createDesign(
                     array(
-                        OrderRepository::DESIGN_SEQUENCE     => ($i+1),
+                        OrderRepository::DESIGN_SEQUENCE     => $sequence,
                         OrderRepository::DESIGN_BOX_TYPE     => $boxType->id,
                         OrderRepository::DESIGN_ORDER        => $pedido->id,
                         OrderRepository::DESIGN_ORDER_DETAIL => $orderItem->id,
@@ -417,6 +419,13 @@ class PreparacionJefeController extends Controller
         ));
     }
 
+    /**
+     * Función para saber si se ha terminado de validat todo
+     * el pedido
+     *
+     * @param App\Order $order
+     * @return integer 0: Terminado, 1: Sin terminar
+     */
     public static function isFinish($order){
         $ans = 0;
         $details = $order->details;
@@ -427,6 +436,29 @@ class PreparacionJefeController extends Controller
             }
         }
         return $ans;
+    }
+
+    /**
+     * Función para crear el diseño del pedido pero sin agregar el CSV
+     * de reparto por tienda.
+     *
+     * @return View
+     */
+    public function crearDisenioSinCSV(Request $request)
+    {
+        try {
+
+            return redirect()->route('preparacion.listado');
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - crearDisenioSinCSV - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - crearDisenioSinCSV - Trace: \n".$e->getTraceAsString() );
+            return view('error',
+                array(
+                    "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
+                    "titulo" => "Error inesperado"
+                )
+            );
+        }
     }
 
     /**
@@ -601,4 +633,83 @@ class PreparacionJefeController extends Controller
             Controller::JSON_MESSAGE  => $mensajes
         ));
     }
+
+    /**
+     * Función para guardar csv de pedido en tabla reparto
+     *
+     * @return json
+     */
+    public function CSVReparto() {
+        Log::debug("PreparacionJefeController - CSVReparto");
+        try {
+            $file = Input::file('CSVFile3');
+
+            Log::debug(" PreparacionJefeController - CSVReparto - NombreCSV: ".$file );
+
+            if(empty($file)){
+
+                Session::flash('errores', 'No se selecciono un archivo CSV ');
+                Log::debug(" PreparacionJefeController - CSVReparto - archivo vacio " );
+                return Redirect::route('preparacion.listado');
+            }
+
+            //valida que el archivo sea de tipo excel
+
+            /*if($file->getMimeType() != "application/vnd.ms-excel" || 
+                $file->getMimeType() != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"){
+
+                Session::flash('errores', 'El archivo seleccionado no es un CSV');
+                Log::debug(" PreparacionJefeController - CSVReparto - no es texto " );
+                return Redirect::route('preparacion.listado');
+            }*/
+
+            $gestor = fopen($file->getRealPath(), "r");
+            $deliminator = ";";
+            $contador = 0;
+            $contMod = 0;
+            $contadorArchivoCSV = 0;
+            $producto = null;
+            $pedido = null;
+            DB::beginTransaction();
+            while (($datos = fgetcsv($gestor, 10000, $deliminator)) !== FALSE) {
+
+                Log::info("_________________________________________________________________");
+                Log::info("Datos: ".json_encode($datos));
+
+                if($contadorArchivoCSV > 3){
+
+                    $producto = $this->ProductRepository->getByCode($datos[9]);
+                    $detail = $this->OrderDetailRepository->getByOrdSku($pedido->id,$producto->sku);
+
+                    $data = array(
+                        DistributionRepository::SQL_ID_ORDER    => $pedido->numat,
+                        DistributionRepository::SQL_SKU         => $producto->sku,
+                        DistributionRepository::SQL_QUANTITY    => $datos[11],
+                        DistributionRepository::SQL_SHOP        => $datos[0],
+                        DistributionRepository::SQL_ID_DETAIL   => $detail->id
+                    );
+
+                    $this->distributionModel->create($data);
+
+                    $contador++;
+
+                }elseif($contadorArchivoCSV == 1){
+
+                    $pedido = $this->OrderRepository->getByNumat($datos[0]);
+                }
+
+                $contadorArchivoCSV++;
+            }
+            DB::commit();
+            Session::flash('exito', 'Se han agregado: '.$contador.' clientes y se modificaron:  '.$contMod);
+            return Redirect::route('preparacion.listado');
+
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - CSVReparto - Error: '.$e->getMessage() );
+            DB::rollback();
+            Session::flash('errores', 'ocurrio el siguiente error: '.$e->getMessage());
+            return Redirect::route('preparacion.listado');
+        }
+    }
+
 }

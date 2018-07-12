@@ -52,8 +52,8 @@ class EloquentOrder implements OrderRepository
 	public function getMaxMin($order_id){
 		return $this->design->select(
 				"order_id",
-				DB::raw("MAX(id) as max"),
-				DB::raw("MIN(id) as min")
+				DB::raw("MAX(sequence) as max"),
+				DB::raw("MIN(sequence) as min")
 			)
 			->where(self::DESIGN_ORDER, '=', $order_id)
 			->groupBy("order_id")

@@ -38,31 +38,31 @@
                         </tr>
                         <tr>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 #
                             </th>
                             <th scope="col"
-                                class="col-3">
+                                class="col-sm-3">
                                 Cliente
                             </th>
                             <th scope="col"
-                                class="col-2">
+                                class="col-sm-2">
                                 Estatus
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-2">
+                                class="col-sm-2">
                                 Inicio de Vigencia
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-2">
+                                class="col-sm-2">
                                 Fin de Vigencia
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 Prioridad
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 Acci&oacute;n
                             </th>
                         </tr>
@@ -149,7 +149,7 @@
                                 #
                             </th>
                             <th scope="col"
-                                class="col-sm-3">
+                                class="col-sm-2">
                                 Cliente
                             </th>
                             <th scope="col" class="col-sm-2">
@@ -168,7 +168,7 @@
                                 Prioridad
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-sm-1">
+                                class="col-sm-2">
                                 Acci&oacute;n
                             </th>
                         </tr>
@@ -176,13 +176,13 @@
                     <tbody class="size-2">
                             @foreach ($listado as $pedido)
                             <tr>
-                                <td class="col-1">
+                                <td class="col-sm-1">
                                     {{ $pedido->codeOrder }}
                                 </td>
-                                <td class="col-3">
+                                <td class="col-sm-2">
                                     {{ $pedido->client->name }}
                                 </td>
-                                <td class="col-2">
+                                <td class="col-sm-2">
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
                                     Recibido en Preparaci&oacute;n
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
@@ -197,13 +197,13 @@
                                     Validado
                             @endif
                                 </td>
-                                <td class="col-2" style="text-align: center;">
+                                <td class="col-sm-2" style="text-align: center;">
                                     {{ $pedido->start }}
                                 </td>
-                                <td class="col-2" style="text-align: center;">
+                                <td class="col-sm-2" style="text-align: center;">
                                     {{ $pedido->end }}
                                 </td>
-                                <td class="col-1" style="text-align: center;">
+                                <td class="col-sm-1" style="text-align: center;">
                                     <button type="button"
                                         class="btn btn-sm btn-info text-white popoverEsp"
                                         role="button"
@@ -216,8 +216,23 @@
                                         {{ $pedido->calculation->priority }}
                                     </button>
                                 </td>
-                                <td class="col-1" style="text-align: center;">
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
+                                <td class="col-sm-2" style="text-align: center;">
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
+                                    <button class="btn btn-primary btn-sm cargaCSVReparto"
+                                            data-id="{{ $pedido->id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Subir CSV">
+                                        <i class="material-icons">file_upload</i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm"
+                                            data-id="{{ $pedido->id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Crear dise&ntilde;o">
+                                        <i class="material-icons">assignment</i>
+                                    </button>
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
                                     <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
@@ -225,13 +240,13 @@
                                             title="Asignar personal">
                                         <i class="material-icons">person_add</i>
                                     </button>
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
-                                    <button class="btn btn-primary btn-sm cargaCSVReparto"
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
+                                    <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
                                             data-placement="top"
-                                            title="subir reparto">
-                                        <i class="material-icons">file_upload</i>
+                                            title="Asignar personal">
+                                        <i class="material-icons">person_add</i>
                                     </button>
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
                                     <a href="{{ route('preparacion.mostrarValidacion', [ 'order_id' => $pedido->id ]) }}"
