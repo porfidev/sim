@@ -18,7 +18,7 @@ class Distribution extends Model
      */
     protected $fillable = [
         'order_id', 'sku', 'quantity',
-        'shop'
+        'shop','order_detail_id'
     ];
 
     /**

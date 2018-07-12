@@ -363,7 +363,7 @@ class SurtidoJefeController extends Controller
             if(!$this->orderModel->update($idPed,$datosW)) {
 
                 $resultado = "ERROR";
-                $mensajes  = array( "No se pudo cerrar el pedido" );
+                $mensajes  = array( "No se pudo validar el pedido" );
 
             }
 

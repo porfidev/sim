@@ -109,7 +109,7 @@
                                 </button>
                             </td>
                             <td class="col-sm-1" style="text-align: center;">
-                        @if ($pedido->status == 4)
+                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_VALIDO)
                                 <button type="button"
                                     class="btn btn-sm btn-primary recibirSurtido"
                                     data-id="{{ $pedido->id }}">

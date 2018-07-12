@@ -9,6 +9,7 @@ interface DistributionRepository
 	const SQL_SKU 		= "sku";
 	const SQL_QUANTITY  = "quantity";
 	const SQL_SHOP      = "shop";
+	const SQL_ID_DETAIL = "order_detail_id";
 
 	function getAll();
 

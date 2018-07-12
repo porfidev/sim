@@ -586,12 +586,14 @@ class PreparacionJefeController extends Controller
                 if($contadorArchivoCSV > 3){
 
                     $producto = $this->ProductRepository->getByCode($datos[9]);
+                    $detail = $this->OrderDetailRepository->getByOrdSku($pedido->id,$producto->sku);
 
                     $data = array(
                         DistributionRepository::SQL_ID_ORDER    => $pedido->numat,
                         DistributionRepository::SQL_SKU         => $producto->sku,
                         DistributionRepository::SQL_QUANTITY    => $datos[11],
-                        DistributionRepository::SQL_SHOP        => $datos[0]
+                        DistributionRepository::SQL_SHOP        => $datos[0],
+                        DistributionRepository::SQL_ID_DETAIL   => $detail->id
                     );
 
                     $this->distributionModel->create($data);

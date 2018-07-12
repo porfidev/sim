@@ -138,7 +138,8 @@ class EloquentAssignment implements AssignmentRepository
 			->leftJoin("calculations","orders.id","=","calculations.order_id")
 			->leftJoin("clients","clients.code","=","orders.code")
 			->where("assignments.user_id","=",$idUsr)
-			->whereNull("assignments.order_design_id");
+			->whereNull("assignments.order_design_id")
+			->where("orders.status","<",3);
 		Log::info("EloquentAssignment - getPedUser - SQL: ".$list->toSql());
     	return $list;
     }

@@ -21,7 +21,7 @@
                 @if($terminado == 0)
                 style="display: none;"
                 @endif
-                title="Cerrar pedido">
+                title="Validar pedido">
             <i class="material-icons">offline_pin</i>
         </button><br><br>
         <div class="form-group">
@@ -173,7 +173,7 @@
                     parametros["id"] = $(this).attr( "data-id" );
                      abrirConfirmacion(
                         "Confirmaci&oacute;n",
-                        "¿Estás seguro de que deseas cerrar este pedido?",
+                        "¿Estás seguro de que deseas validar este pedido?",
                         "{{ route('surtir.cierraPedJ') }}",
                         parametros
                     );

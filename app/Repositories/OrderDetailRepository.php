@@ -21,6 +21,8 @@ interface OrderDetailRepository
 
 	function getById($id);
 
+	function getByOrdSku($id);
+
 	function getByIdOrd($id);
 
 	function getDetExt($it,$qua,$pack,$idOrd);
