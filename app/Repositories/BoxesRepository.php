@@ -25,6 +25,8 @@ interface BoxesRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getBiggestBox();
+
 	function getBoxByLabel($label);
 
 	function findBoxId($id);

@@ -25,6 +25,8 @@ interface OrderRepository
 	const DESIGN_ORDER_DETAIL = "order_detail_id";
 	const DESIGN_BOX          = "box_id";
 	const DESIGN_QUANTITY     = "quantity";
+	const DESIGN_BOX_TYPE     = "box_type_id";
+	const DESIGN_SEQUENCE     = "sequence";
 
 	/**
 	 * Tipos de seguimiento

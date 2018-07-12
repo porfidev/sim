@@ -182,6 +182,7 @@ class PreparacionJefeController extends Controller
     private function procesoPedidoEnCaja($pedido)
     {
         $orderList = $this->orderDetailModel->getByIdOrd($pedido->id);
+        $boxType = $this->boxModel->searchByName(BoxesRepository::ORIGIN_BOX);
         foreach ($orderList as $orderItem) {
             Log::info("____________________________________________________________________________");
             $itemsPerBox = ($orderItem->itemsDisp * $orderItem->dispBox);
@@ -191,11 +192,79 @@ class PreparacionJefeController extends Controller
             for ($i=0; $i < $boxQuantity; $i++) {
                 $this->orderModel->createDesign(
                     array(
+                        OrderRepository::DESIGN_SEQUENCE     => ($i+1),
+                        OrderRepository::DESIGN_BOX_TYPE     => $boxType->id,
                         OrderRepository::DESIGN_ORDER        => $pedido->id,
                         OrderRepository::DESIGN_ORDER_DETAIL => $orderItem->id,
                         OrderRepository::DESIGN_QUANTITY     => $itemsPerBox
                     )
                 );
+            }
+        }
+    }
+
+    /**
+     * Función para realizar el diseño de pedido
+     *
+     * @param array $lista
+     */
+    private function crearDisenioPedido($lista)
+    {
+        $biggestBox = $this->boxModel->getBiggestBox();
+        $sequence = 1;
+        $freeSpace = $biggestBox->volumen;
+        foreach ($lista as $item) {
+            $detail = $item->orderDetail()->with('product')->first();
+            $productVolume = ($detail->product->width * $detail->product->height * $detail->product->depth);
+
+            // Para que nos quepa por lo menos 1 producto
+            if($freeSpace < $productVolume) {
+                // Cambiamos de caja para guardar los demás
+                $sequence += 1;
+                $freeSpace = $biggestBox->volumen;
+            }
+
+            // Obtenemos cuanto items caben en la caja
+            $totalItems  = floor($freeSpace / $productVolume);
+
+            // Verificamo que los productos quepan en la caja
+            if($totalItems >= $item->quantity) {
+                // Agregamos todos los productos a la caja
+                Log::info("PreparacionJefeController - crearDisenioPedido - agrego items: ".$item->quantity." de ".$detail->product->sku);
+                $this->orderModel->createDesign(
+                    array(
+                        OrderRepository::DESIGN_SEQUENCE     => $sequence,
+                        OrderRepository::DESIGN_BOX_TYPE     => $biggestBox->id,
+                        OrderRepository::DESIGN_ORDER        => $detail->order_id,
+                        OrderRepository::DESIGN_ORDER_DETAIL => $detail->id,
+                        OrderRepository::DESIGN_QUANTITY     => $item->quantity
+                    )
+                );
+                $freeSpace -= ($productVolume * $item->quantity);
+            } else {
+                $qty = $item->quantity;
+                while( $qty > 0 ){
+                    // Agregamos productos a la caja
+                    Log::info("PreparacionJefeController - crearDisenioPedido - agrego items: ".$totalItems." de ".$detail->product->sku);
+                    $add = $totalItems;
+                    if($qty - $totalItems < 0){
+                        $add = $qty;
+                    }
+                    $qty -= $add;
+                    Log::info("PreparacionJefeController - crearDisenioPedido - faltan: $qty");
+                    $this->orderModel->createDesign(
+                        array(
+                            OrderRepository::DESIGN_SEQUENCE     => $sequence,
+                            OrderRepository::DESIGN_BOX_TYPE     => $biggestBox->id,
+                            OrderRepository::DESIGN_ORDER        => $detail->order_id,
+                            OrderRepository::DESIGN_ORDER_DETAIL => $detail->id,
+                            OrderRepository::DESIGN_QUANTITY     => $add
+                        )
+                    );
+                    // Cambiamos de caja para guardar los demás
+                    $sequence += 1;
+                    $freeSpace = $biggestBox->volumen;
+                }
             }
         }
     }
