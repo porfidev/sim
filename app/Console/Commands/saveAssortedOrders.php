@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class saveAssortedOrders extends Command
+class SaveAssortedOrders extends Command
 {
     /**
      * The name and signature of the console command.
@@ -42,7 +42,7 @@ class saveAssortedOrders extends Command
         $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME_2', '') , 
                                 'UID' => env('SQL_USER', ''),
                                 'PWD' => env('SQL_PASS', ''),
-                                'ReturnDatesAsStrings'=>true, 
+                                'ReturnDatesAsStrings'=>true,
                                 'CharacterSet' => 'UTF-8');
 
         $con = sqlsrv_connect($servername, $connectionInfo);

@@ -6,11 +6,8 @@ use DB;
 use Log;
 use Auth;
 use Validator;
-use Session;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Controller;
 
@@ -20,7 +17,6 @@ use App\Repositories\OrderRepository;
 use App\Repositories\CatalogoRepository;
 use App\Repositories\BoxesRepository;
 use App\Repositories\AssignmentRepository;
-use App\Repositories\DistributionRepository;
 
 class PreparacionJefeController extends Controller
 {
@@ -31,7 +27,6 @@ class PreparacionJefeController extends Controller
     private $catalogModel;
     private $boxModel;
     private $assigmentModel;
-    private $distributionModel;
 
     /**
      * Create a new controller instance.
@@ -44,17 +39,15 @@ class PreparacionJefeController extends Controller
         OrderRepository $order,
         CatalogoRepository $catalog,
         BoxesRepository $box,
-        AssignmentRepository $assigment,
-        DistributionRepository $distribution)
+        AssignmentRepository $assigment)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
-        $this->productModel      = $product;
-        $this->orderDetailModel  = $detail;
-        $this->orderModel        = $order;
-        $this->catalogModel      = $catalog;
-        $this->boxModel          = $box;
-        $this->assigmentModel    = $assigment;
-        $this->distributionModel = $distribution;
+        $this->productModel     = $product;
+        $this->orderDetailModel = $detail;
+        $this->orderModel       = $order;
+        $this->catalogModel     = $catalog;
+        $this->boxModel         = $box;
+        $this->assigmentModel   = $assigment;
     }
 
     /**
@@ -208,11 +201,11 @@ class PreparacionJefeController extends Controller
      *
      * @param array $lista
      */
-    private function crearDisenioPedido($lista)
+    private function crearDisenioPedido($lista, $sequence_init)
     {
         $biggestBox = $this->boxModel->getBiggestBox();
-        $sequence = 1;
-        $freeSpace = $biggestBox->volumen;
+        $sequence   = $sequence_init;
+        $freeSpace  = $biggestBox->volumen;
         foreach ($lista as $item) {
             $detail = $item->orderDetail()->with('product')->first();
             $productVolume = ($detail->product->width * $detail->product->height * $detail->product->depth);
@@ -607,84 +600,5 @@ class PreparacionJefeController extends Controller
             Controller::JSON_RESPONSE => $resultado,
             Controller::JSON_MESSAGE  => $mensajes
         ));
-    }
-
-    /**
-     * Función para guardar csv de pedido en tabla reparto
-     *
-     * @return json
-     */
-
-    public function CSVReparto() {
-        Log::debug("PreparacionJefeController - CSVReparto");
-        try {
-            $file = Input::file('CSVFile3');
-
-            Log::debug(" PreparacionJefeController - CSVReparto - NombreCSV: ".$file );
-
-            if(empty($file)){
-
-                Session::flash('errores', 'No se selecciono un archivo CSV ');
-                Log::debug(" PreparacionJefeController - CSVReparto - archivo vacio " );
-                return Redirect::route('preparacion.listado');
-            }
-
-            //valida que el archivo sea de tipo excel
-
-            /*if($file->getMimeType() != "application/vnd.ms-excel" || 
-                $file->getMimeType() != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"){
-
-                Session::flash('errores', 'El archivo seleccionado no es un CSV');
-                Log::debug(" PreparacionJefeController - CSVReparto - no es texto " );
-                return Redirect::route('preparacion.listado');
-            }*/
-
-            $gestor = fopen($file->getRealPath(), "r");
-            $deliminator = ";";
-            $contador = 0;
-            $contMod = 0;
-            $contadorArchivoCSV = 0;
-            $producto = null;
-            $pedido = null;
-            DB::beginTransaction();
-            while (($datos = fgetcsv($gestor, 10000, $deliminator)) !== FALSE) {
-
-                Log::info("_________________________________________________________________");
-                Log::info("Datos: ".json_encode($datos));
-
-                if($contadorArchivoCSV > 3){
-
-                    $producto = $this->ProductRepository->getByCode($datos[9]);
-                    $detail = $this->OrderDetailRepository->getByOrdSku($pedido->id,$producto->sku);
-
-                    $data = array(
-                        DistributionRepository::SQL_ID_ORDER    => $pedido->numat,
-                        DistributionRepository::SQL_SKU         => $producto->sku,
-                        DistributionRepository::SQL_QUANTITY    => $datos[11],
-                        DistributionRepository::SQL_SHOP        => $datos[0],
-                        DistributionRepository::SQL_ID_DETAIL   => $detail->id
-                    );
-
-                    $this->distributionModel->create($data);
-
-                    $contador++;
-
-                }elseif($contadorArchivoCSV == 1){
-
-                    $pedido = $this->OrderRepository->getByNumat($datos[0]);
-                }
-
-                $contadorArchivoCSV++;
-            }
-            DB::commit();
-            Session::flash('exito', 'Se han agregado: '.$contador.' clientes y se modificaron:  '.$contMod);
-            return Redirect::route('preparacion.listado');
-
-        } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - CSVReparto - Error: '.$e->getMessage() );
-            DB::rollback();
-            Session::flash('errores', 'ocurrio el siguiente error: '.$e->getMessage());
-            return Redirect::route('preparacion.listado');
-        }
     }
 }

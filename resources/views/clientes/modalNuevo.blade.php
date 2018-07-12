@@ -137,12 +137,12 @@
                     </div>
                     <div class="form-group">
                         <label for="sku">
-                            Sku
+                            # Sku
                         </label>
                         <input type="number"
                                 class="form-control"
                                 id="sku"
-                                placeholder="Escribe el sku"
+                                placeholder="Escribe el # sku"
                                 name="sku"
                                 required>
                     </div>
@@ -161,8 +161,8 @@
                         <label for="te">
                             Tipo de empaque
                         </label>
-                        <select class="form-control" id="te">
-                            <option value="0">Todos</option>
+                        <select class="form-control" id="te" name="te">
+                            <option value="0"> --- Selecciona un tipo de empaque --- </option>
                             @if (count($empaques) != 0)
                                 @foreach ($empaques as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->label }}</option>

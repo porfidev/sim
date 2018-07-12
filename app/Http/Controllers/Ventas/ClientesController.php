@@ -262,23 +262,19 @@ class ClientesController extends Controller{
                 $request->all(),
                 array(
                     'nombre'    => 'required|string|max:191',
-                    'email'    => 'required|string|email|max:120|unique:clients',
+                    'email'     => 'required|string|email|max:120|unique:clients',
                     'telefono'  => 'required|string|max:191',
                     'rfc'       => 'required|string|max:20',
                     'cp'        => 'required|string|max:10',
                     'ciudad'    => 'required|string|max:191',
                     'direccion' => 'required|string|max:191',
-                    'code'      => 'required|string|max:191',
-                    'p'         => 'required|numeric|max:10',
-                    'tiendas'   => 'required|numeric|max:10',
-                    'sku'       => 'required|numeric|max:10',
-                    //'pack'      => 'required|numeric|max:10',
-                    'd2'        => 'required|numeric|max:10',
-                    'te'        => 'required|numeric|max:10',
-                    //'ce'        => 'required|numeric|max:10',
-                    //'tp'        => 'required|numeric|max:10',
-                    'promedio'  => 'required|numeric|max:10',
-                    //'d'         => 'required|numeric|max:10'
+                    'code'      => 'required|string|max:191|unique:clients,code',
+                    'p'         => 'required|numeric|max:100',
+                    'tiendas'   => 'required|numeric',
+                    'sku'       => 'required|numeric',
+                    'd2'        => 'required|numeric',
+                    'te'        => 'required|numeric|exists:catalogs,id',
+                    'promedio'  => 'required|numeric'
                 ),
                 Controller::$messages
             );
@@ -307,13 +303,11 @@ class ClientesController extends Controller{
                     ClienteRepository::SQL_P         => $request->p,
                     ClienteRepository::SQL_SHOPS     => $request->tiendas,
                     ClienteRepository::SQL_SKU       => $request->sku,
-                    //ClienteRepository::SQL_PACK      => $request->pack,
                     ClienteRepository::SQL_D2        => $request->d2,
                     ClienteRepository::SQL_TE        => $request->te,
                     ClienteRepository::SQL_CE        => $ce,
                     ClienteRepository::SQL_TP        => $tp,
                     ClienteRepository::SQL_AVERAGE   => $request->promedio,
-                    //ClienteRepository::SQL_D         => $request->d,
                     ClienteRepository::SQL_ESTATUS   => ClienteRepository::ACTIVE
                 );
                 Log::info(" ClientesController - agregar - data: ".json_encode($data));
@@ -348,17 +342,13 @@ class ClientesController extends Controller{
                             'cp'        => 'required|string|max:10',
                             'ciudad'    => 'required|string|max:191',
                             'direccion' => 'required|string|max:191',
-                            'code'      => 'required|string|max:191',
-                            'p'         => 'required|numeric|max:10',
-                            'tiendas'   => 'required|numeric|max:10',
-                            'sku'       => 'required|numeric|max:10',
-                            //'pack'      => 'required|numeric|max:10',
-                            'd2'        => 'required|numeric|max:10',
-                            'te'        => 'required|numeric|max:10',
-                            //'ce'        => 'required|numeric|max:10',
-                            //'tp'        => 'required|numeric|max:10',
-                            'promedio'  => 'required|numeric|max:10',
-                            //'d'         => 'required|numeric|max:10',
+                            'code'      => 'required|string|max:191|unique:clients,code,'.$request->get('id'),
+                            'p'         => 'required|numeric|max:100',
+                            'tiendas'   => 'required|numeric',
+                            'sku'       => 'required|numeric',
+                            'd2'        => 'required|numeric',
+                            'te'        => 'required|numeric|exists:catalogs,id',
+                            'promedio'  => 'required|numeric',
                             'estatus'   => 'required|boolean'
                         ),
                         Controller::$messages
@@ -373,7 +363,7 @@ class ClientesController extends Controller{
                         $c5 = $this->cat->getByLabel('c5');
                         $c4 = $this->cat->getByLabel('c4');
 
-                        $ce = ($request->tiendas * $request->sku) * ($te * $request->d2);
+                        $ce = ($request->tiendas * $request->sku) * ($te->value * $request->d2);
                         $tp = floor(($request->promedio/$c4)*$c5);
 
                         $datos = array();
@@ -389,13 +379,11 @@ class ClientesController extends Controller{
                         $datos[ClienteRepository::SQL_P]         = $request->p;
                         $datos[ClienteRepository::SQL_SHOPS]     = $request->tiendas;
                         $datos[ClienteRepository::SQL_SKU]       = $request->sku;
-                        //$datos[ClienteRepository::SQL_PACK]      = $request->pack;
                         $datos[ClienteRepository::SQL_D2]        = $request->d2;
                         $datos[ClienteRepository::SQL_TE]        = $request->te;
                         $datos[ClienteRepository::SQL_CE]        = $ce;
                         $datos[ClienteRepository::SQL_TP]        = $tp;
                         $datos[ClienteRepository::SQL_AVERAGE]   = $request->promedio;
-                        //$datos[ClienteRepository::SQL_D]         = $request->d;
 
                         if(!$this->clienteModel->update( $request->get('id'), $datos)) {
                             $resultado = "ERROR";
@@ -409,7 +397,8 @@ class ClientesController extends Controller{
             }
 
         } catch (\Exception $e) {
-            Log::error( 'ClientesController - editar - Error: '.$e->getMessage() );
+            Log::error( "ClientesController - editar - Exception: ".$e->getMessage() );
+            Log::error( "ClientesController - editar - Trace: \n".$e->getTraceAsString() );
             $resultado = "ERROR";
             $mensajes = array( $e->getMessage() );
         }

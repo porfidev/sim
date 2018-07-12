@@ -54,7 +54,7 @@ class EloquentOrderDetail implements OrderDetailRepository
 	 *
 	 * @return App\OrderDetail
 	 */
-	public function getByOrdSku($id,$sku)
+	public function getByOrdSku($id, $sku)
 	{
 		return $this->model->where(self::SQL_CODIGOP,"=",$sku)
 						   ->where(self::SQL_ORDEN_ID,"=",$id)->get()->first();
