@@ -31,6 +31,19 @@ class EloquentBoxes implements BoxesRepository
     }
 
 	/**
+	 * Función que obtiene la caja de tamaño mas grande.
+	 */
+	public function getBiggestBox()
+	{
+		return $this->model
+			->select(
+				self::SQL_ID,
+				DB::raw('MAX(width*height*depth) as volumen')
+			)
+			->first();
+	}
+
+	/**
 	 * Se búsca una caja por la etiqueta con que se
 	 * registró.
 	 *
