@@ -16,22 +16,22 @@
             </div>
             <div class="modal-body">
                 <div id="erroresValidacionmodalNuevaRecepcion"></div>
-                    <div id="loading_modal_new_product"
+                    <div id="loading_modal_recepcion"
                         style="display: none;"
                         >
                         <img src="{{ url('img/spinner_3.gif') }}"
                             class="rounded mx-auto d-block"
                             style="max-height: 90px;">
                 </div>
-                <form id="formGuardarmodalNuevaRecepcion" style="display:block">
+                <form id="validaBarcode" style="display:block" action="{{ route('ordenes.captura') }}">
                     <div class="form-group">
+                        {{ csrf_field() }}
                         <input type="text"
                                 class="form-control"
                                 placeholder="C&oacute;digo de barras"
-                                name="barcode"
-                                id="barcode"
+                                name="codigo" 
+                                id="codigo"
                                 required
-                                oninput="estaEnBase()"
                                 class="visible">
                          <div class="modal-footer d-flex justify-content-center">
                             <button type="button"
@@ -199,41 +199,52 @@
                 backdrop : 'static'
             });
         });
-        $( '#btnGuardarmodalNuevaRecepcion' ).click(function () {
-            $( '#formGuardarmodalNuevaRecepcion'  ).hide();
-            $( '#loading_modal_new_product' ).show();
-            $.ajax({
-                url    : "{{ route('productos.agregar') }}",
-                method : "POST",
-                data   : $( '#formGuardarmodalNuevaRecepcion'  ).serialize()
-            }).done(function( data ) {
-                if(data.resultado === 'OK') {
-                    $('#modalRecepcion').modal('toggle');
-                    location.reload();
-                } else {
-                    var errorMsg = "<p>Error al agregar el producto.<p><ul>";
-                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
-                    errorMsg += "</ul>";
-                    erroresValidacion("erroresValidacionmodalNuevaRecepcion", errorMsg);
-                }
-            }).fail(function (jqXHR, textStatus) {
-                errorDetalle = "";
-                // If req debug show errorDetalle
-                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
-                erroresValidacion( "erroresValidacionmodalNuevaRecepcion", "Error al agregar el producto." );
-            }).always(function() {
-                $( '#loading_modal_new_product' ).hide();
-                $( '#formGuardarmodalNuevaRecepcion'  ).show();
-            });
-        });
+        $('#modalRecepcion').on('shown.bs.modal', function () {
+             $('#codigo').trigger('focus')
+        })
     });
 </script>
 
 
+<script type="text/javascript">
+
+$(document).ready(function () {
+    $("#codigo").focus();
+    $("#codigo").keyup(function(event){
+            if (event.which == 13 ) $( '#validaBarcode'  ).submit() 
+/*
+            event.preventDefault();
+            $.ajax({
+                url    : "http://localhost:8000/ordenes/validar",
+                method : "POST",
+                data   : $( '#validaBarcode'  ).serialize()
+                }).done(function( data ) {
+                    alert('okkkkkkk done  jejjejejejej');
+                    if(data.response[1] === 'OK') {
+                        alert('okkkkkkk done');
+                        $( '#validaBarcode'  ).hide();
+                        $( '#capturaDatos' ).show();
+                    } else {
+                        alert('okkkkkkk else');
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    errorDetalle = "EL ERROR: \n";
+                    $.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
+                    alert(errorDetalle);
+                }).always(function() {
+                    alert('okkkkkkk always');
+                });
+            });
+*/            
+});
+</script>
+
+
+<!--
 <script>
 function estaEnBase() {
     var capDat = document.getElementById("capturaDatos");
-    var nuevaRec = document.getElementById("formGuardarmodalNuevaRecepcion");
+    var nuevaRec = document.getElementById("validaBarcode");
     var invalidCode = document.getElementById("invalidCode");
 
     var x = document.getElementById("barcode").value;
@@ -247,7 +258,7 @@ function estaEnBase() {
     }   
 }
 </script>
-
+-->
 <script>
 function validaCaducidad() {
     var capDat = document.getElementById("capturaDatos");

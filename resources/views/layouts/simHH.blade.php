@@ -16,9 +16,9 @@
     <link href="{{ asset('css/sim.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app" class="container-fluid mt-2">
-        @include('partials.headerHH')
 
+    @include('partials.headerHH')
+    <div id="app" class="container-fluid mt-2">
         @yield('content')
     </div>
 

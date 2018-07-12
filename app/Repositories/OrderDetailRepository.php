@@ -21,7 +21,7 @@ interface OrderDetailRepository
 
 	function getById($id);
 
-	function getByOrdSku($id);
+	function getByOrdSku($id, $sku);
 
 	function getByIdOrd($id);
 

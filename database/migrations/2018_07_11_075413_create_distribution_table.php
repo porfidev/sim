@@ -23,7 +23,6 @@ class CreateDistributionTable extends Migration
         });
 
         Schema::table('distribution', function (Blueprint $table) {
-            
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('sku')->references('sku')->on('products');
 

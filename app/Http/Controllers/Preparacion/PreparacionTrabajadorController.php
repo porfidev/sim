@@ -65,7 +65,7 @@ class PreparacionTrabajadorController extends Controller
                     $item->max = $pedidos[$item->order_id]["max"];
                     $item->min = $pedidos[$item->order_id]["min"];
                 } else {
-                    $data = $this->assigmentModel->getMaxMin(Auth::id(), $item->order_id);
+                    $data = $this->orderModel->getMaxMin($item->order_id);
                     Log::info("PreparacionTrabajadorController - listadoTareas - consulta: ".json_encode($data));
                     $item->max = $data->max;
                     $item->min = $data->min;

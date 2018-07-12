@@ -29,71 +29,61 @@
 			{{ Session::get('errores') }}
 		</div>
 	@endif
-	<div class="card">
-		<div class="card-header">
-		
-			<div class="float-right">
-				<nav aria-label="Paginacion" class="mr-2">
-					<button class="btn btn-sm btn-primary regresa"
+
+	<div class="text-right">
+	<button class="btn btn-sm btn-primary regresa"
+			data-toggle="tooltip"
+			data-placement="top"
+			title="Ordenes de compra">
+				<i class="material-icons"  align="rigth" >keyboard_backspace</i>
+	</button>
+	</div>
+
+	<div class="table-responsive mt-2">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th scope="col" style="text-align: center;">
+						#
+					</th>
+					<th scope="col" style="min-width: 150px;">
+						Descripci&oacute;n
+					</th>
+					<th>
+					</th>
+					</tr>
+			</thead>
+			<tbody>
+				<tr>
+				@foreach ($data as $item)
+					<td style="text-align: center;">
+							{{ $item->purchase_id }}
+					</td>
+					<td>
+						{{ $item->concept}}
+						<br>
+						<p>
+						<b>SKU: {{ $item->ItemCode}}
+						<br>
+						Cantidad solicitada: {{ $item->quantity}}
+						</b></p>
+					</td>
+					<td>
+						<button class="btn btn-sm btn-primary nuevaRecepcion"
 							data-toggle="tooltip"
 							data-placement="top"
-							title="Ordenes de compra">
-								<i class="material-icons"  align="center" >keyboard_backspace</i>
-					</button>
-				</nav>  
-			</div>
-
-		</div>
-		<div class="card-body">
-
-		
-		
-			<div class="table-responsive mt-2">
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th scope="col" style="text-align: center;">
-								#
-							</th>
-							<th scope="col" style="min-width: 150px;">
-								Descripci&oacute;n
-							</th>
-							<th>
-							</th>
-						  </tr>
-					</thead>
-					<tbody>
-						<tr>
-					   @foreach ($data as $item)
-							<td style="text-align: center;">
-								 {{ $item->purchase_id }}
-							</td>
-							<td>
-								{{ $item->concept}}
-								<br>
-								<p>
-								<b>SKU: {{ $item->ItemCode}}
-								<br>
-								Cantidad solicitada: {{ $item->quantity}}
-								</b></p>
-							</td>
-							<td>
-								<button class="btn btn-sm btn-primary nuevaRecepcion"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="Completar Item"
-									type="reset"
-									>
-								<i class="material-icons">radio_button_checked</i>
-								</button>
-							</td>
-						</tr>
-						@endforeach           
-				 </tbody>
-				</table>
-			</div>
-		</div>
+							title="Completar Item"
+							type="reset"
+							>
+						<i class="material-icons">radio_button_checked</i>
+						</button>
+					</td>
+				</tr>
+				@endforeach           
+			</tbody>
+		</table>
 	</div>
+
 @endsection
 
 @section('final')

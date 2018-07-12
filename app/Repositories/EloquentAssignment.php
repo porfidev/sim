@@ -86,7 +86,8 @@ class EloquentAssignment implements AssignmentRepository
 			'assignments.*',
 			'products.sku',
 			'products.concept',
-			'box_ids.label'
+			'box_ids.label',
+			'order_designs.sequence'
 		)
 		->leftJoin('orders', 'assignments.order_id', '=', 'orders.id')
 		->leftJoin('order_designs', 'assignments.order_design_id', '=', 'order_designs.id')
