@@ -717,6 +717,22 @@ class PreparacionJefeController extends Controller
                 $contadorArchivoCSV++;
             }
             DB::commit();
+
+            //valida pedido al siguiente estatus
+
+            $datosW = array();
+            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::PREPARADO_DISENIO;
+
+            $this->orderModel->update($pedido->id,$datosW);
+
+            //seguimiento del pedido
+
+            $datos['order_id'] = $pedido->id;
+            $datos['trace_type'] = OrderRepository::TRACE_RECIBIR_DIST;
+            $datos['user_id'] = Auth::id();
+
+            $this->orderModel->addTrace($datos);
+
             Session::flash('exito', 'Se han agregado: '.$contador.' registros y se modificaron:  '.$contMod);
             return Redirect::route('preparacion.listado');
 

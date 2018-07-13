@@ -31,146 +31,146 @@
                 <form id="formGuardarEditar" style="display: none;">
                     {{ csrf_field() }}
                     <input type="hidden"
-                            name="id"
+                            name="idE"
                             id="modalEditId"
                             value="0">
                     <div class="form-group">
-                        <label for="nombre">
+                        <label for="nombreE">
                             Nombre
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="nombre"
+                                id="nombreE"
                                 placeholder="Escribe el nombre"
                                 name="nombre"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="correo">
+                        <label for="correoE">
                             Correo
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="correo"
+                                id="correoE"
                                 placeholder="Escribe el correo"
                                 name="correo"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="telefono">
+                        <label for="telefonoE">
                             Telefono
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="telefono"
+                                id="telefonoE"
                                 placeholder="Escribe el telefono"
                                 name="telefono"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="rfc">
+                        <label for="rfcE">
                             RFC
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="rfc"
+                                id="rfcE"
                                 placeholder="Escribe el RFC"
                                 name="rfc"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="cp">
+                        <label for="cpE">
                             CP
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="cp"
+                                id="cpE"
                                 placeholder="Escribe el CP"
                                 name="cp"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="ciudad">
+                        <label for="ciudadE">
                             Ciudad
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="ciudad"
+                                id="ciudadE"
                                 placeholder="Escribe la Ciudad"
                                 name="ciudad"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="direccion">
+                        <label for="direccionE">
                             Direcci&oacute;n
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="direccion"
+                                id="direccionE"
                                 placeholder="Escribe la Direccion"
                                 name="direccion"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="code">
+                        <label for="codeE">
                             C&oacute;digo
                         </label>
                         <input type="text"
                                 class="form-control"
-                                id="code"
+                                id="codeE"
                                 placeholder="Escribe el codigo"
                                 name="code"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="p">
+                        <label for="pE">
                             Prioridad
                         </label>
                         <input type="number"
                                 class="form-control"
-                                id="p"
+                                id="pE"
                                 placeholder="Escribe p"
                                 name="p"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="tiendas">
+                        <label for="tiendasE">
                             Tiendas
                         </label>
                         <input type="number"
                                 class="form-control"
-                                id="tiendas"
+                                id="tiendasE"
                                 placeholder="Escribe las tiendas"
                                 name="tiendas"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="sku">
+                        <label for="skuE">
                             # Sku
                         </label>
                         <input type="number"
                                 class="form-control"
-                                id="sku"
+                                id="skuE"
                                 placeholder="Escribe el # sku"
                                 name="sku"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="d2">
+                        <label for="d2E">
                             Prioridad 2
                         </label>
                         <input type="number"
                                 class="form-control"
-                                id="d2"
+                                id="d2E"
                                 placeholder="Escribe D2"
                                 name="d2"
                                 required>
                     </div>
                     <div class="form-group">
-                        <label for="te">
+                        <label for="teE">
                             Tipo de empaque
                         </label>
-                        <select class="form-control" id="te" name="te">
+                        <select class="form-control" id="teE" name="te">
                             <option value="0"> --- Selecciona un tipo de empaque --- </option>
                             @if (count($empaques) != 0)
                                 @foreach ($empaques as $cat)
@@ -180,28 +180,28 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="promedio">
+                        <label for="promedioE">
                             Promedio
                         </label>
                         <input type="number"
                                 class="form-control"
-                                id="promedio"
+                                id="promedioE"
                                 placeholder="Escribe el Promedio"
                                 name="promedio"
                                 required>
                     </div>
                     <div class="form-group">
                         <label for="modalEditEmail">
-                            Estatus
+                            Cita
                         </label>
                         <select class="form-control"
-                            id="modalEditEstatus"
-                            name="estatus">
+                            id="citaE"
+                            name="cita">
                             <option value="1">
-                                Activo
+                                Con cita
                             </option>
                             <option value="0">
-                                Inactivo
+                                Sin cita
                             </option>
                         </select>
                     </div>
@@ -237,25 +237,25 @@
             });
 
             $( '#modalEditId'      ).val(id);
-            $( '#nombre'    ).val($(this).attr( "data-nombre" ));
-            $( '#correo'   ).val($(this).attr( "data-correo" ));
-            $( '#telefono'     ).val($(this).attr( "data-telefono" ));
-            $( '#rfc' ).val($(this).attr( "data-rfc" ));
-            $( '#cp' ).val($(this).attr( "data-cp" ));
-            $( '#ciudad' ).val($(this).attr( "data-ciudad" ));
-            $( '#direccion' ).val($(this).attr( "data-direccion" ));
-            $( '#code' ).val($(this).attr( "data-code" ));
-            $( '#p' ).val($(this).attr( "data-p" ));
-            $( '#tiendas' ).val($(this).attr( "data-tienda" ));
-            $( '#sku' ).val($(this).attr( "data-sku" ));
+            $( '#nombreE'    ).val($(this).attr( "data-nombre" ));
+            $( '#correoE'   ).val($(this).attr( "data-correo" ));
+            $( '#telefonoE'     ).val($(this).attr( "data-telefono" ));
+            $( '#rfcE' ).val($(this).attr( "data-rfc" ));
+            $( '#cpE' ).val($(this).attr( "data-cp" ));
+            $( '#ciudadE' ).val($(this).attr( "data-ciudad" ));
+            $( '#direccionE' ).val($(this).attr( "data-direccion" ));
+            $( '#codeE' ).val($(this).attr( "data-code" ));
+            $( '#pE' ).val($(this).attr( "data-p" ));
+            $( '#tiendasE' ).val($(this).attr( "data-tienda" ));
+            $( '#skuE' ).val($(this).attr( "data-sku" ));
             //$( '#pack' ).val($(this).attr( "data-pack" ));
-            $( '#d2' ).val($(this).attr( "data-d2" ));
-            $( '#te' ).val($(this).attr( "data-te" ));
+            $( '#d2E' ).val($(this).attr( "data-d2" ));
+            $( '#teE' ).val($(this).attr( "data-te" ));
             //$( '#ce' ).val($(this).attr( "data-ce" ));
             //$( '#tp' ).val($(this).attr( "data-tp" ));
-            $( '#promedio' ).val($(this).attr( "data-promedio" ));
+            $( '#promedioE' ).val($(this).attr( "data-promedio" ));
             //$( '#d' ).val($(this).attr( "data-d" ));
-            $( '#estatus' ).val($(this).attr( "data-estatus" ));
+            $( '#citaE' ).val($(this).attr( "data-appo" ));
             $( '#loading_modal_edit_user' ).hide();
             $( '#formGuardarEditar' ).show();
             
@@ -275,7 +275,7 @@
                     update = 1;
                     mensajeExito("erroresValidacionEditar", "Se han guardado los cambios.");
                 } else {
-                    var errorMsg = "<p>Error al actualizar el catalogo.<p><ul>";
+                    var errorMsg = "<p>Error al actualizar el cliente.<p><ul>";
                     $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
                     errorMsg += "</ul>";
                     erroresValidacion("erroresValidacionEditar", errorMsg);
@@ -284,7 +284,7 @@
                 errorDetalle = "";
                 // If req debug show errorDetalle
                 $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
-                erroresValidacion( "erroresValidacionEditar", "Error al editar el catalogo." );
+                erroresValidacion( "erroresValidacionEditar", "Error al editar el cliente." );
             }).always(function() {
 
                 $( '#loading_modal_edit_user' ).hide();

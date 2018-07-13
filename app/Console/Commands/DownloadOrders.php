@@ -135,7 +135,8 @@ class DownloadOrders extends Command
                             && $distanciaEsp->value != -1
                             && $cliente->CE != '-'
                             && $cliente->TP != '-'
-                            && $cliente->P != '-'){
+                            && $cliente->P != '-'
+                            && $cliente->appointment != null){
 
                             //función para restar fechas, regresa los dias restantes
 
@@ -196,15 +197,44 @@ class DownloadOrders extends Command
                             /**
                              * Cálculo de fecha programada de atención del pedido
                              */
-                            $fechaHoy = date('Y-m-j');
-                            $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
-                            $fp = date('Y-m-d', $fp);
 
-                            if(date('D',$fp) == 'Sun'){
+                            $cita = $cliente->appointment;
+
+                            if($cita == ClienteRepository::ACTIVE_APPOINTMENT){
+
+                                $c6 = $this->cat->getByLabel('c7');
+
+                                $fechaInicio = date('Y-m-d', $fechaI);
+                                $fp = strtotime ( $c6.' day' , strtotime ( $fechaInicio ) );
+                                $fp = date('Y-m-d', $fp);
+
+                            }else{
+
+                                $fechaHoy = date('Y-m-j');
+                                $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
+                                $fp = date('Y-m-d', $fp);
+
+                            }
+
+                            $fpCompara = strtotime($fp);
+
+                            $boolFPExcedida = 0;
+
+                            if($datetime3 > $fpCompara){
+
+                                $fp = date('Y-m-j');
+                                $boolFPExcedida = 1;
+                            }
+
+                            if(date('D',$fp) == 'Sun' && $boolFPExcedida != 1){
 
                                 $nuevafecha = strtotime ( '-1 day' , strtotime ( $fp ) ) ;
                                 $fp = date ( 'Y-m-d' , $nuevafecha );
 
+                            }else{
+
+                                $nuevafecha = strtotime ( '+1 day' , strtotime ( $fp ) ) ;
+                                $fp = date ( 'Y-m-d' , $nuevafecha );
                             }
 
                             /**

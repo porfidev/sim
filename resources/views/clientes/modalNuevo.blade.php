@@ -181,6 +181,21 @@
                                 name="promedio"
                                 required>
                     </div>
+                    <div class="form-group">
+                        <label for="modalEditEmail">
+                            Cita
+                        </label>
+                        <select class="form-control"
+                            id="cita"
+                            name="cita">
+                            <option value="1">
+                                Con cita
+                            </option>
+                            <option value="0">
+                                Sin cita
+                            </option>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

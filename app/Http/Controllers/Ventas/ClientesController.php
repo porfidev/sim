@@ -274,7 +274,8 @@ class ClientesController extends Controller{
                     'sku'       => 'required|numeric',
                     'd2'        => 'required|numeric',
                     'te'        => 'required|numeric|exists:catalogs,id',
-                    'promedio'  => 'required|numeric'
+                    'promedio'  => 'required|numeric',
+                    'cita'      => 'required|numeric'
                 ),
                 Controller::$messages
             );
@@ -284,11 +285,11 @@ class ClientesController extends Controller{
                 $mensajes = $validator->errors();
             } else {
 
-                $te = $this->cat->getById($request->te);
+                $te = $this->cat->getById($request->te)->id;
                 $c5 = $this->cat->getByLabel('c5');
                 $c4 = $this->cat->getByLabel('c4');
 
-                $ce = ($request->tiendas * $request->sku) * ($te * $request->d2);
+                $ce = floor(($request->tiendas * $request->sku) * ($te * $request->d2));
                 $tp = floor(($request->promedio/$c4)*$c5);
 
                 $data = array(
@@ -308,7 +309,8 @@ class ClientesController extends Controller{
                     ClienteRepository::SQL_CE        => $ce,
                     ClienteRepository::SQL_TP        => $tp,
                     ClienteRepository::SQL_AVERAGE   => $request->promedio,
-                    ClienteRepository::SQL_ESTATUS   => ClienteRepository::ACTIVE
+                    ClienteRepository::SQL_ESTATUS   => ClienteRepository::ACTIVE,
+                    ClienteRepository::SQL_APPOINT   => $request->cita
                 );
                 Log::info(" ClientesController - agregar - data: ".json_encode($data));
                 $this->clienteModel->create($data);
@@ -327,9 +329,9 @@ class ClientesController extends Controller{
         $datos     = array();
         try {
             Log::info(" ClientesController - editar ");
-            if($request->has('id'))
+            if($request->has('idE'))
             {
-                $catalogo = $this->clienteModel->getById( $request->get('id') );
+                $catalogo = $this->clienteModel->getById( $request->get('idE') );
                 if( !empty($catalogo) )
                 {
                     $validator = Validator::make(
@@ -342,14 +344,14 @@ class ClientesController extends Controller{
                             'cp'        => 'required|string|max:10',
                             'ciudad'    => 'required|string|max:191',
                             'direccion' => 'required|string|max:191',
-                            'code'      => 'required|string|max:191|unique:clients,code,'.$request->get('id'),
+                            'code'      => 'required|string|max:191|unique:clients,code,'.$request->get('idE'),
                             'p'         => 'required|numeric|max:100',
                             'tiendas'   => 'required|numeric',
                             'sku'       => 'required|numeric',
                             'd2'        => 'required|numeric',
                             'te'        => 'required|numeric|exists:catalogs,id',
                             'promedio'  => 'required|numeric',
-                            'estatus'   => 'required|boolean'
+                            'cita'      => 'required|numeric'
                         ),
                         Controller::$messages
                     );
@@ -363,7 +365,7 @@ class ClientesController extends Controller{
                         $c5 = $this->cat->getByLabel('c5');
                         $c4 = $this->cat->getByLabel('c4');
 
-                        $ce = ($request->tiendas * $request->sku) * ($te->value * $request->d2);
+                        $ce = floor(($request->tiendas * $request->sku) * ($te->value * $request->d2));
                         $tp = floor(($request->promedio/$c4)*$c5);
 
                         $datos = array();
@@ -374,7 +376,7 @@ class ClientesController extends Controller{
                         $datos[ClienteRepository::SQL_CP]        = $request->cp;
                         $datos[ClienteRepository::SQL_CIUDAD]    = $request->ciudad;
                         $datos[ClienteRepository::SQL_DIRECCION] = $request->direccion;
-                        $datos[ClienteRepository::SQL_ESTATUS]   = $request->estatus;
+                        $datos[ClienteRepository::SQL_APPOINT]   = $request->cita;
                         $datos[ClienteRepository::SQL_CODE]      = $request->code;
                         $datos[ClienteRepository::SQL_P]         = $request->p;
                         $datos[ClienteRepository::SQL_SHOPS]     = $request->tiendas;
@@ -385,7 +387,7 @@ class ClientesController extends Controller{
                         $datos[ClienteRepository::SQL_TP]        = $tp;
                         $datos[ClienteRepository::SQL_AVERAGE]   = $request->promedio;
 
-                        if(!$this->clienteModel->update( $request->get('id'), $datos)) {
+                        if(!$this->clienteModel->update( $request->get('idE'), $datos)) {
                             $resultado = "ERROR";
                             $mensajes  = array( "No se pudo actualizar el cliente" );
                         }

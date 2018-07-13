@@ -13,7 +13,7 @@ class Cliente extends Model
 
     protected $fillable = [
         'name', 'email','telephone','rfc','cp','city','address','status','branch_id',
-        'code','P','shops','sku','package','D2','CE','TE','TP','average','D'
+        'code','P','shops','sku','package','D2','CE','TE','TP','average','D','appointment'
     ];
 
     protected $dates = ['deleted_at'];
