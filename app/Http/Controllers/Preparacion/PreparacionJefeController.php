@@ -504,6 +504,7 @@ class PreparacionJefeController extends Controller
                     DB::beginTransaction();
                     $sequence = 1;
                     $this->crearDisenioPedido($lista, $sequence);
+                    $this->cambiarEstatusAdisenio($pedido);
                     DB::commit();
                     Session::flash('exito', 'Se ha creado el diseño del pedido');
                 } else {
@@ -700,6 +701,26 @@ class PreparacionJefeController extends Controller
     }
 
     /**
+     * Función para cambiar de estatus un pedido a estado de diseño de pedido
+     *
+     * @param App\Order $pedido
+     */
+    private function cambiarEstatusAdisenio($pedido)
+    {
+        // Realizamos el cambio de estatus del pedido
+        $datosW = array();
+        $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::PREPARADO_DISENIO;
+        $this->orderModel->update($pedido->id, $datosW);
+
+        // Agregamos el seguimiento del pedido
+        $datos = array();
+        $datos['order_id']   = $pedido->id;
+        $datos['trace_type'] = OrderRepository::TRACE_RECIBIR_DIST;
+        $datos['user_id']    = Auth::id();
+        $this->orderModel->addTrace($datos);
+    }
+
+    /**
      * Función para guardar csv de pedido en tabla reparto
      *
      * @return json
@@ -776,18 +797,7 @@ class PreparacionJefeController extends Controller
                 $sequence += 1;
             }
 
-
-            // Realizamos el cambio de estatus del pedido
-            $datosW = array();
-            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::PREPARADO_DISENIO;
-            $this->orderModel->update($pedido->id,$datosW);
-
-            // Agregamos el seguimiento del pedido
-            $datos = array();
-            $datos['order_id']   = $pedido->id;
-            $datos['trace_type'] = OrderRepository::TRACE_RECIBIR_DIST;
-            $datos['user_id']    = Auth::id();
-            $this->orderModel->addTrace($datos);
+            $this->cambiarEstatusAdisenio($pedido);
             DB::commit();
 
             Session::flash('exito', 'Se han agregado: '.$contador.' registros y se modificaron:  '.$contMod);
