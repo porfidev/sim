@@ -78,6 +78,8 @@ interface OrderRepository
 
 	function getMaxMin($order_id);
 
+	function getDesignListByOrder($order_id);
+
 	function getDesignListByBox($box_id);
 
 	function createDesign(array $attributes);
