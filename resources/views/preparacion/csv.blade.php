@@ -31,7 +31,7 @@
                         <input type="file"
                             name="CSVFile3"
                             id="CSVFile3"
-                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                            accept=".csv, .txt"
                             class="custom-file-input">
                         <label class="custom-file-label"
                                 id="labelCSV"

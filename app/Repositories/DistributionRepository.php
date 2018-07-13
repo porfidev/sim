@@ -11,6 +11,10 @@ interface DistributionRepository
 	const SQL_SHOP      = "shop";
 	const SQL_ID_DETAIL = "order_detail_id";
 
+	function getItemsByShop($order_id, $shop);
+
+	function getDistinctShops($order_id);
+
 	function getAll();
 
 	function getById($id);
