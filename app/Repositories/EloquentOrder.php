@@ -52,12 +52,25 @@ class EloquentOrder implements OrderRepository
 	public function getMaxMin($order_id){
 		return $this->design->select(
 				"order_id",
-				DB::raw("MAX(id) as max"),
-				DB::raw("MIN(id) as min")
+				DB::raw("MAX(sequence) as max"),
+				DB::raw("MIN(sequence) as min")
 			)
 			->where(self::DESIGN_ORDER, '=', $order_id)
 			->groupBy("order_id")
 			->first();
+	}
+
+	/**
+	 * Función para traer la lista de elementos de un pedido
+	 *
+	 * @param integer $order_id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDesignListByOrder($order_id)
+	{
+		Log::info("EloquentOrder - getDesignListByOrder: $order_id");
+		$order = $this->model->find($order_id);
+		return $order->details;
 	}
 
 	/**
@@ -83,6 +96,7 @@ class EloquentOrder implements OrderRepository
 	 */
 	public function createDesign(array $attributes)
 	{
+		Log::info("EloquentOrder - createDesign: ".json_encode($attributes));
 		return $this->design->create($attributes);
 	}
 
@@ -188,7 +202,7 @@ class EloquentOrder implements OrderRepository
 	 */
 	public function getByNumat($numat)
 	{
-		return $this->model->where($this::SQL_NUMAT,"=",$numat)->get()->first();
+		return $this->model->where($this::SQL_NUMAT, "=", $numat)->first();
     }
 
 	/**

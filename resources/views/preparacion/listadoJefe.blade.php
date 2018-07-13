@@ -1,7 +1,6 @@
 @extends('layouts.sim')
 
 @section('content')
-    <br>
     @if(Session::has('exito'))
     <div class="alert alert-success alert-dismissible fade show mt-3 mb-2"
         role="alert">
@@ -26,7 +25,7 @@
         {{ Session::get('errores') }}
     </div>
     @endif
-    <div class="card mb-3">
+    <div class="card mb-3 mt-3">
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
             <div class="table-responsive">
                 <table class="table table-striped table-fixed mb-0">
@@ -38,31 +37,31 @@
                         </tr>
                         <tr>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 #
                             </th>
                             <th scope="col"
-                                class="col-3">
+                                class="col-sm-3">
                                 Cliente
                             </th>
                             <th scope="col"
-                                class="col-2">
+                                class="col-sm-2">
                                 Estatus
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-2">
+                                class="col-sm-2">
                                 Inicio de Vigencia
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-2">
+                                class="col-sm-2">
                                 Fin de Vigencia
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 Prioridad
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-1">
+                                class="col-sm-1">
                                 Acci&oacute;n
                             </th>
                         </tr>
@@ -149,7 +148,7 @@
                                 #
                             </th>
                             <th scope="col"
-                                class="col-sm-3">
+                                class="col-sm-2">
                                 Cliente
                             </th>
                             <th scope="col" class="col-sm-2">
@@ -168,7 +167,7 @@
                                 Prioridad
                             </th>
                             <th scope="col" style="text-align: center;"
-                                class="col-sm-1">
+                                class="col-sm-2">
                                 Acci&oacute;n
                             </th>
                         </tr>
@@ -176,13 +175,13 @@
                     <tbody class="size-2">
                             @foreach ($listado as $pedido)
                             <tr>
-                                <td class="col-1">
+                                <td class="col-sm-1">
                                     {{ $pedido->codeOrder }}
                                 </td>
-                                <td class="col-3">
+                                <td class="col-sm-2">
                                     {{ $pedido->client->name }}
                                 </td>
-                                <td class="col-2">
+                                <td class="col-sm-2">
                             @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
                                     Recibido en Preparaci&oacute;n
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
@@ -197,13 +196,13 @@
                                     Validado
                             @endif
                                 </td>
-                                <td class="col-2" style="text-align: center;">
+                                <td class="col-sm-2" style="text-align: center;">
                                     {{ $pedido->start }}
                                 </td>
-                                <td class="col-2" style="text-align: center;">
+                                <td class="col-sm-2" style="text-align: center;">
                                     {{ $pedido->end }}
                                 </td>
-                                <td class="col-1" style="text-align: center;">
+                                <td class="col-sm-1" style="text-align: center;">
                                     <button type="button"
                                         class="btn btn-sm btn-info text-white popoverEsp"
                                         role="button"
@@ -216,8 +215,23 @@
                                         {{ $pedido->calculation->priority }}
                                     </button>
                                 </td>
-                                <td class="col-1" style="text-align: center;">
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
+                                <td class="col-sm-2" style="text-align: center;">
+                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
+                                    <button class="btn btn-primary btn-sm cargaCSVReparto"
+                                            data-id="{{ $pedido->id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Subir CSV">
+                                        <i class="material-icons">file_upload</i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm createDesignWithoutCSV"
+                                            data-id="{{ $pedido->id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Crear dise&ntilde;o">
+                                        <i class="material-icons">assignment</i>
+                                    </button>
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
                                     <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
@@ -225,13 +239,13 @@
                                             title="Asignar personal">
                                         <i class="material-icons">person_add</i>
                                     </button>
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
-                                    <button class="btn btn-primary btn-sm cargaCSVReparto"
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
+                                    <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
                                             data-placement="top"
-                                            title="subir reparto">
-                                        <i class="material-icons">file_upload</i>
+                                            title="Asignar personal">
+                                        <i class="material-icons">person_add</i>
                                     </button>
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
                                     <a href="{{ route('preparacion.mostrarValidacion', [ 'order_id' => $pedido->id ]) }}"
@@ -258,69 +272,17 @@
         </div>
     </div>
 
-    <div class="modal fade"
-        id="CSVModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="listaModalTitle"
-        aria-hidden="true">
+    <form method="POST"
+            action="{{ route('preparacion.disenio.sinCSV') }}"
+            id="crearDisenioSinCSV">
+        {{ csrf_field() }}
+        <input type="hidden" name="id" id="crearDisenioSinCSVPedido" value="0">
+    </form>
 
-        {{
-            Form::open(
-                array(
-                    'url'    => 'preparacion/CSVReparto',
-                    'id'     => 'CsvForm',
-                    'method' => 'POST',
-                    'enctype'=> 'multipart/form-data'
-                )
-            )
-        }}
-        <!-- MODAL PARA CSV -->
-        <div class="modal-dialog modal-dialog-centered modal-lg"
-            role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"
-                        id="listaModalTitle">
-                            Archivo CSV
-                    </h5>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <div class="custom-file">
-                            <input type="file"
-                                name="CSVFile3"
-                                id="CSVFile3"
-                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                class="custom-file-input">
-                            <label class="custom-file-label"
-                                    id="labelCSV"
-                                    for="CSVFile3">
-                                Selecciona un archivo CSV
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button
-                        type="submit"
-                        class="btn btn-primary">
-                        Guardar
-                    </button>
-                    <button type="button"
-                        id="btnCerrar"
-                        class="btn btn-secondary"
-                        data-dismiss="modal">
-                        Cerrar
-                    </button>
-                </div>
-            </div>
-        </div>
-        {{ Form::close() }}
-    </div>
 @endsection
 
 @section('final')
+    @include('preparacion.csv')
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('partials.modalConfirmacion')
@@ -353,6 +315,12 @@
                     '{{ route("preparacion.recibir") }}',
                     parametros
                 );
+            });
+
+            $( '.createDesignWithoutCSV' ).click(function () {
+                $( '#overlay' ).show();
+                $( '#crearDisenioSinCSVPedido' ).val( $(this).attr('data-id') );
+                $( '#crearDisenioSinCSV' ).submit();
             });
         });
     </script>

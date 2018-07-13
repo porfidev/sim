@@ -91,7 +91,7 @@
                                 Promedio
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Estatus
+                                Cita
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
                                 <button class="btn btn-sm btn-primary nuevoCliente"
@@ -276,13 +276,13 @@
                                     @if ( Session::has('scl_estatus') && Session::get('scl_estatus') == 1 )
                                         selected
                                     @endif>
-                                        Activo
+                                        Con cita
                                     </option>
                                     <option value="0"
                                     @if ( Session::has('scl_estatus') && Session::get('scl_estatus') == 0 )
                                         selected
                                     @endif>
-                                        Inactivo
+                                        Sin cita
                                     </option>
                                 </select>
                             </th>
@@ -348,7 +348,13 @@
                                 {{ $cli->D2 }}
                             </td>
                             <td>
-                                {{ $cli->TE }}
+                                @if (count($empaques) != 0)
+                                    @foreach ($empaques as $cat)
+                                        @if($cat->id == $cli->TE)
+                                            {{ $cat->label }}
+                                        @endif
+                                    @endforeach
+                                @endif
                             </td>
                             <td>
                                 {{ $cli->CE }}
@@ -360,10 +366,12 @@
                                 {{ $cli->average }}
                             </td>
                             <td style="text-align: center;">
-                    @if ($cli->estatus == 0)
-                                <span class="text-danger font-weight-bold">Inactivo</span>
-                    @elseif ($cli->estatus == 1)
-                                <span class="text-success font-weight-bold">Activo</span>
+                    @if ($cli->appointment == 0)
+                                <span class="text-danger font-weight-bold">Sin cita</span>
+                    @elseif ($cli->appointment == 1)
+                                <span class="text-success font-weight-bold">Con cita</span>
+                    @else
+                                <span class="text-success font-weight-bold">Sin datos</span>
                     @endif
                             </td>
                             <td style="text-align: center;">
@@ -383,7 +391,9 @@
                                         data-sku="{{ $cli->sku }}"
                                         data-d2="{{ $cli->D2 }}"
                                         data-tp="{{ $cli->TP }}"
+                                        data-te="{{ $cli->TE }}"
                                         data-promedio="{{ $cli->average }}"
+                                        data-appo="{{ $cli->appointment }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Editar">

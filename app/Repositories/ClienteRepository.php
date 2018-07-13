@@ -23,11 +23,17 @@ interface ClienteRepository
 	const SQL_TE  = "TE";
 	const SQL_CE  = "CE";
 	const SQL_TP  = "TP";
+	const SQL_APPOINT  = "appointment";
 	const SQL_AVERAGE  = "average";
 	const SQL_D  = "D";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
+
+	//active appointment
+
+	const DEACTIVE_APPOINTMENT = 0;
+	const ACTIVE_APPOINTMENT  = 1;
 
 	function getAll();
 

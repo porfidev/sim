@@ -105,7 +105,7 @@
                         var row = "<tr>";
                         row += "<td class=\"table-primary\" colspan=2 style=\"text-align: center;\">";
                         row += ("<div class=\"row\"><div class=\"col\">Pedido: #" + item.order.codeOrder
-                            + " Caja " + (item.id - item.min + 1) + " de " + (item.max - item.min +1) + "</div>");
+                            + " Caja " + item.sequence + " de " + item.max + "</div>");
                         row += "</td>";
                         row += "</tr>";
                         $( "#searchResults" ).append(row);

@@ -358,7 +358,7 @@ class SurtidoJefeController extends Controller
             $idPed = $request->get('id');
 
             $datosW = array();
-            $datosW[OrderRepository::SQL_ESTATUS] = 4;
+            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_VALIDO;
 
             if(!$this->orderModel->update($idPed,$datosW)) {
 
@@ -366,6 +366,12 @@ class SurtidoJefeController extends Controller
                 $mensajes  = array( "No se pudo validar el pedido" );
 
             }
+
+            $datos['order_id'] = $idPed;
+            $datos['trace_type'] = OrderRepository::TRACE_VALDAR_SURTIDO;
+            $datos['user_id'] = Auth::id();
+
+            $this->orderModel->addTrace($datos);
 
 
         } catch (\Exception $e) {

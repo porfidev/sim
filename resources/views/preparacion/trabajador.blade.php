@@ -27,7 +27,7 @@
                                 <div class="row">
                                     <div class="col">
                                         Pedido: #{{ $pedido->codeOrder }}
-                                        Caja {{ $pedido->order_design_id - $pedido->min + 1 }} de {{ $pedido->max - $pedido->min + 1 }}
+                                        Caja {{ $pedido->sequence }} de {{ $pedido->max }}
                                     </div>
                                     <div class="col"
                                         id="finishBtn_{{ $pedido->id }}"
