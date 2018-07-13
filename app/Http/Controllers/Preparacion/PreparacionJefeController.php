@@ -812,4 +812,42 @@ class PreparacionJefeController extends Controller
         }
     }
 
+    /**
+     * Función que muestra el diseño del pedido realizado para su validación
+     *
+     * @return View
+     */
+    public function mostrarDisenio(Request $request)
+    {
+        Log::debug("PreparacionJefeController - mostrarDisenio");
+        try {
+            if($request->has('id')) {
+                $pedido = $this->orderModel->getById($request->id);
+                if(!empty($pedido)){
+                    $listado = $pedido->design()->with('orderDetail')->get();
+                    foreach ($listado as $item) {
+                        $item->product;
+                    }
+                    return view('preparacion.listadoJefe',
+                        array(
+                            "listado"    => $listado
+                        )
+                    );
+                } else {
+                    Session::flash('errores', 'No se encontró pedido');
+                    return redirect()->route('preparacion.listado');
+                }
+            } else {
+                Session::flash('errores', 'No se cuenta con los datos suficientes para mostrar el diseño del pedido');
+                return redirect()->route('preparacion.listado');
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - mostrarDisenio - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - mostrarDisenio - Trace: \n".$e->getTraceAsString() );
+            DB::rollback();
+            Session::flash('errores', 'Ocurrio el siguiente error: '.$e->getMessage());
+            return redirect()->route('preparacion.listado');
+        }
+    }
+
 }
