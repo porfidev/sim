@@ -61,6 +61,19 @@ class EloquentOrder implements OrderRepository
 	}
 
 	/**
+	 * Función para traer la lista de elementos de un pedido
+	 *
+	 * @param integer $order_id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDesignListByOrder($order_id)
+	{
+		Log::info("EloquentOrder - getDesignListByOrder: $order_id");
+		$order = $this->model->find($order_id);
+		return $order->details;
+	}
+
+	/**
 	 * Función para traer la lista de elemtos registrados en una caja
 	 *
 	 * @param integer $box_id
@@ -83,6 +96,7 @@ class EloquentOrder implements OrderRepository
 	 */
 	public function createDesign(array $attributes)
 	{
+		Log::info("EloquentOrder - createDesign: ".json_encode($attributes));
 		return $this->design->create($attributes);
 	}
 

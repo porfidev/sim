@@ -1,7 +1,6 @@
 @extends('layouts.sim')
 
 @section('content')
-    <br>
     @if(Session::has('exito'))
     <div class="alert alert-success alert-dismissible fade show mt-3 mb-2"
         role="alert">
@@ -26,7 +25,7 @@
         {{ Session::get('errores') }}
     </div>
     @endif
-    <div class="card mb-3">
+    <div class="card mb-3 mt-3">
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
             <div class="table-responsive">
                 <table class="table table-striped table-fixed mb-0">
@@ -225,7 +224,7 @@
                                             title="Subir CSV">
                                         <i class="material-icons">file_upload</i>
                                     </button>
-                                    <button class="btn btn-primary btn-sm"
+                                    <button class="btn btn-primary btn-sm createDesignWithoutCSV"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
                                             data-placement="top"
@@ -272,6 +271,13 @@
             </div>
         </div>
     </div>
+
+    <form method="POST"
+            action="{{ route('preparacion.disenio.sinCSV') }}"
+            id="crearDisenioSinCSV">
+        {{ csrf_field() }}
+        <input type="hidden" name="id" id="crearDisenioSinCSVPedido" value="0">
+    </form>
 
     <div class="modal fade"
         id="CSVModal"
@@ -368,6 +374,12 @@
                     '{{ route("preparacion.recibir") }}',
                     parametros
                 );
+            });
+
+            $( '.createDesignWithoutCSV' ).click(function () {
+                $( '#overlay' ).show();
+                $( '#crearDisenioSinCSVPedido' ).val( $(this).attr('data-id') );
+                $( '#crearDisenioSinCSV' ).submit();
             });
         });
     </script>

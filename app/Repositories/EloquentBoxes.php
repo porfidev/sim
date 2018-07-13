@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\Box;
 use App\BoxId;
 
@@ -40,6 +42,8 @@ class EloquentBoxes implements BoxesRepository
 				self::SQL_ID,
 				DB::raw('MAX(width*height*depth) as volumen')
 			)
+			->groupBy(self::SQL_ID)
+			->orderBy(DB::raw('volumen'), 'desc')
 			->first();
 	}
 
