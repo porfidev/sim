@@ -65,18 +65,22 @@
 						<p>
 						<b>SKU: {{ $item->ItemCode}}
 						<br>
-						Cantidad solicitada: {{ $item->quantity}}
+						Cantidad requerida: {{ $item->u_CantReq}}
 						</b></p>
 					</td>
 					<td>
 						<button class="btn btn-sm btn-primary nuevaRecepcion"
 							data-toggle="tooltip"
+							data-id="{{ $item->ItemCode }}"
+							data-cmd="{{ $item->purchase_id }}"
 							data-placement="top"
 							title="Completar Item"
 							type="reset"
 							>
 						<i class="material-icons">radio_button_checked</i>
 						</button>
+
+
 					</td>
 				</tr>
 				@endforeach           

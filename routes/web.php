@@ -100,7 +100,7 @@ Route::get('/hh/recepcion/listadoHH',                  '\App\Http\Controllers\Re
 Route::post('/hh/recepcion/listadoHH',                 '\App\Http\Controllers\Recepcion\RecepcionController@listadoHH'      )->name('ordenes.listadoHH');
 Route::get('/hh/recepcion/listadoItemsHH/{purchase}',  '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH' );
 Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH' )->name('ordenes.listadoItemsHH');
-Route::get('hh/recepcion/validacionHH/{purchase}',     '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH' )->name('ordenes.validacionHH');
+Route::get('hh/recepcion/validacionHH/{purchase}',     '\App\Http\Controllers\Recepcion\RecepcionController@validacionHH'   )->name('ordenes.validacionHH');
 
 Route::post('hh/recepcion/captura',                    '\App\Http\Controllers\Recepcion\RecepcionController@formularioDatos'   )->name('ordenes.captura');
 Route::get('hh/recepcion/captura',                     '\App\Http\Controllers\Recepcion\RecepcionController@formularioDatos'   )->name('ordenes.captura');

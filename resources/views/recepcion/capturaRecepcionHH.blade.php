@@ -8,6 +8,9 @@ SKU: <b> {{ $data["sku"] }}  </b>
 Cantidad requerida: <b> {{ $data["cantidadRequerida"] }} </b>
 <br>
 Cantidad recibida: <b> {{ $data["cantidad"] }} </b>
+<br>
+Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  d&iacute;as</b>
+<br>
 
 <form id="formCapturaDatos" data-toggle="validator" role="form" action="{{ route('ordenes.validaCaptura') }}" novalidate>
     <div class="form-group row">
@@ -39,7 +42,12 @@ Cantidad recibida: <b> {{ $data["cantidad"] }} </b>
                     class="form-control" 
                     id="inputCantidad" 
                     value= {{ $data["cantidad"] }}
-                    name="recibida">        
+                    name="recibida">    
+            <input type="hidden" 
+                    class="form-control" 
+                    id="inputPurchase" 
+                    value= {{ $data["purchaseid"] }}
+                    name="purchase">      
         </div>
     </div>
     <br>
@@ -65,11 +73,7 @@ Cantidad recibida: <b> {{ $data["cantidad"] }} </b>
 
 @section('final')
 
-<script type="text/javascript">
-    $(document).ready(function () {
-       $('#formCapturaDatos').validator()
-    });
-</script>
+
 
 	<script type="text/javascript">
 		$(document).ready(function () {

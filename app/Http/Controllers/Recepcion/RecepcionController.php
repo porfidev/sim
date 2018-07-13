@@ -144,13 +144,13 @@ class RecepcionController extends Controller
     }
 
 
-    public function validaCodigo($codigo){
+    public function validaCodigo($codigo, $sku, $purchaseid){
 
         $mensajes  = "OK";
         $cantidadTot = -1;
-        $sku=0;
         $concept="";
         $cantidadRequerida="";
+        $caducidadMinima="";
         $response = [];
         
         $modelo =  new Product;
@@ -165,24 +165,33 @@ class RecepcionController extends Controller
 
             if( $product != null ) {
 
-                $sku=$product->sku;
-                $concept=$product->concept;
+                if($product->sku === $sku){ 
 
-                $lepurchaseItem = $purchaseItemModelE->getByCode($sku);
-                $cantidadRequerida = $lepurchaseItem->u_CantReq;
+                    $sku=$product->sku;
+                    $concept=$product->concept;
+                    $caducidadMinima=$product->caducidad_minima;
 
-                if($codigo == $product->corrugated_barcode){
+                    $lepurchaseItem = $purchaseItemModelE->getByCode($sku);
+                    $cantidadRequerida = $lepurchaseItem->u_CantReq;
 
-                    $cantidadTot = intval($product->display_per_box)*intval($product->items_per_display);
+                    if($codigo == $product->corrugated_barcode){
 
-                } else if($codigo == $product->display_barcode){
+                        $cantidadTot = intval($product->display_per_box)*intval($product->items_per_display);
 
-                    $cantidadTot = intval($product->items_per_display);
+                    } else if($codigo == $product->display_barcode){
 
-                } else if($codigo == $product->barcode){
+                        $cantidadTot = intval($product->items_per_display);
 
-                    $cantidadTot = 1;
-                }
+                    } else if($codigo == $product->barcode){
+
+                        $cantidadTot = 1;
+                    }
+                } else {
+
+                    Log::error("RecepcionController - validaCodigo: El objeto product esta vacío");
+                    $resultado = "El codigo de barras corresponde a otro producto";
+                    $mensajes  = "El codigo de barras corresponde a otro producto" ;
+                } 
 
             } else {
 
@@ -201,23 +210,35 @@ class RecepcionController extends Controller
         $response["cantidad"] = $cantidadTot;
         $response["concept"] = $concept;
         $response["cantidadRequerida"] = $cantidadRequerida;
+        $response["caducidadMinima"] = $caducidadMinima;
+        $response["purchaseid"] = $purchaseid;
         
         return $response;
       
     }
 
     public function formularioDatos(Request $request){
-        $resultado = "recepcion.capturaRecepcion";
+        $resultado = "recepcion.capturaRecepcionHH";
         $codigo = "0";
 
         if( $request->has("codigo")) {
             $codigo = $request->input("codigo");
         }
 
-        $data = $this->validaCodigo($codigo);
+        if( $request->has("itemCode")) {
+            $itemCode = $request->input("itemCode");
+        }
+
+        if( $request->has("purchaseid")) {
+            $purchaseid = $request->input("purchaseid");
+        }
+        
+
+
+        $data = $this->validaCodigo($codigo, $itemCode, $purchaseid);
 
         if ( $data["cantidad"] == -1 ) { 
-            $resultado = "recepcion.mensajesRecepcion";
+            $resultado = "recepcion.mensajesRecepcionHH";
             $leyendaTitulo = "Sin registro";
         } else {
             $leyendaTitulo = $data["concept"];
@@ -234,9 +255,8 @@ class RecepcionController extends Controller
         $sku="";
         $caducidad="";
         $recibida="";
-
+        $purchase="5";
         $carbon = new Carbon();  
-
 
         if( $request->has("lote")) {
             $lote = $request->input("lote");
@@ -254,21 +274,33 @@ class RecepcionController extends Controller
             $recibida = $request->input("recibida");
         }
 
+        if( $request->has("purchase")) {
+            $purchase = $request->input("purchase");
+        }
 
-        $data = $this->capturaDatos($sku,$caducidad,$recibida,$lote);
-    
-        $leyendaTitulo = $sku;
+        $data = $this->capturaDatos($sku,$caducidad,$recibida,$lote,$purchase);
+
+
+        if ( $data["resultado"] === "ERROR" ) { 
+            $resultado = "recepcion.mensajesRecepcionHH";
+            $leyendaTitulo = "No se completo el registro";
+            $purchase = "ERROR";
+        } else {
+            $leyendaTitulo = $sku;
+
+        }
 
         return view($resultado,['data' => $data,'leyendaTitulo' => $leyendaTitulo]  );
 
 
     }
 
-    static function capturaDatos($sku,$caducidad, $cantidadCapturada, $lote){
+    static function capturaDatos($sku,$caducidad, $cantidadCapturada, $lote, $purchaseid){
   
         $resultado  = "NA";
         $mensajes  = "";
         $response = [];
+        $total="";
         
         $modeloP =  new Product;
         $modeloAI =  new ArrivalItem;
@@ -309,11 +341,12 @@ class RecepcionController extends Controller
                                     $total= $arrivalItem->quantity;
                                     $resultado = $arrivalItemModelE->update($arrivalItem->id, $data);
                                     $mensajes  = "El producto ha sido actualizado: " .  $arrivalItem->ItemCode;
+                                  
 
                                 } else {
-                                    Log::error( 'RecepcionController - capturaDatos - Error:  La caducidad del producto recibido es menor al ultimo producto recibido.' );
-                                    $resultado = "ERROR.";
-                                    $mensajes  = "La caducidad del producto recibido es menor al ultimo producto recibido";
+                                    Log::error( 'RecepcionController - capturaDatos - Error:  La caducidad registrada es menor a la caducidad del ultimo producto recibido.' );
+                                    $resultado = "ERROR";
+                                    $mensajes  = "La caducidad registrada es menor a la caducidad del ultimo producto recibido: " . $caducidad_minima;
                                 }
 
                             } else {
@@ -343,7 +376,9 @@ class RecepcionController extends Controller
                                         );
                                 
                                     $nuevoArrivalItem =$arrivalItemModelE ->create($data);
+                                    $total= $cantidadCapturada;
                                     $mensajes  = "Se ha creado un nuevo arrival item.";
+                                    $resultado = "New Done";
 
                                     }else{
                                         Log::error( 'No existe el purchase item' );
@@ -359,19 +394,19 @@ class RecepcionController extends Controller
 
                     } else {
                         Log::error( 'RecepcionController - capturaDatos - Error:  El item no tiene caducidad minima definida.' );
-                        $resultado = "ERROR..";
+                        $resultado = "ERROR";
                         $mensajes  = " El item no tiene caducidad minima definida.";
                     }
                 } else {
                    Log::error( 'RecepcionController - capturaDatos - Error:  El producto no existe' );
-                   $resultado = "ERROR..";
+                   $resultado = "ERROR";
                    $mensajes  = " El producto no existe.";
                 }
           
 
         } catch (\Exception $e) {
             Log::error( 'RecepcionController - capturaDatos - Error: '.$e->getMessage() );
-            $resultado = "ERROR...";
+            $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
 
@@ -384,6 +419,7 @@ class RecepcionController extends Controller
         $response["pcaducidad_minima"] = $product->caducidad_minima;
         $response["mensajes"] = $mensajes;
         $response["resultado"] = $resultado;
+        $response["purchaseid"] = $purchaseid;
 
         return $response;    
     }

@@ -80,6 +80,7 @@
                         <br>
                         <h6>{{ $item->created_at->format('Y-m-d') }}</h6>
                         <a>
+
                     </td>
                 </tr>
                 @endforeach
@@ -114,7 +115,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $( '.irADetalleHH' ).click(function () {
-                window.location.href = "/hh/recepcion/listadoItemsHH/" + $(this).attr( "data-id" );
+                window.location.href =  "{{ URL::to('/hh/recepcion/listadoItemsHH/') }}/"+$(this).attr( "data-id" );
+               
             });
         });
     </script>
