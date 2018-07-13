@@ -200,6 +200,13 @@ class DownloadOrders extends Command
                             $fp = strtotime ( '+'.$validity.' day' , strtotime ( $fechaHoy ) );
                             $fp = date('Y-m-d', $fp);
 
+                            if(date('D',$fp) == 'Sun'){
+
+                                $nuevafecha = strtotime ( '-1 day' , strtotime ( $fp ) ) ;
+                                $fp = date ( 'Y-m-d' , $nuevafecha );
+
+                            }
+
                             /**
                              * Regla 5: Cálculo de detalle del pedido
                              *
