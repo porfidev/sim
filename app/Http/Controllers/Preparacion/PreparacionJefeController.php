@@ -823,14 +823,20 @@ class PreparacionJefeController extends Controller
         try {
             if($request->has('id')) {
                 $pedido = $this->orderModel->getById($request->id);
+                $pedido->client;
                 if(!empty($pedido)){
-                    $listado = $pedido->design()->with('orderDetail')->get();
+                    $listado = $pedido->design()
+                        ->with('orderDetail', 'boxType')
+                        ->orderBy(OrderRepository::DESIGN_SEQUENCE)
+                        ->orderBy(OrderRepository::DESIGN_ORDER_DETAIL)
+                        ->get();
                     foreach ($listado as $item) {
                         $item->product;
                     }
-                    return view('preparacion.listadoJefe',
+                    return view('preparacion.validacionDisenio',
                         array(
-                            "listado"    => $listado
+                            "pedido"  => $pedido,
+                            "listado" => $listado
                         )
                     );
                 } else {
