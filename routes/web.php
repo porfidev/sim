@@ -131,8 +131,8 @@ Route::post('/preparacion/terminaTarea', '\App\Http\Controllers\Preparacion\Prep
 
 // Embarque o distribución de pedido
 
-// Pedidos pendientes
 
+// Pedidos pendientes
 Route::get('/pendientes/listado',     '\App\Http\Controllers\Pendings\PendingsController@listado')->name('pendiente.listado');
 Route::post('/pendientes/apartar',     '\App\Http\Controllers\Pendings\PendingsController@apartar')->name('pendiente.apartar');
 Route::post('/pendientes/arreglaCli',     '\App\Http\Controllers\Pendings\PendingsController@arreglaCli')->name('pendiente.arreglaCli');

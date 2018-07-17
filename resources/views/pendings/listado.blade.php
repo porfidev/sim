@@ -60,6 +60,7 @@
                             @if ($pedido->client_status == 1)
                                 <button type="button"
                                     class="btn btn-sm btn-primary arreglarCliente"
+                                    data-name="{{ $pedido->cliente->name }}"
                                     data-id="{{ $pedido->client_id }}"
                                     data-code="{{ $pedido->cliente->code }}"
                                     data-p="{{ $pedido->cliente->P }}"

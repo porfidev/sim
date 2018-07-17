@@ -197,11 +197,11 @@
                         <select class="form-control"
                             id="citaE"
                             name="cita">
-                            <option value="1">
-                                Con cita
-                            </option>
                             <option value="0">
                                 Sin cita
+                            </option>
+                            <option value="1">
+                                Con cita
                             </option>
                         </select>
                     </div>
@@ -249,9 +249,13 @@
             $( '#tiendasE' ).val($(this).attr( "data-tienda" ));
             $( '#skuE' ).val($(this).attr( "data-sku" ));
             $( '#d2E' ).val($(this).attr( "data-d2" ));
-            $( '#teE' ).val($(this).attr( "data-te" ));
+            if($(this).attr( "data-te" )) {
+                $( '#teE' ).val($(this).attr( "data-te" ));
+            }
             $( '#promedioE' ).val($(this).attr( "data-promedio" ));
-            $( '#citaE' ).val($(this).attr( "data-appo" ));
+            if($(this).attr( "data-appo" )) {
+                $( '#citaE' ).val($(this).attr( "data-appo" ));
+            }
             $( '#loading_modal_edit_user' ).hide();
             $( '#formGuardarEditar' ).show();
             

@@ -3,7 +3,7 @@
     id="modalEditarCatalogo"
     tabindex="-1"
     role="dialog"
-    aria-labelledby="modalEditarUsuarioTitle"
+    aria-labelledby="modalEditarcatalogoTitle"
     aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-lg"
@@ -11,7 +11,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    <span id="modalEditarUsuarioTitle">&nbsp;</span>
+                    <span id="modalEditarcatalogoTitle">&nbsp;</span>
                 </h4>
                 <button type="button"
                     class="close"
@@ -91,7 +91,7 @@
             });
 
             //console.log("opcion seleccionada: "+$(this).attr( "data-grupo" ));
-            
+            $( '#modalEditarcatalogoTitle' ).text('Editar Distancia');
             $( '#modalEditIdDist'      ).val(id);
             $( '#modalEditEtiqueta'    ).val($(this).attr( "data-etiqueta" ));
             

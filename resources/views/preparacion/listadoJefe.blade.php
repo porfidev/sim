@@ -102,7 +102,7 @@
                                     data-html="true"
                                     title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
                                     data-content="<ul style='padding-left: 20px;'><li>Prioridad: {{ $pedido->calculation->P }}</li>
-                                                 <li>Dificultad: {{ $pedido->calculation->D }}</li>
+                                                 <li>Dificultad del pedido: {{ $pedido->calculation->D }}</li>
                                                  <li>Vigencia: {{ $pedido->calculation->V }}</li></ul>">
                                 {{ $pedido->calculation->priority }}
                                 </button>
@@ -210,7 +210,7 @@
                                         data-html="true"
                                         title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
                                         data-content="<ul style='padding-left: 20px;'><li>Prioridad: {{ $pedido->calculation->P }}</li>
-                                                 <li>Dificultad: {{ $pedido->calculation->D }}</li>
+                                                 <li>Dificultad del pedido: {{ $pedido->calculation->D }}</li>
                                                  <li>Vigencia: {{ $pedido->calculation->V }}</li></ul>">
                                         {{ $pedido->calculation->priority }}
                                     </button>
