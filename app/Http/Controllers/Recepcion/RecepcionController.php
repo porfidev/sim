@@ -123,6 +123,14 @@ class RecepcionController extends Controller
     }
 
 
+    public function listadoValidacionHH(Request $request){
+        $data = ArrivalItem::paginate(10);
+
+        return view('recepcion.validacionHH',['data' => $data,'leyendaTitulo' => "Productos recibidos"] );
+
+    }
+
+
     public function listadoItems($purchase_id)
     {
         $data = PurchaseItems::where('purchase_id','=',$purchase_id)->paginate(10);
@@ -294,6 +302,7 @@ class RecepcionController extends Controller
 
 
     }
+
 
     static function capturaDatos($sku,$caducidad, $cantidadCapturada, $lote, $purchaseid){
   
