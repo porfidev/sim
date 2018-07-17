@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeKeyCalc extends Migration
+class ChangeFpCalc extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class ChangeKeyCalc extends Migration
      */
     public function up()
     {
-        
 
         Schema::table('calculations', function (Blueprint $table) {
 
-            $table->dropForeign(['ordersId']);
-            $table->dropColumn('ordersId');
-            
-            $table->integer('order_id')->unsigned()->after('D');
-            $table->foreign('order_id')->references('id')->on('orders');
+            $table->dropColumn('FP');
+                        
+        });
+
+        Schema::table('calculations', function (Blueprint $table) {
+
+            $table->date('FP')->after('priority')->nullable();
+
         });
     }
 
@@ -31,7 +33,7 @@ class ChangeKeyCalc extends Migration
      * @return void
      */
     public function down()
-    {    
-
+    {
+        //
     }
 }

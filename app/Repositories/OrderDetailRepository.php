@@ -25,7 +25,7 @@ interface OrderDetailRepository
 
 	function getByIdOrd($id);
 
-	function getDetExt($it,$qua,$pack,$idOrd);
+	function getDetExt($it,$idOrd);
 
 	function create(array $attributes);
 

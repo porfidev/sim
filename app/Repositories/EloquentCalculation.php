@@ -132,6 +132,11 @@ class EloquentCalculation implements CalculationRepository
     	return $this->model->where(self::SQL_ORDID,'=',$idOrd)->get()->first();
     }
 
+    public function getCalcDist($distId){
+
+    	return $this->model->where(self::SQL_DIST, "=", $distId)->get();
+    }
+
     /**
 	 * Create a new Catalogo.
 	 *

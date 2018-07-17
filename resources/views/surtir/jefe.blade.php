@@ -162,8 +162,8 @@
                                     data-toggle="popover"
                                     data-html="true"
                                     title="<div style='text-align:center;width:100$'>C&aacute;lculos</div>"
-                                    data-content="<ul><li>Prioridad: {{ $ped->P }}</li>
-                                                 <li>Dificultad: {{ $ped->D }}</li>
+                                    data-content="<ul style='padding-left: 20px;'><li>Prioridad: {{ $ped->P }}</li>
+                                                 <li>Dificultad del pedido: {{ $ped->D }}</li>
                                                  <li>Vigencia: {{ $ped->V }}</li></ul>">
                                     {{ $ped->priority }}
                                 </button>

@@ -34,6 +34,10 @@
                             name="idE"
                             id="modalEditId"
                             value="0">
+                    <input type="hidden"
+                            name="idPed"
+                            id="modalEditIdPed"
+                            value="0">
                     <div class="form-group">
                         <label for="nombreE">
                             Nombre
@@ -41,85 +45,9 @@
                         <input type="text"
                                 class="form-control"
                                 id="nombreE"
+                                disabled
                                 placeholder="Escribe el nombre"
                                 name="nombre"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="correoE">
-                            Correo
-                        </label>
-                        <input type="text"
-                                class="form-control"
-                                id="correoE"
-                                placeholder="Escribe el correo"
-                                name="correo"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="telefonoE">
-                            Telefono
-                        </label>
-                        <input type="text"
-                                class="form-control"
-                                id="telefonoE"
-                                placeholder="Escribe el telefono"
-                                name="telefono"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="rfcE">
-                            RFC
-                        </label>
-                        <input type="text"
-                                class="form-control"
-                                id="rfcE"
-                                placeholder="Escribe el RFC"
-                                name="rfc"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cpE">
-                            CP
-                        </label>
-                        <input type="text"
-                                class="form-control"
-                                id="cpE"
-                                placeholder="Escribe el CP"
-                                name="cp"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ciudadE">
-                            Ciudad
-                        </label>
-                        <input type="text"
-                                class="form-control"
-                                id="ciudadE"
-                                placeholder="Escribe la Ciudad"
-                                name="ciudad"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="direccionE">
-                            Direcci&oacute;n
-                        </label>
-                        <input type="text"
-                                class="form-control"
-                                id="direccionE"
-                                placeholder="Escribe la Direccion"
-                                name="direccion"
-                                required>
-                    </div>
-                    <div class="form-group">
-                        <label for="codeE">
-                            C&oacute;digo
-                        </label>
-                        <input type="text"
-                                class="form-control"
-                                id="codeE"
-                                placeholder="Escribe el codigo"
-                                name="code"
                                 required>
                     </div>
                     <div class="form-group">
@@ -228,23 +156,21 @@
 <script type="text/javascript">
     var update = 0;
     $(document).ready(function () {
-        $( '.editarCliente' ).click(function () {
+
+        $( '.arreglarCliente' ).click(function () {
+            
             var id = $(this).attr( "data-id" );
+            var idPed = $(this).attr( "data-idPed" );
             update = 0;
             $( "#modalEditarCliente" ).modal({
                 keyboard : false,
                 backdrop : 'static'
             });
 
+            $( '#modalEditarUsuarioTitle' ).text( $(this).attr('data-name') );
             $( '#modalEditId'      ).val(id);
+            $( '#modalEditIdPed'      ).val(idPed);
             $( '#nombreE'    ).val($(this).attr( "data-nombre" ));
-            $( '#correoE'   ).val($(this).attr( "data-correo" ));
-            $( '#telefonoE'     ).val($(this).attr( "data-telefono" ));
-            $( '#rfcE' ).val($(this).attr( "data-rfc" ));
-            $( '#cpE' ).val($(this).attr( "data-cp" ));
-            $( '#ciudadE' ).val($(this).attr( "data-ciudad" ));
-            $( '#direccionE' ).val($(this).attr( "data-direccion" ));
-            $( '#codeE' ).val($(this).attr( "data-code" ));
             $( '#pE' ).val($(this).attr( "data-p" ));
             $( '#tiendasE' ).val($(this).attr( "data-tienda" ));
             $( '#skuE' ).val($(this).attr( "data-sku" ));
@@ -267,7 +193,7 @@
             $( '#formGuardarEditar' ).hide();
 
             $.ajax({
-                url    : "{{ route('clientes.editar') }}",
+                url    : "{{ route('pendiente.arreglaCli') }}",
                 method : "POST",
                 data: $( "#formGuardarEditar" ).serialize()
             }).done(function( data ) {
