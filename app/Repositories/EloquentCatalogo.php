@@ -144,7 +144,7 @@ class EloquentCatalogo implements CatalogoRepository
 
 	public function getByLabelFull($label){
 
-		return $this->model->where(self::SQL_ETIQUETA, '=', $label)->first()->value;
+		return $this->model->where(self::SQL_ETIQUETA, '=', $label)->first();
 	}
 
     /**

@@ -53,6 +53,9 @@ use App\Repositories\EloquentBoxes;
 use App\Repositories\DistributionRepository;
 use App\Repositories\EloquentDistribution;
 
+use App\Repositories\PendingsRepository;
+use App\Repositories\EloquentPendings;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -89,5 +92,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(HistorySupplyRepository::class,  EloquentHistorySupply::class);
         $this->app->singleton(BoxesRepository::class,          EloquentBoxes::class);
         $this->app->singleton(DistributionRepository::class,   EloquentDistribution::class);
+        $this->app->singleton(PendingsRepository::class,   EloquentPendings::class);
     }
 }

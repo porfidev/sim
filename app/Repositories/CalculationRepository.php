@@ -22,6 +22,8 @@ interface CalculationRepository
 
 	function getIdCalc($idOrd);
 
+	function getCalcDist($distId);
+
 	function getCalc($idOrd);
 
 	function create(array $attributes);
