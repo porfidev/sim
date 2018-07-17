@@ -248,13 +248,9 @@
             $( '#pE' ).val($(this).attr( "data-p" ));
             $( '#tiendasE' ).val($(this).attr( "data-tienda" ));
             $( '#skuE' ).val($(this).attr( "data-sku" ));
-            //$( '#pack' ).val($(this).attr( "data-pack" ));
             $( '#d2E' ).val($(this).attr( "data-d2" ));
             $( '#teE' ).val($(this).attr( "data-te" ));
-            //$( '#ce' ).val($(this).attr( "data-ce" ));
-            //$( '#tp' ).val($(this).attr( "data-tp" ));
             $( '#promedioE' ).val($(this).attr( "data-promedio" ));
-            //$( '#d' ).val($(this).attr( "data-d" ));
             $( '#citaE' ).val($(this).attr( "data-appo" ));
             $( '#loading_modal_edit_user' ).hide();
             $( '#formGuardarEditar' ).show();
