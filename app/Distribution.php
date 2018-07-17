@@ -37,4 +37,12 @@ class Distribution extends Model
         return $this->belongsTo('App\Product', 'sku');
     }
 
+    /**
+     * Get the details for the distribution.
+     */
+    public function detail()
+    {
+        return $this->belongsTo('App\OrderDetail', 'order_detail_id');
+    }
+
 }

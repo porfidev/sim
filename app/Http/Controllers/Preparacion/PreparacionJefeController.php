@@ -210,20 +210,20 @@ class PreparacionJefeController extends Controller
      *
      * @param array $lista
      */
-    private function crearDisenioPedido($lista, $sequence_init, $is_detail=true)
+    private function crearDisenioPedido($lista, &$sequence, $is_detail=true)
     {
-        Log::info("PreparacionJefeController - crearDisenioPedido: ".count($lista)." elementos - ".$sequence_init);
+        Log::info("PreparacionJefeController - crearDisenioPedido: ".count($lista)." elementos - ".$sequence);
         $biggestBox = $this->boxModel->getBiggestBox();
-        $sequence   = $sequence_init;
         $freeSpace  = $biggestBox->volumen;
-        foreach ($lista as $item) {
-            Log::info("_____________________________________________________________________________________");
+        $size       = count($lista);
+        foreach ($lista as $index => $item) {
+            Log::info("________________________________________________ $index ________________________________________________");
             if($is_detail) {
                 $detail = $item;
-                $detail->order_id = $detail->idOrder;
             } else {
-                $detail = $item->orderDetail()->with('product')->first();
+                $detail = $item->detail()->with('product')->first();
             }
+            $detail->order_id = $detail->idOrder;
             Log::info("PreparacionJefeController - crearDisenioPedido - item: \n".json_encode($item));
             Log::info("PreparacionJefeController - crearDisenioPedido - detail: \n".json_encode($detail));
             Log::info("PreparacionJefeController - crearDisenioPedido - secuencia: $sequence");
@@ -246,10 +246,11 @@ class PreparacionJefeController extends Controller
             if($totalItems >= $item->quantity) {
                 // Agregamos todos los productos a la caja
                 Log::info("PreparacionJefeController - crearDisenioPedido - agrego items: ".$item->quantity." de ".$detail->product->sku);
+                $usedBox = $biggestBox->id;
                 $this->orderModel->createDesign(
                     array(
                         OrderRepository::DESIGN_SEQUENCE     => $sequence,
-                        OrderRepository::DESIGN_BOX_TYPE     => $biggestBox->id,
+                        OrderRepository::DESIGN_BOX_TYPE     => $usedBox,
                         OrderRepository::DESIGN_ORDER        => $detail->order_id,
                         OrderRepository::DESIGN_ORDER_DETAIL => $detail->id,
                         OrderRepository::DESIGN_QUANTITY     => $item->quantity
@@ -264,22 +265,36 @@ class PreparacionJefeController extends Controller
                     Log::info("PreparacionJefeController - crearDisenioPedido - freeSpace: $freeSpace");
                     // Agregamos productos a la caja
                     $add = $totalItems;
+                    $usedBox = $biggestBox->id;
                     if($qty - $totalItems < 0){
-                        // Nos cabe todo en la caja, podemos buscar una caja mas pequeña
                         $add = $qty;
+                        // Nos cabe todo en la caja, y es el último producto
+                        // podemos buscar una caja mas pequeña
+                        if($index+1 === $size){
+                            Log::info("Es el final por lo que buscamos una caja más pequeña");
+                            $box = $this->boxModel->getCorrectBox($qty*$productVolume);
+                            if(!empty($box)){
+                                Log::info("Ocupamos la caja: ".json_encode($box));
+                                $usedBox = $box->id;
+                            }
+                        }
                     }
                     $qty -= $add;
                     Log::info("PreparacionJefeController - crearDisenioPedido - agrego items: ".$add." de ".$detail->product->sku);
                     Log::info("PreparacionJefeController - crearDisenioPedido - faltan: $qty");
-                    $this->orderModel->createDesign(
-                        array(
-                            OrderRepository::DESIGN_SEQUENCE     => $sequence,
-                            OrderRepository::DESIGN_BOX_TYPE     => $biggestBox->id,
-                            OrderRepository::DESIGN_ORDER        => $detail->order_id,
-                            OrderRepository::DESIGN_ORDER_DETAIL => $detail->id,
-                            OrderRepository::DESIGN_QUANTITY     => $add
-                        )
-                    );
+                    if($add > 0) {
+                        $this->orderModel->createDesign(
+                            array(
+                                OrderRepository::DESIGN_SEQUENCE     => $sequence,
+                                OrderRepository::DESIGN_BOX_TYPE     => $usedBox,
+                                OrderRepository::DESIGN_ORDER        => $detail->order_id,
+                                OrderRepository::DESIGN_ORDER_DETAIL => $detail->id,
+                                OrderRepository::DESIGN_QUANTITY     => $add
+                            )
+                        );
+                    } else {
+                        Log::warning("PreparacionJefeController - crearDisenioPedido - No se agregan porque son 0");
+                    }
                     // Cambiamos de caja para guardar los demás
                     // Para que nos quepa por lo menos 1 producto
                     if($freeSpace < $productVolume) {
@@ -487,7 +502,9 @@ class PreparacionJefeController extends Controller
                 if(!empty($pedido)){
                     $lista = $this->orderModel->getDesignListByOrder($request->id);
                     DB::beginTransaction();
-                    $this->crearDisenioPedido($lista, 1);
+                    $sequence = 1;
+                    $this->crearDisenioPedido($lista, $sequence);
+                    $this->cambiarEstatusAdisenio($pedido);
                     DB::commit();
                     Session::flash('exito', 'Se ha creado el diseño del pedido');
                 } else {
@@ -684,6 +701,26 @@ class PreparacionJefeController extends Controller
     }
 
     /**
+     * Función para cambiar de estatus un pedido a estado de diseño de pedido
+     *
+     * @param App\Order $pedido
+     */
+    private function cambiarEstatusAdisenio($pedido)
+    {
+        // Realizamos el cambio de estatus del pedido
+        $datosW = array();
+        $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::PREPARADO_DISENIO;
+        $this->orderModel->update($pedido->id, $datosW);
+
+        // Agregamos el seguimiento del pedido
+        $datos = array();
+        $datos['order_id']   = $pedido->id;
+        $datos['trace_type'] = OrderRepository::TRACE_RECIBIR_DIST;
+        $datos['user_id']    = Auth::id();
+        $this->orderModel->addTrace($datos);
+    }
+
+    /**
      * Función para guardar csv de pedido en tabla reparto
      *
      * @return json
@@ -700,16 +737,6 @@ class PreparacionJefeController extends Controller
                 Log::error(" PreparacionJefeController - CSVReparto - archivo vacio " );
                 return Redirect::route('preparacion.listado');
             }
-
-            //valida que el archivo sea de tipo excel
-
-            /*if($file->getMimeType() != "application/vnd.ms-excel" || 
-                $file->getMimeType() != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"){
-
-                Session::flash('errores', 'El archivo seleccionado no es un CSV');
-                Log::debug(" PreparacionJefeController - CSVReparto - no es texto " );
-                return Redirect::route('preparacion.listado');
-            }*/
 
             $gestor = fopen($file->getRealPath(), "r");
             $deliminator = ",";
@@ -758,22 +785,20 @@ class PreparacionJefeController extends Controller
 
                 $contadorArchivoCSV++;
             }
+
+            // Realizamos el diseño del pedido con respecto a la distribución por tienda
+            $shops = $this->distributionModel->getDistinctShops($pedido->id);
+            $sequence = 1;
+            foreach ($shops as $shop) {
+                Log::info("PreparacionJefeController - CSVReparto - shop: ".json_encode($shop));
+                $lista = $this->distributionModel->getItemsByShop($pedido->id, $shop->shop);
+                Log::info(" ++++++++++++++++++++++++++++++++++++++++ ".$shop->shop." ++++++++++++++++++++++++++++++++++++++++ ");
+                $this->crearDisenioPedido($lista, $sequence, false);
+                $sequence += 1;
+            }
+
+            $this->cambiarEstatusAdisenio($pedido);
             DB::commit();
-
-            //valida pedido al siguiente estatus
-
-            $datosW = array();
-            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::PREPARADO_DISENIO;
-
-            $this->orderModel->update($pedido->id,$datosW);
-
-            //seguimiento del pedido
-
-            $datos['order_id'] = $pedido->id;
-            $datos['trace_type'] = OrderRepository::TRACE_RECIBIR_DIST;
-            $datos['user_id'] = Auth::id();
-
-            $this->orderModel->addTrace($datos);
 
             Session::flash('exito', 'Se han agregado: '.$contador.' registros y se modificaron:  '.$contMod);
             return Redirect::route('preparacion.listado');
@@ -784,6 +809,50 @@ class PreparacionJefeController extends Controller
             DB::rollback();
             Session::flash('errores', 'Ocurrio el siguiente error: '.$e->getMessage());
             return Redirect::route('preparacion.listado');
+        }
+    }
+
+    /**
+     * Función que muestra el diseño del pedido realizado para su validación
+     *
+     * @return View
+     */
+    public function mostrarDisenio(Request $request)
+    {
+        Log::debug("PreparacionJefeController - mostrarDisenio");
+        try {
+            if($request->has('id')) {
+                $pedido = $this->orderModel->getById($request->id);
+                $pedido->client;
+                if(!empty($pedido)){
+                    $listado = $pedido->design()
+                        ->with('orderDetail', 'boxType')
+                        ->orderBy(OrderRepository::DESIGN_SEQUENCE)
+                        ->orderBy(OrderRepository::DESIGN_ORDER_DETAIL)
+                        ->get();
+                    foreach ($listado as $item) {
+                        $item->product;
+                    }
+                    return view('preparacion.validacionDisenio',
+                        array(
+                            "pedido"  => $pedido,
+                            "listado" => $listado
+                        )
+                    );
+                } else {
+                    Session::flash('errores', 'No se encontró pedido');
+                    return redirect()->route('preparacion.listado');
+                }
+            } else {
+                Session::flash('errores', 'No se cuenta con los datos suficientes para mostrar el diseño del pedido');
+                return redirect()->route('preparacion.listado');
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - mostrarDisenio - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - mostrarDisenio - Trace: \n".$e->getTraceAsString() );
+            DB::rollback();
+            Session::flash('errores', 'Ocurrio el siguiente error: '.$e->getMessage());
+            return redirect()->route('preparacion.listado');
         }
     }
 

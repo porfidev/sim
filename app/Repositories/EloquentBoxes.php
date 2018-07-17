@@ -34,6 +34,8 @@ class EloquentBoxes implements BoxesRepository
 
 	/**
 	 * Función que obtiene la caja de tamaño mas grande.
+	 *
+	 * @return App\Box
 	 */
 	public function getBiggestBox()
 	{
@@ -44,6 +46,26 @@ class EloquentBoxes implements BoxesRepository
 			)
 			->groupBy(self::SQL_ID)
 			->orderBy(DB::raw('volumen'), 'desc')
+			->first();
+	}
+
+	/**
+	 * Funció que nos busca la caja más parecida al tamaño que necesitamos
+	 *
+	 * @param integer $volume
+	 * @return App\Box
+	 */
+	public function getCorrectBox($volume)
+	{
+		Log::info("EloquentBoxes - getCorrectBox: $volume");
+		return $this->model
+			->select(
+				self::SQL_ID,
+				DB::raw('MIN((width*height*depth)-'.$volume.') as volumen')
+			)
+			->whereRaw('(width*height*depth)-'.$volume.' > ?', [0])
+			->groupBy(self::SQL_ID)
+			->orderBy(DB::raw('volumen'))
 			->first();
 	}
 

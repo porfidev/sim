@@ -27,6 +27,14 @@ class OrderDesign extends Model
     ];
 
     /**
+     * Get the box type for the order design
+     */
+    public function boxType()
+    {
+        return $this->belongsTo('App\Box', 'box_type_id');
+    }
+
+    /**
      * Get the order detail for order design.
      */
     public function orderDetail()

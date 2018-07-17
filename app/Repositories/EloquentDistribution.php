@@ -25,6 +25,33 @@ class EloquentDistribution implements DistributionRepository
 		$this->model = $model;
     }
 
+	/**
+	 * Función que nos regresa el listado de productos de un pedido
+	 * para una tienda en particular
+	 */
+	public function getItemsByShop($order_id, $shop)
+	{
+		return $this->model->where(self::SQL_SHOP, '=', $shop)
+			->where(self::SQL_ID_ORDER, '=', $order_id)
+			->get();
+	}
+
+	/**
+	 * Obtenemos la lista de tiendas en las que se distribuyo el pedido
+	 *
+	 * @param integer $order_id
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDistinctShops($order_id)
+	{
+		return $this->model->select(
+				DB::raw('distinct('.self::SQL_SHOP.')')
+			)
+			->where(self::SQL_ID_ORDER, '=', $order_id)
+			->orderBy(self::SQL_SHOP)
+			->get();
+	}
+
     /**
 	 * Get all Catalogos.
 	 *

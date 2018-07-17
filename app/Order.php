@@ -37,4 +37,12 @@ class Order extends Model
     {
         return $this->hasMany('App\OrderDetail', 'idOrder', 'id');
     }
+
+    /**
+     * Get the design for the order.
+     */
+    public function design()
+    {
+        return $this->hasMany('App\OrderDesign', 'order_id', 'id');
+    }
 }

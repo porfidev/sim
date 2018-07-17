@@ -178,7 +178,7 @@ class EloquentOrder implements OrderRepository
 			}
 		}
 		Log::info("EloquentOrder - getAll - SQL: ".$list->toSql());
-        return $list->paginate(10);
+        return $list->get();
     }
 
     /**

@@ -110,19 +110,18 @@ Route::get('hh/recepcion/validaCaptura',               '\App\Http\Controllers\Re
 
 
 // Preparación de pedido o embalaje Jefe
-Route::get('/preparacion/listado',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos'     )->name('preparacion.listado');
-Route::get('/preparacion/informacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarInformacion' );
-Route::post('/preparacion/recibir',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'                )->name('preparacion.recibir');
-Route::post('/preparacion/tareas',   '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorItem'       )->name('preparacion.tareas');
-Route::post('/preparacion/asignacionDetalle',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem'  )->name('preparacion.asignacionDetalle');
-Route::post('/preparacion/obtenerInformacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@obtenerInformacion' )->name('preparacion.obtenerInformacion');
-Route::post('/preparacion/validar',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@valida'             )->name('preparacion.validar');
-
-Route::post('/preparacion/CSVReparto', '\App\Http\Controllers\Preparacion\PreparacionJefeController@CSVReparto')->name('preparacion.reparto');
-
+Route::get('/preparacion/listado',             '\App\Http\Controllers\Preparacion\PreparacionJefeController@listadoPedidos'         )->name('preparacion.listado');
+Route::get('/preparacion/informacion',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarInformacion'     );
+Route::post('/preparacion/recibir',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'          )->name('preparacion.recibir');
+Route::post('/preparacion/tareas',             '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorItem' )->name('preparacion.tareas');
+Route::post('/preparacion/asignacionDetalle',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem'      )->name('preparacion.asignacionDetalle');
+Route::post('/preparacion/obtenerInformacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@obtenerInformacion'     )->name('preparacion.obtenerInformacion');
+Route::post('/preparacion/validar',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@valida'                 )->name('preparacion.validar');
+Route::post('/preparacion/CSVReparto',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@CSVReparto'             )->name('preparacion.reparto');
 Route::get('/preparacion/mostrarValidacion/{order_id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarValidacion'  )->name('preparacion.mostrarValidacion');
-Route::post('/preparacion/agregar/caja', '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarCaja' )->name('preparacion.agregar.caja');
-Route::post('/preparacion/disenio', '\App\Http\Controllers\Preparacion\PreparacionJefeController@crearDisenioSinCSV' )->name('preparacion.disenio.sinCSV');
+Route::post('/preparacion/agregar/caja',       '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarCaja'            )->name('preparacion.agregar.caja');
+Route::post('/preparacion/disenio',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@crearDisenioSinCSV'     )->name('preparacion.disenio.sinCSV');
+Route::post('/preparacion/mostrarDisenio',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarDisenio'         )->name('preparacion.mostrar.disenio');
 
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );

@@ -231,6 +231,14 @@
                                             title="Crear dise&ntilde;o">
                                         <i class="material-icons">assignment</i>
                                     </button>
+                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
+                                    <button class="btn btn-success btn-sm validateDesign"
+                                            data-id="{{ $pedido->id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Validar dise&ntilde;o">
+                                        <i class="material-icons">assignment_turned_in</i>
+                                    </button>
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
                                     <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
@@ -279,6 +287,13 @@
         <input type="hidden" name="id" id="crearDisenioSinCSVPedido" value="0">
     </form>
 
+    <form method="POST"
+            action="{{ route('preparacion.mostrar.disenio') }}"
+            id="validarDisenio">
+        {{ csrf_field() }}
+        <input type="hidden" name="id" id="validarDisenioPedido" value="0">
+    </form>
+
 @endsection
 
 @section('final')
@@ -321,6 +336,12 @@
                 $( '#overlay' ).show();
                 $( '#crearDisenioSinCSVPedido' ).val( $(this).attr('data-id') );
                 $( '#crearDisenioSinCSV' ).submit();
+            });
+
+            $( '.validateDesign' ).click(function () {
+                $( '#overlay' ).show();
+                $( '#validarDisenioPedido' ).val( $(this).attr('data-id') );
+                $( '#validarDisenio' ).submit();
             });
         });
     </script>
