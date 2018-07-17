@@ -168,6 +168,7 @@ class RecepcionController extends Controller
 
                 if( !empty($arrivalItem) )
                 {
+
                     $validator = Validator::make(
                         $request->all(),
                         array(
@@ -181,6 +182,7 @@ class RecepcionController extends Controller
                         ),
                         Controller::$messages
                     );
+
                     if ($validator->fails())
                     {
                         $resultado = "ERROR";
@@ -196,7 +198,7 @@ class RecepcionController extends Controller
                         );
                         Log::info(" ProductController - editar - data: ".json_encode($data));
                         DB::beginTransaction();
-                        $arrivalItem::update($request->id, $data);
+                        $arrivalItemModelE->update($request->id, $data);  // <- Here 
                         DB::commit();
                     }
                 } else {
@@ -563,7 +565,6 @@ class RecepcionController extends Controller
 
         return view($resultado,['data' => $data,'leyendaTitulo' => $leyendaTitulo]  );
 
-
     }
 
 
@@ -633,7 +634,7 @@ class RecepcionController extends Controller
                                 $caducidad_minima = Carbon::now();
                                 $caducidad_minima->addDays($product->caducidad_minima);
                                 
-                                if($caducidad-> format('D') >= $caducidad_minima-> format('D') ){
+                                if($caducidad >= $caducidad_minima ){
                 
                                     if($purchaseItem != null) {
 
@@ -646,7 +647,7 @@ class RecepcionController extends Controller
                                         'DistNumber'         => $lote,
                                         'u_Caducidad'        => $caducidad,
                                         );
-                                
+
                                     $nuevoArrivalItem =$arrivalItemModelE ->create($data);
                                     $total= $cantidadCapturada;
                                     $mensajes  = "Se ha creado un nuevo arrival item.";
@@ -679,7 +680,7 @@ class RecepcionController extends Controller
         } catch (\Exception $e) {
             Log::error( 'RecepcionController - capturaDatos - Error: '.$e->getMessage() );
             $resultado = "ERROR";
-            $mensajes  = array( $e->getMessage() );
+            $mensajes  =  $e->getMessage();
         }
 
         $response["sku"] = $sku;
