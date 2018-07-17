@@ -20,7 +20,7 @@
                                                 data-placement="top"
                                                 data-id="{{ $ped->idOrdW }}"
                                                 id="cierraPedido{{ $ped->idOrdW }}"
-                                                title="Cerrar pedido">
+                                                title="Terminar tarea">
                                             <i class="material-icons">offline_pin</i>
                                         </button>
                                     </div>
@@ -150,7 +150,7 @@
                 parametros["borra"] = $(this).attr( "data-id" );
                 abrirConfirmacion(
                     "Confirmaci&oacute;n",
-                    "¿Estás seguro de que deseas cerrar este pedido?",
+                    "¿Estás seguro de que deseas terminar esta tarea?",
                     "{{ route('surtir.cierraPed') }}",
                     parametros
                 );
