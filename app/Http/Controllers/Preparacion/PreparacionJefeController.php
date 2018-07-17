@@ -836,6 +836,7 @@ class PreparacionJefeController extends Controller
                     array(
                         "pedido"    => $pedido,
                         "listado"   => $listado,
+                        "cajas"     => $this->boxModel->getAll(),
                         "productos" => $pedido->details()->with('product')->get()
                     )
                 );

@@ -82,7 +82,8 @@
                                     </small>
                                 </div>
                                 <div class="col">
-                                    <button class="btn btn-sm btn-success float-right" type="button">
+                                    <button class="btn btn-sm btn-success float-right addBoxToDesign"
+                                            type="button">
                                         <i class="material-icons">library_add</i>
                                     </button>
                                 </div>
@@ -163,8 +164,33 @@
     @include('partials.modalMensaje')
     @include('partials.modalConfirmacion')
 
+    @include('preparacion.modalAgregarCaja')
+
     <script type="text/javascript">
         var cajas = @json($listaCajas);
+        function addBox(box) {
+            var sequence = parseInt(cajas[cajas.length-1], 10) + 1;
+            cajas.push(sequence);
+            var row = '<tr class="table-primary box_' + sequence + '">';
+            row += '<th scope="col" colspan="2">';
+            row += '<div class="row"><div class="col">';
+            row += ('Caja ' + sequence);
+            row += '<small>' + box + '</small>';
+            row += '</div><div class="col">';
+            row += '<button class="btn btn-sm btn-danger float-right removeBox"'
+            row += 'type="button"';
+            row += 'data-sequence="' + sequence + '">';
+            row += '<i class="material-icons">highlight_off</i>';
+            row += '</button>';
+            row += '</th>';
+            row += '</tr>';
+            row += '<tr class="box_' + sequence + '">'
+            row += '<td colspan=2 style=text-align:center;>';
+            row += 'No hay productos en la caja'
+            row += '</td>';
+            row += '</tr>';
+            $( '#designTable' ).append(row);
+        }
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
 
