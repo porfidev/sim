@@ -12,7 +12,7 @@
             <div class="modal-header">
                 <h4 class="modal-title">
                     <span id="modalAddBoxTitle">
-                        Agergar caja
+                        Agregar caja
                     </span>
                 </h4>
                 <button type="button"

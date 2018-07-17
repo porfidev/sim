@@ -24,136 +24,113 @@
 
     <div class="card mb-3">
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
-            <table class="table table-striped mb-0">
-                <tr>
-                    <td style="text-align: center;"
-                            class="table-dark"
-                            colspan="3">
-                        Lista de productos Pedido #{{ $pedido->codeOrder }}
-                    </td>
-                </tr>
-                <tr class="table-primary">
-                    <th scope="col">
-                        Producto
-                    </th>
-                    <th scope="col">
-                        Solicitado
-                    </th>
-                    <th scope="col">
-                        Libres
-                    </th>
-                </tr>
-    @foreach( $productos as $item )
-                <tr>
-                    <td>
-                            {{ $item->product->sku }} - {{ $item->product->concept }}
-                    </td>
-                    <td>
-                        <span id="max_{{ $item->product->sku }}">{{ $item->quantity }}</span> piezas
-                    </td>
-                    <td>
-                        <span id="free_{{ $item->product->sku }}">0</span> piezas
-                    </td>
-                </tr>
-    @endforeach
-            </table>
-        </div>
-    </div>
-
-    <div class="card mb-3">
-        <div class="card-body pl-0 pr-0 pb-0 pt-0">
-            <form action="{{ route('preparacion.validar.disenio') }}" method="POST">
-            <input type="hidden" name="pedido" value="{{ $pedido->id }}">
-            <table class="table table-striped mb-0">
-                <tbody id="designTable">
-                    <tr>
-                        <td style="text-align: center;"
-                            class="table-dark"
-                            colspan="2">
-                            <div class="row">
-                                <div class="col">
+            <form action="{{ route('preparacion.validar.disenio') }}"
+                    method="POST">
+                <input type="hidden" name="pedido" value="{{ $pedido->id }}">
+                <table class="table table-striped mb-0">
+                    <tbody id="designTable">
+                        <tr>
+                            <td style="text-align: center;"
+                                class="table-dark"
+                                colspan="3">
+                                <div class="row">
+                                    <div class="col">
+                                    </div>
+                                    <div class="col">
+                                        <h5>
+                                            Dise&ntilde;o del pedido #{{ $pedido->codeOrder }}
+                                        </h5>
+                                        <small>
+                                            {{ $pedido->client->name }}
+                                        </small>
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn btn-sm btn-success float-right addBoxToDesign"
+                                                type="button">
+                                            <i class="material-icons">library_add</i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <h5>
-                                        Dise&ntilde;o del pedido #{{ $pedido->codeOrder }}
-                                    </h5>
-                                    <small>
-                                        {{ $pedido->client->name }}
-                                    </small>
+                            </td>
+                        </tr>
+                @php
+                    $caja = 0;
+                    $listaCajas = array();
+                @endphp
+                @foreach( $listado as $item )
+                    @if($caja != $item->sequence)
+                        @php
+                            $caja = $item->sequence;
+                            $listaCajas[] = $item->sequence;
+                        @endphp
+                        <tr class="table-primary box_{{ $item->sequence }}">
+                            <th scope="col" colspan="3">
+                                <div class="row">
+                                    <div class="col">
+                                        Caja {{ $item->sequence }}
+                                        <small>{{ $item->boxType->description }}</small>
+                                    </div>
+                                    <div class="col" style="text-align:right;">
+                                        <button class="btn btn-sm btn-success freeItemsList"
+                                                type="button"
+                                                data-sequence="{{ $caja }}">
+                                            <i class="material-icons">playlist_add</i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger removeBox"
+                                                type="button"
+                                                data-sequence="{{ $caja }}">
+                                            <i class="material-icons">highlight_off</i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <button class="btn btn-sm btn-success float-right addBoxToDesign"
-                                            type="button">
-                                        <i class="material-icons">library_add</i>
+                            </th>
+                        </tr>
+                    @endif
+                    <tr class="box_{{ $item->sequence }}">
+                        <td width="65%">
+                            {{ $item->orderDetail->product->sku }} - {{ $item->orderDetail->product->concept }}
+                        </td>
+                        <td width="25%">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-success addProduct"
+                                            id="add_btn_{{ $item->orderDetail->product->sku }}"
+                                            type="button"
+                                            data-sku="{{ $item->orderDetail->product->sku }}"
+                                            disabled>
+                                        <i class="material-icons">add_circle_outline</i>
                                     </button>
+                                    <button class="btn btn-danger removeProduct"
+                                            id="remove_btn_{{ $item->orderDetail->product->sku }}"
+                                            type="button"
+                                            data-sku="{{ $item->orderDetail->product->sku }}">
+                                        <i class="material-icons">remove_circle_outline</i>
+                                    </button>
+                                </div>
+                                <input type="number"
+                                    class="form-control inputQty"
+                                    name="design[{{ $item->sequence }}][{{ $item->orderDetail->id }}][]"
+                                    id="qty_{{ $item->orderDetail->product->sku }}"
+                                    value="{{ $item->quantity }}"
+                                    data-sku="{{ $item->orderDetail->product->sku }}">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Piezas</span>
                                 </div>
                             </div>
                         </td>
-                    </tr>
-            @php
-                $caja = 0;
-                $listaCajas = array();
-            @endphp
-            @foreach( $listado as $item )
-                @if($caja != $item->sequence)
-                    @php
-                        $caja = $item->sequence;
-                        $listaCajas[] = $item->sequence;
-                    @endphp
-                    <tr class="table-primary box_{{ $item->sequence }}">
-                        <th scope="col" colspan="2">
-                            <div class="row">
-                                <div class="col">
-                                    Caja {{ $item->sequence }}
-                                    <small>{{ $item->boxType->description }}</small>
-                                </div>
-                                <div class="col">
-                                    <button class="btn btn-sm btn-danger float-right removeBox"
-                                            type="button"
-                                            data-sequence="{{ $caja }}">
-                                        <i class="material-icons">highlight_off</i>
-                                    </button>
-                                </div>
-                            </div>
-                        </th>
-                    </tr>
-                @endif
-                <tr class="box_{{ $item->sequence }}">
-                    <td width="70%">
-                        {{ $item->orderDetail->product->sku }} - {{ $item->orderDetail->product->concept }}
-                    </td>
-                    <td width="30%">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-success addProduct"
-                                        id="add_btn_{{ $item->orderDetail->product->sku }}"
+                        <td width="10%"
+                            style="text-align:center;">
+                                <button class="btn btn-sm btn-danger removeRow"
+                                        id="remove_row_btn_{{ $item->orderDetail->product->sku }}"
                                         type="button"
-                                        data-sku="{{ $item->orderDetail->product->sku }}"
-                                        disabled>
-                                    <i class="material-icons">add_circle_outline</i>
+                                        data-id="{{ $item->id }}">
+                                    <i class="material-icons">highlight_off</i>
                                 </button>
-                                <button class="btn btn-danger removeProduct"
-                                        id="remove_btn_{{ $item->orderDetail->product->sku }}"
-                                        type="button"
-                                        data-sku="{{ $item->orderDetail->product->sku }}">
-                                    <i class="material-icons">remove_circle_outline</i>
-                                </button>
-                            </div>
-                            <input type="number"
-                                class="form-control inputQty"
-                                name="design[{{ $item->sequence }}][{{ $item->orderDetail->id }}][]"
-                                id="qty_{{ $item->orderDetail->product->sku }}"
-                                value="{{ $item->quantity }}"
-                                data-sku="{{ $item->orderDetail->product->sku }}">
-                            <div class="input-group-append">
-                                <span class="input-group-text">Piezas</span>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
-                </tbody>
-            </table>
+                        </td>
+                    </tr>
+                @endforeach
+                    </tbody>
+                </table>
             </form>
         </div>
     </div>
@@ -164,6 +141,7 @@
     @include('partials.modalMensaje')
     @include('partials.modalConfirmacion')
 
+    @include('preparacion.modalLibres')
     @include('preparacion.modalAgregarCaja')
 
     <script type="text/javascript">
