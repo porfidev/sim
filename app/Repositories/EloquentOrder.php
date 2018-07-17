@@ -218,6 +218,29 @@ class EloquentOrder implements OrderRepository
     }
 
     /**
+	 * Función que obtiene la primer orden por código
+	 *
+	 * @param String $code
+	 * @return App\Order
+	 */
+    public function getByCodeCli($code){
+
+		return $this->model->where(self::SQL_CODIGO, "=", $code)
+			->get();
+    }
+
+    /**
+	 * Función que obtiene la primer orden por código
+	 *
+	 * @param String $code
+	 * @return App\Order
+	 */
+    public function getByCodeDist($distId){
+
+		return $this->model->where(self::SQL_DIST_ID, "=", $distId)->get();
+    }
+
+    /**
 	 * Create a new Order.
 	 *
 	 * @param array $attributes

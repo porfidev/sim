@@ -130,3 +130,10 @@ Route::post('/preparacion/asignaCaja',   '\App\Http\Controllers\Preparacion\Prep
 Route::post('/preparacion/terminaTarea', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@terminarTarea' )->name('preparacion.terminarTarea');
 
 // Embarque o distribución de pedido
+
+// Pedidos pendientes
+
+Route::get('/pendientes/listado',     '\App\Http\Controllers\Pendings\PendingsController@listado')->name('pendiente.listado');
+Route::post('/pendientes/apartar',     '\App\Http\Controllers\Pendings\PendingsController@apartar')->name('pendiente.apartar');
+Route::post('/pendientes/arreglaCli',     '\App\Http\Controllers\Pendings\PendingsController@arreglaCli')->name('pendiente.arreglaCli');
+Route::post('/pendientes/arreglaDist',     '\App\Http\Controllers\Pendings\PendingsController@arreglaDist')->name('pendiente.arreglaDist');

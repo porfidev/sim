@@ -94,6 +94,10 @@ interface OrderRepository
 
 	function getById($id);
 
+	function getByCodeCli($code);
+
+	function getByCodeDist($distId);
+
 	function getByCode($code);
 
 	function create(array $attributes);
