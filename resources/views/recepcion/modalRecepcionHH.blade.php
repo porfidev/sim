@@ -23,11 +23,11 @@
                             class="rounded mx-auto d-block"
                             style="max-height: 90px;">
                 </div>
-                <form id="validaBarcode" style="display:block" action="{{ route('ordenes.captura') }}">
+                <form id="nuevaRecepcion" style="display:block" action="{{ route('ordenes.captura') }}">
                     <div class="form-group">
                         {{ csrf_field() }}
-                        <input type="hidden" name="itemCode" id="itemCode" value="">
-                        <input type="hidden" name="purchaseid" id="purchaseid" value="">
+                        <input type="hidden" name="itemCode" id="itemCode" value="TOP-0102">
+                        <input type="hidden" name="purchaseid" id="purchaseid" value="42">
                         <input type="text"
                                 class="form-control"
                                 placeholder="C&oacute;digo de barras"
@@ -35,10 +35,32 @@
                                 id="codigo"
                                 required
                                 class="visible">
-                         <div class="modal-footer d-flex justify-content-center">
+                        <br>
+                        <span class="custom-control-indicator" id="cantidad" style="font-size: 24px; font-weight: bold;">0</span>
+                        <span class="custom-control-indicator" id="error" style="font-size: 24px; font-weight: bold;"></span>
+                        <input type="hidden" 
+                                class="form-control" 
+                                id="cantidadFinal" 
+                                name="cantidadFinal"
+                                value= "">  
+                        <input type="hidden" 
+                                class="form-control" 
+                                id="itemCode" 
+                                name="itemCode"
+                                value= "">
+                        <input type="hidden" 
+                                class="form-control" 
+                                id="purchaseid" 
+                                name="purchaseid"
+                                value= "">
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="input"
+                                class="btn btn-primary" >
+                                Aceptar        
+                            </button>
                             <button type="button"
                                 class="btn btn-secondary"
-                                data-dismiss="modal">
+                                data-dismiss="modal" >
                                 Cancelar        
                             </button>
                         </div>
@@ -59,7 +81,7 @@
         $( '.nuevaRecepcion' ).click(function () {
             //var parametros = [];
             //parametros["ItemCode"] = $(this).attr("data-ItemCode");
-            $("#codigo").val(" ");
+            $("#codigoVal").val(" ");
             $("#purchaseid").val($(this).attr("data-cmd"));
             $("#itemCode").val($(this).attr("data-id"));
             $( '#erroresValidacionmodalNuevaRecepcion').text("");
@@ -69,42 +91,67 @@
             });
         });
         $('#modalRecepcion').on('shown.bs.modal', function () {
-             $('#codigo').trigger('focus')
+             $('#codigoVal').trigger('focus')
         })
     });
 </script>
 
+
+
+
+<script type="text/javascript">
+
+
+$(document).ready(function () {
+        cantidad = 0;
+
+        $('#validaBarcode').on('keyup keypress', function(e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) { 
+                e.preventDefault();
+                return false;
+            }
+        });
+
+    
+        $("#codigo").focus();
+        $("#codigo").keyup(function(event){
+            if (event.which == 13 ) {
+                event.preventDefault();
+
+                $.ajax({
+                    url    : "{{ URL::to('/hh/recepcion/captura/') }}",
+                    method : "POST",
+                    data   : $( '#validaBarcode'  ).serialize()
+                    }).done(function( data ) {
+                        // console.log(data.cantidad);
+                        if(data.cantidad > 0) {
+                            cantidad += data.cantidad;
+                            $("#cantidad").html(cantidad + " items");
+                            $("#cantidadFinal").val(cantidad);
+                        } else {
+                            alert('El producto no esta registrado');
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        errorDetalle = "ERROR: \n";
+                        //$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
+                        alert(errorDetalle);
+                    }).always(function() {
+                        //alert('okkkkkkk always');
+                    });
+            } 
+        });            
+});
+
+</script>
+
+
 <script type="text/javascript">
 
 $(document).ready(function () {
-    $("#codigo").focus();
-    $("#codigo").keyup(function(event){
-        alert("hellow");
-            //if (event.which == 13 ) $( '#validaBarcode'  ).submit(); 
-/*
-            event.preventDefault();
-            $.ajax({
-                url    : "http://localhost:8000/ordenes/validar",
-                method : "POST",
-                data   : $( '#validaBarcode'  ).serialize()
-                }).done(function( data ) {
-                    alert('okkkkkkk done  jejjejejejej');
-                    if(data.response[1] === 'OK') {
-                        alert('okkkkkkk done');
-                        $( '#validaBarcode'  ).hide();
-                        $( '#capturaDatos' ).show();
-                    } else {
-                        alert('okkkkkkk else');
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    errorDetalle = "EL ERROR: \n";
-                    $.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
-                    alert(errorDetalle);
-                }).always(function() {
-                    alert('okkkkkkk always');
-                });
-            });
-*/            
+    $("#codigoVal").focus();
+    $("#codigoVal").keyup(function(event){
+             
 });
 </script>
 

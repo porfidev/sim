@@ -102,7 +102,6 @@ class EloquentArrivalItem implements ArrivalItemRepository
 		return $this->model->find($id)->update($attributes);
 	}
 
-
 	public function delete($id)
 	{
 		return $this->model->find($id)->delete();
