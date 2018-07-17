@@ -121,7 +121,8 @@ Route::post('/preparacion/CSVReparto',         '\App\Http\Controllers\Preparacio
 Route::get('/preparacion/mostrarValidacion/{order_id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarValidacion'  )->name('preparacion.mostrarValidacion');
 Route::post('/preparacion/agregar/caja',       '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarCaja'            )->name('preparacion.agregar.caja');
 Route::post('/preparacion/disenio',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@crearDisenioSinCSV'     )->name('preparacion.disenio.sinCSV');
-Route::post('/preparacion/mostrarDisenio',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarDisenio'         )->name('preparacion.mostrar.disenio');
+Route::get('/preparacion/mostrarDisenio/{id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarDisenio'        )->name('preparacion.mostrar.disenio');
+Route::post('/preparacion/validarDiseion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@validarDisenio')->name('preparacion.validar.disenio');
 
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );
