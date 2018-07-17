@@ -170,7 +170,7 @@
                             </td>
                             <td style="text-align: center;">
 
-                                @if ($ped->ordStatus < 2)
+                                @if ($ped->ordStatus == 1)
 
                                         <button class="btn btn-sm btn-success asignarPersonal"
                                                 data-id="{{ $ped->idOrd }}"
