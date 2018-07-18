@@ -26,7 +26,7 @@
                 <form id="validaBarcode" style="display:block" action="{{ route('ordenes.captura') }}">
                     <div class="form-group">
                         {{ csrf_field() }}
-                        <input type="hidden" name="itemCode" id="itemCode" value="TOP-0102">
+                        <input type="hidden" name="ItemCode" id="ItemCode" value="TOP-0102">
                         <input type="hidden" name="purchaseid" id="purchaseid" value="42">
                         <input type="text"
                                 class="form-control"
@@ -45,8 +45,8 @@
                                 value= "">  
                         <input type="hidden" 
                                 class="form-control" 
-                                id="itemCode" 
-                                name="itemCode"
+                                id="ItemCode" 
+                                name="ItemCode"
                                 value= "">
                         <input type="hidden" 
                                 class="form-control" 
@@ -83,7 +83,7 @@
             //parametros["ItemCode"] = $(this).attr("data-ItemCode");
             $("#codigoVal").val(" ");
             $("#purchaseid").val($(this).attr("data-cmd"));
-            $("#itemCode").val($(this).attr("data-id"));
+            $("#ItemCode").val($(this).attr("data-id"));
             $( '#erroresValidacionmodalNuevaRecepcion').text("");
             $( "#modalRecepcion" ).modal({
                 keyboard : false,

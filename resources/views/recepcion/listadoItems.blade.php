@@ -91,10 +91,10 @@
                             <th>
                                 <input type="text"
                                         class="form-control inputFiltro"
-                                        id="itemCode"
+                                        id="ItemCode"
                                         placeholder="SKU"
-                                    @if ( Session::has('scl_itemCode') && Session::get('scl_itemCode') != 'NA' )
-                                        value="{{ Session::get('scl_itemCode') }}"
+                                    @if ( Session::has('scl_ItemCode') && Session::get('scl_ItemCode') != 'NA' )
+                                        value="{{ Session::get('scl_ItemCode') }}"
                                     @endif>
                             </th>
                             <th>
