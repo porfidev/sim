@@ -85,7 +85,7 @@ class EloquentArrivalItem implements ArrivalItemRepository
 
     public function getByItemCodeLote($itemCode, $distNumber){
 
-        return $this->model->where("ItemCode","=",$itemCode)
+        return $this->model->where("ItemCode","=",$ItemCode)
         ->Where("DistNumber","=",$distNumber)
 		->get()->first();
 		

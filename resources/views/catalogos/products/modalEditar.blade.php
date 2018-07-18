@@ -196,7 +196,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="modalEditCaducidadMinima">
-                                Editar caducidad m&iacute;nima
+                                Editar caducidad m&iacute;nima (en d&iacute;s)
                             </label>
                             <input type="number"
                                     class="form-control"

@@ -44,7 +44,7 @@ class RecepcionController extends Controller
 
     public function __construct(PurchaseRepository $cli)
     {
-        $this->middleware(['auth', 'permission', 'update.session']);
+        //$this->middleware(['auth', 'permission', 'update.session']);
         $this->purchaseModel = $cli;
     }
 
@@ -156,7 +156,10 @@ class RecepcionController extends Controller
     public function actualizar(Request $request)
     {
         $resultado = "OK";
-        $mensajes  = "NA";
+        $mensajes  = "Los datos fueron actualizados.";
+        $vista = "recepcion.mensajesRecepcionHH";
+        
+      
         try {
             Log::info(" RecepcionController - editar ");
             if($request->has('id'))
@@ -172,9 +175,9 @@ class RecepcionController extends Controller
                     $validator = Validator::make(
                         $request->all(),
                         array(
-                            'cantidadFinal'        => 'required|integer|max:50',
-                            'purchaseid'           => 'required|integer|max:150',
-                            'itemCode'             => 'required|string|max:150',
+                            'cantidadFinal'        => 'required|integer',
+                            'purchaseid'           => 'required|integer',
+                            'ItemCode'             => 'required|string',
                             'DistNumber'           => 'required|string',
                             'u_Caducidad'          => 'required|date',
                             'quantity'             => 'required|numeric',
@@ -186,11 +189,11 @@ class RecepcionController extends Controller
                     if ($validator->fails())
                     {
                         $resultado = "ERROR";
-                        $mensajes = $validator->errors();
+                        $mensajes = "No se puedieron actualizar los datos."; //$validator->errors();
                     } else {
                         $data = array(
                             ArrivalItemRepository::SQL_PURCHASEID      => $request->purchaseid,
-                            ArrivalItemRepository::SQL_ICODE           => $request->itemCode,
+                            ArrivalItemRepository::SQL_ICODE           => $request->ItemCode,
                             ArrivalItemRepository::SQL_PRODUCTID       => $request->product_id,
                             ArrivalItemRepository::SQL_QUANT           => $request->cantidadFinal,
                             ArrivalItemRepository::SQL_DISTNUMBER      => $request->DistNumber,
@@ -212,13 +215,13 @@ class RecepcionController extends Controller
         } catch (\Exception $e) {
             Log::error( 'ProductController - editar - Error: '.$e->getMessage() );
             $resultado = "ERROR";
-            $mensajes = array( $e->getMessage() );
+            $mensajes =  $e->getMessage();
             DB::rollBack();
         }
-        return response()->json(array(
-            Controller::JSON_RESPONSE => $resultado,
-            Controller::JSON_MESSAGE  => $mensajes
-        ));
+
+        $data["mensajes"] = $mensajes;
+        $data["resultado"] = $resultado;
+        return view($vista,['data' => $data,'leyendaTitulo' => "Validaci&oacute;n de recepci&oacute;n"]  );;
     }
 
 
@@ -289,8 +292,8 @@ class RecepcionController extends Controller
             $purchaseid = $request->input("purchaseid");
         }
 
-        if( $request->has("itemCode")) {
-            $itemCode = $request->input("itemCode");
+        if( $request->has("ItemCode")) {
+            $ItemCode = $request->input("ItemCode");
         }
 
         if( $request->has("DistNumber")) {
@@ -312,7 +315,7 @@ class RecepcionController extends Controller
         $data["id"] = $id;
         $data["cantidadFinal"] = $cantidadFinal;
         $data["purchaseid"] = $purchaseid;
-        $data["itemCode"] = $itemCode;
+        $data["ItemCode"] = $ItemCode;
         $data["DistNumber"] = $DistNumber;
         $data["u_Caducidad"] = $u_Caducidad;
         $data["quantity"] = $quantity;
@@ -388,8 +391,6 @@ class RecepcionController extends Controller
         return $response;
       
     }
-
-
 
 
 
@@ -476,8 +477,8 @@ class RecepcionController extends Controller
             $codigo = $request->input("codigo");
         }
 
-        if( $request->has("itemCode")) {
-            $itemCode = $request->input("itemCode");
+        if( $request->has("ItemCode")) {
+            $ItemCode = $request->input("ItemCode");
         }
 
         if( $request->has("purchaseid")) {
@@ -486,7 +487,7 @@ class RecepcionController extends Controller
         
 
 
-        $data = $this->validaCodigo($codigo, $itemCode, $purchaseid);
+        $data = $this->validaCodigo($codigo, $ItemCode, $purchaseid);
 
         if ( $data["cantidad"] == -1 ) { 
             $resultado = "recepcion.mensajesRecepcionHH";
@@ -509,15 +510,15 @@ class RecepcionController extends Controller
             $codigo = $request->input("codigo");
         }
 
-        if( $request->has("itemCode")) {
-            $itemCode = $request->input("itemCode");
+        if( $request->has("ItemCode")) {
+            $ItemCode = $request->input("ItemCode");
         }
 
         if( $request->has("purchaseid")) {
             $purchaseid = $request->input("purchaseid");
         }
         
-        return $this->validaCodigo($codigo, $itemCode, $purchaseid);
+        return $this->validaCodigo($codigo, $ItemCode, $purchaseid);
     }
 
 
@@ -574,6 +575,7 @@ class RecepcionController extends Controller
         $mensajes  = "";
         $response = [];
         $total="";
+        $caducidad_minima="";
         
         $modeloP =  new Product;
         $modeloAI =  new ArrivalItem;

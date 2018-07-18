@@ -25,15 +25,15 @@
                 <form id="validaBarcode" style="display:block" action="{{ URL::to('/hh/recepcion/finalValidacionHH/') }}">
                     <div class="form-group">
                         {{ csrf_field() }}
-                        <input type="hidden" name="itemCode" id="itemCode" value="TOP-0102">
-                        <input type="hidden" name="purchaseid" id="purchaseid" value="42">
+                        <input type="hidden" name="ItemCode" id="ItemCode" value="">
+                        <input type="hidden" name="purchaseid" id="purchaseid" value="">
                         <input type="text"
                                 class="form-control"
                                 placeholder="C&oacute;digo de barras"
                                 name="codigo" 
                                 id="codigo"
                                 required
-                                class="visible">
+                                class="visible"> 
                         <br>
                         <span class="custom-control-indicator" id="cantidad" style="font-size: 24px; font-weight: bold;">0</span>
                             <input type="hidden" id="cantidadFinal" name="cantidadFinal" value= "">  
@@ -44,14 +44,14 @@
                             <input type="hidden" name="u_Caducidad" value="{{ $data["u_Caducidad"] }} ">
                             <input type="hidden" name="quantity" value="{{ $data["quantity"] }} ">
                             <input type="hidden" name="product_id" value="{{ $data["product_id"] }} ">
-                        <div class="modal-footer d-flex justify-content-center">
-                            <button type="input"
-                                class="btn btn-primary" >
-                                Aceptar        
-                            </button>
+                        <div class="modal-footer d-flex justify-content-center">  
                             <button type="button"
                                 class="btn btn-secondary regresa" >
                                 Cancelar        
+                            </button>
+                            <button type="input"
+                                class="btn btn-primary" >
+                                Aceptar        
                             </button>
                         </div>
                     </div>
@@ -100,7 +100,7 @@ $(document).ready(function () {
             if (event.which == 13 ) {
                 event.preventDefault();
                 $.ajax({
-                    url    : "{{ URL::to('/hh/recepcion/valida/') }}",
+                    url    : "{{ URL::to('/hh/recepcion/obtenCantidadPorCodigo/') }}",
                     method : "POST",
                     data   : $( '#validaBarcode'  ).serialize()
                     }).done(function( data ) {

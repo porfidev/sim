@@ -7,7 +7,7 @@
 <br>
 <b>Datos capturados por el trabajador:</b>
 <br>
-SKU: <b> {{ $data["itemCode"] }} </b>
+SKU: <b> {{ $data["ItemCode"] }} </b>
 <br>
 ID del producto: <b> {{ $data["product_id"] }} </b>
 <br>
@@ -21,7 +21,6 @@ Ultima Caducidad: <b> {{ $data["u_Caducidad"] }} </b>
 <b>Cantidad nueva capturada:</b>
 <b> {{ $data["cantidadFinal"] }} </b> 
 
-{{ $data["id"] }} !!
 
 
 
@@ -32,7 +31,7 @@ Ultima Caducidad: <b> {{ $data["u_Caducidad"] }} </b>
     <div class="form-group row">
 
         <input type="hidden" id="cantidadFinal" name="cantidadFinal" value= "{{ $data["cantidadFinal"] }}">  
-        <input type="hidden" name="itemCode" value="{{ $data["itemCode"] }} ">
+        <input type="hidden" name="ItemCode" value="{{ $data["ItemCode"] }} ">
         <input type="hidden" name="id" value="{{ $data["id"] }}">
         <input type="hidden" name="purchaseid" value="{{ $data["purchaseid"] }} ">
         <input type="hidden" name="DistNumber" value="{{ $data["DistNumber"] }} ">
@@ -42,8 +41,13 @@ Ultima Caducidad: <b> {{ $data["u_Caducidad"] }} </b>
 
         <div class="col-sm-6">
             &nbsp;&nbsp;
+            <button type="button"
+                    class="btn btn-secondary regresa"
+                    title="Regresar">
+                    Cancelar
+            </button>
             <button type="submit"
-                    class="btn btn-primary"
+                    class="btn btn-primary "
                     id="btnActualizar">
                     Actualizar
             </button>
@@ -51,10 +55,18 @@ Ultima Caducidad: <b> {{ $data["u_Caducidad"] }} </b>
     </div>
 </form>
 
-
-
-
-
 @endsection
 
+
 @section('final')
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $( '.regresa' ).click(function () {
+            window.history.back();
+        });
+
+    });
+</script>
+
+@endsection

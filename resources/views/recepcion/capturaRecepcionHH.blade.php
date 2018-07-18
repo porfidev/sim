@@ -1,4 +1,4 @@
-@extends('layouts.simItemHH')
+@extends('layouts.simHH')
 
 @section('content')
 
@@ -36,7 +36,7 @@ Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  d&iacu
             <input type="hidden" 
                     class="form-control" 
                     id="inputSku" 
-                    value= {{ $data["sku"] }} 
+                    value= "{{ $data["sku"] }} "
                     name="sku">
             <input type="hidden" 
                     class="form-control" 
