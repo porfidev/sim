@@ -18,6 +18,8 @@ use App\Repositories\HistorySupplyRepository;
 
 use Illuminate\Support\Facades\Log;
 
+use App\Services\SocketIOService;
+
 class SurtidoTrabajadorController extends Controller
 {
 
@@ -26,21 +28,26 @@ class SurtidoTrabajadorController extends Controller
     private $ordDetModel;
     private $orderModel;
     private $histModel;
+    private $socketIOService;
+
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
     public function __construct(AssignmentRepository $as,
-        OrderDetailRepository $det, OrderRepository $ord,
-        HistorySupplyRepository $hist, ProductRepository $product )
+                                OrderDetailRepository $det, OrderRepository $ord,
+                                HistorySupplyRepository $hist, ProductRepository $product,
+                                SocketIOService $socketIOService)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
-        $this->assiModel    = $as;
+        $this->assiModel = $as;
         $this->productModel = $product;
-        $this->ordDetModel  = $det;
-        $this->orderModel   = $ord;
-        $this->histModel    = $hist;
+        $this->ordDetModel = $det;
+        $this->orderModel = $ord;
+        $this->histModel = $hist;
+        $this->socketIOService = $socketIOService;
     }
 
     /**
@@ -49,7 +56,8 @@ class SurtidoTrabajadorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-     public function listadoTareas(){
+    public function listadoTareas()
+    {
         try {
             Log::info(" listadoPedidos - listado ");
             $listado = $this->assiModel->getPedUser(Auth::id());
@@ -62,10 +70,10 @@ class SurtidoTrabajadorController extends Controller
                 ));
 
         } catch (\Exception $e) {
-            Log::error( 'listadoPedidos - listado - Error'.$e->getMessage() );
+            Log::error('listadoPedidos - listado - Error' . $e->getMessage());
             return view('error',
                 array(
-                    "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
+                    "error" => "Ocurrio el siguiente error: " . $e->getMessage(),
                     "titulo" => "Error inesperado"
                 )
             );
@@ -75,13 +83,14 @@ class SurtidoTrabajadorController extends Controller
     /**
      * Función para obtener datos de una orden asignada
      */
-    public function listaAsig(Request $request) {
+    public function listaAsig(Request $request)
+    {
         $response = array();
         $mensajes = array();
         $ordId = "";
         try {
 
-            if($request->has("ord")) {
+            if ($request->has("ord")) {
                 $ordId = $request->input("ord");
             }
 
@@ -91,22 +100,22 @@ class SurtidoTrabajadorController extends Controller
 
             $response = $listado->toArray();
 
-            if(ProductController::checaPedUsr($ordId,$this->ordDetModel)){
+            if (ProductController::checaPedUsr($ordId, $this->ordDetModel)) {
 
-                $terminado  = 1;
+                $terminado = 1;
 
-            }else{
+            } else {
 
-                $terminado  = 0;
+                $terminado = 0;
 
             }
 
             $mensajes = $terminado;
 
-            Log::info(" array especial: ".$listado);
+            Log::info(" array especial: " . $listado);
 
         } catch (\Exception $e) {
-            Log::error( 'listadoPedidos - listaAsig - Error: '.$e->getMessage() );
+            Log::error('listadoPedidos - listaAsig - Error: ' . $e->getMessage());
             $response = array();
 
         }
@@ -114,7 +123,7 @@ class SurtidoTrabajadorController extends Controller
         return response()->json(
             array(
                 Controller::JSON_RESPONSE => $response,
-                Controller::JSON_MESSAGE  => $mensajes
+                Controller::JSON_MESSAGE => $mensajes
             )
         );
     }
@@ -126,69 +135,70 @@ class SurtidoTrabajadorController extends Controller
      * @param sku   String  Clave del producto a agregar
      * @param idDet integer Id del item dentro del pedido
      */
-    public function addDet(Request $request) {
+    public function addDet(Request $request)
+    {
 
         $resultado = "OK";
-        $mensajes  = "NA";
-        $cerrado  = 0;
+        $mensajes = "NA";
+        $cerrado = 0;
 
         try {
-            Log::info(" SurtidoTrabajadorController - addDet sku : ".$request->get('sku'));
-            $product = $this->productModel->getBySku( $request->get('sku') );
-            Log::debug(" SurtidoTrabajadorController - addDet: ".json_encode($product) );
+            Log::info(" SurtidoTrabajadorController - addDet sku : " . $request->get('sku'));
+            $product = $this->productModel->getBySku($request->get('sku'));
+            Log::debug(" SurtidoTrabajadorController - addDet: " . json_encode($product));
 
             $detalleOrder = $this->ordDetModel->getById($request->get('idDet'));
 
             $modPed = $this->orderModel->getById($detalleOrder->idOrder);
 
-            if($modPed->status < OrderRepository::SURTIDO_POR_V){
+            if ($modPed->status < OrderRepository::SURTIDO_POR_V) {
 
                 $codigo = $request->get('cod');
                 $cantU = intval($request->get('cantU'));
                 $cantT = intval($request->get('cant'));
 
-                $resp = ProductController::validaSku($request->get('sku'),$codigo,$cantU,$this->productModel);
+                $resp = ProductController::validaSku($request->get('sku'), $codigo, $cantU, $this->productModel);
 
-                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: ".$resp[0] );
+                Log::debug(" SurtidoTrabajadorController - cantCalculadaW: " . $resp[0]);
 
-                if($resp[0] != -1) {
+                if ($resp[0] != -1) {
 
                     $cantidadTot = $resp[0] + $cantU;
 
-                    if($cantidadTot <= $cantT){
+                    if ($cantidadTot <= $cantT) {
 
-                        Log::info("SurtidoTrabajadorController - addDet: idDet: ".$request->get('idDet')." cantidadTot: ".$cantidadTot);
+                        Log::info("SurtidoTrabajadorController - addDet: idDet: " . $request->get('idDet') . " cantidadTot: " . $cantidadTot);
                         $datos = array();
                         $datos[OrderDetailRepository::SQL_CANTIDAD_U] = intval($cantidadTot);
 
-                        if(!$this->ordDetModel->update($request->get('idDet'),$datos)) {
+                        if (!$this->ordDetModel->update($request->get('idDet'), $datos)) {
 
                             $resultado = "ERROR";
-                            $mensajes  = array( "No se pudo actualizar el detalle" );
+                            $mensajes = array("No se pudo actualizar el detalle");
 
-                        }else{
+                        } else {
 
                             $resultado = $cantidadTot;
 
                             $datosE = array();
                             $datosE[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_PROCESO;
 
-                            $this->orderModel->update($detalleOrder->idOrder,$datosE);
+                            $this->orderModel->update($detalleOrder->idOrder, $datosE);
 
                             $fecHor = date("Y-m-d H:i:s");
 
                             $dataHist = array(
-                                HistorySupplyRepository::SQL_ORDID     => $detalleOrder->idOrder,
-                                HistorySupplyRepository::SQL_DETID     => $request->get('idDet'),
-                                HistorySupplyRepository::SQL_PROID     => $product->id,
-                                HistorySupplyRepository::SQL_USRID     => Auth::id(),
-                                HistorySupplyRepository::SQL_QUANTITY  => $resp[0],
-                                HistorySupplyRepository::SQL_DATIME    => $fecHor
+                                HistorySupplyRepository::SQL_ORDID => $detalleOrder->idOrder,
+                                HistorySupplyRepository::SQL_DETID => $request->get('idDet'),
+                                HistorySupplyRepository::SQL_PROID => $product->id,
+                                HistorySupplyRepository::SQL_USRID => Auth::id(),
+                                HistorySupplyRepository::SQL_QUANTITY => $resp[0],
+                                HistorySupplyRepository::SQL_DATIME => $fecHor
                             );
 
                             $this->histModel->create($dataHist);
 
-                            if(ProductController::checaPedUsr($detalleOrder->idOrder,$this->ordDetModel)){
+                            if (ProductController::checaPedUsr($detalleOrder->idOrder, $this->ordDetModel)) {
 
                                 /*$datosW = array();
                                 $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
@@ -196,68 +206,71 @@ class SurtidoTrabajadorController extends Controller
                                 $this->orderModel->update($detalleOrder->idOrder,$datosW);*/
 
                                 $cerrado = $detalleOrder->idOrder;
-                                $mensajes  = array( "Pedido surtido" );
+                                $mensajes = array("Pedido surtido");
                             }
                         }
 
                     } else {
                         $resultado = "ERROR";
-                        $mensajes  = array( "Cantidad excedida" );
+                        $mensajes = array("Cantidad excedida");
                     }
                 } else {
-                        $resultado = "ERROR";
-                        $mensajes  = array( "Codigo incorrecto" );
+                    $resultado = "ERROR";
+                    $mensajes = array("Codigo incorrecto");
                 }
 
             } else {
                 $resultado = "ERROR";
-                $mensajes  = array( "Este pedido ya esta Cerrado" );
+                $mensajes = array("Este pedido ya esta Cerrado");
             }
         } catch (\Exception $e) {
-            Log::error( 'SurtidoTrabajadorController - addDet - Error: '.$e->getMessage() );
+            Log::error('SurtidoTrabajadorController - addDet - Error: ' . $e->getMessage());
             $resultado = "ERROR";
-            $mensajes  = array( $e->getMessage() );
+            $mensajes = array($e->getMessage());
         }
         return response()->json(array(
             Controller::JSON_RESPONSE => $resultado,
-            Controller::JSON_MESSAGE  => $mensajes,
-            Controller::JSON_CERRADO  => $cerrado
+            Controller::JSON_MESSAGE => $mensajes,
+            Controller::JSON_CERRADO => $cerrado
         ));
     }
 
-    function cierraPed(Request $request){
+    function cierraPed(Request $request)
+    {
 
         $resultado = "OK";
-        $mensajes  = "NA";
+        $mensajes = "NA";
+        $id =  $request->get('id');
 
-        Log::info(" ProductController - cierraPed idPed : ".$request->get('id'));
+        Log::info(" ProductController - cierraPed idPed : " . $id);
 
-        try{
+        try {
 
             $idPed = $request->get('id');
 
             $datosW = array();
             $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::SURTIDO_POR_V;
 
-            if(!$this->orderModel->update($idPed,$datosW)) {
+            if (!$this->orderModel->update($idPed, $datosW)) {
 
                 $resultado = "ERROR";
-                $mensajes  = array( "No se pudo cerrar el pedido" );
+                $mensajes = array("No se pudo cerrar el pedido");
 
             }
 
+            $this->socketIOService->emitMessage('pedido_surtido', ['idOrder' => $id]);
 
         } catch (\Exception $e) {
 
-            Log::error( 'ProductController - cierraPed - Error: '.$e->getMessage() );
+            Log::error('ProductController - cierraPed - Error: ' . $e->getMessage());
             $resultado = "ERROR";
-            $mensajes  = array( $e->getMessage() );
+            $mensajes = array($e->getMessage());
 
         }
 
         return response()->json(array(
             Controller::JSON_RESPONSE => $resultado,
-            Controller::JSON_MESSAGE  => $mensajes
+            Controller::JSON_MESSAGE => $mensajes
         ));
     }
 }

@@ -19,6 +19,8 @@ use App\Repositories\HistorySupplyRepository;
 
 use App\Http\Controllers\Base\ProductController;
 
+use App\Services\SocketIOService;
+
 class SurtidoJefeController extends Controller
 {
 
@@ -28,6 +30,7 @@ class SurtidoJefeController extends Controller
     private $orderModel;
     private $histModel;
     private $cliModel;
+    private $socketIOService;
 
     const SESSION_ID         = "sc_id";
     const SESSION_CLIENTE    = "sc_cliente";
@@ -44,7 +47,8 @@ class SurtidoJefeController extends Controller
     public function __construct(CalculationRepository $cal,
         ProductRepository $product, OrderDetailRepository $det,
         OrderRepository $ord, HistorySupplyRepository $hist,
-        ClienteRepository $cli)
+        ClienteRepository $cli,
+        SocketIOService $socketIOService)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
         $this->calcModel    = $cal;
@@ -53,6 +57,7 @@ class SurtidoJefeController extends Controller
         $this->orderModel   = $ord;
         $this->histModel    = $hist;
         $this->cliModel     = $cli;
+        $this->socketIOService = $socketIOService;
     }
 
     /**

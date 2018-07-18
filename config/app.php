@@ -177,7 +177,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\SocketIOProviders::class,
 
+        App\Providers\SocketIOProviders::class,
     ],
 
     /*
@@ -228,7 +230,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-
     ],
 
 ];

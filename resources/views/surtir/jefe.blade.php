@@ -168,19 +168,28 @@
                                     {{ $ped->priority }}
                                 </button>
                             </td>
-                            <td style="text-align: center;">
+                            <td style="text-align: center;" id="action_{{$ped->idOrd}}">
 
                                 @if ($ped->ordStatus == 1)
+                                    <button class="btn btn-sm btn-success asignarPersonal"
+                                            data-id="{{ $ped->idOrd }}"
+                                            data-codeOrd="{{ $ped->codeOrder }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Asignar Personal">
+                                        <i class="material-icons">person_add</i>
+                                    </button>
+                                @endif
+                                @if ($ped->ordStatus == 2)
 
-                                        <button class="btn btn-sm btn-success asignarPersonal"
-                                                data-id="{{ $ped->idOrd }}"
-                                                data-codeOrd="{{ $ped->codeOrder }}"
-                                                data-toggle="tooltip"
-                                                data-placement="top"
-                                                title="Asignar Personal">
-                                            <i class="material-icons">person_add</i>
-                                        </button>
-
+                                    <button class="btn btn-sm btn-info enProceso"
+                                            data-id="{{ $ped->idOrd }}"
+                                            data-codeOrd="{{ $ped->codeOrder }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="En Proceso">
+                                        <i class="material-icons">schedule</i>
+                                    </button>
                                 @endif
                                 @if ($ped->ordStatus == 3)
 
@@ -330,6 +339,42 @@
                 idPed = $(this).attr( "data-id" );
                 window.location.href = "{{ URL::to('listadoTareasJ') }}/"+idPed;
             });
+        });
+    </script>
+    <script src="js/socket.io.js"></script>
+    <script>
+        function changeStatus(idOrder, newStatus){
+            if(parseInt(newStatus) === 3) {
+                $('#action_' + idOrder).find('button')
+                    .removeClass()
+                    .addClass('btn btn-sm btn-success checarProyecto')
+                    .attr('data-original-title', 'Validar Pedido')
+                    .find('i').text('done_all');
+                return 'success';
+            } else if(parseInt(newStatus) === 2){
+                $('#action_' + idOrder).find('button')
+                    .removeClass()
+                    .addClass('btn btn-sm btn-info enProceso')
+                    .attr('data-original-title', 'En Proceso')
+                    .find('i').text('schedule');
+                return 'success';
+            } else if(parseInt(newStatus) === 1){
+                $('#action_' + idOrder).find('button')
+                    .removeClass()
+                    .addClass('btn btn-sm btn-success asignarPersonal')
+                    .attr('data-original-title', 'Asignar Personal')
+                    .find('i').text('person_add');
+                return 'success';
+            }
+            return 'fail';
+        }
+        var socket = io('//:3000');
+
+        // TODO COnnect to Laravel var socket = io.connect('http://homestead.test:8070');
+
+        socket.on('pedido_surtido', function(payload){
+            var data = JSON.parse(payload);
+            changeStatus(data.idOrder, 3);
         });
     </script>
 @endsection
