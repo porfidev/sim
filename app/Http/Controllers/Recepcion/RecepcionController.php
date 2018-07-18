@@ -554,7 +554,6 @@ class RecepcionController extends Controller
 
         $data = $this->capturaDatos($sku,$caducidad,$recibida,$lote,$purchase);
 
-
         if ( $data["resultado"] === "ERROR" ) { 
             $resultado = "recepcion.mensajesRecepcionHH";
             $leyendaTitulo = "No se completo el registro";
@@ -586,11 +585,10 @@ class RecepcionController extends Controller
         $carbon = new Carbon();  
 
         try {
-
+            
             Log::info(" RecepcionController - capturaDatos codigo : ".$sku);
             $product = $productModelE->getBySku( $sku );
             $arrivalItem = $arrivalItemModelE->getByItemCodeLote( $sku, $lote );
-
 
             if ($product != null) {
                     $caducidad_minima = Carbon::now();

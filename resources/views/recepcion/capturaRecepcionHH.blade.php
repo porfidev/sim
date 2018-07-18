@@ -80,7 +80,6 @@ Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  d&iacu
 			$( '.regresa' ).click(function () {
 				window.history.back();
 			});
-
 		});
 	</script>
 
