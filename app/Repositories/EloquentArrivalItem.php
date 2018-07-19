@@ -84,11 +84,9 @@ class EloquentArrivalItem implements ArrivalItemRepository
     }
 
     public function getByItemCodeLote($itemCode, $distNumber){
-
         return $this->model->where("ItemCode","=",$itemCode)
         ->Where("DistNumber","=",$distNumber)
 		->get()->first();
-		
     }
 
 	public function create(array $attributes)
@@ -101,7 +99,6 @@ class EloquentArrivalItem implements ArrivalItemRepository
 	{
 		return $this->model->find($id)->update($attributes);
 	}
-
 
 	public function delete($id)
 	{

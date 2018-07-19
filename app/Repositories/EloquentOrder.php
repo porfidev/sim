@@ -43,6 +43,24 @@ class EloquentOrder implements OrderRepository
     }
 
 	/**
+	 * Función para obtener cuanto de un producto ya esta en el diseño
+	 * del pedido.
+	 * 
+	 * @param integer $order_id
+	 * @param integer $order_detail_id
+	 * @return integer
+	 */
+	public function getUsed($order_id, $order_detail_id)
+	{
+		return $this->design->select(
+				DB::raw("COALESCE(SUM(quantity), 0) as total")
+			)
+			->where(self::DESIGN_ORDER, '=', $order_id)
+			->where(self::DESIGN_ORDER_DETAIL, '=', $order_detail_id)
+			->first();
+	}
+
+	/**
 	 * Obtener los mínimos y máximos de los id`s un pedido
 	 * esto para saber que número de caja es
 	 *
@@ -98,6 +116,16 @@ class EloquentOrder implements OrderRepository
 	{
 		Log::info("EloquentOrder - createDesign: ".json_encode($attributes));
 		return $this->design->create($attributes);
+	}
+
+	/**
+	 * Función para borrar un registro de la tabla de diseño de orden
+	 * 
+	 * @param integer $id
+	 */
+	public function deleteDesign($id)
+	{
+		return $this->design->find($id)->delete();
 	}
 
 	/**

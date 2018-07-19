@@ -58,7 +58,9 @@
                     <th scope="col" style="min-width: 250px;">
                         Descripci&oacute;n de los productos recibidos
                     </th>
-                    </tr>
+					<th>
+					</th>
+					</tr>
             </thead>
             <tbody>
                 <tr >
@@ -77,24 +79,28 @@
 								Cantidad total recibida: {{ $item->quantity}}
 								<br>
 								Id del producto: {{ $item->product_id}}
-								<br>
-								Ultima caducidad: {{ $item->u_Caducidad }}
 								</p>
 							</td>
-							<td>
-							<button class="btn btn-sm btn-primary validacion"
-								data-toggle="tooltip"
-								data-id="{{ $item->ItemCode }}"
-								data-cmd="{{ $item->purchase_id }}"
-								data-placement="top"
-								title="Completar Item"
-								type="reset"
-								>
-							<i class="material-icons">radio_button_checked</i>
-							</button>
-
-
-					</td>
+							
+                            <td>
+                            <form action="{{ URL::to('/hh/recepcion/validacionRecepcionesHH/') }}">
+                                <input type="hidden" name="ItemCode" value="{{ $item->ItemCode }}">
+                                <input type="hidden" name="id" value="{{ $item->id }}">
+                                <input type="hidden" name="purchaseid" value="{{ $item->purchase_id }}">
+                                <input type="hidden" name="DistNumber" value="{{ $item->DistNumber }}">
+                                <input type="hidden" name="u_Caducidad" value="{{ $item->u_Caducidad }}">
+                                <input type="hidden" name="quantity" value="{{ $item->quantity }}">
+                                <input type="hidden" name="product_id" value="{{ $item->product_id }}">
+                                <button class="btn btn-sm btn-primary "
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="Verificar Item"
+                                    type="submit"
+                                    >
+                                <i class="material-icons">radio_button_checked</i>
+                                </button>
+                            </form>
+                            </td>	
                 </tr>
                 @endforeach
 
@@ -102,16 +108,7 @@
         </table>
     </div>
 
-    <form id="searchForm"
-        method="POST"
-        action="{{ route('ordenes.listadoHH') }}">
-        {{ csrf_field() }}
-        <input type="hidden" name="su_id"        id="busquedaId"         value="0">
-        <input type="hidden" name="su_proveedor" id="busquedaProveedor"  value="NA">
-        <input type="hidden" name="su_reception" id="busquedaRecepcion"  value="NA">
-        <input type="hidden" name="su_entrega"   id="busquedaEntrega"    value="0">
-        <input type="hidden" name="su_codigo"    id="busquedaCodigo"     value="0">
-    </form>
+
 
 @endsection
 
@@ -121,53 +118,21 @@
     @include('partials.modalMensaje')
     @include('partials.modalConfirmacion')
     
-    @include('recepcion.modalRecepcionHH')
+    @include('recepcion.modalValidacionHH')
     @include('recepcion.modalBusquedaHH')
 
-    <!-- Script de Modal para Usuario Editar -->
-    <script type="text/javascript">
+
+
+       <script type="text/javascript">
         $(document).ready(function () {
-            $( '.irADetalleHH' ).click(function () {
-                window.location.href =  "{{ URL::to('/hh/recepcion/listadoItemsHH/') }}/"+$(this).attr( "data-id" );
+            $( '.validacionR' ).click(function () {
+                window.location.href =  "{{ URL::to('/hh/recepcion/validacionRecepcionesHH/') }}";
                
             });
         });
     </script>
 
-    <script type="text/javascript">
-          function ejecutaBusquedasFiltros() {
-            $( '#busquedaId'      ).val( $( '#formID'      ).val() ? $( '#formID'      ).val() : '0'  );
-            $( '#busquedaProveedor'  ).val( $( '#formProveedor'  ).val() ? $( '#formProveedor'  ).val() : ' ' );
-            $( '#busquedaRecepcion'     ).val( $( '#formRecepecion'     ).val() ? $( '#formRecepecion'     ).val() : ' '  );
-            $( '#busquedaEntrega'     ).val( $( '#formEntrega'     ).val() ? $( '#formEntrega'     ).val() : ' '  );
-            $( '#busquedaCodigo' ).val( $( '#formCodigo' ).val() ? $( '#formCodigo' ).val() : ' ' );
-            $( '#searchForm' ).submit();
-        }
 
-        $(document).ready(function () {
-            $( '[data-toggle="tooltip"]' ).tooltip();
-            $( '#btnLimpiar' ).click(function () {
-                $( '#busquedaId').val( '0'  );
-                $( '#formProveedor').val( ' ' );
-                $( '#busquedaRecepcion').val( ' ' );
-                $( '#busquedaEntrega').val( ' ' );
-                $( '#busquedaCodigo').val( '0'  );
-                $( '#searchForm' ).submit();
-            });
-            $( '#btnBuscar' ).click(ejecutaBusquedasFiltros);
-
-             $( '.inputFiltro' ).keyup(function(e){
-                if(e.keyCode == 13) {
-                    ejecutaBusquedasFiltros();
-                }
-            });
-
-
-        });
-
-        
-
-    </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -175,5 +140,4 @@
         });
     </script>
 
-    </script>
 @endsection

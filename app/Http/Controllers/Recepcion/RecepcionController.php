@@ -152,6 +152,248 @@ class RecepcionController extends Controller
     }
 
 
+
+    public function actualizar(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "Los datos fueron actualizados.";
+        $vista = "recepcion.mensajesRecepcionHH";
+        
+      
+        try {
+            Log::info(" RecepcionController - editar ");
+            if($request->has('id'))
+            {
+
+                $modeloAI =  new ArrivalItem;
+                $arrivalItemModelE = new EloquentArrivalItem($modeloAI);
+                $arrivalItem = $arrivalItemModelE->getById( $request->get('id') );
+
+                if( !empty($arrivalItem) )
+                {
+
+                    $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'cantidadFinal'        => 'required|integer',
+                            'purchaseid'           => 'required|integer',
+                            'ItemCode'             => 'required|string',
+                            'DistNumber'           => 'required|string',
+                            'u_Caducidad'          => 'required|date',
+                            'quantity'             => 'required|numeric',
+                            'product_id'           => 'required|integer',
+                        ),
+                        Controller::$messages
+                    );
+
+                    if ($validator->fails())
+                    {
+                        $resultado = "ERROR";
+                        $mensajes = "No se puedieron actualizar los datos."; //$validator->errors();
+                    } else {
+                        $data = array(
+                            ArrivalItemRepository::SQL_PURCHASEID      => $request->purchaseid,
+                            ArrivalItemRepository::SQL_ICODE           => $request->ItemCode,
+                            ArrivalItemRepository::SQL_PRODUCTID       => $request->product_id,
+                            ArrivalItemRepository::SQL_QUANT           => $request->cantidadFinal,
+                            ArrivalItemRepository::SQL_DISTNUMBER      => $request->DistNumber,
+                            ArrivalItemRepository::SQL_CADUCIDAD       => $request->u_Caducidad,
+                        );
+                        Log::info(" ProductController - editar - data: ".json_encode($data));
+                        DB::beginTransaction();
+                        $arrivalItemModelE->update($request->id, $data);  // <- Here 
+                        DB::commit();
+                    }
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "No se encontró el producto" );
+                }
+            } else {
+                $resultado = "ERROR";
+                $mensajes  = array( "Faltan datos para poder actualizar el producto" );
+            }
+        } catch (\Exception $e) {
+            Log::error( 'ProductController - editar - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes =  $e->getMessage();
+            DB::rollBack();
+        }
+
+        $data["mensajes"] = $mensajes;
+        $data["resultado"] = $resultado;
+        return view($vista,['data' => $data,'leyendaTitulo' => "Validaci&oacute;n de recepci&oacute;n"]  );;
+    }
+
+
+
+    
+    public function validaRecepciones(Request $request)
+    {
+        $data = [];
+      
+        if( $request->has("id")) {
+            $id = $request->input("id");
+        }
+
+        if( $request->has("purchaseid")) {
+            $purchaseid = $request->input("purchaseid");
+        }
+
+        if( $request->has("ItemCode")) {
+            $ItemCode = $request->input("ItemCode");
+        }
+
+        if( $request->has("DistNumber")) {
+            $DistNumber = $request->input("DistNumber");
+        }
+
+        if( $request->has("u_Caducidad")) {
+            $u_Caducidad = $request->input("u_Caducidad");
+        }
+
+        if( $request->has("quantity")) {
+            $quantity = $request->input("quantity");
+        }
+
+        if( $request->has("product_id")) {
+            $product_id = $request->input("product_id");
+        }
+
+
+        $data["id"] = $id;
+        $data["purchaseid"] = $purchaseid;
+        $data["ItemCode"] = $ItemCode;
+        $data["DistNumber"] = $DistNumber;
+        $data["u_Caducidad"] = $u_Caducidad;
+        $data["quantity"] = $quantity;
+        $data["product_id"] = $product_id;
+
+
+
+        return view('recepcion.validacionRecepcionesHH',['data' => $data,'leyendaTitulo' => "Validar"] );
+    }
+
+
+    
+    public function validacionFinal(Request $request)
+    {
+
+        $data = [];
+
+        if( $request->has("id")) {
+            $id = $request->input("id");
+        }
+      
+        if( $request->has("cantidadFinal")) {
+            $cantidadFinal = $request->input("cantidadFinal");
+        }
+
+        if( $request->has("purchaseid")) {
+            $purchaseid = $request->input("purchaseid");
+        }
+
+        if( $request->has("ItemCode")) {
+            $ItemCode = $request->input("ItemCode");
+        }
+
+        if( $request->has("DistNumber")) {
+            $DistNumber = $request->input("DistNumber");
+        }
+
+        if( $request->has("u_Caducidad")) {
+            $u_Caducidad = $request->input("u_Caducidad");
+        }
+
+        if( $request->has("quantity")) {
+            $quantity = $request->input("quantity");
+        }
+
+        if( $request->has("product_id")) {
+            $product_id = $request->input("product_id");
+        }
+     
+        $data["id"] = $id;
+        $data["cantidadFinal"] = $cantidadFinal;
+        $data["purchaseid"] = $purchaseid;
+        $data["ItemCode"] = $ItemCode;
+        $data["DistNumber"] = $DistNumber;
+        $data["u_Caducidad"] = $u_Caducidad;
+        $data["quantity"] = $quantity;
+        $data["product_id"] = $product_id;
+
+    
+        return view('recepcion.finalValidacionHH',['data' => $data,'leyendaTitulo' => "Validar"] );
+    }
+
+
+
+    public function obtenCantidadPorCodigo(Request $request){
+
+        $codigo = "0";
+
+        if( $request->has("codigo")) {
+            $codigo = $request->input("codigo");
+        }
+
+        $mensajes  = "OK";
+        $cantidadTot = -1;
+
+        $response = [];
+        
+        $modelo =  new Product;
+        $productModelE = new EloquentProduct($modelo);
+        $modeloPI =  new PurchaseItems;
+        $purchaseItemModelE = new EloquentPurchaseItems($modeloPI);
+
+        try {
+            Log::info(" RecepcionController - validaCodigo codigo: " . $codigo);
+            
+            $product = $productModelE->getByCode( $codigo );
+
+            if( $product != null ) {
+
+                $sku=$product->sku;
+                $concept=$product->concept;
+                $caducidadMinima=$product->caducidad_minima;
+
+                $lepurchaseItem = $purchaseItemModelE->getByCode($sku);
+                $cantidadRequerida = $lepurchaseItem->u_CantReq;
+
+                if($codigo == $product->corrugated_barcode){
+
+                    $cantidadTot = intval($product->display_per_box)*intval($product->items_per_display);
+
+                } else if($codigo == $product->display_barcode){
+
+                    $cantidadTot = intval($product->items_per_display);
+
+                } else if($codigo == $product->barcode){
+
+                    $cantidadTot = 1;
+                }
+
+
+            } else {
+
+                Log::error("RecepcionController - validaCodigo: El objeto product esta vacío");
+                $resultado = "No existe el producto";
+                $mensajes  = "No se encontr&oacute; el producto:  " . $codigo;
+            }
+        } catch (\Exception $e) {
+            Log::error( 'RecepcionController - validaCodigo - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+
+        $response["mensajes"] = $mensajes;
+        $response["cantidad"] = $cantidadTot;
+        
+        return $response;
+      
+    }
+
+
+
     public function validaCodigo($codigo, $sku, $purchaseid){
 
         $mensajes  = "OK";
@@ -225,6 +467,8 @@ class RecepcionController extends Controller
       
     }
 
+
+
     public function formularioDatos(Request $request){
         $resultado = "recepcion.capturaRecepcionHH";
         $codigo = "0";
@@ -233,8 +477,8 @@ class RecepcionController extends Controller
             $codigo = $request->input("codigo");
         }
 
-        if( $request->has("itemCode")) {
-            $itemCode = $request->input("itemCode");
+        if( $request->has("ItemCode")) {
+            $ItemCode = $request->input("ItemCode");
         }
 
         if( $request->has("purchaseid")) {
@@ -243,7 +487,7 @@ class RecepcionController extends Controller
         
 
 
-        $data = $this->validaCodigo($codigo, $itemCode, $purchaseid);
+        $data = $this->validaCodigo($codigo, $ItemCode, $purchaseid);
 
         if ( $data["cantidad"] == -1 ) { 
             $resultado = "recepcion.mensajesRecepcionHH";
@@ -255,6 +499,28 @@ class RecepcionController extends Controller
         return view($resultado,['data' => $data,'leyendaTitulo' => $leyendaTitulo] );
 
     }
+
+
+
+    public function formularioDatosValidacion(Request $request){
+        $resultado = "recepcion.capturaRecepcionHH";
+        $codigo = "0";
+
+        if( $request->has("codigo")) {
+            $codigo = $request->input("codigo");
+        }
+
+        if( $request->has("ItemCode")) {
+            $ItemCode = $request->input("ItemCode");
+        }
+
+        if( $request->has("purchaseid")) {
+            $purchaseid = $request->input("purchaseid");
+        }
+        
+        return $this->validaCodigo($codigo, $ItemCode, $purchaseid);
+    }
+
 
 
     public function formularioValidar(Request $request){
@@ -288,7 +554,6 @@ class RecepcionController extends Controller
 
         $data = $this->capturaDatos($sku,$caducidad,$recibida,$lote,$purchase);
 
-
         if ( $data["resultado"] === "ERROR" ) { 
             $resultado = "recepcion.mensajesRecepcionHH";
             $leyendaTitulo = "No se completo el registro";
@@ -300,7 +565,6 @@ class RecepcionController extends Controller
 
         return view($resultado,['data' => $data,'leyendaTitulo' => $leyendaTitulo]  );
 
-
     }
 
 
@@ -310,6 +574,7 @@ class RecepcionController extends Controller
         $mensajes  = "";
         $response = [];
         $total="";
+        $caducidad_minima="";
         
         $modeloP =  new Product;
         $modeloAI =  new ArrivalItem;
@@ -320,11 +585,10 @@ class RecepcionController extends Controller
         $carbon = new Carbon();  
 
         try {
-
+            
             Log::info(" RecepcionController - capturaDatos codigo : ".$sku);
             $product = $productModelE->getBySku( $sku );
             $arrivalItem = $arrivalItemModelE->getByItemCodeLote( $sku, $lote );
-
 
             if ($product != null) {
                     $caducidad_minima = Carbon::now();
@@ -370,7 +634,7 @@ class RecepcionController extends Controller
                                 $caducidad_minima = Carbon::now();
                                 $caducidad_minima->addDays($product->caducidad_minima);
                                 
-                                if($caducidad-> format('D') >= $caducidad_minima-> format('D') ){
+                                if($caducidad >= $caducidad_minima ){
                 
                                     if($purchaseItem != null) {
 
@@ -383,7 +647,7 @@ class RecepcionController extends Controller
                                         'DistNumber'         => $lote,
                                         'u_Caducidad'        => $caducidad,
                                         );
-                                
+
                                     $nuevoArrivalItem =$arrivalItemModelE ->create($data);
                                     $total= $cantidadCapturada;
                                     $mensajes  = "Se ha creado un nuevo arrival item.";
@@ -416,7 +680,7 @@ class RecepcionController extends Controller
         } catch (\Exception $e) {
             Log::error( 'RecepcionController - capturaDatos - Error: '.$e->getMessage() );
             $resultado = "ERROR";
-            $mensajes  = array( $e->getMessage() );
+            $mensajes  =  $e->getMessage();
         }
 
         $response["sku"] = $sku;

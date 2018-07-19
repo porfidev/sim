@@ -26,7 +26,7 @@
                 <form id="validaBarcode" style="display:block" action="{{ route('ordenes.captura') }}">
                     <div class="form-group">
                         {{ csrf_field() }}
-                        <input type="hidden" name="itemCode" id="itemCode" value="">
+                        <input type="hidden" name="ItemCode" id="ItemCode" value="">
                         <input type="hidden" name="purchaseid" id="purchaseid" value="">
                         <input type="text"
                                 class="form-control"
@@ -61,7 +61,7 @@
             //parametros["ItemCode"] = $(this).attr("data-ItemCode");
             $("#codigo").val(" ");
             $("#purchaseid").val($(this).attr("data-cmd"));
-            $("#itemCode").val($(this).attr("data-id"));
+            $("#ItemCode").val($(this).attr("data-id"));
             $( '#erroresValidacionmodalNuevaRecepcion').text("");
             $( "#modalRecepcion" ).modal({
                 keyboard : false,
@@ -75,38 +75,6 @@
 </script>
 
 <script type="text/javascript">
-
-$(document).ready(function () {
-    $("#codigo").focus();
-    $("#codigo").keyup(function(event){
-        alert("hellow");
-            //if (event.which == 13 ) $( '#validaBarcode'  ).submit(); 
-/*
-            event.preventDefault();
-            $.ajax({
-                url    : "http://localhost:8000/ordenes/validar",
-                method : "POST",
-                data   : $( '#validaBarcode'  ).serialize()
-                }).done(function( data ) {
-                    alert('okkkkkkk done  jejjejejejej');
-                    if(data.response[1] === 'OK') {
-                        alert('okkkkkkk done');
-                        $( '#validaBarcode'  ).hide();
-                        $( '#capturaDatos' ).show();
-                    } else {
-                        alert('okkkkkkk else');
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    errorDetalle = "EL ERROR: \n";
-                    $.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
-                    alert(errorDetalle);
-                }).always(function() {
-                    alert('okkkkkkk always');
-                });
-            });
-*/            
-});
-</script>
 
 
 <!-- Fin de Modal para Recepion HH -->

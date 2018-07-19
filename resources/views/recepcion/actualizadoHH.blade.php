@@ -23,10 +23,9 @@ Caducidad: <b> {{ $data["caducidad"] }} </b>
     <div class="form-group row">
         <div class="col-sm-6">
             &nbsp;&nbsp;
-            <button type="button"
+            <button type="submit"
                     class="btn btn-primary"
-                    id="btnGuardarCaptura"
-                    onclick="guarda()">
+                    id="enviar">
                     Aceptar
             </button>
         </div>                 
@@ -53,11 +52,7 @@ Caducidad: <b> {{ $data["caducidad"] }} </b>
 	</script>
 
 
-<script>
-function guarda() {
-    $( '#formCapturaDatos'  ).submit()   
-}
-</script>
+
 
 @endsection
 

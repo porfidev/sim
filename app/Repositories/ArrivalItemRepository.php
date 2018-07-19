@@ -19,7 +19,7 @@ interface ArrivalItemRepository
 
     function getById($id);
 
-    function getByItemCodeLote($itemCode, $distNumber);
+    function getByItemCodeLote($ItemCode, $distNumber);
 
 	function create(array $attributes);
 

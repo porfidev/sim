@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 17, 2018 at 07:15 AM
+-- Generation Time: Jul 17, 2018 at 06:02 PM
 -- Server version: 5.6.37
 -- PHP Version: 7.1.8
 
@@ -56,7 +56,14 @@ CREATE TABLE IF NOT EXISTS `assignments` (
   `status` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `assignments`
+--
+
+INSERT INTO `assignments` (`id`, `order_id`, `order_design_id`, `order_detail_id`, `user_id`, `status`, `created_at`, `updated_at`) VALUES
+(1, 182, NULL, NULL, 3, 0, '2018-07-17 16:43:18', '2018-07-17 16:43:18');
 
 -- --------------------------------------------------------
 
@@ -946,7 +953,23 @@ CREATE TABLE IF NOT EXISTS `history_supply` (
   `hist_date_time` datetime NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=249 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `history_supply`
+--
+
+INSERT INTO `history_supply` (`id`, `user_id`, `order_id`, `detail_id`, `product_id`, `quantity`, `hist_date_time`, `created_at`, `updated_at`) VALUES
+(1, 3, 182, 152, 3131, 1, '2018-07-17 11:43:43', '2018-07-17 16:43:43', '2018-07-17 16:43:43'),
+(2, 3, 182, 152, 3131, 1, '2018-07-17 11:43:43', '2018-07-17 16:43:43', '2018-07-17 16:43:43'),
+(3, 3, 182, 152, 3131, 1, '2018-07-17 11:43:44', '2018-07-17 16:43:44', '2018-07-17 16:43:44'),
+(4, 3, 182, 152, 3131, 1, '2018-07-17 11:43:44', '2018-07-17 16:43:44', '2018-07-17 16:43:44'),
+(5, 3, 182, 152, 3131, 1, '2018-07-17 11:43:44', '2018-07-17 16:43:44', '2018-07-17 16:43:44'),
+(6, 3, 182, 152, 3131, 1, '2018-07-17 11:43:45', '2018-07-17 16:43:45', '2018-07-17 16:43:45'),
+(7, 3, 182, 152, 3131, 1, '2018-07-17 11:43:45', '2018-07-17 16:43:45', '2018-07-17 16:43:45'),
+(8, 3, 182, 152, 3131, 1, '2018-07-17 11:43:45', '2018-07-17 16:43:45', '2018-07-17 16:43:45'),
+(9, 3, 182, 152, 3131, 1, '2018-07-17 11:43:46', '2018-07-17 16:43:46', '2018-07-17 16:43:46'),
+(10, 3, 182, 152, 3131, 1, '2018-07-17 11:43:46', '2018-07-17 16:43:46', '2018-07-17 16:43:46');
 
 -- --------------------------------------------------------
 
@@ -964,7 +987,7 @@ CREATE TABLE IF NOT EXISTS `menus` (
   `user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `menus`
@@ -977,7 +1000,7 @@ INSERT INTO `menus` (`id`, `parent`, `sequence`, `label`, `url`, `visible`, `use
 (4, 9, 4, 'Clientes', 'clientes/listado', 1, 1, '2018-06-13 14:45:32', '2018-07-03 19:06:33'),
 (5, 11, 0, 'Listado de Pedidos', 'listadoPedidosJefe', 1, 2, '2018-06-13 14:46:24', '2018-06-13 18:47:17'),
 (7, 9, 5, 'Productos', 'productos/listado', 1, 1, '2018-06-13 14:47:40', '2018-07-03 19:06:40'),
-(8, NULL, 8, 'Recepción de Mercancía', 'ordenes/listado', 1, 1, '2018-06-13 18:14:06', '2018-07-04 01:27:08'),
+(8, NULL, 8, 'Recepción de Mercancía', '#', 1, 1, '2018-06-13 18:14:06', '2018-07-17 17:07:01'),
 (9, NULL, 99, 'Administración', '#', 1, 1, '2018-06-13 18:15:56', '2018-06-13 18:15:56'),
 (11, NULL, 1, 'Surtido de Pedido', '#', 1, 1, '2018-06-13 18:46:28', '2018-06-30 00:08:35'),
 (12, NULL, 0, 'Mis Tareas', 'listadoTareas', 1, 1, '2018-06-13 18:51:12', '2018-06-22 19:33:34'),
@@ -1038,7 +1061,13 @@ INSERT INTO `menus` (`id`, `parent`, `sequence`, `label`, `url`, `visible`, `use
 (67, 13, 0, 'arreglaDist', 'pendientes/arreglaDist', 1, 1, '2018-07-17 04:30:32', '2018-07-17 04:30:32'),
 (68, 13, 0, 'Se crea diseño de pedido en preparación', 'preparacion/disenio', 1, 1, '2018-07-17 07:00:33', '2018-07-17 07:00:33'),
 (69, 13, 0, 'Mostrar diseño de pedido en preparación', 'preparacion/mostrarDisenio/.*', 1, 1, '2018-07-17 07:01:12', '2018-07-17 07:01:12'),
-(70, 13, 0, 'Validar Diseño de pedido en preparación', 'preparacion/validarDiseion', 1, 1, '2018-07-17 07:02:00', '2018-07-17 07:02:00');
+(70, 13, 0, 'Validar Diseño de pedido en preparación', 'preparacion/validarDiseion', 1, 1, '2018-07-17 07:02:00', '2018-07-17 07:02:00'),
+(71, 8, 0, 'Listado de Ordenes de Compra', 'ordenes/listado', 1, 1, '2018-07-17 17:06:51', '2018-07-17 17:06:51'),
+(72, 8, 0, 'Listado de Ordenes de Compra', 'hh/recepcion/listadoHH', 1, 1, '2018-07-17 17:09:15', '2018-07-17 17:09:15'),
+(73, 13, 0, 'Validación de Ordenes de Compra', 'ordenes/validar', 1, 1, '2018-07-17 17:36:53', '2018-07-17 17:36:53'),
+(74, 13, 0, 'Lista de items de Ordenes de compra en HH', 'hh/recepcion/listadoItemsHH/.*', 1, 1, '2018-07-17 17:38:14', '2018-07-17 17:41:16'),
+(75, 13, 0, 'Validación de lote y caducidad', 'hh/recepcion/captura', 1, 1, '2018-07-17 17:39:01', '2018-07-17 17:39:01'),
+(76, 13, 0, 'valida Captura de Orden de Compra', 'hh/recepcion/validaCaptura.*', 1, 1, '2018-07-17 17:45:53', '2018-07-17 17:46:05');
 
 -- --------------------------------------------------------
 
@@ -1050,7 +1079,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int(10) unsigned NOT NULL,
   `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -1126,7 +1155,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (76, '2018_07_11_180023_add_sequence_to_order_designs', 37),
 (77, '2018_07_15_134510_create_order_pending_table', 37),
 (78, '2018_07_16_133104_change_fp_calc', 38),
-(79, '2018_07_16_184707_add_bool_pendings', 39);
+(79, '2018_07_16_184707_add_bool_pendings', 39),
+(80, '2018_07_17_122642_change_caducidad_minima_to_products', 40);
 
 -- --------------------------------------------------------
 
@@ -1153,7 +1183,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
 
 INSERT INTO `orders` (`id`, `codeOrder`, `start`, `end`, `code`, `numat`, `status`, `dist_id`, `created_at`, `updated_at`) VALUES
 (181, '197989', '2018-07-10', '2018-07-24', 'CLN-0118-0001', NULL, 0, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(182, '198470', '2018-07-16', '2018-07-18', 'CLN-0237-0001', NULL, 1, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03');
+(182, '198470', '2018-07-16', '2018-07-18', 'CLN-0237-0001', NULL, 3, NULL, '2018-07-17 00:07:03', '2018-07-17 16:45:21');
 
 -- --------------------------------------------------------
 
@@ -1171,7 +1201,7 @@ CREATE TABLE IF NOT EXISTS `order_designs` (
   `quantity` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1202,21 +1232,21 @@ INSERT INTO `order_details` (`id`, `itemcode`, `quantity`, `quantitypack`, `idOr
 (149, 'IPO-0301', 900, 75, 181, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
 (150, 'EFR-0401', 1008, 84, 181, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
 (151, 'SUP-0301', 126, 126, 181, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(152, 'EFR-0401', 1488, 124, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(153, 'NUT-0101', 1404, 117, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(154, 'SKI-0106', 360, 10, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(155, 'LUC-0109', 450, 75, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(156, 'IND-0101', 144, 6, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(157, 'MAR-0119', 702, 117, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(158, 'MAR-0120', 468, 78, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(159, 'WRI-0501', 852, 142, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(160, 'WRI-0502', 360, 60, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(161, 'WRI-0504', 546, 91, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(162, 'WIN-0104', 792, 66, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(163, 'LUK-0403', 300, 25, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(164, 'EFR-0210', 180, 15, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(165, 'IND-0102', 360, 30, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(166, 'SUP-0306', 240, 20, 182, NULL, NULL, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04');
+(152, 'EFR-0401', 1488, 124, 182, NULL, 1488, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 16:43:46'),
+(153, 'NUT-0101', 1404, 117, 182, NULL, 1404, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
+(154, 'SKI-0106', 360, 10, 182, NULL, 360, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
+(155, 'LUC-0109', 450, 75, 182, NULL, 450, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
+(156, 'IND-0101', 144, 6, 182, NULL, 144, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(157, 'MAR-0119', 702, 117, 182, NULL, 702, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(158, 'MAR-0120', 468, 78, 182, NULL, 468, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(159, 'WRI-0501', 852, 142, 182, NULL, 852, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(160, 'WRI-0502', 360, 60, 182, NULL, 360, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(161, 'WRI-0504', 546, 91, 182, NULL, 546, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(162, 'WIN-0104', 792, 66, 182, NULL, 792, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(163, 'LUK-0403', 300, 25, 182, NULL, 300, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(164, 'EFR-0210', 180, 15, 182, NULL, 180, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(165, 'IND-0102', 360, 30, 182, NULL, 360, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(166, 'SUP-0306', 240, 20, 182, NULL, 240, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04');
 
 -- --------------------------------------------------------
 
@@ -1234,14 +1264,14 @@ CREATE TABLE IF NOT EXISTS `order_pendings` (
   `cat_status` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `order_pendings`
 --
 
 INSERT INTO `order_pendings` (`id`, `order_id`, `user_id`, `client_id`, `cat_id`, `client_status`, `cat_status`, `created_at`, `updated_at`) VALUES
-(126, 181, NULL, 257, 82, 1, 1, '2018-07-17 00:07:03', '2018-07-17 00:07:03');
+(126, 181, 1, 257, 82, 1, 1, '2018-07-17 00:07:03', '2018-07-17 07:17:16');
 
 -- --------------------------------------------------------
 
@@ -1256,7 +1286,7 @@ CREATE TABLE IF NOT EXISTS `order_traces` (
   `user_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1292,7 +1322,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `barcode` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `display_barcode` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `corrugated_barcode` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `caducidad_minima` datetime DEFAULT NULL,
+  `caducidad_minima` int(11) DEFAULT NULL,
   `user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1304,7 +1334,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `items_per_display`, `display_per_box`, `weight_per_display`, `weight_per_box`, `width`, `height`, `depth`, `barcode`, `display_barcode`, `corrugated_barcode`, `caducidad_minima`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(3007, 'ACT-0101', 'PALOMITAS CARAMELO', 'Palom caramelo 184g', 1.00, 9, 1, 9.00, 9.00, 2.50, 5.00, 3.00, '76150420098', '7501006551129', '76150230345', NULL, 1, '2018-06-13 15:54:40', '2018-07-04 16:54:14', NULL),
+(3007, 'ACT-0101', 'PALOMITAS CARAMELO', 'Palom caramelo 184g', 1.00, 9, 1, 9.00, 9.00, 2.50, 5.00, 3.00, '76150420098', '7501006551129', '76150230345', 90, 1, '2018-06-13 15:54:40', '2018-07-17 17:28:18', NULL),
 (3008, 'ACT-0102', 'PALOMITAS NATURAL', 'Palom natural - 99g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501006551044', '7501006555622', '17501006555629', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
 (3009, 'ACT-0103', 'PALOMITAS MANTEQUILLA', 'Palom mantequilla - 99g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501006551051', '7501006555639', '17501006555636', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
 (3010, 'ACT-0104', 'PALOMITAS MANTEQUILLA EXTRA', 'Palom mantequilla xt 99g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501006551068', '7501006555370', '17501006555377', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
@@ -1550,9 +1580,9 @@ INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `it
 (3250, 'HER-0206', 'BITES DARK', 'Bites Dark - 43g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501024524242', '7501024524235', '27501024524239', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
 (3251, 'HER-0207', 'BITES DARK', 'Bites Dark - 150g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7501024524259', '', '17501024524256', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
 (3252, 'HER-0208', 'BITES KING SIZE COOKIES AND CREME', 'Bites KS C&C - 60g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501024576210', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
-(3253, 'HER-0209', 'BITES KING SIZE DARK', 'Bites KS Dark - 60g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501024576234', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL);
+(3253, 'HER-0209', 'BITES KING SIZE DARK', 'Bites KS Dark - 60g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501024576234', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
+(3254, 'HER-0210', 'BITES KING SIZE KRACKEL', 'Bites KS Krackel - 60g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501024576258', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL);
 INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `items_per_display`, `display_per_box`, `weight_per_display`, `weight_per_box`, `width`, `height`, `depth`, `barcode`, `display_barcode`, `corrugated_barcode`, `caducidad_minima`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(3254, 'HER-0210', 'BITES KING SIZE KRACKEL', 'Bites KS Krackel - 60g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '7501024576258', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
 (3255, 'HER-0211', 'BITES COOKIES AND CREME', 'Bites C&C - 138g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7501024576159', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
 (3256, 'HER-0212', 'BITES ALMENDRAS', 'Bites alm - 138g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7501024576166', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
 (3257, 'HER-0213', 'BITES LECHE', 'Bites Leche - 138g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7501024576180', '', '', NULL, 1, '2018-06-13 15:54:40', '2018-06-13 15:54:40', NULL),
@@ -1798,9 +1828,9 @@ INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `it
 (3497, 'MAR-0810', NULL, 'Regalo Dove - 96g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504083', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
 (3498, 'MAR-0811', NULL, 'Margo Regago MW - 170g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504052', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
 (3499, 'MAR-0812', NULL, 'Regalo C. MW - 44g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504106', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
-(3500, 'MAR-0813', NULL, 'Lata E. Snickers - 86g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504069', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL);
+(3500, 'MAR-0813', NULL, 'Lata E. Snickers - 86g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504069', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
+(3501, 'MAR-0814', NULL, 'Bs Cajitas C. Snickers - 212g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504205', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL);
 INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `items_per_display`, `display_per_box`, `weight_per_display`, `weight_per_box`, `width`, `height`, `depth`, `barcode`, `display_barcode`, `corrugated_barcode`, `caducidad_minima`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(3501, 'MAR-0814', NULL, 'Bs Cajitas C. Snickers - 212g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504205', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
 (3502, 'MAR-0815', NULL, 'Corazon M&M - 68g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174504021', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
 (3503, 'MAR-0901', 'MINI TUBO CON PIN N', 'Mini Tubo Con Pin n - 30g', 1.00, 16, 1, 16.00, 16.00, 2.50, 5.00, 3.00, '7506174501143', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
 (3504, 'MAR-0902', 'DUENDE', 'Duende - 68g', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7506174500962', '', '', NULL, 1, '2018-06-13 15:54:41', '2018-06-13 15:54:41', NULL),
@@ -2024,9 +2054,9 @@ INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `it
 (3722, 'NES-0502', 'LA LECHERA COOKIE WAFER', 'La Lechera  - 18g', 1.00, 10, 24, 10.00, 240.00, 2.50, 5.00, 3.00, '7501059279575', '', '', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
 (3723, 'NES-0601', 'TIN LARIN', 'Tin Larin  - 21g', 1.00, 10, 1, 10.00, 10.00, 2.50, 5.00, 3.00, '7501059242913', '', '', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
 (3724, 'NES-0602', 'LARIN SIN AZUCAR', 'Larin Sin Azucar - 21g', 1.00, 15, 1, 15.00, 15.00, 2.50, 5.00, 3.00, '7501059274341', '', '', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
-(3725, 'NES-0603', 'LARIN SIN AZUCAR BOLSA', 'Larin S/A Bolsa - 76g', 1.00, 1, 20, 1.00, 20.00, 2.50, 5.00, 3.00, '7501058618757 ', '', '', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL);
+(3725, 'NES-0603', 'LARIN SIN AZUCAR BOLSA', 'Larin S/A Bolsa - 76g', 1.00, 1, 20, 1.00, 20.00, 2.50, 5.00, 3.00, '7501058618757 ', '', '', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
+(3726, 'NES-0604', 'LARIN CHOCOLATE NUT', 'Larin Nut - 24g', 1.00, 10, 30, 10.00, 300.00, 2.50, 5.00, 3.00, '7501059299443', '7501059299009', '17501059299006', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL);
 INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `items_per_display`, `display_per_box`, `weight_per_display`, `weight_per_box`, `width`, `height`, `depth`, `barcode`, `display_barcode`, `corrugated_barcode`, `caducidad_minima`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(3726, 'NES-0604', 'LARIN CHOCOLATE NUT', 'Larin Nut - 24g', 1.00, 10, 30, 10.00, 300.00, 2.50, 5.00, 3.00, '7501059299443', '7501059299009', '17501059299006', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
 (3727, 'NES-0605', 'LARIN CHOCOLATE HAZELNUT', 'Larin Hazelnut - 24g', 1.00, 10, 30, 10.00, 300.00, 2.50, 5.00, 3.00, '7501059299429', '7501059299023', '17501059299020', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
 (3728, 'NES-0606', 'LARIN CHOCOLATE ALMOND', 'Larin Almond - 24g', 1.00, 10, 30, 10.00, 300.00, 2.50, 5.00, 3.00, '7501059299436', '7501059299016', '17501059299013', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
 (3729, 'NES-0607', 'LARIN CHOCOLATE SEMIAMARGO', 'Larin Semiamargo - 24g', 1.00, 10, 30, 10.00, 300.00, 2.50, 5.00, 3.00, '7501059298828', '7501059298811', '17501059298818', NULL, 1, '2018-06-13 15:54:42', '2018-06-13 15:54:42', NULL),
@@ -2178,7 +2208,7 @@ INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `it
 (3875, 'SUP-0902', 'CHOCOLORES GOMAS GRANEL', 'Chocolores Gomas G. 1Kg', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7702993023105', '', '1770299303137', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3876, 'SUP-1101', 'TRULULU SABORES GRANEL', 'Trululu Sabores Granel - 1 Kg', 1.00, 1, 1, 1.00, 1.00, 2.50, 5.00, 3.00, '7502245411878', '', '17502245411875', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3877, 'TOP-0101', 'RING POP DISPLAY', 'Ring Pop display - 14g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '041116206252', '41116006258', '10041116106252', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
-(3878, 'TOP-0102', 'PUSH POP', 'Push Pop - 14g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '041116209031', '41116009037', '10041116109031', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
+(3878, 'TOP-0102', 'PUSH POP', 'Push Pop - 14g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '041116209031', '41116009037', '10041116109031', 30, 1, '2018-06-13 15:54:43', '2018-07-17 17:43:02', NULL),
 (3879, 'TOP-0103', 'BOTTLE POP', 'Bottle Pop (18) - 31g', 1.00, 18, 1, 18.00, 18.00, 2.50, 5.00, 3.00, '041116204777', '41116004773', '10041116104777', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3880, 'TOP-0104', 'BAZOOKA BUBBLE JUICE', 'Bazooka Bubble Juice - 56g', 1.00, 18, 1, 18.00, 18.00, 2.50, 5.00, 3.00, '041116002946', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3881, 'TOP-0105', 'BOTTLE POP', 'Bottle Pop (12) - 31g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '041116204777', '041116004360', '10041116104364', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
@@ -2268,10 +2298,10 @@ INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `it
 (3965, 'WOM-0302', 'PALETA ROSITA FRESITA', 'Paleta Rosita Fresita 20g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '8435124853003', '8435124852990', '18435124853000', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3966, 'WOM-0401', 'ALGOTRON', 'Algotron - 10g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '8435124852914', '8435124852921', '18435124852911', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3967, 'WOM-0402', 'THUMB DIPPERS', 'Thumb Dippers - 43g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '8435124850705', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
-(3968, 'WOM-0403', 'SAFARI POP', 'Safari Pop - 10g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '8435124851054', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL);
-INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `items_per_display`, `display_per_box`, `weight_per_display`, `weight_per_box`, `width`, `height`, `depth`, `barcode`, `display_barcode`, `corrugated_barcode`, `caducidad_minima`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(3968, 'WOM-0403', 'SAFARI POP', 'Safari Pop - 10g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '8435124851054', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3969, 'WOM-0404', 'CHICKEN LEG', 'Chicken Leg - 20g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '8435124851009', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
-(3970, 'WOM-0405', 'BUNNY', 'Bunny - 10g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '8435124851665', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
+(3970, 'WOM-0405', 'BUNNY', 'Bunny - 10g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '8435124851665', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL);
+INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `items_per_display`, `display_per_box`, `weight_per_display`, `weight_per_box`, `width`, `height`, `depth`, `barcode`, `display_barcode`, `corrugated_barcode`, `caducidad_minima`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (3971, 'WOM-0406', 'THUMB SUCKER 6X12', 'Thumb Sucker 6x12- 27g', 1.00, 12, 1, 12.00, 12.00, 2.50, 5.00, 3.00, '8435124851047', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3972, 'WOM-0407', 'BABY FOOT', 'Baby Foot - 20g', 1.00, 24, 1, 24.00, 24.00, 2.50, 5.00, 3.00, '8435124852211', '', '', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
 (3973, 'WON-0101', 'SWETARTS', 'Swetarts - 51g', 1.00, 36, 1, 36.00, 36.00, 2.50, 5.00, 3.00, '7916423', '79200136468', '00079200136062', NULL, 1, '2018-06-13 15:54:43', '2018-06-13 15:54:43', NULL),
@@ -2349,7 +2379,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `profiles`
@@ -2464,7 +2494,17 @@ INSERT INTO `profiles` (`id`, `rol_id`, `menu_item_id`, `user_id`, `created_at`,
 (114, 1, 69, 1, '2018-07-17 07:01:17', '2018-07-17 07:01:17'),
 (115, 8, 69, 1, '2018-07-17 07:01:25', '2018-07-17 07:01:25'),
 (116, 1, 70, 1, '2018-07-17 07:02:06', '2018-07-17 07:02:06'),
-(117, 8, 70, 1, '2018-07-17 07:02:10', '2018-07-17 07:02:10');
+(117, 8, 70, 1, '2018-07-17 07:02:10', '2018-07-17 07:02:10'),
+(118, 4, 8, 1, '2018-07-17 16:51:57', '2018-07-17 16:51:57'),
+(119, 10, 8, 1, '2018-07-17 16:56:51', '2018-07-17 16:56:51'),
+(120, 4, 71, 1, '2018-07-17 17:07:11', '2018-07-17 17:07:11'),
+(121, 1, 71, 1, '2018-07-17 17:07:22', '2018-07-17 17:07:22'),
+(122, 10, 72, 1, '2018-07-17 17:09:26', '2018-07-17 17:09:26'),
+(123, 1, 73, 1, '2018-07-17 17:37:06', '2018-07-17 17:37:06'),
+(124, 4, 73, 1, '2018-07-17 17:37:10', '2018-07-17 17:37:10'),
+(125, 10, 74, 1, '2018-07-17 17:38:27', '2018-07-17 17:38:27'),
+(126, 10, 75, 1, '2018-07-17 17:39:12', '2018-07-17 17:39:12'),
+(127, 10, 76, 1, '2018-07-17 17:46:15', '2018-07-17 17:46:15');
 
 -- --------------------------------------------------------
 
@@ -3771,7 +3811,7 @@ INSERT INTO `rols` (`id`, `rol`, `description`, `created_at`, `updated_at`) VALU
 (7, 'A_GENERAL', 'Ayudante General', NULL, NULL),
 (8, 'EMBALAJE', 'Responsable de Embalaje', NULL, NULL),
 (9, 'SURTIDO_PP', 'Responsable de surtido', NULL, NULL),
-(10, 'PP_GENERAL', 'Ayudante General', NULL, NULL),
+(10, 'PP_GENERAL', 'Ayudante General Preparación', NULL, NULL),
 (11, 'DEVOLUCIONES', 'Responsable de devoluciones', NULL, NULL),
 (12, 'COORDINADOR', 'Coordinador de distribución', NULL, NULL),
 (13, 'CAPTURISTA', 'Capturista', NULL, NULL),
@@ -3814,7 +3854,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sessions`
@@ -3909,9 +3949,33 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip`, `token`, `created_at`, `updated_a
 (86, 3, '::1', 'IoaeEPtTmnipsHmYXKaw82GLTDGBty', '2018-07-17 06:39:57', '2018-07-17 06:40:10', '2018-07-17 06:40:10'),
 (87, 1, '::1', '3UxqrDuWFLq4c3PrsuCrJcdSfzh8jb', '2018-07-17 06:40:12', '2018-07-17 06:40:45', '2018-07-17 06:40:45'),
 (88, 3, '::1', 'iLNb5ywE3XJ5ytbuSDGjwmLdnAwb2g', '2018-07-17 06:40:52', '2018-07-17 06:41:16', '2018-07-17 06:41:16'),
-(89, 4, '::1', '7eMbKRYb8pEdhMYYvaWq3tjymrn07c', '2018-07-17 06:41:24', '2018-07-17 06:41:56', NULL),
+(89, 4, '::1', '7eMbKRYb8pEdhMYYvaWq3tjymrn07c', '2018-07-17 06:41:24', '2018-07-17 16:43:11', '2018-07-17 16:43:11'),
 (90, 3, '::1', '3bg0anwcyGzCzFIQWqVnometUE5HH3', '2018-07-17 06:41:48', '2018-07-17 06:42:06', '2018-07-17 06:42:06'),
-(91, 1, '::1', 'GECEU0Xpe8OD4gb9KDMKwvHKtbDXdj', '2018-07-17 06:58:48', '2018-07-17 07:06:42', '2018-07-17 07:06:42');
+(91, 1, '::1', 'GECEU0Xpe8OD4gb9KDMKwvHKtbDXdj', '2018-07-17 06:58:48', '2018-07-17 07:06:42', '2018-07-17 07:06:42'),
+(92, 1, '::1', 'jJUrafo7WKrxjzfB62kWCkM3Yfxtzh', '2018-07-17 07:17:11', '2018-07-17 16:38:03', '2018-07-17 16:38:03'),
+(93, 1, '::1', 'rIWlygKkCK86BURb9m9lV5bdmxIVjr', '2018-07-17 16:38:03', '2018-07-17 16:43:04', '2018-07-17 16:43:04'),
+(94, 3, '::1', 'ydtqyxrVOeR7BEKh9hLpcQEbenhvEd', '2018-07-17 16:42:57', '2018-07-17 16:56:20', '2018-07-17 16:56:20'),
+(95, 4, '::1', 'iCI2SbDBVeE4VsRIsqlWOPlA9k7zWa', '2018-07-17 16:43:11', '2018-07-17 16:43:31', '2018-07-17 16:43:31'),
+(96, 1, '::1', '3xRgWf7ZaYCpHslvC6UBtndwIjbcyt', '2018-07-17 16:43:32', '2018-07-17 16:52:05', '2018-07-17 16:52:05'),
+(97, 9, '::1', 'v3usbAlYQrX42D3UHNa7bKDKlY9tjo', '2018-07-17 16:52:17', '2018-07-17 16:52:28', '2018-07-17 16:52:28'),
+(98, 1, '::1', 'ZXI88WRCkeasbE2s2RJjFkMuAC6zxF', '2018-07-17 16:52:32', '2018-07-17 17:07:44', '2018-07-17 17:07:44'),
+(99, 10, '::1', 'GuRZAa1AmJdWxcMAHFwuXAQUcK4jgT', '2018-07-17 16:56:31', '2018-07-17 16:56:56', '2018-07-17 16:56:56'),
+(100, 10, '::1', 'iC4rZpsprWppHsXOf4JvNvrvKnET2V', '2018-07-17 16:57:14', '2018-07-17 16:57:22', '2018-07-17 16:57:22'),
+(101, 1, '::1', 'MtPZ9MwOh5Ua67MsFpcPF61uA0RL0q', '2018-07-17 17:07:45', '2018-07-17 17:15:49', '2018-07-17 17:15:49'),
+(102, 10, '::1', '9uZXD5cfmzs2ReBApVGk2zcQcwL0qs', '2018-07-17 17:09:42', '2018-07-17 17:15:32', '2018-07-17 17:15:32'),
+(103, 10, '::1', 'PNOByk0xqSittvt9MtW3FfzWzS1lh3', '2018-07-17 17:15:55', '2018-07-17 17:23:43', '2018-07-17 17:23:43'),
+(104, 1, '::1', 'vciiVLthUKStJ3UjVKbI37bk3F9Eh0', '2018-07-17 17:18:18', '2018-07-17 17:23:36', '2018-07-17 17:23:36'),
+(105, 1, '::1', 'mFtGiJ7tjn9CADJ1q7oyF4dFgVdtH1', '2018-07-17 17:23:46', '2018-07-17 17:40:16', '2018-07-17 17:40:16'),
+(106, 10, '::1', 'QAi7Pe3LEeFDr4zsDHsCe2a1zy8tb9', '2018-07-17 17:39:42', '2018-07-17 17:40:01', '2018-07-17 17:40:01'),
+(107, 10, '::1', 'StngcxZEpmQSrqdKuQqgXeCNVoLEEu', '2018-07-17 17:40:22', '2018-07-17 17:40:50', '2018-07-17 17:40:50'),
+(108, 1, '::1', 'X2NTiwA2Y5a5WgpsgXS8og5vpgDVa7', '2018-07-17 17:40:52', '2018-07-17 17:41:27', '2018-07-17 17:41:27'),
+(109, 10, '::1', 'ICRb8r6HIID4twtqfnvhB6Hn0Nrn0o', '2018-07-17 17:41:37', '2018-07-17 17:43:26', '2018-07-17 17:43:26'),
+(110, 1, '::1', 'HjRIsdSgOZBoy7SLomlCSj9qBQHYDB', '2018-07-17 17:42:06', '2018-07-17 17:43:17', '2018-07-17 17:43:17'),
+(111, 1, '::1', 'UW2bNQK4NbajJ4KFouqicoDxTwaSkO', '2018-07-17 17:43:27', '2018-07-17 17:44:30', '2018-07-17 17:44:30'),
+(112, 10, '::1', 'QbvPA0fp6M9UK1TafcXdTppTWngV2r', '2018-07-17 17:44:40', '2018-07-17 17:45:29', '2018-07-17 17:45:29'),
+(113, 1, '::1', 'hDNFHdr0HgbiqEqJmu2unWz53sTUtu', '2018-07-17 17:45:31', '2018-07-17 17:47:13', '2018-07-17 17:47:13'),
+(114, 10, '::1', 'jgAapISpxgXq6eeRrZfQI2YezfzmGZ', '2018-07-17 17:46:40', '2018-07-17 17:47:08', '2018-07-17 17:47:08'),
+(115, 10, '::1', 'zBkoEhCQnrmA7sHnTWyBeIof5adm4r', '2018-07-17 17:47:30', '2018-07-17 17:47:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -3930,21 +3994,24 @@ CREATE TABLE IF NOT EXISTS `users` (
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `boss_id`, `rol_id`, `name`, `email`, `password`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, NULL, 1, 'Jaime Ulises Cruz Macías', 'jaimeucm@gmail.com', '$2y$10$vhFL1lqwGHuMtZkKsx.5Zug9Rharqb8gZZT7phEV0rQiYwEQ9irYi', 1, 'cN7JofCv1kvmIQzHgWStHxj7Skj5VL5wJGtqEuA79o9AhylsNnMnsyGLEacJ', NULL, NULL),
+(1, NULL, 1, 'Jaime Ulises Cruz Macías', 'jaimeucm@gmail.com', '$2y$10$vhFL1lqwGHuMtZkKsx.5Zug9Rharqb8gZZT7phEV0rQiYwEQ9irYi', 1, 'zjysjwjf3zaNPZtVD12XwL7wH6xhKPBqYiKMYsS0awi65MtsAxKvijOjm3iJ', NULL, NULL),
 (2, 1, 4, 'Enrique López Aldamas', 'enriqueprogra@gmail.com', '$2y$10$eQhJuFiAFdwrYv4KcRmdmeDniny93JNlFGI4hAvw99c.zKyzdFKGm', 1, 'tQOBEWsG85a93E37EwwMmovE4OzUUfwoL9OnM2lGaglG7XgMYyXcT8enPkW2', NULL, '2018-06-13 18:48:09'),
-(3, 4, 5, 'Operador de almacén', 'op.almacen@marcopolo.mx', '$2y$10$iIC047GqTP5lAITmjrwBWO2OvQQdrbIy283MJB3PxHyF7OvsEPZ36', 1, 'RVFmP9r22whAkAMb9YyFkbfF8b3EWuVL5dCi9R9mvL09B6Nra2deXbVOeEAz', '2018-07-04 01:21:45', '2018-07-04 01:25:21'),
-(4, NULL, 4, 'Encargado de almacén', 'en.almacen@marcopolo.mx', '$2y$10$t5FP8pud76vjAX0I1MOv4.8Gjy30dj0QIT6GnT8Liv9ZBo3CRUaDy', 1, 'SaUeeg4lpR04pDy0nJx89oHqV6R4CWPCq5MCUh7T6rtijsykh3T6zCxbMb4m', '2018-07-04 01:22:21', '2018-07-04 01:22:21'),
+(3, 4, 5, 'Operador de almacén', 'op.almacen@marcopolo.mx', '$2y$10$iIC047GqTP5lAITmjrwBWO2OvQQdrbIy283MJB3PxHyF7OvsEPZ36', 1, 'APiQzPReSlHCgUfYBchTM5DQ3wPUwzw0g8LaOKJu93sa57p5hzYwck0D68SP', '2018-07-04 01:21:45', '2018-07-04 01:25:21'),
+(4, NULL, 4, 'Encargado de almacén', 'en.almacen@marcopolo.mx', '$2y$10$t5FP8pud76vjAX0I1MOv4.8Gjy30dj0QIT6GnT8Liv9ZBo3CRUaDy', 1, 'ozaVyItjhpN19CuShBzNdSuaaFkqI4itcaYthIsvxJVvFf7FuLibO7KvaKbZ', '2018-07-04 01:22:21', '2018-07-04 01:22:21'),
 (5, 4, 5, 'Operador 2 de almacén', 'op.almacen2@marcopolo.mx', '$2y$10$PkG9/SgX3vGtQL5PnUSo4OhT278PYPUO9xjRCJ2YPbTfFz0yW/qPq', 1, NULL, '2018-07-04 01:22:58', '2018-07-04 01:25:12'),
 (6, NULL, 8, 'Encargado de Preparación de Pedido', 'en.preparacion@marcopolo.mx', '$2y$10$6c52sP5Ac0gPB8Fzxkm6ZOVwvepwJTphJTj0KetNXFle3jTKW/iA6', 1, 'rnBRg667GtJrFV1qyppU6np6kftxSYtM3w5FfKjYchmrXoRU7g0XiOMuukRF', '2018-07-05 00:05:46', '2018-07-05 00:05:46'),
 (7, 6, 7, 'Ayudante General 1', 'ayudante1@marcopolo.mx', '$2y$10$NoYQ.rmN/yn2iHv5BigykucR1SSWY0JBemlEUgnQhWed6CtUCa04K', 1, '6Kfu8ENPpRgUl3xGXtbk13vEkSqvOxcgPUQYI2EWkbWo6PHTGBrSuAfQcrpY', '2018-07-05 00:06:25', '2018-07-05 00:06:39'),
-(8, 6, 7, 'Ayudante General 2', 'ayudante2@marcopolo.mx', '$2y$10$RVAhgwsSQYoZmqAcCl.NKOiwzqPCaxskGk1NuYQIArgSub1UIkPnq', 1, NULL, '2018-07-05 00:07:10', '2018-07-05 00:07:21');
+(8, 6, 7, 'Ayudante General 2', 'ayudante2@marcopolo.mx', '$2y$10$RVAhgwsSQYoZmqAcCl.NKOiwzqPCaxskGk1NuYQIArgSub1UIkPnq', 1, NULL, '2018-07-05 00:07:10', '2018-07-05 00:07:21'),
+(9, NULL, 4, 'Recepción de Mercancía', 'recepcion@marcopolo.mx', '$2y$10$Vdkj7rbbrUqwXULQqPG8iemvQq.LtUrEgM2PzqHrytBXKKV7DOSMW', 1, 'OWrus2qDHENa5PARgL55dNDvms2lR3FFWrjI8C4HmT6ZaVtAHY9dDcTTB7Rm', '2018-07-17 16:51:17', '2018-07-17 16:51:17'),
+(10, 9, 10, 'Ayudante en Recepción', 'ayudante.recepcion.1@marcopolo.mx', '$2y$10$mSVyKp1HUX0EpCBkvAF3keA3bFSqkdZqZqn4BKJ23kH2BmY6fomoq', 1, 'D1XgkP46072PX9TXlNK2q4EXuLbCYSUXDr1VGbijdt3dIvdEuNJRvX4mr3Xl', '2018-07-17 16:55:15', '2018-07-17 16:56:01'),
+(11, 9, 10, 'Ayudante 2 en Recepción', 'ayudante.recepcion.2@marcopolo.mx', '$2y$10$Vrz.lmSFkqUtY43h1eZnZuFdYqPKDFdwi25P/hItFPQjVDLPkXhvS', 1, NULL, '2018-07-17 16:55:43', '2018-07-17 16:55:53');
 
 --
 -- Indexes for dumped tables
@@ -4165,7 +4232,7 @@ ALTER TABLE `arrival_items`
 -- AUTO_INCREMENT for table `assignments`
 --
 ALTER TABLE `assignments`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=61;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `boxes`
 --
@@ -4205,17 +4272,17 @@ ALTER TABLE `distribution`
 -- AUTO_INCREMENT for table `history_supply`
 --
 ALTER TABLE `history_supply`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=249;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=71;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=77;
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=80;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=81;
 --
 -- AUTO_INCREMENT for table `orders`
 --
@@ -4225,7 +4292,7 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `order_designs`
 --
 ALTER TABLE `order_designs`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `order_details`
 --
@@ -4235,12 +4302,12 @@ ALTER TABLE `order_details`
 -- AUTO_INCREMENT for table `order_pendings`
 --
 ALTER TABLE `order_pendings`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=128;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=127;
 --
 -- AUTO_INCREMENT for table `order_traces`
 --
 ALTER TABLE `order_traces`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `products`
 --
@@ -4250,7 +4317,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `profiles`
 --
 ALTER TABLE `profiles`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=118;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=128;
 --
 -- AUTO_INCREMENT for table `purchases`
 --
@@ -4270,12 +4337,12 @@ ALTER TABLE `rules`
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=92;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=116;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
 --
 -- Constraints for dumped tables
 --

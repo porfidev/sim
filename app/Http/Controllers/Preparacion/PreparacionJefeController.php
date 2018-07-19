@@ -828,15 +828,22 @@ class PreparacionJefeController extends Controller
                     ->with('orderDetail', 'boxType')
                     ->orderBy(OrderRepository::DESIGN_SEQUENCE)
                     ->orderBy(OrderRepository::DESIGN_ORDER_DETAIL)
+                    ->orderBy(OrderRepository::DESIGN_P_ORDER)
                     ->get();
                 foreach ($listado as $item) {
                     $item->product;
+                }
+
+                $details = $pedido->details()->with('product')->get();
+                foreach ( $details as $detail ) {
+                    $detail->used = $this->orderModel->getUsed($pedido->id, $detail->id)->total;
                 }
                 return view('preparacion.validacionDisenio',
                     array(
                         "pedido"    => $pedido,
                         "listado"   => $listado,
-                        "productos" => $pedido->details()->with('product')->get()
+                        "cajas"     => $this->boxModel->getAll(),
+                        "productos" => $details
                     )
                 );
             } else {
@@ -850,6 +857,149 @@ class PreparacionJefeController extends Controller
             Session::flash('errores', 'Ocurrio el siguiente error: '.$e->getMessage());
             return redirect()->route('preparacion.listado');
         }
+    }
+
+    /**
+     * Función para actualizar la cantidad de un producto en el diseño
+     * del pedido.
+     * 
+     * @return json
+     */
+    public function actualizarCantidad(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - actualizarCantidad");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'id'       => 'required|string|exists:order_designs,id',
+                    'detalle'  => 'required|string|exists:order_details,id',
+                    'cantidad' => 'required|integer'
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes   = $validator->errors();
+            } else {
+                $detail = $this->orderDetailModel->getById($request->detalle);
+                $used = $this->orderModel->getUsed($detail->order_id, $request->detalle)->total;
+                $used = intval($used) + intval($request->cantidad);
+                if( intval($detail->quantity) - $used  >=  0) {
+                    $this->orderModel->updateDesign($request->id, array(
+                        OrderRepository::DESIGN_QUANTITY => $request->cantidad
+                    ));
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "La cantidad excede a lo establecido en el pedido" );
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - actualizarCantidad - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - actualizarCantidad - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    /**
+     * Función para eliminar un producto de una caja en el diseño
+     * del pedido.
+     * 
+     * @return json
+     */
+    public function quitarProducto(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - quitarProducto");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'id'       => 'required|string|exists:order_designs,id'
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes   = $validator->errors();
+            } else {
+                $this->orderModel->deleteDesign($request->id);
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - quitarProducto - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - quitarProducto - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    /**
+     * Función para agregar un producto a una caja en el diseño
+     * del pedido.
+     * 
+     * @return json
+     */
+    public function agregarProducto(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - agregarProducto");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'detalle'   => 'required|string|exists:order_details,id',
+                    'pedido'    => 'required|string|exists:orders,id',
+                    'caja'      => 'required|string|exists:boxes,id',
+                    'cantidad'  => 'required|integer',
+                    'secuencia' => 'required|integer'
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes   = $validator->errors();
+            } else {
+                $detail = $this->orderDetailModel->getById($request->detalle);
+                $used = $this->orderModel->getUsed($request->pedido, $request->detalle)->total;
+                $used = intval($used) + intval($request->cantidad);
+                if( intval($detail->quantity) - $used  >=  0) {
+                    $this->orderModel->createDesign(
+                        array(
+                            OrderRepository::DESIGN_SEQUENCE     => $request->secuencia,
+                            OrderRepository::DESIGN_BOX_TYPE     => $request->caja,
+                            OrderRepository::DESIGN_ORDER        => $request->pedido,
+                            OrderRepository::DESIGN_ORDER_DETAIL => $request->detalle,
+                            OrderRepository::DESIGN_QUANTITY     => $request->cantidad
+                        )
+                    );
+                } else {
+                    $resultado = "ERROR";
+                    $mensajes  = array( "La cantidad excede a lo establecido en el pedido" );
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - agregarProducto - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - agregarProducto - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
     }
 
     /**

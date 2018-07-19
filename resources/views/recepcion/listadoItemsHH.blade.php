@@ -79,8 +79,6 @@
 							>
 						<i class="material-icons">radio_button_checked</i>
 						</button>
-
-
 					</td>
 				</tr>
 				@endforeach           
@@ -90,11 +88,14 @@
 
 @endsection
 
+
+
 @section('final')
 
 @include('recepcion.modalRecepcionHH')
 
-	<!-- Script de Modal para Usuario Editar -->
+
+
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$( '.regresa' ).click(function () {
