@@ -1003,6 +1003,44 @@ class PreparacionJefeController extends Controller
     }
 
     /**
+     * Función para actualizar el orden de empaque en la caja
+     * 
+     * @return json
+     */
+    public function cambiarOrdenDisenio(Request $request) {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - cambiarOrdenDisenio");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'id'       => 'required|string|exists:order_designs,id',
+                    'orden'    => 'required|integer'
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes   = $validator->errors();
+            } else {
+                $this->orderModel->updateDesign($request->id, array(
+                    OrderRepository::DESIGN_P_ORDER => $request->orden
+                ));
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - cambiarOrdenDisenio - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - cambiarOrdenDisenio - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    /**
      * Función para validar el diseño del pedido
      */
     public function validarDisenio(Request $request)
