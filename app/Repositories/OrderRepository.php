@@ -84,6 +84,8 @@ interface OrderRepository
 
 	function createDesign(array $attributes);
 
+	function getIdOrdByBox($id);
+
 	function getDesignGroupByItem($order_id);
 
 	function getDesignsByDetail($order_detail_id);

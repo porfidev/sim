@@ -235,6 +235,18 @@ class EloquentOrder implements OrderRepository
 	 * @param String $code
 	 * @return App\Order
 	 */
+    public function getIdOrdByBox($id){
+
+		return $this->design->where(self::DESIGN_BOX, "=", $id)
+			->get()->first();
+    }
+
+    /**
+	 * Función que obtiene la primer orden por código
+	 *
+	 * @param String $code
+	 * @return App\Order
+	 */
     public function getByCodeDist($distId){
 
 		return $this->model->where(self::SQL_DIST_ID, "=", $distId)->get();

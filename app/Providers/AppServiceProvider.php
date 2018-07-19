@@ -56,6 +56,12 @@ use App\Repositories\EloquentDistribution;
 use App\Repositories\PendingsRepository;
 use App\Repositories\EloquentPendings;
 
+use App\Repositories\PallBoxRepository;
+use App\Repositories\EloquentPallBox;
+
+use App\Repositories\PalletRepository;
+use App\Repositories\EloquentPallet;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -93,5 +99,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(BoxesRepository::class,          EloquentBoxes::class);
         $this->app->singleton(DistributionRepository::class,   EloquentDistribution::class);
         $this->app->singleton(PendingsRepository::class,   EloquentPendings::class);
+        $this->app->singleton(PalletRepository::class,   EloquentPallet::class);
+        $this->app->singleton(PallBoxRepository::class,   EloquentPallBox::class);
     }
 }
