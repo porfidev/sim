@@ -28,7 +28,7 @@
                     <tr>
                         <td style="text-align: center;"
                                 class="table-dark"
-                                colspan="3">
+                                colspan="4">
                             Lista de productos Pedido #{{ $pedido->codeOrder }}
                         </td>
                     </tr>
@@ -42,6 +42,7 @@
                         <th scope="col">
                             Libres
                         </th>
+                        <th></th>
                     </tr>
         @foreach( $productos as $item )
                     <tr>
@@ -53,6 +54,13 @@
                         </td>
                         <td>
                             <span id="free_{{ $item->product->sku }}"> {{ $item->quantity - $item->used }} </span> piezas
+                        </td>
+                        <td>
+                @if ( $item->quantity - $item->used > 0)
+                            <button class="btn btn-sm btn-primary">
+                                <i class="material-icons">add</i>
+                            </button>
+                @endif
                         </td>
                     </tr>
         @endforeach

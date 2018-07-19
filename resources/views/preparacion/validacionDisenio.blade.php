@@ -118,13 +118,16 @@
                                             id="add_btn_{{ $item->orderDetail->product->sku }}"
                                             type="button"
                                             data-sku="{{ $item->orderDetail->product->sku }}"
-                                            disabled>
+                                            data-id="{{ $item->id }}"
+                                            data-detail="{{ $item->order_detail_id }}">
                                         <i class="material-icons">add_circle_outline</i>
                                     </button>
                                     <button class="btn btn-danger removeProduct"
                                             id="remove_btn_{{ $item->orderDetail->product->sku }}"
                                             type="button"
-                                            data-sku="{{ $item->orderDetail->product->sku }}">
+                                            data-sku="{{ $item->orderDetail->product->sku }}"
+                                            data-id="{{ $item->id }}"
+                                            data-detail="{{ $item->order_detail_id }}">
                                         <i class="material-icons">remove_circle_outline</i>
                                     </button>
                                 </div>
@@ -133,7 +136,9 @@
                                     name="design[{{ $item->sequence }}][{{ $item->orderDetail->id }}][]"
                                     id="qty_{{ $item->orderDetail->product->sku }}"
                                     value="{{ $item->quantity }}"
-                                    data-sku="{{ $item->orderDetail->product->sku }}">
+                                    data-sku="{{ $item->orderDetail->product->sku }}"
+                                    data-id="{{ $item->id }}"
+                                    data-detail="{{ $item->order_detail_id }}">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Piezas</span>
                                 </div>
@@ -144,10 +149,7 @@
                                 <button class="btn btn-sm btn-danger removeRow"
                                         id="remove_row_btn_{{ $item->orderDetail->product->sku }}"
                                         type="button"
-                                        data-id="{{ $item->id }}"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Quitar producto">
+                                        data-id="{{ $item->id }}">
                                     <i class="material-icons">highlight_off</i>
                                 </button>
                         </td>
@@ -194,6 +196,108 @@
             row += '</tr>';
             $( '#designTable' ).append(row);
         }
+        function actualizarCantidad(id, detalle, cantidad, callback){
+            $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.disenio.actualizar') }}",
+                dataType : 'json',
+                data     : {
+                    id       : id,
+                    detalle  : detalle,
+                    cantidad : cantidad
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    showMensaje(
+                        '&Eacute;xito',
+                        'Se ha actualizado la cantidad del producto'
+                    );
+                    callback();
+                } else {
+                    var errorMsg = "<p>Error al actualizar la cantidad del producto.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresValidacion", errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresValidacion", "Error al actualizar la cantidad del producto." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });
+        }
+        function quitarProducto(id, callback){
+            $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.disenio.quitar') }}",
+                dataType : 'json',
+                data     : {
+                    id       : id
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    showMensaje(
+                        '&Eacute;xito',
+                        'Se ha quitado el producto de la caja'
+                    );
+                    callback();
+                } else {
+                    var errorMsg = "<p>Error al quitar el producto.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresValidacion", errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresValidacion", "Error al quitar el producto." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });
+        }
+        function agregarProductoAcaja(datos, callback){
+            $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.disenio.agregar') }}",
+                dataType : 'json',
+                data     : datos
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    showMensaje(
+                        '&Eacute;xito',
+                        'Se ha agregado el producto a la caja'
+                    );
+                    callback();
+                } else {
+                    var errorMsg = "<p>Error al agregar el producto.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresValidacion", errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresValidacion", "Error al agregar el producto." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });  
+        }
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
 
@@ -201,15 +305,19 @@
                 var sku = $(this).attr('data-sku');
                 var qty = parseInt( $( '#qty_' + sku ).val(), 10 );
                 var max = parseInt( $( '#max_' + sku ).text(), 10 );
+                var id  = $(this).attr('data-id');
+                var det = $(this).attr('data-detail');
                 if(qty > 0) {
-                    $( '#qty_' + sku ).val( qty - 1 );
-                    var free = parseInt( $( '#free_' + sku ).text(), 10 );
-                    if(free === 0){
-                        $( '#add_btn_' + sku ).prop('disabled', false);
-                    } else if( (free + 1) === max ) {
-                        $( '#remove_btn_' + sku ).prop('disabled', true);
-                    }
-                    $( '#free_' + sku ).text( free + 1 );
+                    actualizarCantidad(id, det, qty-1, function () {
+                        $( '#qty_' + sku ).val( qty - 1 );
+                        var free = parseInt( $( '#free_' + sku ).text(), 10 );
+                        if(free === 0){
+                            $( '#add_btn_' + sku ).prop('disabled', false);
+                        } else if( (free + 1) === max ) {
+                            $( '#remove_btn_' + sku ).prop('disabled', true);
+                        }
+                        $( '#free_' + sku ).text( free + 1 );
+                    })
                 } else {
                     alert('No se pueden quitar mas elementos');
                     $( '#remove_btn_' + sku ).prop('disabled', true);
@@ -220,15 +328,19 @@
                 var sku = $(this).attr('data-sku');
                 var qty = parseInt( $( '#qty_' + sku ).val(), 10 );
                 var max = parseInt( $( '#max_' + sku ).text(), 10 );
+                var id  = $(this).attr('data-id');
+                var det = $(this).attr('data-detail');
                 if(qty < max) {
-                    $( '#qty_' + sku ).val( qty + 1 );
-                    var free = parseInt( $( '#free_' + sku ).text(), 10 );
-                    $( '#free_' + sku ).text( free - 1 );
-                    if( (qty + 1) === 1){
-                        $( '#remove_btn_' + sku ).prop('disabled', false);
-                    } else if( (free - 1) === 0 ) {
-                        $( '#add_btn_' + sku ).prop('disabled', true);
-                    }
+                    actualizarCantidad(id, det, qty, function () {
+                        $( '#qty_' + sku ).val( qty + 1 );
+                        var free = parseInt( $( '#free_' + sku ).text(), 10 );
+                        $( '#free_' + sku ).text( free - 1 );
+                        if( (qty + 1) === 1){
+                            $( '#remove_btn_' + sku ).prop('disabled', false);
+                        } else if( (free - 1) === 0 ) {
+                            $( '#add_btn_' + sku ).prop('disabled', true);
+                        }
+                    });
                 } else {
                     alert('No se pueden agregar mas elementos');
                     $( '#add_btn_' + sku ).prop('disabled', true);
@@ -239,18 +351,35 @@
                 var sku = $(this).attr('data-sku');
                 var qty = parseInt( $(this).val(), 10 );
                 var max = parseInt( $( '#max_' + sku ).text(), 10 );
+                var id  = $(this).attr('data-id');
+                var det = $(this).attr('data-detail');
                 var free = max - qty;
-                $( '#free_' + sku ).text( free );
-                if( qty > 0 ){
-                    $( '#remove_btn_' + sku ).prop('disabled', false);
-                } else {
-                    $( '#remove_btn_' + sku ).prop('disabled', true);
-                }
-                if( free < max ) {
-                    $( '#add_btn_' + sku ).prop('disabled', false);
-                } else {
-                    $( '#add_btn_' + sku ).prop('disabled', true);
-                }
+                actualizarCantidad(id, det, qty, function () {
+                    $( '#free_' + sku ).text( free );
+                    if( qty > 0 ){
+                        $( '#remove_btn_' + sku ).prop('disabled', false);
+                    } else {
+                        $( '#remove_btn_' + sku ).prop('disabled', true);
+                    }
+                    if( free < max ) {
+                        $( '#add_btn_' + sku ).prop('disabled', false);
+                    } else {
+                        $( '#add_btn_' + sku ).prop('disabled', true);
+                    }
+                });
+            });
+
+            $( '.removeRow' ).click(function (){
+                var tr    = $( this ).parent().parent();
+                var input = $( tr ).find( '.inputQty' );
+                var sku   = $( input ).attr('data-sku');
+                var qty   = parseInt( $( input ).val(), 10 );
+                var free  = parseInt( $( '#free_' + sku ).text(), 10 );
+                quitarProducto( $(this).attr('data-id'), function () {
+                    free = free + qty;
+                    $( '#free_' + sku ).text( free );
+                    tr.remove();
+                });
             });
 
             $( '.removeBox' ).click(function () {

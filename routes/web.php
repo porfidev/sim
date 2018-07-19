@@ -135,16 +135,16 @@ Route::post('/preparacion/CSVReparto',         '\App\Http\Controllers\Preparacio
 Route::get('/preparacion/mostrarValidacion/{order_id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarValidacion'  )->name('preparacion.mostrarValidacion');
 Route::post('/preparacion/agregar/caja',       '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarCaja'            )->name('preparacion.agregar.caja');
 Route::post('/preparacion/disenio',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@crearDisenioSinCSV'     )->name('preparacion.disenio.sinCSV');
-Route::get('/preparacion/mostrarDisenio/{id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarDisenio'        )->name('preparacion.mostrar.disenio');
-Route::post('/preparacion/validarDiseion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@validarDisenio')->name('preparacion.validar.disenio');
+Route::get('/preparacion/mostrarDisenio/{id}', '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarDisenio'         )->name('preparacion.mostrar.disenio');
+Route::post('/preparacion/validarDiseion',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@validarDisenio'         )->name('preparacion.validar.disenio');
+Route::post('/preparacion/actualizarCantidad', '\App\Http\Controllers\Preparacion\PreparacionJefeController@actualizarCantidad'     )->name('preparacion.disenio.actualizar');
+Route::post('/preparacion/quitarProducto',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@quitarProducto'         )->name('preparacion.disenio.quitar');
+Route::post('/preparacion/agregarProducto',    '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarProducto'        )->name('preparacion.disenio.agregar');
 
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );
 Route::post('/preparacion/asignaCaja',   '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@asignaCaja'    )->name('preparacion.asigna.caja');
 Route::post('/preparacion/terminaTarea', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@terminarTarea' )->name('preparacion.terminarTarea');
-
-// Embarque o distribución de pedido
-
 
 // Pedidos pendientes
 Route::get('/pendientes/listado',     '\App\Http\Controllers\Pendings\PendingsController@listado')->name('pendiente.listado');
@@ -157,3 +157,5 @@ Route::get('/tarimas/listado',     '\App\Http\Controllers\Tarimas\TarimasControl
 Route::post('/tarimas/nuevaTarima',     '\App\Http\Controllers\Tarimas\TarimasController@nuevaTarima')->name('tarimas.nuevaTarima');
 Route::post('/tarimas/asignaTarima',     '\App\Http\Controllers\Tarimas\TarimasController@asignaTarima')->name('tarimas.asignaTarima');
 Route::post('/tarimas/listaCajas',     '\App\Http\Controllers\Tarimas\TarimasController@listaCajas')->name('tarimas.listaCajas');
+
+// Embarque o distribución de pedido
