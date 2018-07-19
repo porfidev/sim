@@ -77,6 +77,7 @@
                                         <button class="btn btn-sm btn-success freeItemsList"
                                                 type="button"
                                                 data-sequence="{{ $caja }}"
+                                                data-type="{{ $item->boxType->id }}"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 title="Agregar Producto">
@@ -94,66 +95,66 @@
                                 </div>
                             </th>
                         </tr>
-                        <tr>
+                        <tr class="box_{{ $item->sequence }}">
                             <th style="text-align:center;">Orden de empaque</th>
                             <th>Producto</th>
                             <th style="text-align:center;">Cantidad</th>
                             <th style="text-align:center;">Acciones</th>
                         </tr>
                     @endif
-                    <tr class="box_{{ $item->sequence }}">
-                        <td width="5%">
-                            <input type="number"
-                                data-id="{{ $item->id }}"
-                                class="form-control"
-                                value="{{ $item->packing_order }}">
-                        </td>
-                        <td width="60%">
-                            {{ $item->orderDetail->product->sku }} - {{ $item->orderDetail->product->concept }}
-                        </td>
-                        <td width="25%">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <button class="btn btn-success addProduct"
-                                            id="add_btn_{{ $item->orderDetail->product->sku }}"
-                                            type="button"
-                                            data-sku="{{ $item->orderDetail->product->sku }}"
-                                            data-id="{{ $item->id }}"
-                                            data-detail="{{ $item->order_detail_id }}">
-                                        <i class="material-icons">add_circle_outline</i>
-                                    </button>
-                                    <button class="btn btn-danger removeProduct"
-                                            id="remove_btn_{{ $item->orderDetail->product->sku }}"
-                                            type="button"
-                                            data-sku="{{ $item->orderDetail->product->sku }}"
-                                            data-id="{{ $item->id }}"
-                                            data-detail="{{ $item->order_detail_id }}">
-                                        <i class="material-icons">remove_circle_outline</i>
-                                    </button>
-                                </div>
+                        <tr class="box_{{ $item->sequence }}">
+                            <td width="5%">
                                 <input type="number"
-                                    class="form-control inputQty"
-                                    name="design[{{ $item->sequence }}][{{ $item->orderDetail->id }}][]"
-                                    id="qty_{{ $item->orderDetail->product->sku }}"
-                                    value="{{ $item->quantity }}"
-                                    data-sku="{{ $item->orderDetail->product->sku }}"
                                     data-id="{{ $item->id }}"
-                                    data-detail="{{ $item->order_detail_id }}">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">Piezas</span>
+                                    class="form-control"
+                                    value="{{ $item->packing_order }}">
+                            </td>
+                            <td width="60%">
+                                {{ $item->orderDetail->product->sku }} - {{ $item->orderDetail->product->concept }}
+                            </td>
+                            <td width="25%">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-success addProduct"
+                                                id="add_btn_{{ $item->orderDetail->product->sku }}"
+                                                type="button"
+                                                data-sku="{{ $item->orderDetail->product->sku }}"
+                                                data-id="{{ $item->id }}"
+                                                data-detail="{{ $item->order_detail_id }}">
+                                            <i class="material-icons">add_circle_outline</i>
+                                        </button>
+                                        <button class="btn btn-danger removeProduct"
+                                                id="remove_btn_{{ $item->orderDetail->product->sku }}"
+                                                type="button"
+                                                data-sku="{{ $item->orderDetail->product->sku }}"
+                                                data-id="{{ $item->id }}"
+                                                data-detail="{{ $item->order_detail_id }}">
+                                            <i class="material-icons">remove_circle_outline</i>
+                                        </button>
+                                    </div>
+                                    <input type="number"
+                                        class="form-control inputQty"
+                                        name="design[{{ $item->sequence }}][{{ $item->orderDetail->id }}][]"
+                                        id="qty_{{ $item->orderDetail->product->sku }}"
+                                        value="{{ $item->quantity }}"
+                                        data-sku="{{ $item->orderDetail->product->sku }}"
+                                        data-id="{{ $item->id }}"
+                                        data-detail="{{ $item->order_detail_id }}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Piezas</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td width="10%"
-                            style="text-align:center;">
+                            </td>
+                            <td width="10%"
+                                style="text-align:center;">
                                 <button class="btn btn-sm btn-danger removeRow"
                                         id="remove_row_btn_{{ $item->orderDetail->product->sku }}"
                                         type="button"
                                         data-id="{{ $item->id }}">
                                     <i class="material-icons">highlight_off</i>
                                 </button>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                 @endforeach
                     </tbody>
                 </table>
