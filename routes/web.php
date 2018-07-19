@@ -151,3 +151,9 @@ Route::get('/pendientes/listado',     '\App\Http\Controllers\Pendings\PendingsCo
 Route::post('/pendientes/apartar',     '\App\Http\Controllers\Pendings\PendingsController@apartar')->name('pendiente.apartar');
 Route::post('/pendientes/arreglaCli',     '\App\Http\Controllers\Pendings\PendingsController@arreglaCli')->name('pendiente.arreglaCli');
 Route::post('/pendientes/arreglaDist',     '\App\Http\Controllers\Pendings\PendingsController@arreglaDist')->name('pendiente.arreglaDist');
+
+//Tarimas
+Route::get('/tarimas/listado',     '\App\Http\Controllers\Tarimas\TarimasController@listado')->name('tarimas.listado');
+Route::post('/tarimas/nuevaTarima',     '\App\Http\Controllers\Tarimas\TarimasController@nuevaTarima')->name('tarimas.nuevaTarima');
+Route::post('/tarimas/asignaTarima',     '\App\Http\Controllers\Tarimas\TarimasController@asignaTarima')->name('tarimas.asignaTarima');
+Route::post('/tarimas/listaCajas',     '\App\Http\Controllers\Tarimas\TarimasController@listaCajas')->name('tarimas.listaCajas');

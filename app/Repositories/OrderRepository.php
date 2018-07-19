@@ -27,6 +27,7 @@ interface OrderRepository
 	const DESIGN_QUANTITY     = "quantity";
 	const DESIGN_BOX_TYPE     = "box_type_id";
 	const DESIGN_SEQUENCE     = "sequence";
+	const DESIGN_P_ORDER      = "packing_order";
 
 	/**
 	 * Tipos de seguimiento
@@ -76,6 +77,8 @@ interface OrderRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getUsed($order_id, $order_detail_id);
+
 	function getMaxMin($order_id);
 
 	function getDesignListByOrder($order_id);
@@ -83,6 +86,12 @@ interface OrderRepository
 	function getDesignListByBox($box_id);
 
 	function createDesign(array $attributes);
+
+<<<<<<< HEAD
+	function getIdOrdByBox($id);
+=======
+	function deleteDesign($id);
+>>>>>>> f29c0b4e5b9b0e493b7e9643ba24e00d8e2aa054
 
 	function getDesignGroupByItem($order_id);
 

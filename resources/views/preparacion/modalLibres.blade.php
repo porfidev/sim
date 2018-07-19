@@ -52,7 +52,7 @@
                             <span id="max_{{ $item->product->sku }}">{{ $item->quantity }}</span> piezas
                         </td>
                         <td>
-                            <span id="free_{{ $item->product->sku }}">0</span> piezas
+                            <span id="free_{{ $item->product->sku }}"> {{ $item->quantity - $item->used }} </span> piezas
                         </td>
                     </tr>
         @endforeach

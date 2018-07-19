@@ -32,7 +32,7 @@
                         <tr>
                             <td style="text-align: center;"
                                 class="table-dark"
-                                colspan="3">
+                                colspan="4">
                                 <div class="row">
                                     <div class="col">
                                     </div>
@@ -46,7 +46,10 @@
                                     </div>
                                     <div class="col">
                                         <button class="btn btn-sm btn-success float-right addBoxToDesign"
-                                                type="button">
+                                                type="button"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Agregar Caja">
                                             <i class="material-icons">library_add</i>
                                         </button>
                                     </div>
@@ -64,7 +67,7 @@
                             $listaCajas[] = $item->sequence;
                         @endphp
                         <tr class="table-primary box_{{ $item->sequence }}">
-                            <th scope="col" colspan="3">
+                            <th scope="col" colspan="4">
                                 <div class="row">
                                     <div class="col">
                                         Caja {{ $item->sequence }}
@@ -73,21 +76,39 @@
                                     <div class="col" style="text-align:right;">
                                         <button class="btn btn-sm btn-success freeItemsList"
                                                 type="button"
-                                                data-sequence="{{ $caja }}">
+                                                data-sequence="{{ $caja }}"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Agregar Producto">
                                             <i class="material-icons">playlist_add</i>
                                         </button>
                                         <button class="btn btn-sm btn-danger removeBox"
                                                 type="button"
-                                                data-sequence="{{ $caja }}">
+                                                data-sequence="{{ $caja }}"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Quitar Caja">
                                             <i class="material-icons">highlight_off</i>
                                         </button>
                                     </div>
                                 </div>
                             </th>
                         </tr>
+                        <tr>
+                            <th style="text-align:center;">Orden de empaque</th>
+                            <th>Producto</th>
+                            <th style="text-align:center;">Cantidad</th>
+                            <th style="text-align:center;">Acciones</th>
+                        </tr>
                     @endif
                     <tr class="box_{{ $item->sequence }}">
-                        <td width="65%">
+                        <td width="5%">
+                            <input type="number"
+                                data-id="{{ $item->id }}"
+                                class="form-control"
+                                value="{{ $item->packing_order }}">
+                        </td>
+                        <td width="60%">
                             {{ $item->orderDetail->product->sku }} - {{ $item->orderDetail->product->concept }}
                         </td>
                         <td width="25%">
@@ -123,7 +144,10 @@
                                 <button class="btn btn-sm btn-danger removeRow"
                                         id="remove_row_btn_{{ $item->orderDetail->product->sku }}"
                                         type="button"
-                                        data-id="{{ $item->id }}">
+                                        data-id="{{ $item->id }}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Quitar producto">
                                     <i class="material-icons">highlight_off</i>
                                 </button>
                         </td>
@@ -150,20 +174,21 @@
             var sequence = parseInt(cajas[cajas.length-1], 10) + 1;
             cajas.push(sequence);
             var row = '<tr class="table-primary box_' + sequence + '">';
-            row += '<th scope="col" colspan="2">';
+            row += '<th scope="col" colspan="4">';
             row += '<div class="row"><div class="col">';
             row += ('Caja ' + sequence);
             row += '<small>' + box + '</small>';
             row += '</div><div class="col">';
             row += '<button class="btn btn-sm btn-danger float-right removeBox"'
             row += 'type="button"';
-            row += 'data-sequence="' + sequence + '">';
+            row += 'data-sequence="' + sequence + '"';
+            row += 'data-toggle="tooltip" data-placement="top" title="Quitar Caja" >';
             row += '<i class="material-icons">highlight_off</i>';
             row += '</button>';
             row += '</th>';
             row += '</tr>';
             row += '<tr class="box_' + sequence + '">'
-            row += '<td colspan=2 style=text-align:center;>';
+            row += '<td colspan=4 style=text-align:center;>';
             row += 'No hay productos en la caja'
             row += '</td>';
             row += '</tr>';

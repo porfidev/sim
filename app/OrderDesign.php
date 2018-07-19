@@ -23,7 +23,8 @@ class OrderDesign extends Model
      */
     protected $fillable = [
         'box_id', 'order_id', 'order_detail_id', 'quantity',
-        'quantity_validation', 'box_type_id', 'sequence'
+        'quantity_validation', 'box_type_id', 'sequence',
+        'packing_order'
     ];
 
     /**
