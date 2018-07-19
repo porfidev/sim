@@ -469,6 +469,60 @@ class RecepcionController extends Controller
 
 
 
+    public function regresaDatos($codigo, $sku, $purchaseid, $cantidadFinal){
+
+        $mensajes  = "OK";
+        $cantidadTot = $cantidadFinal;
+        $concept="";
+        $cantidadRequerida="";
+        $caducidadMinima="";
+        $response = [];
+        
+        $modelo =  new Product;
+        $productModelE = new EloquentProduct($modelo);
+        $modeloPI =  new PurchaseItems;
+        $purchaseItemModelE = new EloquentPurchaseItems($modeloPI);
+
+        try {
+            Log::info(" RecepcionController - regresaDatos codigo: " . $codigo);
+            
+            $product = $productModelE->getByCode( $codigo );
+
+            if( $product != null ) {
+
+                    $sku=$product->sku;
+                    $concept=$product->concept;
+                    $caducidadMinima=$product->caducidad_minima;
+
+                    $lepurchaseItem = $purchaseItemModelE->getByCode($sku);
+                    $cantidadRequerida = $lepurchaseItem->u_CantReq;
+
+            } else {
+
+                Log::error("RecepcionController - validaCodigo: El objeto product esta vacío");
+                $resultado = "No existe el producto";
+                $mensajes  = "No se encontr&oacute; el producto:  " . $codigo;
+            }
+        } catch (\Exception $e) {
+            Log::error( 'RecepcionController - validaCodigo - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+
+        $response["sku"] = $sku;
+        $response["mensajes"] = $mensajes;
+        $response["cantidad"] = $cantidadTot;
+        $response["concept"] = $concept;
+        $response["cantidadRequerida"] = $cantidadRequerida;
+        $response["caducidadMinima"] = $caducidadMinima;
+        $response["purchaseid"] = $purchaseid;
+        
+        return $response;
+      
+    }
+
+
+
     public function formularioDatos(Request $request){
         $resultado = "recepcion.capturaRecepcionHH";
         $codigo = "0";
@@ -484,10 +538,12 @@ class RecepcionController extends Controller
         if( $request->has("purchaseid")) {
             $purchaseid = $request->input("purchaseid");
         }
-        
 
+        if( $request->has("cantidadFinal")) {
+            $cantidadFinal = $request->input("cantidadFinal");
+        }
 
-        $data = $this->validaCodigo($codigo, $ItemCode, $purchaseid);
+        $data = $this->regresaDatos($codigo, $ItemCode, $purchaseid, $cantidadFinal);
 
         if ( $data["cantidad"] == -1 ) { 
             $resultado = "recepcion.mensajesRecepcionHH";
@@ -592,7 +648,7 @@ class RecepcionController extends Controller
 
             if ($product != null) {
                     $caducidad_minima = Carbon::now();
-                    $caducidad_minima->addDays($product->caducidad_minima);
+                    $caducidad_minima->addMonths($product->caducidad_minima);
 
                     if( $product->caducidad_minima != null ) {
 
@@ -611,7 +667,7 @@ class RecepcionController extends Controller
                                     'u_Caducidad'   => $caducidad,
                                     );
                             
-                                    $total= $arrivalItem->quantity;
+                                    $total= $arrivalItem->quantity + $cantidadCapturada;
                                     $resultado = $arrivalItemModelE->update($arrivalItem->id, $data);
                                     $mensajes  = "El producto ha sido actualizado: " .  $arrivalItem->ItemCode;
                                   
@@ -632,7 +688,7 @@ class RecepcionController extends Controller
                                 $purchaseItem = $purchaseItemModelE->getByCode( $sku );
 
                                 $caducidad_minima = Carbon::now();
-                                $caducidad_minima->addDays($product->caducidad_minima);
+                                $caducidad_minima->addMonths($product->caducidad_minima);
                                 
                                 if($caducidad >= $caducidad_minima ){
                 
