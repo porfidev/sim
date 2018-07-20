@@ -90,6 +90,10 @@ interface OrderRepository
 	function createDesign(array $attributes);
 
 	function getIdOrdByBox($id);
+	
+	function deleteDesign($id);
+
+	function getByIdCli($id);
 
 	function deleteDesign($id);
 

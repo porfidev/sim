@@ -351,7 +351,7 @@ class SurtidoJefeController extends Controller
         $resultado = "OK";
         $mensajes  = "NA";
 
-        Log::info(" ProductController - cierraPed idPed : ".$request->get('id'));
+        Log::info(" SurtidoTrabajadorController - cierraPedJ idPed : ".$request->get('id'));
 
         try{
 
@@ -373,10 +373,42 @@ class SurtidoJefeController extends Controller
 
             $this->orderModel->addTrace($datos);
 
+            $pedido = $this->orderModel->getByIdCli($idPed);
+
+            $servername = env('SQL_SERVER_NAME', '');
+            $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME_2', '') , 
+                                    'UID' => env('SQL_USER', ''),
+                                    'PWD' => env('SQL_PASS', ''),
+                                    'ReturnDatesAsStrings'=>true, 
+                                    'CharacterSet' => 'UTF-8');
+
+            Log::info("SurtidoTrabajadorController - connection:  [".print_r($connectionInfo)."]");
+
+            $con = sqlsrv_connect($servername, $connectionInfo);
+
+            if($con){
+
+                Log::info("cierraPedJ - si entro");
+                $sql = "INSERT INTO VentasPedidosSim (Id, CardCode,CardName,Status) VALUES (?, ?, ?, ?)";
+                $params = array($pedido->codeOrder, $pedido->code,
+                                $pedido->cliName, 'O');
+
+                $stmt = sqlsrv_query( $con, $sql, $params);
+                if( $stmt === false ) {
+                     if( ($errors = sqlsrv_errors() ) != null) {
+                        foreach( $errors as $error ) {
+                            Log::info("cierraPedJ - SQLSTATE: ".$error[ 'SQLSTATE']);
+                            Log::info("cierraPedJ - code: ".$error[ 'code']);
+                            Log::info("cierraPedJ - message: ".$error[ 'message']);
+                        }
+                    }
+                }
+            }
+
 
         } catch (\Exception $e) {
 
-            Log::error( 'ProductController - cierraPed - Error: '.$e->getMessage() );
+            Log::error( 'SurtidoTrabajadorController - cierraPedJ - Error: '.$e->getMessage() );
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
 
