@@ -45,11 +45,18 @@ class SaveAssortedOrders extends Command
                                 'ReturnDatesAsStrings'=>true,
                                 'CharacterSet' => 'UTF-8');
 
+        Log::info("DownloadOrders - connection:  [".print_r($connectionInfo)."]");
+
         $con = sqlsrv_connect($servername, $connectionInfo);
+
+        Log::info("DownloadOrders - sss:  [".print_r($con)."]");
+
+        print_r(sqlsrv_errors());
 
         if($con){
 
             Log::info("saveOrders - si entro");
+            print_r("si entro");
         }
     }
 }

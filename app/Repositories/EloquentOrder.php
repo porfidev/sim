@@ -222,6 +222,21 @@ class EloquentOrder implements OrderRepository
     }
 
     /**
+	 * Get order by id with client.
+	 *
+	 * @param integer $id
+	 *
+	 * @return App\Order
+	 */
+	public function getByIdCli($id)
+	{
+		return $this->model->select("orders.*","clients.name as cliName")
+						   ->leftJoin("clients","clients.code","=","orders.code")
+						   ->where("orders.".$this::SQL_ID,"=",$id)
+						   ->get()->first();
+    }
+
+    /**
 	 * Get Catalogo by numat.
 	 *
 	 * @param integer $id
