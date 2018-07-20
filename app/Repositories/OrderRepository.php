@@ -77,6 +77,8 @@ interface OrderRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getDesignBySequence($order_id, $sequence);
+
 	function getUsed($order_id, $order_detail_id);
 
 	function getMaxMin($order_id);

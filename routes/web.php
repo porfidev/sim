@@ -140,6 +140,8 @@ Route::post('/preparacion/validarDiseion',     '\App\Http\Controllers\Preparacio
 Route::post('/preparacion/actualizarCantidad', '\App\Http\Controllers\Preparacion\PreparacionJefeController@actualizarCantidad'     )->name('preparacion.disenio.actualizar');
 Route::post('/preparacion/quitarProducto',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@quitarProducto'         )->name('preparacion.disenio.quitar');
 Route::post('/preparacion/agregarProducto',    '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarProducto'        )->name('preparacion.disenio.agregar');
+Route::post('/preparacion/cambiarOrden',       '\App\Http\Controllers\Preparacion\PreparacionJefeController@cambiarOrdenDisenio'    )->name('preparacion.disenio.orden');
+Route::post('/preparacion/quitarCaja',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@quitarCaja'             )->name('preparacion.disenio.quitar.caja');
 
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );

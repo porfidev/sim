@@ -85,10 +85,8 @@
                                         </button>
                                         <button class="btn btn-sm btn-danger removeBox"
                                                 type="button"
-                                                data-sequence="{{ $caja }}"
-                                                data-toggle="tooltip"
-                                                data-placement="top"
-                                                title="Quitar Caja">
+                                                data-order={{ $pedido->id }}
+                                                data-sequence="{{ $caja }}">
                                             <i class="material-icons">highlight_off</i>
                                         </button>
                                     </div>
@@ -106,7 +104,7 @@
                             <td width="5%">
                                 <input type="number"
                                     data-id="{{ $item->id }}"
-                                    class="form-control"
+                                    class="form-control changeOrder"
                                     value="{{ $item->packing_order }}">
                             </td>
                             <td width="60%">
@@ -173,7 +171,7 @@
 
     <script type="text/javascript">
         var cajas = @json($listaCajas);
-        function addBox(box) {
+        function addBox(box, box_id) {
             var sequence = parseInt(cajas[cajas.length-1], 10) + 1;
             cajas.push(sequence);
             var row = '<tr class="table-primary box_' + sequence + '">';
@@ -181,8 +179,17 @@
             row += '<div class="row"><div class="col">';
             row += ('Caja ' + sequence);
             row += '<small>' + box + '</small>';
-            row += '</div><div class="col">';
-            row += '<button class="btn btn-sm btn-danger float-right removeBox"'
+            row += '</div><div class="col" style="text-align:right;">';
+            row += '<button class="btn btn-sm btn-success freeItemsList"';
+            row += 'type="button"';
+            row += 'data-sequence="' + sequence + '"';
+            row += 'data-type="' + box_id +  '"';
+            row += 'data-toggle="tooltip"';
+            row += 'data-placement="top"';
+            row += 'title="Agregar Producto">';
+            row += '<i class="material-icons">playlist_add</i>';
+            row += '</button>';
+            row += '<button class="btn btn-sm btn-danger removeBox"'
             row += 'type="button"';
             row += 'data-sequence="' + sequence + '"';
             row += 'data-toggle="tooltip" data-placement="top" title="Quitar Caja" >';
@@ -299,6 +306,41 @@
                 $( '#overlay' ).hide();
             });  
         }
+        function quitarcaja(pedido, caja, callback){
+            $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.disenio.quitar.caja') }}",
+                dataType : 'json',
+                data     : {
+                    pedido    : pedido,
+                    secuencia : caja
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    showMensaje(
+                        '&Eacute;xito',
+                        'Se ha eliminado la caja'
+                    );
+                    callback();
+                } else {
+                    var errorMsg = "<p>Error al eliminar la caja.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresValidacion", errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresValidacion", "Error al eliminar la caja." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });
+        }
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
 
@@ -385,25 +427,65 @@
 
             $( '.removeBox' ).click(function () {
                 var sequence = $(this).attr('data-sequence');
+                var pedido   = $(this).attr('data-order');
                 var inputs = $( '.box_' + sequence + ' input' );
-                $.each( inputs, function (i, element) {
-                    var sku = $( element ).attr('data-sku');
-                    var qty = parseInt( $( element ).val(), 10 );
-                    var free = parseInt( $( '#free_' + sku ).text(), 10 );
-                    free = free + qty;
-                    $( '#free_' + sku ).text( free );
+                quitarcaja(pedido, sequence, function (){
+                    $.each( inputs, function (i, element) {
+                        var sku = $( element ).attr('data-sku');
+                        var qty = parseInt( $( element ).val(), 10 );
+                        var free = parseInt( $( '#free_' + sku ).text(), 10 );
+                        free = free + qty;
+                        $( '#free_' + sku ).text( free );
+                    });
+                    var index = cajas.indexOf(sequence);
+                    cajas.splice(index, 1);
+                    $( '.box_' + sequence).remove();
+                    if(cajas.length == 0){
+                        var row = '<tr>';
+                        row += '<td colspan=2 style=text-align:center;>';
+                        row += 'No hay cajas en el dise&ntilde;o';
+                        row += '</td>';
+                        row += '</tr>';
+                        $( '#designTable' ).append(row);
+                    }
                 });
-                var index = cajas.indexOf(sequence);
-                cajas.splice(index, 1);
-                $( '.box_' + sequence).remove();
-                if(cajas.length == 0){
-                    var row = '<tr>';
-                    row += '<td colspan=2 style=text-align:center;>';
-                    row += 'No hay cajas en el dise&ntilde;o';
-                    row += '</td>';
-                    row += '</tr>';
-                    $( '#designTable' ).append(row);
-                }
+            });
+
+            $( '.changeOrder' ).change(function (){
+                var orden = $(this).val();
+                var id = $(this).attr('data-id');
+                $( '#overlay' ).show();
+                $.ajax({
+                    headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type     : 'POST',
+                    url      : "{{ route('preparacion.disenio.orden') }}",
+                    dataType : 'json',
+                    data     : {
+                        id    : id,
+                        orden : orden
+                    }
+                }).done(function (data) {
+                    if(data.resultado === 'OK') {
+                        showMensaje(
+                            '&Eacute;xito',
+                            'Se ha actualizado el orden del producto'
+                        );
+                    } else {
+                        var errorMsg = "<p>Error al actualizar el orden del producto.<p><ul>";
+                        $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                        errorMsg += "</ul>";
+                        erroresValidacion("erroresValidacion", errorMsg);
+                    }
+                }).fail(function (jqXHR, textStatus) {
+                    errorDetalle = "";
+                    // If req debug show errorDetalle
+                    $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                    erroresValidacion( "erroresValidacion", "Error al actualizar el orden del producto." );
+                }).always(function() {
+                    $( '#overlay' ).hide();
+                });
             });
         });
     </script>

@@ -827,7 +827,6 @@ class PreparacionJefeController extends Controller
                 $listado = $pedido->design()
                     ->with('orderDetail', 'boxType')
                     ->orderBy(OrderRepository::DESIGN_SEQUENCE)
-                    ->orderBy(OrderRepository::DESIGN_ORDER_DETAIL)
                     ->orderBy(OrderRepository::DESIGN_P_ORDER)
                     ->get();
                 foreach ($listado as $item) {
@@ -1041,16 +1040,21 @@ class PreparacionJefeController extends Controller
         ));
     }
 
-    public function cambiarquitarCaja(Request $request)
+    /**
+     * Función para eliminar una caja entera del diseño del pedido
+     * 
+     * @return json
+     */
+    public function quitarCaja(Request $request)
     {
         $resultado = "OK";
         $mensajes  = "NA";
         try {
-            Log::info("PreparacionJefeController - cambiarOrdenDisenio");
+            Log::info("PreparacionJefeController - quitarCaja");
             $validator = Validator::make(
                 $request->all(),
                 array(
-                    'id'        => 'required|string|exists:order_designs,id',
+                    'pedido'    => 'required|string|exists:orders,id',
                     'secuencia' => 'required|integer'
                 ),
                 Controller::$messages
@@ -1059,11 +1063,28 @@ class PreparacionJefeController extends Controller
                 $resultado = "ERROR";
                 $mensajes   = $validator->errors();
             } else {
-                
+                // Borramos la caja
+                $lista = $this->orderModel->getDesignBySequence($request->pedido, $request->secuencia);
+                foreach($lista as $item){
+                    $this->orderModel->deleteDesign($item->id);
+                }
+
+                // Movemos la secuencia de las cajas posteriores a la que borramos
+                $sequence = $request->secuencia;
+                $porActualizar = $this->orderModel->getDesignBySequence($request->pedido, ($sequence + 1));
+                while (count($porActualizar) > 0) {
+                    foreach ($porActualizar as $item) {
+                        $this->orderModel->updateDesign($item->id, array(
+                            OrderRepository::DESIGN_SEQUENCE => $sequence
+                        ));
+                    }
+                    $porActualizar = $this->orderModel->getDesignBySequence($request->pedido, ($sequence + 1));
+                    $sequence += 1;
+                }
             }
         } catch (\Exception $e) {
-            Log::error( "PreparacionJefeController - cambiarOrdenDisenio - Exception: ".$e->getMessage() );
-            Log::error( "PreparacionJefeController - cambiarOrdenDisenio - Trace: \n".$e->getTraceAsString() );
+            Log::error( "PreparacionJefeController - quitarCaja - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - quitarCaja - Trace: \n".$e->getTraceAsString() );
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
