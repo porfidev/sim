@@ -18,6 +18,7 @@
                 data-placement="top"
                 data-id="{{ $idP }}"
                 id="btnCerrar"
+                style="display:none;"
                 @if($terminado == 0)
                 @endif
                 title="Validar pedido">
