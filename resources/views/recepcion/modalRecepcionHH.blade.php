@@ -28,6 +28,7 @@
                         {{ csrf_field() }}
                         <input type="hidden" name="ItemCode" id="ItemCode" value="">
                         <input type="hidden" name="purchaseid" id="purchaseid" value="">
+                        <input type="hidden" name="cantidadFinal" id="cantidadFinal" value="">
                         <input type="text"
                                 class="form-control"
                                 placeholder="C&oacute;digo de barras"
@@ -35,11 +36,16 @@
                                 id="codigo"
                                 required
                                 class="visible">
+                                <span class="custom-control-indicator" id="cantidad" style="font-size: 24px; font-weight: bold;">0</span>       
                          <div class="modal-footer d-flex justify-content-center">
                             <button type="button"
                                 class="btn btn-secondary"
                                 data-dismiss="modal">
                                 Cancelar        
+                            </button>
+                            <button type="input"
+                                class="btn btn-primary" >
+                                Aceptar        
                             </button>
                         </div>
                     </div>
@@ -47,7 +53,6 @@
            </div>
         </div>
     </div>
-
 
 </div>
 <!-- Fin de modales -->
@@ -75,6 +80,52 @@
 </script>
 
 <script type="text/javascript">
+
+$(document).ready(function () {
+        cantidad = 0;
+
+        $('#validaBarcode').on('keyup keypress', function(e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) { 
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        
+        $("#codigo").focus();
+        $("#codigo").keyup(function(event){
+            if (event.which == 13 ) {
+                event.preventDefault();
+                $.ajax({
+                    url    : "{{ URL::to('/hh/recepcion/obtenCantidadPorCodigo/') }}",
+                    method : "POST",
+                    data   : $( '#validaBarcode'  ).serialize()
+                    }).done(function( data ) {
+                        console.log(data);
+                        if(data.cantidad > 0) {
+                            cantidad += data.cantidad;
+                            $("#cantidad").html(cantidad + " items");
+                            $("#cantidadFinal").val(cantidad);
+                        } else {
+                            alert(data.mensajes);
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        errorDetalle = "ERROR: \n";
+                        //$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
+                        alert(errorDetalle);
+                    }).always(function() {
+                        //alert('okkkkkkk always');
+                    });
+            } 
+        });            
+});
+
+</script>
+
+
+
+
 
 
 <!-- Fin de Modal para Recepion HH -->

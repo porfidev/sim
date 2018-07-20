@@ -28,7 +28,7 @@
                     <tr>
                         <td style="text-align: center;"
                                 class="table-dark"
-                                colspan="3">
+                                colspan="4">
                             Lista de productos Pedido #{{ $pedido->codeOrder }}
                         </td>
                     </tr>
@@ -42,6 +42,7 @@
                         <th scope="col">
                             Libres
                         </th>
+                        <th></th>
                     </tr>
         @foreach( $productos as $item )
                     <tr>
@@ -53,6 +54,16 @@
                         </td>
                         <td>
                             <span id="free_{{ $item->product->sku }}"> {{ $item->quantity - $item->used }} </span> piezas
+                        </td>
+                        <td>
+                @if ( $item->quantity - $item->used > 0)
+                            <button class="btn btn-sm btn-primary addToDesign"
+                                    data-order="{{ $pedido->id }}"
+                                    data-detail="{{ $item->id }}"
+                                    data-sku="{{ $item->product->sku }}">
+                                <i class="material-icons">add</i>
+                            </button>
+                @endif
                         </td>
                     </tr>
         @endforeach
@@ -72,11 +83,52 @@
 
 <!-- Script de Modal para agregar caja a diseño de pedido -->
 <script type="text/javascript">
+    var selectedBox = 0;
+    var typeBox     = 0;
     $(document).ready(function () {
         $( '.freeItemsList' ).click(function (){
+            selectedBox = $(this).attr("data-sequence");
+            typeBox     = $(this).attr("data-type");
             $( "#modalFreeItems" ).modal({
                 keyboard : false,
                 backdrop : 'static'
+            });
+        });
+
+        $( '.addToDesign' ).click(function (){
+            $( '#overlay' ).show();
+            var sku = $(this).attr("data-sku");
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.disenio.agregar') }}",
+                dataType : 'json',
+                data     : {
+                    detalle   : $(this).attr("data-detail"),
+                    pedido    : $(this).attr("data-order"),
+                    caja      : typeBox,
+                    cantidad  : $( '#free_' + sku ).text(),
+                    secuencia : selectedBox
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    $( "#modalFreeItems" ).modal('toggle');
+                    location.reload();
+                } else {
+                    var errorMsg = "<p>Error al agregar el producto.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresModalFreeItems", errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresModalFreeItems", "Error al agregar el producto." );
+            }).always(function() {
+                $( '#overlay' ).hide();
             });
         });
     });

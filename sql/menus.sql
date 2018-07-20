@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 17, 2018 at 10:39 PM
+-- Generation Time: Jul 19, 2018 at 10:38 PM
 -- Server version: 5.6.37
 -- PHP Version: 7.1.8
 
@@ -99,7 +99,10 @@ INSERT INTO `menus` (`id`, `parent`, `sequence`, `label`, `url`, `visible`, `use
 (73, 13, 0, 'Validación de Ordenes de Compra', 'ordenes/validar', 1, 1, '2018-07-17 17:36:53', '2018-07-17 17:36:53'),
 (74, 13, 0, 'Lista de items de Ordenes de compra en HH', 'hh/recepcion/listadoItemsHH/.*', 1, 1, '2018-07-17 17:38:14', '2018-07-17 17:41:16'),
 (75, 13, 0, 'Validación de lote y caducidad', 'hh/recepcion/captura', 1, 1, '2018-07-17 17:39:01', '2018-07-17 17:39:01'),
-(76, 13, 0, 'valida Captura de Orden de Compra', 'hh/recepcion/validaCaptura.*', 1, 1, '2018-07-17 17:45:53', '2018-07-17 17:46:05');
+(76, 13, 0, 'valida Captura de Orden de Compra', 'hh/recepcion/validaCaptura.*', 1, 1, '2018-07-17 17:45:53', '2018-07-17 17:46:05'),
+(77, 13, 0, 'Actualizar cantidad en la validación del diseño del pedido', 'preparacion/actualizarCantidad', 1, 1, '2018-07-19 17:27:25', '2018-07-19 17:27:25'),
+(78, 13, 0, 'Eliminar un producto de una caja en validación del diseño de pedido', 'preparacion/quitarProducto', 1, 1, '2018-07-19 20:09:56', '2018-07-19 20:09:56'),
+(79, 13, 0, 'Agregar productos a una caja en validación de diseño de pedido', 'preparacion/agregarProducto', 1, 1, '2018-07-19 22:12:23', '2018-07-19 22:12:23');
 SET FOREIGN_KEY_CHECKS=1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

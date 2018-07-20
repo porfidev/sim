@@ -9,7 +9,7 @@ Cantidad requerida: <b> {{ $data["cantidadRequerida"] }} </b>
 <br>
 Cantidad recibida: <b> {{ $data["cantidad"] }} </b>
 <br>
-Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  d&iacute;as</b>
+Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  meses</b>
 <br>
 
 <form id="formCapturaDatos" data-toggle="validator" role="form" action="{{ route('ordenes.validaCaptura') }}" novalidate>
