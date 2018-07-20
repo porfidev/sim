@@ -1007,7 +1007,8 @@ class PreparacionJefeController extends Controller
      * 
      * @return json
      */
-    public function cambiarOrdenDisenio(Request $request) {
+    public function cambiarOrdenDisenio(Request $request)
+    {
         $resultado = "OK";
         $mensajes  = "NA";
         try {
@@ -1027,6 +1028,38 @@ class PreparacionJefeController extends Controller
                 $this->orderModel->updateDesign($request->id, array(
                     OrderRepository::DESIGN_P_ORDER => $request->orden
                 ));
+            }
+        } catch (\Exception $e) {
+            Log::error( "PreparacionJefeController - cambiarOrdenDisenio - Exception: ".$e->getMessage() );
+            Log::error( "PreparacionJefeController - cambiarOrdenDisenio - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    public function cambiarquitarCaja(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - cambiarOrdenDisenio");
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'id'        => 'required|string|exists:order_designs,id',
+                    'secuencia' => 'required|integer'
+                ),
+                Controller::$messages
+            );
+            if ($validator->fails()) {
+                $resultado = "ERROR";
+                $mensajes   = $validator->errors();
+            } else {
+                
             }
         } catch (\Exception $e) {
             Log::error( "PreparacionJefeController - cambiarOrdenDisenio - Exception: ".$e->getMessage() );
