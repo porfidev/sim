@@ -25,8 +25,10 @@
     <div class="card mb-3">
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
             <form action="{{ route('preparacion.validar.disenio') }}"
-                    method="POST">
-                <input type="hidden" name="pedido" value="{{ $pedido->id }}">
+                    method="POST"
+                    id="validateForm">
+                {{ csrf_field() }}
+                <input type="hidden" name="id" value="{{ $pedido->id }}">
                 <table class="table table-striped mb-0">
                     <tbody id="designTable">
                         <tr>
@@ -44,8 +46,16 @@
                                             {{ $pedido->client->name }}
                                         </small>
                                     </div>
-                                    <div class="col">
-                                        <button class="btn btn-sm btn-success float-right addBoxToDesign"
+                                    <div class="col"
+                                        style="text-align: right;">
+                                        <button class="btn btn-sm btn-primary"
+                                                type="submit"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Validar Diseño">
+                                            <i class="material-icons">done_all</i>
+                                        </button>
+                                        <button class="btn btn-sm btn-success addBoxToDesign"
                                                 type="button"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
@@ -180,7 +190,7 @@
             row += ('Caja ' + sequence);
             row += '<small>' + box + '</small>';
             row += '</div><div class="col" style="text-align:right;">';
-            row += '<button class="btn btn-sm btn-success freeItemsList"';
+            row += '<button class="btn btn-sm btn-success freeItemsList mr-1"';
             row += 'type="button"';
             row += 'data-sequence="' + sequence + '"';
             row += 'data-type="' + box_id +  '"';
@@ -430,24 +440,8 @@
                 var pedido   = $(this).attr('data-order');
                 var inputs = $( '.box_' + sequence + ' input' );
                 quitarcaja(pedido, sequence, function (){
-                    $.each( inputs, function (i, element) {
-                        var sku = $( element ).attr('data-sku');
-                        var qty = parseInt( $( element ).val(), 10 );
-                        var free = parseInt( $( '#free_' + sku ).text(), 10 );
-                        free = free + qty;
-                        $( '#free_' + sku ).text( free );
-                    });
-                    var index = cajas.indexOf(sequence);
-                    cajas.splice(index, 1);
-                    $( '.box_' + sequence).remove();
-                    if(cajas.length == 0){
-                        var row = '<tr>';
-                        row += '<td colspan=2 style=text-align:center;>';
-                        row += 'No hay cajas en el dise&ntilde;o';
-                        row += '</td>';
-                        row += '</tr>';
-                        $( '#designTable' ).append(row);
-                    }
+                    $( '#overlay' ).show();
+                    location.reload();
                 });
             });
 

@@ -1068,18 +1068,22 @@ class PreparacionJefeController extends Controller
                 foreach($lista as $item){
                     $this->orderModel->deleteDesign($item->id);
                 }
+                Log::info("PreparacionJefeController - quitarCaja - secuencia: ".$request->secuencia);
 
                 // Movemos la secuencia de las cajas posteriores a la que borramos
                 $sequence = $request->secuencia;
+                Log::info("PreparacionJefeController - quitarCaja - Por actualizar: ".($sequence + 1));
                 $porActualizar = $this->orderModel->getDesignBySequence($request->pedido, ($sequence + 1));
                 while (count($porActualizar) > 0) {
+                    Log::info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                     foreach ($porActualizar as $item) {
                         $this->orderModel->updateDesign($item->id, array(
                             OrderRepository::DESIGN_SEQUENCE => $sequence
                         ));
                     }
-                    $porActualizar = $this->orderModel->getDesignBySequence($request->pedido, ($sequence + 1));
                     $sequence += 1;
+                    Log::info("PreparacionJefeController - quitarCaja - Por actualizar: ".($sequence + 1));
+                    $porActualizar = $this->orderModel->getDesignBySequence($request->pedido, ($sequence + 1));
                 }
             }
         } catch (\Exception $e) {
@@ -1101,6 +1105,28 @@ class PreparacionJefeController extends Controller
     {
         Log::debug("PreparacionJefeController - validarDisenio");
         try {
+            if($request->has('id')) {
+                $pedido = $this->orderModel->getById($request->id);
+                if(!empty($pedido)) {
+                    // Realizamos el cambio de estatus del pedido
+                    $datosW = array();
+                    $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::PREPARADO_ESPERA;
+                    $this->orderModel->update($pedido->id, $datosW);
+
+                    // Agregamos el seguimiento del pedido
+                    $datos = array();
+                    $datos['order_id']   = $pedido->id;
+                    $datos['trace_type'] = OrderRepository::TRACE_VALIDAR_DPP;
+                    $datos['user_id']    = Auth::id();
+                    $this->orderModel->addTrace($datos);
+
+                    Session::flash('exito', 'Se ha validado el diseño del pedido #'.$pedido->codeOrder);
+                } else {
+                    Session::flash('errores', 'No se encontro el pedido');
+                }
+            } else {
+                Session::flash('errores', 'No hay datos para identificar el pedido');
+            }
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - validarDisenio - Exception: '.$e->getMessage() );
             Log::error( "PreparacionJefeController - validarDisenio - Trace: \n".$e->getTraceAsString() );
@@ -1108,6 +1134,7 @@ class PreparacionJefeController extends Controller
             Session::flash('errores', 'Ocurrio el siguiente error: '.$e->getMessage());
             return redirect()->route('preparacion.listado');
         }
+        return redirect()->route('preparacion.listado');
     }
 
 }
