@@ -72,8 +72,7 @@ class DownloadOrders extends Command
      *
      * @return void
      */
-    public function __construct(CalculationRepository $cal, OrderDetailRepository $ordDet, OrderRepository $ord,
-                                CatalogoRepository $cata, ClienteRepository $clie, PendingsRepository $pend)
+    public function __construct(CalculationRepository $cal, OrderDetailRepository $ordDet, OrderRepository $ord, CatalogoRepository $cata, ClienteRepository $clie, PendingsRepository $pend)
     {
         parent::__construct();
         $this->calc   = $cal;

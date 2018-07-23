@@ -18,9 +18,7 @@
                 data-placement="top"
                 data-id="{{ $idP }}"
                 id="btnCerrar"
-                @if($terminado == 0)
-                style="display: none;"
-                @endif
+                style="display:none;"
                 title="Validar pedido">
             <i class="material-icons">offline_pin</i>
         </button><br><br>

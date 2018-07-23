@@ -77,6 +77,8 @@ interface OrderRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	function getDesignBySequence($order_id, $sequence);
+
 	function getUsed($order_id, $order_detail_id);
 
 	function getMaxMin($order_id);
@@ -87,7 +89,11 @@ interface OrderRepository
 
 	function createDesign(array $attributes);
 
+	function getIdOrdByBox($id);
+	
 	function deleteDesign($id);
+
+	function getByIdCli($id);
 
 	function getDesignGroupByItem($order_id);
 

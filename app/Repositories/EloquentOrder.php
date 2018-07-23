@@ -43,6 +43,21 @@ class EloquentOrder implements OrderRepository
     }
 
 	/**
+	 * Función para obtener la lista de productos de una caja en el disño
+	 * de pedido
+	 * 
+	 * @param integer $order_id
+	 * @param integer $sequence
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDesignBySequence($order_id, $sequence)
+	{
+		return $this->design->where(self::DESIGN_ORDER, '=', $order_id)
+			->where(self::DESIGN_SEQUENCE, '=', $sequence)
+			->get();
+	}
+
+	/**
 	 * Función para obtener cuanto de un producto ya esta en el diseño
 	 * del pedido.
 	 * 
@@ -219,6 +234,21 @@ class EloquentOrder implements OrderRepository
 	public function getById($id)
 	{
 		return $this->model->find($id);
+    }
+
+    /**
+	 * Get order by id with client.
+	 *
+	 * @param integer $id
+	 *
+	 * @return App\Order
+	 */
+	public function getByIdCli($id)
+	{
+		return $this->model->select("orders.*","clients.name as cliName")
+						   ->leftJoin("clients","clients.code","=","orders.code")
+						   ->where("orders.".$this::SQL_ID,"=",$id)
+						   ->get()->first();
     }
 
     /**

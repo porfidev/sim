@@ -62,6 +62,9 @@ use App\Repositories\EloquentPallBox;
 use App\Repositories\PalletRepository;
 use App\Repositories\EloquentPallet;
 
+use App\Repositories\TrucksRepository;
+use App\Repositories\EloquentTrucks;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -101,5 +104,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PendingsRepository::class,   EloquentPendings::class);
         $this->app->singleton(PalletRepository::class,   EloquentPallet::class);
         $this->app->singleton(PallBoxRepository::class,   EloquentPallBox::class);
+        $this->app->singleton(TrucksRepository::class,   EloquentTrucks::class);
     }
 }

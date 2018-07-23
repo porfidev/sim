@@ -69,7 +69,7 @@
         $( '#addBox' ).click(function (){
             var selected = $( '#selectedBoxType' ).val();
             if(selected != 0) {
-                addBox($("#selectedBoxType option[value='" + selected + "']").text());
+                addBox($("#selectedBoxType option[value='" + selected + "']").text(), selected);
                 $('#modalAddBox').modal('toggle');
             }
         });
