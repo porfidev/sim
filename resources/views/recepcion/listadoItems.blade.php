@@ -36,11 +36,11 @@
         
             <div class="float-right">
                 <nav aria-label="Paginacion" class="mr-2">
-                    <button class="btn btn-sm btn-primary regresa"
+                    <button class="btn btn-sm btn-secondary regresa"
                             data-toggle="tooltip"
                             data-placement="top"
                             title="Ordenes de compra">
-                                <i class="material-icons"  align="center" >keyboard_backspace</i>
+                                <i class="material-icons" style="color:white"  align="center" >reply</i>
                     </button>
                 </nav>  
             </div>
@@ -193,7 +193,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $( '.regresa' ).click(function () {
-                window.history.back();
+                window.location.href =  "{{ URL::to('/ordenes/listado/') }}";
             });
 
         });

@@ -72,6 +72,10 @@ class EloquentArrivalItem implements ArrivalItemRepository
 				&& $search[self::SQL_CADUCIDADM] != "NA") {
 				$list->where(self::SQL_CADUCIDADM, "like", "%".$search[self::SQL_CADUCIDADM]."%");
 			}
+			if(array_key_exists(self::SQL_STATUS , $search)
+				&& $search[self::SQL_STATUS ] != "NA") {
+				$list->where(self::SQL_STATUS , "like", "%".$search[self::SQL_STATUS ]."%");
+			}
 		}
 		Log::debug("EloquentArrivalItems - getList - SQL: ".$list->toSql());
 		return $list->paginate($itemsPerPage);

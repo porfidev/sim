@@ -184,7 +184,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label>
-                                Caducidad m&iacute;nima
+                                Caducidad m&iacute;nima (en meses)
                             </label>
                             <input type="number"
                                     class="form-control"

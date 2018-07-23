@@ -44,9 +44,10 @@ class RecepcionController extends Controller
 
     public function __construct(PurchaseRepository $cli)
     {
-        //$this->middleware(['auth', 'permission', 'update.session']);
+        $this->middleware(['auth', 'permission', 'update.session']);
         $this->purchaseModel = $cli;
     }
+
 
     public function listado(Request $request){
         $data = Purchase::paginate(10);
@@ -117,12 +118,15 @@ class RecepcionController extends Controller
     }
 
 
+
+    //Presenta el listado de ordenes en la hand held
     public function listadoHH(Request $request){
         $data = Purchase::paginate(10);
         return view('recepcion.listadoHH',['data' => $data] );
     }
 
 
+    //Presenta el listado de recepciones a validar en la hand held
     public function listadoValidacionHH(Request $request){
         $data = ArrivalItem::paginate(10);
 
@@ -131,6 +135,7 @@ class RecepcionController extends Controller
     }
 
 
+    //Presenta detalle de purchases
     public function listadoItems($purchase_id)
     {
         $data = PurchaseItems::where('purchase_id','=',$purchase_id)->paginate(10);
@@ -138,7 +143,7 @@ class RecepcionController extends Controller
         return view('recepcion.listadoItems',['data' => $data] );
     }
 
-
+    //Presenta detalle de purchases en hand held
     public function listadoItemsHH($purchase_id)
     {    
         $data = DB::table('purchase_items')
@@ -153,6 +158,7 @@ class RecepcionController extends Controller
 
 
 
+    //Funcion que actualiza arrival items una vez validados
     public function actualizar(Request $request)
     {
         $resultado = "OK";
@@ -182,6 +188,7 @@ class RecepcionController extends Controller
                             'u_Caducidad'          => 'required|date',
                             'quantity'             => 'required|numeric',
                             'product_id'           => 'required|integer',
+                            'status'               => 'required|string',
                         ),
                         Controller::$messages
                     );
@@ -198,6 +205,7 @@ class RecepcionController extends Controller
                             ArrivalItemRepository::SQL_QUANT           => $request->cantidadFinal,
                             ArrivalItemRepository::SQL_DISTNUMBER      => $request->DistNumber,
                             ArrivalItemRepository::SQL_CADUCIDAD       => $request->u_Caducidad,
+                            ArrivalItemRepository::SQL_STATUS          => "validado",
                         );
                         Log::info(" ProductController - editar - data: ".json_encode($data));
                         DB::beginTransaction();
@@ -226,7 +234,7 @@ class RecepcionController extends Controller
 
 
 
-    
+    //Muestra los datos de la recepcion para verificar que sean correctos
     public function validaRecepciones(Request $request)
     {
         $data = [];
@@ -259,6 +267,10 @@ class RecepcionController extends Controller
             $product_id = $request->input("product_id");
         }
 
+        if( $request->has("status")) {
+            $status = $request->input("status");
+        }
+
 
         $data["id"] = $id;
         $data["purchaseid"] = $purchaseid;
@@ -267,6 +279,7 @@ class RecepcionController extends Controller
         $data["u_Caducidad"] = $u_Caducidad;
         $data["quantity"] = $quantity;
         $data["product_id"] = $product_id;
+        $data["status"] = $status;
 
 
 
@@ -274,7 +287,7 @@ class RecepcionController extends Controller
     }
 
 
-    
+    //Presenta los datos finales que se actualizaran
     public function validacionFinal(Request $request)
     {
 
@@ -311,6 +324,10 @@ class RecepcionController extends Controller
         if( $request->has("product_id")) {
             $product_id = $request->input("product_id");
         }
+
+        if( $request->has("status")) {
+            $status = $request->input("status");
+        }
      
         $data["id"] = $id;
         $data["cantidadFinal"] = $cantidadFinal;
@@ -320,13 +337,14 @@ class RecepcionController extends Controller
         $data["u_Caducidad"] = $u_Caducidad;
         $data["quantity"] = $quantity;
         $data["product_id"] = $product_id;
+        $data["status"] = $status;
 
     
         return view('recepcion.finalValidacionHH',['data' => $data,'leyendaTitulo' => "Validar"] );
     }
 
 
-
+    //Funcion para ir actualizando la cantidad recibida o por validar 
     public function obtenCantidadPorCodigo(Request $request){
 
         $codigo = "0";
@@ -393,7 +411,7 @@ class RecepcionController extends Controller
     }
 
 
-
+    //Funcion que devuelve la cantidad de items segun su barcode
     public function validaCodigo($codigo, $sku, $purchaseid){
 
         $mensajes  = "OK";
@@ -468,7 +486,7 @@ class RecepcionController extends Controller
     }
 
 
-
+    //Manda los datos que se validaran 
     public function regresaDatos($codigo, $sku, $purchaseid, $cantidadFinal){
 
         $mensajes  = "OK";
@@ -522,7 +540,7 @@ class RecepcionController extends Controller
     }
 
 
-
+    //Recibe los datos que se registraran en la recepcion 
     public function formularioDatos(Request $request){
         $resultado = "recepcion.capturaRecepcionHH";
         $codigo = "0";
@@ -557,7 +575,7 @@ class RecepcionController extends Controller
     }
 
 
-
+   //Recibe los datos que se validaran (caducidad)
     public function formularioDatosValidacion(Request $request){
         $resultado = "recepcion.capturaRecepcionHH";
         $codigo = "0";
@@ -578,14 +596,14 @@ class RecepcionController extends Controller
     }
 
 
-
+   //Validacion de existencia de arrival_items y caducidad 
     public function formularioValidar(Request $request){
         $resultado = "recepcion.actualizadoHH";
         $lote="";
         $sku="";
         $caducidad="";
         $recibida="";
-        $purchase="5";
+        $purchase="";
         $carbon = new Carbon();  
 
         if( $request->has("lote")) {
@@ -657,10 +675,13 @@ class RecepcionController extends Controller
 
                             if($arrivalItem != null){
 
-                                $caducidad_minima = Carbon::now();
-                                $caducidad_minima = $arrivalItem->u_Caducidad;
+                                //$caducidad_minima = $arrivalItem->u_Caducidad;
 
-                                if($caducidad >= $caducidad_minima ){
+                                $caducidad_minima = Carbon::now();
+                                $caducidad_minima->addMonths($arrivalItem->u_Caducidad);
+                             
+
+                                if($caducidad-> format('ymd') >= $caducidad_minima-> format('ymd')){
 
                                     $data = array(
                                     'quantity'      => $arrivalItem->quantity + $cantidadCapturada,
@@ -669,7 +690,7 @@ class RecepcionController extends Controller
                             
                                     $total= $arrivalItem->quantity + $cantidadCapturada;
                                     $resultado = $arrivalItemModelE->update($arrivalItem->id, $data);
-                                    $mensajes  = "El producto ha sido actualizado: " .  $arrivalItem->ItemCode;
+                                    $mensajes  = "El producto ha sido actualizado: " .  $arrivalItem->ItemCode . $caducidad_minima;
                                   
 
                                 } else {
@@ -690,9 +711,11 @@ class RecepcionController extends Controller
                                 $caducidad_minima = Carbon::now();
                                 $caducidad_minima->addMonths($product->caducidad_minima);
                                 
-                                if($caducidad >= $caducidad_minima ){
+                                if($caducidad-> format('ymd') >= $caducidad_minima-> format('ymd') ){
                 
                                     if($purchaseItem != null) {
+
+                                        $status="recibido";
 
                                         $data = array(
                                         'purchase_id'        => $purchaseItem->purchase_id,
@@ -702,6 +725,7 @@ class RecepcionController extends Controller
                                         'cantidad_rec'       => $purchaseItem->u_CantReq,
                                         'DistNumber'         => $lote,
                                         'u_Caducidad'        => $caducidad,
+                                        'status'             => $status,
                                         );
 
                                     $nuevoArrivalItem =$arrivalItemModelE ->create($data);

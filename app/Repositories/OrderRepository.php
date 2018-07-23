@@ -87,11 +87,7 @@ interface OrderRepository
 
 	function createDesign(array $attributes);
 
-<<<<<<< HEAD
-	function getIdOrdByBox($id);
-=======
 	function deleteDesign($id);
->>>>>>> f29c0b4e5b9b0e493b7e9643ba24e00d8e2aa054
 
 	function getDesignGroupByItem($order_id);
 

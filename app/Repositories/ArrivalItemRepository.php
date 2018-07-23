@@ -14,6 +14,7 @@ interface ArrivalItemRepository
     const SQL_DISTNUMBER      = "DistNumber";
     const SQL_CADUCIDAD       = "u_Caducidad";
     const SQL_CADUCIDADM      = "caducidad_minima";
+    const SQL_STATUS          = "status";
 
     function getList($itemsPerPage, array $search = null);
 

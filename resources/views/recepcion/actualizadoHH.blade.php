@@ -42,15 +42,6 @@ Caducidad: <b> {{ $data["caducidad"] }} </b>
     });
 </script>
 
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$( '.regresa' ).click(function () {
-				window.history.back();
-			});
-
-		});
-	</script>
-
 
 
 

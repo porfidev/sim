@@ -101,9 +101,9 @@ Route::post('/hh/recepcion/listadoHH',                 '\App\Http\Controllers\Re
 Route::get('/hh/recepcion/listadoItemsHH/{purchase}',  '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'        );
 Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'        )->name('ordenes.listadoItemsHH');
 Route::get('hh/recepcion/validacionHH/',               '\App\Http\Controllers\Recepcion\RecepcionController@listadoValidacionHH'   )->name('ordenes.listadoValidacionHH');
-Route::post('hh/recepcion/validacionHH/',               '\App\Http\Controllers\Recepcion\RecepcionController@listadoValidacionHH'   )->name('ordenes.listadoValidacionHH');
+Route::post('hh/recepcion/validacionHH/',              '\App\Http\Controllers\Recepcion\RecepcionController@listadoValidacionHH'  )->name('ordenes.listadoValidacionHH');
 Route::get('hh/recepcion/validacionRecepcionesHH/',    '\App\Http\Controllers\Recepcion\RecepcionController@validaRecepciones'     )->name('ordenes.validaRecibido');
-Route::post('hh/recepcion/validacionRecepcionesHH/',    '\App\Http\Controllers\Recepcion\RecepcionController@validaRecepciones'    )->name('ordenes.validaRecibido');
+Route::post('hh/recepcion/validacionRecepcionesHH/',   '\App\Http\Controllers\Recepcion\RecepcionController@validaRecepciones'    )->name('ordenes.validaRecibido');
 
 Route::get('hh/recepcion/finalValidacionHH/',            '\App\Http\Controllers\Recepcion\RecepcionController@validacionFinal'       )->name('ordenes.validacionFinal');
 Route::post('hh/recepcion/finalValidacionHH/',           '\App\Http\Controllers\Recepcion\RecepcionController@validacionFinal'       )->name('ordenes.validacionFinal');
