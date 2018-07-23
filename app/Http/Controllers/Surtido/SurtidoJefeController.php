@@ -388,12 +388,18 @@ class SurtidoJefeController extends Controller
 
             if($con){
 
-                Log::info("cierraPedJ - si entro");
-                $sql = "INSERT INTO VentasPedidosSim (Id, CardCode,CardName,Status) VALUES (?, ?, ?, ?)";
-                $params = array($pedido->codeOrder, $pedido->code,
-                                $pedido->cliName, 'O');
+                Log::info("id: ".$pedido->codeOrder." cardCode: ".$pedido->code.
+                          " cardName: ".$pedido->cliName." status: 'O'");
+                $sql = "INSERT INTO VentasPedidosSim (Id, CardCode,CardName,Status) VALUES ".
+                        "('".$pedido->codeOrder."', '".$pedido->code.
+                        "', '".$pedido->cliName."', 'O')";
 
-                $stmt = sqlsrv_query( $con, $sql, $params);
+                /*$sql = "INSERT INTO VentasPedidosSim (Id, CardCode,CardName,Status) VALUES ".
+                        "('12', '123-123', 'oxxo', 'O')";*/
+
+                 Log::info("Query: ".$sql);
+
+                $stmt = sqlsrv_query( $con, $sql);
                 if( $stmt === false ) {
                      if( ($errors = sqlsrv_errors() ) != null) {
                         foreach( $errors as $error ) {

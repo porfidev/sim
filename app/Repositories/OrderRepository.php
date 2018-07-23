@@ -93,8 +93,6 @@ interface OrderRepository
 
 	function getByIdCli($id);
 
-	function deleteDesign($id);
-
 	function getDesignGroupByItem($order_id);
 
 	function getDesignsByDetail($order_detail_id);
