@@ -82,10 +82,12 @@ class PreparacionJefeController extends Controller
                     OrderRepository::STATUS_OPERATOR_2 => "<",
                 )
             );
+            $boxType = $this->catalogModel->searchGroupItem(CatalogoRepository::TE_GROUP, "Caja");
             return view('preparacion.listadoJefe',
                 array(
                     "anteriores" => $pedidosAnteriores,
-                    "listado"    => $pedidos
+                    "listado"    => $pedidos,
+                    "tipoEmpaque"=> $boxType 
                 )
             );
         } catch (\Exception $e) {
