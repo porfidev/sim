@@ -17,6 +17,8 @@ interface AssignmentRepository
 
 	function getById($id);
 
+	function getByDesign($order_id, $order_design_id);
+
 	function getListAsi($idOrd);
 
 	function getMissings($order_id);

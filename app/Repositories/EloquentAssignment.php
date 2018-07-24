@@ -150,13 +150,28 @@ class EloquentAssignment implements AssignmentRepository
 	 *
 	 * @param integer $id
 	 *
-	 * @return App\Task
+	 * @return App\Assignment
 	 */
 
 	public function getById($id){
 
 		return $this->model->find($id);
 
+	}
+
+	/**
+	 * Función para encontrar una asignación de una orden por el identificador
+	 * del diseño de pedido.
+	 * 
+	 * @param integer $order_id
+	 * @param integer $order_design_id
+	 * @return \App\Assignment
+	 */
+	public function getByDesign($order_id, $order_design_id)
+	{
+		return $this->model->where(self::SQL_ORDID, '=', $order_id)
+			->where(self::SQL_ORDER_DESIGN, '=', $order_design_id)
+			->get();
 	}
 
 

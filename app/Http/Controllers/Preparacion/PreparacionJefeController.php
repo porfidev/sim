@@ -437,6 +437,13 @@ class PreparacionJefeController extends Controller
                 $designList = $this->orderModel->getDesignsByBox($request->pedido, $request->caja);
                 DB::beginTransaction();
                 foreach ($designList as $item) {
+                    // Buscamos si fue asignado previamente
+                    $finded = $this->assigmentModel->getByDesign($item->order_id, $item->id);
+                    foreach ($finded as $assigment) {
+                        // Eliminamos todas las asignaciones previas
+                        $this->assigmentModel->delete($assigment->id);
+                    }
+
                     $data = array(
                         AssignmentRepository::SQL_ORDID         => $item->order_id,
                         AssignmentRepository::SQL_ORDER_DETAIL  => $item->order_detail_id,

@@ -176,7 +176,8 @@ class EloquentOrder implements OrderRepository
 				'order_designs.'.self::DESIGN_SEQUENCE,
 				'order_designs.'.self::DESIGN_ORDER,
 				DB::raw('count(*) as cajas'),
-				DB::raw('MAX(assignments.user_id) as usuario'))
+				DB::raw('MAX(assignments.user_id) as usuario'),
+				DB::raw('MAX(assignments.status) as status'))
 			->leftJoin('assignments', 'order_designs.id', '=', 'assignments.order_design_id')
 			->where('order_designs.'.self::DESIGN_ORDER, '=', $order_id)
 			->groupBy('order_designs.'.self::DESIGN_SEQUENCE, 'order_designs.'.self::DESIGN_ORDER)
