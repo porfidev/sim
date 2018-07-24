@@ -97,6 +97,8 @@ interface OrderRepository
 
 	function getDesignGroupByItem($order_id);
 
+	function getDesignGroupByBox($order_id);
+
 	function getDesignsByDetail($order_detail_id);
 
 	function updateDesign($id, array $attributes);
