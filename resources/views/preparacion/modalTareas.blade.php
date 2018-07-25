@@ -97,8 +97,12 @@
                     row += item.cajas;
                     row += "</td><td>";
                     row += "<select class=\"form-control selecionDeTrabajadorCaja\"";
-                    row += ("data-order=\"" + item.order_id + "\"");
-                    row += ("data-id=\"" + item.sequence + "\" >");
+                    row += ("data-order=\"" + item.order_id + "\" ");
+                    row += ("data-id=\"" + item.sequence + "\" ");
+                    if(item.status > 0){
+                        row += " disabled ";
+                    }
+                    row += ">"
                     row += "<option value=\"0\"> -- Selecciona un trabajador -- </option>";
                     for (index = 0; index < usuarios.length; index++) {
                         row += ("<option value=\"" + usuarios[index].value + "\" ");

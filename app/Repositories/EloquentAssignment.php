@@ -87,7 +87,8 @@ class EloquentAssignment implements AssignmentRepository
 			'products.sku',
 			'products.concept',
 			'box_ids.label',
-			'order_designs.sequence'
+			'order_designs.sequence',
+			'order_designs.quantity'
 		)
 		->leftJoin('orders', 'assignments.order_id', '=', 'orders.id')
 		->leftJoin('order_designs', 'assignments.order_design_id', '=', 'order_designs.id')
@@ -97,10 +98,11 @@ class EloquentAssignment implements AssignmentRepository
 		->where('assignments.'.self::SQL_USRID, '=', $user_id)
 		->where('assignments.'.self::SQL_STATUS, '=', self::STATUS_CREATED)
 		->orderBy('order_id')
+		->orderBy('order_designs.sequence')
 		->orderBy('id');
 
 		Log::info("EloquentAssignment - getWorks - SQL: ".$order->toSql());
-		return $order->paginate($itemsPerPage);
+		return $order->get();
 	}
 
 	/**

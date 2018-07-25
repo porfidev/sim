@@ -43,6 +43,22 @@ class EloquentOrder implements OrderRepository
     }
 
 	/**
+	 * Buscamos un producto dentro de una caja para una orden
+	 * 
+	 * @param integer $order_id
+	 * @param integer $sequence
+	 * @param integer $order_detail_id
+	 * @return App\OrderDesign
+	 */
+	public function getDesignItemInBox($order_id, $sequence, $order_detail_id)
+	{
+		return $this->design->where(self::DESIGN_ORDER, '=', $order_id)
+			->where(self::DESIGN_ORDER_DETAIL, '=', $order_detail_id)
+			->where(self::DESIGN_SEQUENCE, '=', $sequence)
+			->first();
+	}
+
+	/**
 	 * Función para obtener la lista de productos de una caja en el disño
 	 * de pedido
 	 * 

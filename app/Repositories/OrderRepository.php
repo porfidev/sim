@@ -25,6 +25,7 @@ interface OrderRepository
 	const DESIGN_ORDER_DETAIL = "order_detail_id";
 	const DESIGN_BOX          = "box_id";
 	const DESIGN_QUANTITY     = "quantity";
+	const DESIGN_QUANTITY_OP  = "quantity_op";
 	const DESIGN_BOX_TYPE     = "box_type_id";
 	const DESIGN_SEQUENCE     = "sequence";
 	const DESIGN_P_ORDER      = "packing_order";
@@ -76,6 +77,8 @@ interface OrderRepository
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
+
+	function getDesignItemInBox($order_id, $sequence, $order_detail_id);
 
 	function getDesignBySequence($order_id, $sequence);
 
