@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 26, 2018 at 06:52 PM
+-- Generation Time: Jul 26, 2018 at 06:56 PM
 -- Server version: 5.6.37
 -- PHP Version: 7.1.8
 
@@ -1046,7 +1046,7 @@ CREATE TABLE IF NOT EXISTS `menus` (
   `user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `menus`
@@ -1143,7 +1143,8 @@ INSERT INTO `menus` (`id`, `parent`, `sequence`, `label`, `url`, `visible`, `use
 (90, 13, 0, 'Validación final en recepción de mercancía', 'hh/recepcion/finalValidacionHH', 1, 1, '2018-07-24 01:05:41', '2018-07-24 01:05:41'),
 (91, 13, 0, 'Actualización de datos capturados', 'hh/recepcion/actualizar', 1, 1, '2018-07-24 01:07:01', '2018-07-24 01:07:27'),
 (92, 13, 0, 'Listado de tareas por caja', 'preparacion/tareasPorCaja', 1, 1, '2018-07-24 17:11:31', '2018-07-24 17:11:31'),
-(93, 13, 0, 'Asignación de tarea por caja en preparación de pedido', 'preparacion/asignacionCaja', 1, 1, '2018-07-24 19:23:45', '2018-07-24 19:23:45');
+(93, 13, 0, 'Asignación de tarea por caja en preparación de pedido', 'preparacion/asignacionCaja', 1, 1, '2018-07-24 19:23:45', '2018-07-24 19:23:45'),
+(94, 13, 0, 'Registro de productos en preparación', 'preparacion/registrarProducto', 1, 1, '2018-07-26 18:54:54', '2018-07-26 18:54:54');
 
 -- --------------------------------------------------------
 
@@ -2717,7 +2718,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=163 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `profiles`
@@ -2877,7 +2878,8 @@ INSERT INTO `profiles` (`id`, `rol_id`, `menu_item_id`, `user_id`, `created_at`,
 (159, 1, 92, 1, '2018-07-24 17:11:38', '2018-07-24 17:11:38'),
 (160, 8, 92, 1, '2018-07-24 17:11:46', '2018-07-24 17:11:46'),
 (161, 1, 93, 1, '2018-07-24 19:23:52', '2018-07-24 19:23:52'),
-(162, 8, 93, 1, '2018-07-24 19:23:59', '2018-07-24 19:23:59');
+(162, 8, 93, 1, '2018-07-24 19:23:59', '2018-07-24 19:23:59'),
+(163, 7, 94, 1, '2018-07-26 18:56:06', '2018-07-26 18:56:06');
 
 -- --------------------------------------------------------
 
@@ -4233,7 +4235,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sessions`
@@ -4388,7 +4390,9 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip`, `token`, `created_at`, `updated_a
 (146, 6, '::1', 'yxSvHZ8kDAKu2PJ1uVDZCwy5f9Z6wp', '2018-07-25 17:22:46', '2018-07-25 17:26:07', '2018-07-25 17:26:07'),
 (147, 1, '::1', 'Jhjgll8liTHu7rsfNE4RbaqJkTlrry', '2018-07-25 17:26:24', '2018-07-25 17:26:37', '2018-07-25 17:26:37'),
 (148, 8, '::1', 'fA0XrCY4FQXE3e44TBMUxULTPJgsVh', '2018-07-25 17:26:48', '2018-07-26 18:48:48', '2018-07-26 18:48:48'),
-(149, 8, '::1', 'W2qfzIw00VNFNURIcJC3KOCRT86mtt', '2018-07-26 18:48:48', '2018-07-26 18:49:38', NULL);
+(149, 8, '::1', 'W2qfzIw00VNFNURIcJC3KOCRT86mtt', '2018-07-26 18:48:48', '2018-07-26 18:53:48', '2018-07-26 18:53:48'),
+(150, 1, '::1', 'xARTOp3XtwS0zN6xHCGmisx5vRNxsQ', '2018-07-26 18:53:50', '2018-07-26 18:56:10', '2018-07-26 18:56:10'),
+(151, 8, '::1', 'w6mpZl1lb2xiVtB8AuUojYtX0qa6eE', '2018-07-26 18:56:18', '2018-07-26 18:56:18', NULL);
 
 -- --------------------------------------------------------
 
@@ -4467,14 +4471,14 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `boss_id`, `rol_id`, `name`, `email`, `password`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, NULL, 1, 'Jaime Ulises Cruz Macías', 'jaimeucm@gmail.com', '$2y$10$vhFL1lqwGHuMtZkKsx.5Zug9Rharqb8gZZT7phEV0rQiYwEQ9irYi', 1, '64ISKnrg3HVFF44phccMWrkpaM1N62MmWMdRqe3JebiwCluphecN0TG3AIQQ', NULL, NULL),
+(1, NULL, 1, 'Jaime Ulises Cruz Macías', 'jaimeucm@gmail.com', '$2y$10$vhFL1lqwGHuMtZkKsx.5Zug9Rharqb8gZZT7phEV0rQiYwEQ9irYi', 1, 'nX4EPOX2iLL33zYjVrSBShICeQANaGRGqRFQYBvrh2d80YXZuRCyA5qUWcgw', NULL, NULL),
 (2, 1, 4, 'Enrique López Aldamas', 'enriqueprogra@gmail.com', '$2y$10$eQhJuFiAFdwrYv4KcRmdmeDniny93JNlFGI4hAvw99c.zKyzdFKGm', 1, 'tQOBEWsG85a93E37EwwMmovE4OzUUfwoL9OnM2lGaglG7XgMYyXcT8enPkW2', NULL, '2018-06-13 18:48:09'),
 (3, 4, 5, 'Operador de almacén', 'op.almacen@marcopolo.mx', '$2y$10$iIC047GqTP5lAITmjrwBWO2OvQQdrbIy283MJB3PxHyF7OvsEPZ36', 1, '9EanEKetP2GcSIvn3JOysQVRVoE2xr4Hhiiug33CD83zYYVnm8saPFmNVB9I', '2018-07-04 01:21:45', '2018-07-04 01:25:21'),
 (4, NULL, 4, 'Encargado de almacén', 'en.almacen@marcopolo.mx', '$2y$10$t5FP8pud76vjAX0I1MOv4.8Gjy30dj0QIT6GnT8Liv9ZBo3CRUaDy', 1, 'ozaVyItjhpN19CuShBzNdSuaaFkqI4itcaYthIsvxJVvFf7FuLibO7KvaKbZ', '2018-07-04 01:22:21', '2018-07-04 01:22:21'),
 (5, 4, 5, 'Operador 2 de almacén', 'op.almacen2@marcopolo.mx', '$2y$10$PkG9/SgX3vGtQL5PnUSo4OhT278PYPUO9xjRCJ2YPbTfFz0yW/qPq', 1, NULL, '2018-07-04 01:22:58', '2018-07-04 01:25:12'),
 (6, NULL, 8, 'Encargado de Preparación de Pedido', 'en.preparacion@marcopolo.mx', '$2y$10$6c52sP5Ac0gPB8Fzxkm6ZOVwvepwJTphJTj0KetNXFle3jTKW/iA6', 1, 'kqlf9XWukcw1NggQwJex6GJrGbHYBkooJOWsXW2nPsmQ6E5wL7LGnnyfFibu', '2018-07-05 00:05:46', '2018-07-05 00:05:46'),
 (7, 6, 7, 'Ayudante General 1', 'ayudante1@marcopolo.mx', '$2y$10$NoYQ.rmN/yn2iHv5BigykucR1SSWY0JBemlEUgnQhWed6CtUCa04K', 1, '6Kfu8ENPpRgUl3xGXtbk13vEkSqvOxcgPUQYI2EWkbWo6PHTGBrSuAfQcrpY', '2018-07-05 00:06:25', '2018-07-05 00:06:39'),
-(8, 6, 7, 'Ayudante General 2', 'ayudante2@marcopolo.mx', '$2y$10$RVAhgwsSQYoZmqAcCl.NKOiwzqPCaxskGk1NuYQIArgSub1UIkPnq', 1, '7bAMas9HsBCmP7riZc2ErJRfdl5seaTWPRieP9Skvv2lPKDPj7U3Ekn9Hayd', '2018-07-05 00:07:10', '2018-07-05 00:07:21'),
+(8, 6, 7, 'Ayudante General 2', 'ayudante2@marcopolo.mx', '$2y$10$RVAhgwsSQYoZmqAcCl.NKOiwzqPCaxskGk1NuYQIArgSub1UIkPnq', 1, 'jugDaOZRzNhu3TeGk6qQYCmBFDHFAARf6jhsuzYy2OEOHtpvlKq19Xtrg6v2', '2018-07-05 00:07:10', '2018-07-05 00:07:21'),
 (9, NULL, 4, 'Recepción de Mercancía', 'recepcion@marcopolo.mx', '$2y$10$Vdkj7rbbrUqwXULQqPG8iemvQq.LtUrEgM2PzqHrytBXKKV7DOSMW', 1, '2PFU7boGiCQaYe8NH1tThm4y3HHsOZRQhMoO2Ja579rI1P8F1PBioJj2dbEo', '2018-07-17 16:51:17', '2018-07-17 16:51:17'),
 (10, 9, 10, 'Ayudante en Recepción', 'ayudante.recepcion.1@marcopolo.mx', '$2y$10$mSVyKp1HUX0EpCBkvAF3keA3bFSqkdZqZqn4BKJ23kH2BmY6fomoq', 1, 'bqdIBRpqMrAf3KgbZE0IKhAKxakdbxjhzRYGFzeiSmzi2tE6YJ5zrYnser0Y', '2018-07-17 16:55:15', '2018-07-17 16:56:01'),
 (11, 9, 10, 'Ayudante 2 en Recepción', 'ayudante.recepcion.2@marcopolo.mx', '$2y$10$Vrz.lmSFkqUtY43h1eZnZuFdYqPKDFdwi25P/hItFPQjVDLPkXhvS', 1, 'aOy2RAWvegYPQaNhDJXBXVwEWxPEVj9xIKZGvhSl7PxOCw4e2fB6Pnbn7MWc', '2018-07-17 16:55:43', '2018-07-17 16:55:53');
@@ -4781,7 +4785,7 @@ ALTER TABLE `history_supply`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=94;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=95;
 --
 -- AUTO_INCREMENT for table `migrations`
 --
@@ -4831,7 +4835,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `profiles`
 --
 ALTER TABLE `profiles`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=163;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=164;
 --
 -- AUTO_INCREMENT for table `purchases`
 --
@@ -4851,7 +4855,7 @@ ALTER TABLE `rules`
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=150;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=152;
 --
 -- AUTO_INCREMENT for table `trips`
 --

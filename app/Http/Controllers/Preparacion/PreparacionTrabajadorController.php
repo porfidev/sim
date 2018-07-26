@@ -248,6 +248,7 @@ class PreparacionTrabajadorController extends Controller
                     }
                 }
                 if(!empty($detailFind) && !empty($detailFind)){
+                    Log::info("");
                     if( $order->status < OrderRepository::PREPARADO_POR_V ) {
                         $total  = $qtyToAdd;
                         $enCaja = $qtyToAdd;
