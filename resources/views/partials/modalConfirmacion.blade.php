@@ -81,17 +81,20 @@
             method : "POST",
             data   : $( "#confirmationModalForm" ).serialize()
         }).done(function( data ) {
+            
             if(data.resultado === 'OK') {
                 $('#modalConfirmation').modal('toggle');
                 location.reload();
 
             } else {
-                var errorMsg = "<p>Error al eliminar el elemento.<p><ul>";
+                var errorMsg = "<p>Error al eliminar el elemento dsdsd.<p><ul>";
                 $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
                 errorMsg += "</ul>";
                 erroresValidacion("messageModalConfirmation", errorMsg);
             }
         }).fail(function (jqXHR, textStatus) {
+
+            alert(textStatus);
             errorDetalle = "";
             // If req debug show errorDetalle
             $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );

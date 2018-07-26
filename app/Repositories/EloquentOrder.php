@@ -209,6 +209,16 @@ class EloquentOrder implements OrderRepository
         return $list->get();
     }
 
+    public function getAllStatus($status) {
+
+		$list = $this->model->with('calculation', 'client')
+							->where(self::SQL_ESTATUS,"=",$status)
+							->orderBy('updated_at', 'desc');
+
+		
+        return $list->get();
+    }
+
     /**
 	 * Get Catalogo by id.
 	 *
@@ -219,6 +229,13 @@ class EloquentOrder implements OrderRepository
 	public function getById($id)
 	{
 		return $this->model->find($id);
+    }
+
+    public function serchDate($fec,$id)
+	{
+		return $this->model->where(self::SQL_INICIO,"<=",$fec)
+						   ->where(self::SQL_FIN,">=",$fec)
+						   ->where(self::SQL_ID,"=",$id)->get()->first();
     }
 
     /**

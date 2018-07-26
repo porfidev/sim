@@ -382,8 +382,6 @@ class SurtidoJefeController extends Controller
                                     'ReturnDatesAsStrings'=>true, 
                                     'CharacterSet' => 'UTF-8');
 
-            Log::info("SurtidoTrabajadorController - connection:  [".print_r($connectionInfo)."]");
-
             $con = sqlsrv_connect($servername, $connectionInfo);
 
             if($con){
@@ -391,8 +389,7 @@ class SurtidoJefeController extends Controller
                 Log::info("id: ".$pedido->codeOrder." cardCode: ".$pedido->code.
                           " cardName: ".$pedido->cliName." status: 'O'");
                 $sql = "INSERT INTO VentasPedidosSim (Id, CardCode,CardName,Status) VALUES ".
-                        "('".$pedido->codeOrder."', '".$pedido->code.
-                        "', '".$pedido->cliName."', 'O')";
+                        "('".$pedido->codeOrder."', '565656', '".$pedido->cliName."', 'O')";
 
                 /*$sql = "INSERT INTO VentasPedidosSim (Id, CardCode,CardName,Status) VALUES ".
                         "('12', '123-123', 'oxxo', 'O')";*/

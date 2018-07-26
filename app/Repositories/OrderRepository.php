@@ -91,7 +91,11 @@ interface OrderRepository
 	
 	function deleteDesign($id);
 
+	function serchDate($fec,$id);
+
 	function getByIdCli($id);
+
+	function getAllStatus($status);
 
 	function getDesignGroupByItem($order_id);
 

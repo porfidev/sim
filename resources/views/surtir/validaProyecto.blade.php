@@ -18,7 +18,7 @@
                 data-placement="top"
                 data-id="{{ $idP }}"
                 id="btnCerrar"
-                style="display:none;"
+                style="display:block;"
                 title="Validar pedido">
             <i class="material-icons">offline_pin</i>
         </button><br><br>

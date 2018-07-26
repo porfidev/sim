@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\camiones;
+namespace App\Http\Controllers\Embarque;
 
 use DB;
 use Log;
@@ -14,18 +14,16 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Controller;
 
-use App\Repositories\OrderDetailRepository;
-use App\Repositories\OrderRepository;
-use App\Repositories\PalletRepository;
+use App\Repositories\TripRepository;
 use App\Repositories\TrucksRepository;
+use App\Repositories\OrderRepository;
 
-class CamionesController extends Controller
+class TripsController extends Controller
 {
 
-    private $orderDetailModel;
-    private $orderModel;
-    private $palletModel;
+    private $tripModel;
     private $truckModel;
+    private $orderModel;
 
     /**
      * Create a new controller instance.
@@ -33,16 +31,12 @@ class CamionesController extends Controller
      * @return void
      */
     public function __construct(
-        OrderDetailRepository $detail,
-        OrderRepository $order,
-        PalletRepository $pall,
-        TrucksRepository $tru)
+        TripRepository $tr, TrucksRepository $tru, OrderRepository $ord)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
-        $this->orderDetailModel  = $detail;
-        $this->orderModel        = $order;
-        $this->palletModel    = $pall;
-        $this->truckModel    = $tru;
+        $this->tripModel  = $tr;
+        $this->truckModel  = $tru;
+        $this->orderModel  = $ord;
     }
 
     /**
@@ -54,18 +48,56 @@ class CamionesController extends Controller
 
         try {
 
-            Log::info("CamionesController - listado ");
+            Log::info("TripsController - listado ");
 
-            $truck = $this->truckModel->getAll();
+            $trips = $this->tripModel->getAllTrips();
+            $trucks = $this->truckModel->getAll();
 
-            return view('camiones.listado',
+            return view('trips.listado',
                 array(
-                    "camiones" => $truck
+                    "trips" => $trips,
+                    "trucks" => $trucks
                 )
             );
 
         } catch (\Exception $e) {
-            Log::error( 'CamionesController - listadoTarimas - Error'.$e->getMessage() );
+            Log::error( 'TripsController - listado - Error'.$e->getMessage() );
+            return view('error',
+                array(
+                    "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
+                    "titulo" => "Error inesperado"
+                )
+            );
+        }
+    }
+
+    /**
+     * Mostramos el listado de trucks
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listadoPedidos(Request $request){
+
+        try {
+
+            Log::info("TripsController - listadoPedidos ");
+
+            $trips = $this->tripModel->getAllTrips();
+            $trucks = $this->truckModel->getAll();
+            $dist = $this->orderModel->getAllStatus(OrderRepository::DISTRIBUCION_RECIBIDO);
+            $preDist = $this->orderModel->getAllStatus(OrderRepository::PREPARADO_VALIDADO);
+
+            return view('trips.listadoDist',
+                array(
+                    "trips" => $trips,
+                    "trucks" => $trucks,
+                    "dist" => $dist,
+                    "preDist" => $preDist
+                )
+            );
+
+        } catch (\Exception $e) {
+            Log::error( 'TripsController - listadoPedidos - Error'.$e->getMessage() );
             return view('error',
                 array(
                     "error"  => "Ocurrio el siguiente error: ".$e->getMessage(),
@@ -80,18 +112,13 @@ class CamionesController extends Controller
         $mensajes  = "NA";
         try {
 
-            Log::info(" CamionesController - agregar ");
+            Log::info(" TripsController - agregar ");            
 
             $validator = Validator::make(
                 $request->all(),
                 array(
-                    'marca'   => 'required|string|max:191',
-                    'smarca'   => 'required|string|max:191',
-                    'modelo'   => 'required|string|max:191',
-                    'placas'   => 'required|string|max:191',
-                    'capacidad'   => 'required|string|max:191',
-                    'operador'   => 'required|string|max:191',
-                    'serie'      => 'required|string|max:191'
+                    'camion'   => 'required|numeric|max:191',
+                    'fechaE'   => 'required'
                 ),
                 Controller::$messages
             );
@@ -102,25 +129,55 @@ class CamionesController extends Controller
 
             } else {
 
-                $data = array(
-                        TrucksRepository::SQL_MARCA  => $request->marca,
-                        TrucksRepository::SQL_SUBMARCA  => $request->smarca,
-                        TrucksRepository::SQL_MODELO  => $request->modelo,
-                        TrucksRepository::SQL_PLACAS  => $request->placas,
-                        TrucksRepository::SQL_CAPACIDAD  => $request->capacidad,
-                        TrucksRepository::SQL_OPERADOR  => $request->operador,
-                        TrucksRepository::SQL_SERIE  => $request->serie
+                $idPeds = $request->idPeds;
 
+                foreach ($idPeds as $idP) {
+
+                    if($this->orderModel->serchDate($request->fechaE,$idP) == null){
+
+                        $resultado = "ERROR";
+                        $mensajes  = array( "La fecha no esta dentro del rango de vigencia de algun pedido con id: ".$idP );
+                        return response()->json(array(
+                            Controller::JSON_RESPONSE => $resultado,
+                            Controller::JSON_MESSAGE  => $mensajes
+                        ));
+                    }
+                }
+
+                $data = array(
+                        TripRepository::SQL_TRUCK_ID  => $request->camion,
+                        TripRepository::SQL_ARRIVE  => $request->fechaE
                 );
 
-                Log::info(" CamionesController - agregar - data: ".json_encode($data));
-                $this->truckModel->create($data);
+                Log::info(" TripsController - agregar - data: ".json_encode($data));
+                $idTrip = $this->tripModel->create($data)->id;
+
+                Log::info(" TripsController - lastInsertId: ".$idTrip);
+
+                foreach ($idPeds as $idP) {
+
+                    $data2 = array(
+                        TripRepository::SQL_TRIP_ID  => $idTrip,
+                        TripRepository::SQL_ORDER_ID  => $idP
+                    );
+
+                    Log::info(" TripsController - agregar - data: ".json_encode($data2));
+                    $this->tripModel->createTO($data2);
+
+                    $data3 = array(
+                        OrderRepository::SQL_ESTATUS  => OrderRepository::DISTRIBUCION_PROCESO
+                    );
+
+                    Log::info(" TripsController - agregar - data: ".json_encode($data2));
+                    $this->orderModel->update($idP,$data3);
+
+                }
 
             }
 
 
         } catch (\Exception $e) {
-            Log::error( 'CamionesController - agregar - Error: '.$e->getMessage() );
+            Log::error( 'TripsController - agregar - Error: '.$e->getMessage() );
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
@@ -130,7 +187,50 @@ class CamionesController extends Controller
         ));
     }
 
-    public function editar(Request $request) {
+    function recibir(Request $request){
+
+        $resultado = "OK";
+        $mensajes  = "NA";
+
+        Log::info(" TripsController - recibir idPed : ".$request->get('id'));
+
+        try{
+
+            $idPed = $request->get('id');
+
+            $datosW = array();
+            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::DISTRIBUCION_RECIBIDO;
+
+            if(!$this->orderModel->update($idPed,$datosW)) {
+
+                $resultado = "ERROR";
+                $mensajes  = array( "No se pudo validar el pedido" );
+
+            }else{
+
+                $datos['order_id'] = $idPed;
+                $datos['trace_type'] = OrderRepository::TRACE_RECIBIR_DIST;
+                $datos['user_id'] = Auth::id();
+
+                $this->orderModel->addTrace($datos);
+            }
+
+
+        } catch (\Exception $e) {
+
+            Log::error( 'TripsController - recibir - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+
+        }
+
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    /*public function editar(Request $request) {
         $resultado = "OK";
         $mensajes  = "NA";
         try {
@@ -303,9 +403,6 @@ class CamionesController extends Controller
         ));
     }
 
-    /**
-     * Función para obtener datos de una orden asignada
-     */
     public function listaCajas(Request $request) {
         $response = array();
         $mensajes = array();
@@ -336,6 +433,6 @@ class CamionesController extends Controller
                 Controller::JSON_MESSAGE  => $mensajes
             )
         );
-    }
+    }*/
 
 }

@@ -18,7 +18,7 @@ class OrdersStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'ordersStatus';
 
     protected $calc;
     protected $order;
