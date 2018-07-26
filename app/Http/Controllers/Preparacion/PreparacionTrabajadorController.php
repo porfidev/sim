@@ -260,7 +260,7 @@ class PreparacionTrabajadorController extends Controller
                         if($total <= $detailFind->quantity
                             && $enCaja <= $designFind->quantity ){
 
-                            // Actualizamos la cantidad en el disño de pedido
+                            // Actualizamos la cantidad en el disño de empaque
                             $this->orderModel->updateDesign(
                                 $designFind->id,
                                 array(
@@ -277,6 +277,7 @@ class PreparacionTrabajadorController extends Controller
                             );
 
                             $datos = array(
+                                "producto"  => $detailFind->product->sku,
                                 "terminado" => $this->isFinish($order->id, $request->caja),
                                 "total"     => $enCaja
                             );

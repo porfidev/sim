@@ -154,6 +154,7 @@ Route::post('/preparacion/quitarProducto',     '\App\Http\Controllers\Preparacio
 Route::post('/preparacion/agregarProducto',    '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarProducto'        )->name('preparacion.disenio.agregar');
 Route::post('/preparacion/cambiarOrden',       '\App\Http\Controllers\Preparacion\PreparacionJefeController@cambiarOrdenDisenio'    )->name('preparacion.disenio.orden');
 Route::post('/preparacion/quitarCaja',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@quitarCaja'             )->name('preparacion.disenio.quitar.caja');
+Route::post('/preparacion/registrarProducto',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@registraProductoEnCaja' )->name('preparacion.registrar.producto');
 
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );
