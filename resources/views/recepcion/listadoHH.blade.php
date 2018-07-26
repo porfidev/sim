@@ -118,7 +118,7 @@
                 window.location.href =  "{{ URL::to('/hh/recepcion/listadoItemsHH/') }}/"+$(this).attr( "data-id" );
                
             });
-        });
+        })
     </script>
 
     <script type="text/javascript">

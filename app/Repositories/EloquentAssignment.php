@@ -87,7 +87,8 @@ class EloquentAssignment implements AssignmentRepository
 			'products.sku',
 			'products.concept',
 			'box_ids.label',
-			'order_designs.sequence'
+			'order_designs.sequence',
+			'order_designs.quantity'
 		)
 		->leftJoin('orders', 'assignments.order_id', '=', 'orders.id')
 		->leftJoin('order_designs', 'assignments.order_design_id', '=', 'order_designs.id')
@@ -97,10 +98,11 @@ class EloquentAssignment implements AssignmentRepository
 		->where('assignments.'.self::SQL_USRID, '=', $user_id)
 		->where('assignments.'.self::SQL_STATUS, '=', self::STATUS_CREATED)
 		->orderBy('order_id')
+		->orderBy('order_designs.sequence')
 		->orderBy('id');
 
 		Log::info("EloquentAssignment - getWorks - SQL: ".$order->toSql());
-		return $order->paginate($itemsPerPage);
+		return $order->get();
 	}
 
 	/**
@@ -150,13 +152,28 @@ class EloquentAssignment implements AssignmentRepository
 	 *
 	 * @param integer $id
 	 *
-	 * @return App\Task
+	 * @return App\Assignment
 	 */
 
 	public function getById($id){
 
 		return $this->model->find($id);
 
+	}
+
+	/**
+	 * Función para encontrar una asignación de una orden por el identificador
+	 * del diseño de pedido.
+	 * 
+	 * @param integer $order_id
+	 * @param integer $order_design_id
+	 * @return \App\Assignment
+	 */
+	public function getByDesign($order_id, $order_design_id)
+	{
+		return $this->model->where(self::SQL_ORDID, '=', $order_id)
+			->where(self::SQL_ORDER_DESIGN, '=', $order_design_id)
+			->get();
 	}
 
 

@@ -36,7 +36,7 @@
                                 id="codigo"
                                 required
                                 class="visible">
-                                <span class="custom-control-indicator" id="cantidad" style="font-size: 24px; font-weight: bold;">0</span>       
+                                <span class="custom-control-indicator" id="cantidad" name="cantidad" style="font-size: 24px; font-weight: bold;">0</span>       
                          <div class="modal-footer d-flex justify-content-center">
                             <button type="button"
                                 class="btn btn-secondary"
@@ -64,7 +64,8 @@
         $( '.nuevaRecepcion' ).click(function () {
             //var parametros = [];
             //parametros["ItemCode"] = $(this).attr("data-ItemCode");
-            $("#codigo").val(" ");
+            $("#codigo").val("");
+            $("#cantidad").html("0 items");
             $("#purchaseid").val($(this).attr("data-cmd"));
             $("#ItemCode").val($(this).attr("data-id"));
             $( '#erroresValidacionmodalNuevaRecepcion').text("");
@@ -80,6 +81,7 @@
 </script>
 
 <script type="text/javascript">
+
 
 $(document).ready(function () {
         cantidad = 0;

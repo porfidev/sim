@@ -101,9 +101,9 @@ Route::post('/hh/recepcion/listadoHH',                 '\App\Http\Controllers\Re
 Route::get('/hh/recepcion/listadoItemsHH/{purchase}',  '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'        );
 Route::post('/hh/recepcion/listadoItemsHH/{purchase}', '\App\Http\Controllers\Recepcion\RecepcionController@listadoItemsHH'        )->name('ordenes.listadoItemsHH');
 Route::get('hh/recepcion/validacionHH/',               '\App\Http\Controllers\Recepcion\RecepcionController@listadoValidacionHH'   )->name('ordenes.listadoValidacionHH');
-Route::post('hh/recepcion/validacionHH/',               '\App\Http\Controllers\Recepcion\RecepcionController@listadoValidacionHH'   )->name('ordenes.listadoValidacionHH');
+Route::post('hh/recepcion/validacionHH/',              '\App\Http\Controllers\Recepcion\RecepcionController@listadoValidacionHH'  )->name('ordenes.listadoValidacionHH');
 Route::get('hh/recepcion/validacionRecepcionesHH/',    '\App\Http\Controllers\Recepcion\RecepcionController@validaRecepciones'     )->name('ordenes.validaRecibido');
-Route::post('hh/recepcion/validacionRecepcionesHH/',    '\App\Http\Controllers\Recepcion\RecepcionController@validaRecepciones'    )->name('ordenes.validaRecibido');
+Route::post('hh/recepcion/validacionRecepcionesHH/',   '\App\Http\Controllers\Recepcion\RecepcionController@validaRecepciones'    )->name('ordenes.validaRecibido');
 
 Route::get('hh/recepcion/finalValidacionHH/',            '\App\Http\Controllers\Recepcion\RecepcionController@validacionFinal'       )->name('ordenes.validacionFinal');
 Route::post('hh/recepcion/finalValidacionHH/',           '\App\Http\Controllers\Recepcion\RecepcionController@validacionFinal'       )->name('ordenes.validacionFinal');
@@ -128,7 +128,9 @@ Route::get('/preparacion/listado',             '\App\Http\Controllers\Preparacio
 Route::get('/preparacion/informacion',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarInformacion'     );
 Route::post('/preparacion/recibir',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'          )->name('preparacion.recibir');
 Route::post('/preparacion/tareas',             '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorItem' )->name('preparacion.tareas');
+Route::post('/preparacion/tareasPorCaja',      '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorCaja' )->name('preparacion.tareas.caja');
 Route::post('/preparacion/asignacionDetalle',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem'      )->name('preparacion.asignacionDetalle');
+Route::post('/preparacion/asignacionCaja',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorCaja'      )->name('preparacion.asignacionCaja');
 Route::post('/preparacion/obtenerInformacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@obtenerInformacion'     )->name('preparacion.obtenerInformacion');
 Route::post('/preparacion/validar',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@valida'                 )->name('preparacion.validar');
 Route::post('/preparacion/CSVReparto',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@CSVReparto'             )->name('preparacion.reparto');
@@ -140,6 +142,8 @@ Route::post('/preparacion/validarDiseion',     '\App\Http\Controllers\Preparacio
 Route::post('/preparacion/actualizarCantidad', '\App\Http\Controllers\Preparacion\PreparacionJefeController@actualizarCantidad'     )->name('preparacion.disenio.actualizar');
 Route::post('/preparacion/quitarProducto',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@quitarProducto'         )->name('preparacion.disenio.quitar');
 Route::post('/preparacion/agregarProducto',    '\App\Http\Controllers\Preparacion\PreparacionJefeController@agregarProducto'        )->name('preparacion.disenio.agregar');
+Route::post('/preparacion/cambiarOrden',       '\App\Http\Controllers\Preparacion\PreparacionJefeController@cambiarOrdenDisenio'    )->name('preparacion.disenio.orden');
+Route::post('/preparacion/quitarCaja',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@quitarCaja'             )->name('preparacion.disenio.quitar.caja');
 
 // Preparación de pedido o embalaje trabajador
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );

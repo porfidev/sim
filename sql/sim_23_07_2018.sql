@@ -3,10 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 17, 2018 at 06:02 PM
+-- Generation Time: Jul 23, 2018 at 06:30 PM
 -- Server version: 5.6.37
 -- PHP Version: 7.1.8
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -19,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `sim`
 --
+CREATE DATABASE IF NOT EXISTS `sim` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `sim`;
 
 -- --------------------------------------------------------
 
@@ -26,13 +29,14 @@ SET time_zone = "+00:00";
 -- Table structure for table `arrival_items`
 --
 
+DROP TABLE IF EXISTS `arrival_items`;
 CREATE TABLE IF NOT EXISTS `arrival_items` (
   `id` int(10) unsigned NOT NULL,
   `purchase_id` int(10) unsigned NOT NULL,
   `ItemCode` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `pedimento` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `product_id` int(10) unsigned NOT NULL,
-  `quantity` double(19,6) NOT NULL DEFAULT '0.000000',
+  `quantity` int(10) unsigned DEFAULT '0',
   `cantidad_rec` int(10) unsigned DEFAULT NULL,
   `DistNumber` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `u_Caducidad` timestamp NULL DEFAULT NULL,
@@ -47,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `arrival_items` (
 -- Table structure for table `assignments`
 --
 
+DROP TABLE IF EXISTS `assignments`;
 CREATE TABLE IF NOT EXISTS `assignments` (
   `id` int(10) unsigned NOT NULL,
   `order_id` int(10) unsigned NOT NULL,
@@ -71,6 +76,7 @@ INSERT INTO `assignments` (`id`, `order_id`, `order_design_id`, `order_detail_id
 -- Table structure for table `boxes`
 --
 
+DROP TABLE IF EXISTS `boxes`;
 CREATE TABLE IF NOT EXISTS `boxes` (
   `id` int(10) unsigned NOT NULL,
   `description` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -106,6 +112,7 @@ INSERT INTO `boxes` (`id`, `description`, `width`, `height`, `depth`, `created_a
 -- Table structure for table `box_ids`
 --
 
+DROP TABLE IF EXISTS `box_ids`;
 CREATE TABLE IF NOT EXISTS `box_ids` (
   `id` int(10) unsigned NOT NULL,
   `box_type_id` int(10) unsigned DEFAULT NULL,
@@ -130,6 +137,7 @@ INSERT INTO `box_ids` (`id`, `box_type_id`, `label`, `status`, `created_at`, `up
 -- Table structure for table `calculations`
 --
 
+DROP TABLE IF EXISTS `calculations`;
 CREATE TABLE IF NOT EXISTS `calculations` (
   `id` int(10) unsigned NOT NULL,
   `P` int(11) NOT NULL,
@@ -141,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `calculations` (
   `FP` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=194 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `calculations`
@@ -149,7 +157,26 @@ CREATE TABLE IF NOT EXISTS `calculations` (
 
 INSERT INTO `calculations` (`id`, `P`, `V`, `D`, `order_id`, `dist_id`, `priority`, `FP`, `created_at`, `updated_at`) VALUES
 (173, 0, 0, 0, 181, 82, 0, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(174, 10, 22, 0, 182, 83, 51, '2018-07-18', '2018-07-17 00:07:03', '2018-07-17 05:02:13');
+(174, 10, 22, 0, 182, 83, 51, '2018-07-18', '2018-07-17 00:07:03', '2018-07-17 05:02:13'),
+(175, 0, 0, 0, 183, 84, 0, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(176, 0, 0, 0, 184, 85, 0, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(177, 0, 0, 0, 185, 86, 0, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(178, 0, 0, 0, 186, 86, 0, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(179, 0, 0, 0, 187, 86, 0, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(180, 0, 0, 0, 188, 87, 0, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(181, 0, 0, 0, 189, 88, 0, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(182, 0, 0, 0, 190, 88, 0, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(183, 0, 0, 0, 191, 88, 0, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(184, 0, 0, 0, 192, 89, 0, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(185, 0, 0, 0, 193, 89, 0, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(186, 0, 0, 0, 194, 89, 0, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(187, 0, 0, 0, 195, 89, 0, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(188, 0, 0, 0, 196, 90, 0, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(189, 0, 0, 0, 197, 90, 0, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(190, 0, 0, 0, 198, 91, 0, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(191, 0, 0, 0, 199, 92, 0, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(192, 0, 0, 0, 200, 93, 0, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(193, 0, 0, 0, 201, 94, 0, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58');
 
 -- --------------------------------------------------------
 
@@ -157,6 +184,7 @@ INSERT INTO `calculations` (`id`, `P`, `V`, `D`, `order_id`, `dist_id`, `priorit
 -- Table structure for table `catalogs`
 --
 
+DROP TABLE IF EXISTS `catalogs`;
 CREATE TABLE IF NOT EXISTS `catalogs` (
   `id` int(10) unsigned NOT NULL,
   `group_id` int(10) unsigned DEFAULT NULL,
@@ -165,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `catalogs` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `catalogs`
@@ -187,7 +215,18 @@ INSERT INTO `catalogs` (`id`, `group_id`, `label`, `value`, `created_at`, `updat
 (16, 13, 'Caja', '1', NULL, NULL, NULL),
 (17, 1, 'c7', '-3', '2018-07-12 23:25:51', '2018-07-12 23:25:51', NULL),
 (82, 8, 'CEDIS IZTAPALAPA', '-1', '2018-07-17 00:07:03', '2018-07-17 00:07:03', NULL),
-(83, 8, 'SHASA CENTRO DE DISTRIBUCION', '35', '2018-07-17 00:07:03', '2018-07-17 05:02:13', NULL);
+(83, 8, 'SHASA CENTRO DE DISTRIBUCION', '35', '2018-07-17 00:07:03', '2018-07-17 05:02:13', NULL),
+(84, 8, 'CEDIS YAUTEPEC 1004', '-1', '2018-07-19 18:48:49', '2018-07-19 18:48:49', NULL),
+(85, 8, 'LIVERPOOL PERINORTE 29', '-1', '2018-07-19 18:48:49', '2018-07-19 18:48:49', NULL),
+(86, 8, 'LIVERPOOL SATELITE 04', '-1', '2018-07-19 18:48:51', '2018-07-19 18:48:51', NULL),
+(87, 8, 'LIVERPOOL ECATEPEC 80', '-1', '2018-07-19 18:48:52', '2018-07-19 18:48:52', NULL),
+(88, 8, 'LIVERPOOL CENTRO 01', '-1', '2018-07-19 18:48:53', '2018-07-19 18:48:53', NULL),
+(89, 8, 'LIVERPOOL LAS ANTENAS 456', '-1', '2018-07-19 18:48:54', '2018-07-19 18:48:54', NULL),
+(90, 8, 'LIVERPOOL ATIZAPAN 104', '-1', '2018-07-19 18:48:56', '2018-07-19 18:48:56', NULL),
+(91, 8, 'LIVERPOOL LINDAVISTA 83', '-1', '2018-07-19 18:48:57', '2018-07-19 18:48:57', NULL),
+(92, 8, 'LIVERPOOL MONTERREY 189', '-1', '2018-07-19 18:48:58', '2018-07-19 18:48:58', NULL),
+(93, 8, 'LIVERPOOL MERIDA 76', '-1', '2018-07-19 18:48:58', '2018-07-19 18:48:58', NULL),
+(94, 8, 'CC01 CEDIS TULTITLAN', '-1', '2018-07-19 18:48:58', '2018-07-19 18:48:58', NULL);
 
 -- --------------------------------------------------------
 
@@ -195,6 +234,7 @@ INSERT INTO `catalogs` (`id`, `group_id`, `label`, `value`, `created_at`, `updat
 -- Table structure for table `clients`
 --
 
+DROP TABLE IF EXISTS `clients`;
 CREATE TABLE IF NOT EXISTS `clients` (
   `id` int(10) unsigned NOT NULL,
   `branch_id` int(11) DEFAULT NULL,
@@ -911,6 +951,7 @@ INSERT INTO `clients` (`id`, `branch_id`, `name`, `email`, `telephone`, `rfc`, `
 -- Table structure for table `dist`
 --
 
+DROP TABLE IF EXISTS `dist`;
 CREATE TABLE IF NOT EXISTS `dist` (
   `id` int(10) unsigned NOT NULL,
   `place` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -926,6 +967,7 @@ CREATE TABLE IF NOT EXISTS `dist` (
 -- Table structure for table `distribution`
 --
 
+DROP TABLE IF EXISTS `distribution`;
 CREATE TABLE IF NOT EXISTS `distribution` (
   `id` int(10) unsigned NOT NULL,
   `order_id` int(10) unsigned NOT NULL,
@@ -943,6 +985,7 @@ CREATE TABLE IF NOT EXISTS `distribution` (
 -- Table structure for table `history_supply`
 --
 
+DROP TABLE IF EXISTS `history_supply`;
 CREATE TABLE IF NOT EXISTS `history_supply` (
   `id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
@@ -977,6 +1020,7 @@ INSERT INTO `history_supply` (`id`, `user_id`, `order_id`, `detail_id`, `product
 -- Table structure for table `menus`
 --
 
+DROP TABLE IF EXISTS `menus`;
 CREATE TABLE IF NOT EXISTS `menus` (
   `id` int(10) unsigned NOT NULL,
   `parent` int(10) unsigned DEFAULT NULL,
@@ -987,7 +1031,7 @@ CREATE TABLE IF NOT EXISTS `menus` (
   `user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `menus`
@@ -1067,7 +1111,17 @@ INSERT INTO `menus` (`id`, `parent`, `sequence`, `label`, `url`, `visible`, `use
 (73, 13, 0, 'Validación de Ordenes de Compra', 'ordenes/validar', 1, 1, '2018-07-17 17:36:53', '2018-07-17 17:36:53'),
 (74, 13, 0, 'Lista de items de Ordenes de compra en HH', 'hh/recepcion/listadoItemsHH/.*', 1, 1, '2018-07-17 17:38:14', '2018-07-17 17:41:16'),
 (75, 13, 0, 'Validación de lote y caducidad', 'hh/recepcion/captura', 1, 1, '2018-07-17 17:39:01', '2018-07-17 17:39:01'),
-(76, 13, 0, 'valida Captura de Orden de Compra', 'hh/recepcion/validaCaptura.*', 1, 1, '2018-07-17 17:45:53', '2018-07-17 17:46:05');
+(76, 13, 0, 'valida Captura de Orden de Compra', 'hh/recepcion/validaCaptura.*', 1, 1, '2018-07-17 17:45:53', '2018-07-17 17:46:05'),
+(77, 13, 0, 'Actualizar cantidad en la validación del diseño del pedido', 'preparacion/actualizarCantidad', 1, 1, '2018-07-19 17:27:25', '2018-07-19 17:27:25'),
+(78, 13, 0, 'Eliminar un producto de una caja en validación del diseño de pedido', 'preparacion/quitarProducto', 1, 1, '2018-07-19 20:09:56', '2018-07-19 20:09:56'),
+(79, 13, 0, 'Agregar productos a una caja en validación de diseño de pedido', 'preparacion/agregarProducto', 1, 1, '2018-07-19 22:12:23', '2018-07-19 22:12:23'),
+(80, 13, 0, 'Cambiar orden de empaque en la validación del diseño de pedido', 'preparacion/cambiarOrden', 1, 1, '2018-07-20 17:37:25', '2018-07-20 17:37:25'),
+(81, 13, 0, 'Quitar caja del diseño de pedido', 'preparacion/quitarCaja', 1, 1, '2018-07-20 18:03:25', '2018-07-20 18:03:25'),
+(82, NULL, 3, 'Distribución', '#', 1, 1, '2018-07-23 16:40:16', '2018-07-23 16:44:41'),
+(83, 82, 0, 'Listado de Camiones', 'camiones/listado', 1, 1, '2018-07-23 16:41:02', '2018-07-23 16:41:02'),
+(84, 13, 0, 'Agregar camión en catálogo de camiones', 'camiones/agregar', 1, 1, '2018-07-23 16:41:53', '2018-07-23 16:41:53'),
+(85, 13, 0, 'Editar datos de un camión', 'camiones/editar', 1, 1, '2018-07-23 16:42:38', '2018-07-23 16:42:38'),
+(86, 13, 0, 'Eliminar datos de un camión', 'camiones/eliminar', 1, 1, '2018-07-23 16:43:41', '2018-07-23 16:43:41');
 
 -- --------------------------------------------------------
 
@@ -1075,11 +1129,12 @@ INSERT INTO `menus` (`id`, `parent`, `sequence`, `label`, `url`, `visible`, `use
 -- Table structure for table `migrations`
 --
 
+DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int(10) unsigned NOT NULL,
   `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -1156,7 +1211,13 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (77, '2018_07_15_134510_create_order_pending_table', 37),
 (78, '2018_07_16_133104_change_fp_calc', 38),
 (79, '2018_07_16_184707_add_bool_pendings', 39),
-(80, '2018_07_17_122642_change_caducidad_minima_to_products', 40);
+(80, '2018_07_17_122642_change_caducidad_minima_to_products', 40),
+(81, '2018_07_17_145051_change_quantity_to_arrival_items', 41),
+(82, '2018_07_17_205803_create_pallet_table', 41),
+(83, '2018_07_17_230652_create_pall_box_table', 41),
+(84, '2018_07_18_144109_add_paking_order_to_order_designs', 41),
+(85, '2018_07_18_154025_add_ped_pallets', 41),
+(86, '2018_07_22_165231_create_trucks_esp_table', 42);
 
 -- --------------------------------------------------------
 
@@ -1164,6 +1225,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- Table structure for table `orders`
 --
 
+DROP TABLE IF EXISTS `orders`;
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(10) unsigned NOT NULL,
   `codeOrder` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1175,7 +1237,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `dist_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `orders`
@@ -1183,7 +1245,26 @@ CREATE TABLE IF NOT EXISTS `orders` (
 
 INSERT INTO `orders` (`id`, `codeOrder`, `start`, `end`, `code`, `numat`, `status`, `dist_id`, `created_at`, `updated_at`) VALUES
 (181, '197989', '2018-07-10', '2018-07-24', 'CLN-0118-0001', NULL, 0, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(182, '198470', '2018-07-16', '2018-07-18', 'CLN-0237-0001', NULL, 3, NULL, '2018-07-17 00:07:03', '2018-07-17 16:45:21');
+(182, '198470', '2018-07-16', '2018-07-18', 'CLN-0237-0001', NULL, 12, NULL, '2018-07-17 00:07:03', '2018-07-23 18:12:44'),
+(183, '198597', '2018-07-18', '2018-07-25', 'CLN-0245-0001', NULL, 0, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(184, '198601', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(185, '198602', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(186, '198603', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(187, '198604', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(188, '198605', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(189, '198606', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(190, '198607', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(191, '198608', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(192, '198609', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(193, '198610', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(194, '198611', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(195, '198612', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(196, '198613', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(197, '198614', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(198, '198615', '2018-07-30', '2018-08-03', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(199, '198646', '2018-07-18', '2018-07-25', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(200, '198647', '2018-07-20', '2018-07-26', 'CLN-0009-0001', NULL, 0, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(201, '198648', '2018-07-18', '2018-07-28', 'CLN-0029-0002', NULL, 0, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58');
 
 -- --------------------------------------------------------
 
@@ -1191,9 +1272,11 @@ INSERT INTO `orders` (`id`, `codeOrder`, `start`, `end`, `code`, `numat`, `statu
 -- Table structure for table `order_designs`
 --
 
+DROP TABLE IF EXISTS `order_designs`;
 CREATE TABLE IF NOT EXISTS `order_designs` (
   `id` int(10) unsigned NOT NULL,
   `sequence` int(10) unsigned DEFAULT NULL,
+  `packing_order` int(11) NOT NULL DEFAULT '0',
   `box_id` int(10) unsigned DEFAULT NULL,
   `box_type_id` int(10) unsigned DEFAULT NULL,
   `order_id` int(10) unsigned DEFAULT NULL,
@@ -1201,7 +1284,30 @@ CREATE TABLE IF NOT EXISTS `order_designs` (
   `quantity` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_designs`
+--
+
+INSERT INTO `order_designs` (`id`, `sequence`, `packing_order`, `box_id`, `box_type_id`, `order_id`, `order_detail_id`, `quantity`, `created_at`, `updated_at`) VALUES
+(24, 1, 0, NULL, 6, 182, 157, 656, '2018-07-23 16:59:27', '2018-07-23 17:03:47'),
+(25, 1, 0, NULL, 6, 182, 158, 468, '2018-07-23 16:59:30', '2018-07-23 17:03:47'),
+(26, 1, 0, NULL, 6, 182, 159, 852, '2018-07-23 16:59:33', '2018-07-23 17:03:47'),
+(27, 1, 0, NULL, 6, 182, 160, 360, '2018-07-23 16:59:39', '2018-07-23 17:03:47'),
+(28, 1, 0, NULL, 6, 182, 161, 546, '2018-07-23 16:59:43', '2018-07-23 17:03:47'),
+(29, 1, 0, NULL, 6, 182, 162, 792, '2018-07-23 16:59:47', '2018-07-23 17:03:47'),
+(30, 1, 0, NULL, 6, 182, 163, 218, '2018-07-23 16:59:52', '2018-07-23 17:03:47'),
+(31, 2, 0, NULL, 9, 182, 163, 82, '2018-07-23 17:03:27', '2018-07-23 17:03:47'),
+(32, 2, 0, NULL, 9, 182, 164, 180, '2018-07-23 17:03:31', '2018-07-23 17:03:47'),
+(33, 2, 0, NULL, 9, 182, 165, 360, '2018-07-23 17:03:35', '2018-07-23 17:03:47'),
+(34, 2, 0, NULL, 9, 182, 166, 240, '2018-07-23 17:03:39', '2018-07-23 17:03:47'),
+(35, 3, 0, NULL, 11, 182, 152, 1488, '2018-07-23 17:04:05', '2018-07-23 17:04:05'),
+(36, 3, 0, NULL, 11, 182, 153, 1404, '2018-07-23 17:04:08', '2018-07-23 17:04:08'),
+(37, 3, 0, NULL, 11, 182, 154, 360, '2018-07-23 17:04:11', '2018-07-23 17:04:11'),
+(38, 3, 0, NULL, 11, 182, 155, 450, '2018-07-23 17:04:14', '2018-07-23 17:04:14'),
+(39, 3, 0, NULL, 11, 182, 156, 144, '2018-07-23 17:04:18', '2018-07-23 17:04:18'),
+(40, 3, 0, NULL, 11, 182, 157, 46, '2018-07-23 17:04:23', '2018-07-23 17:04:23');
 
 -- --------------------------------------------------------
 
@@ -1209,6 +1315,7 @@ CREATE TABLE IF NOT EXISTS `order_designs` (
 -- Table structure for table `order_details`
 --
 
+DROP TABLE IF EXISTS `order_details`;
 CREATE TABLE IF NOT EXISTS `order_details` (
   `id` int(10) unsigned NOT NULL,
   `itemcode` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1221,7 +1328,7 @@ CREATE TABLE IF NOT EXISTS `order_details` (
   `quantity_op_boss` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=300 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `order_details`
@@ -1232,21 +1339,154 @@ INSERT INTO `order_details` (`id`, `itemcode`, `quantity`, `quantitypack`, `idOr
 (149, 'IPO-0301', 900, 75, 181, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
 (150, 'EFR-0401', 1008, 84, 181, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
 (151, 'SUP-0301', 126, 126, 181, NULL, NULL, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(152, 'EFR-0401', 1488, 124, 182, NULL, 1488, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 16:43:46'),
-(153, 'NUT-0101', 1404, 117, 182, NULL, 1404, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(154, 'SKI-0106', 360, 10, 182, NULL, 360, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(155, 'LUC-0109', 450, 75, 182, NULL, 450, NULL, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
-(156, 'IND-0101', 144, 6, 182, NULL, 144, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(157, 'MAR-0119', 702, 117, 182, NULL, 702, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(158, 'MAR-0120', 468, 78, 182, NULL, 468, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(159, 'WRI-0501', 852, 142, 182, NULL, 852, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(160, 'WRI-0502', 360, 60, 182, NULL, 360, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(161, 'WRI-0504', 546, 91, 182, NULL, 546, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(162, 'WIN-0104', 792, 66, 182, NULL, 792, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(163, 'LUK-0403', 300, 25, 182, NULL, 300, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(164, 'EFR-0210', 180, 15, 182, NULL, 180, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(165, 'IND-0102', 360, 30, 182, NULL, 360, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
-(166, 'SUP-0306', 240, 20, 182, NULL, 240, NULL, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04');
+(152, 'EFR-0401', 1488, 124, 182, NULL, 1488, 1488, NULL, '2018-07-17 00:07:03', '2018-07-17 16:43:46'),
+(153, 'NUT-0101', 1404, 117, 182, NULL, 1404, 1404, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
+(154, 'SKI-0106', 360, 10, 182, NULL, 360, 360, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
+(155, 'LUC-0109', 450, 75, 182, NULL, 450, 450, NULL, '2018-07-17 00:07:03', '2018-07-17 00:07:03'),
+(156, 'IND-0101', 144, 6, 182, NULL, 144, 144, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(157, 'MAR-0119', 702, 117, 182, NULL, 702, 702, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(158, 'MAR-0120', 468, 78, 182, NULL, 468, 468, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(159, 'WRI-0501', 852, 142, 182, NULL, 852, 852, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(160, 'WRI-0502', 360, 60, 182, NULL, 360, 360, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(161, 'WRI-0504', 546, 91, 182, NULL, 546, 546, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(162, 'WIN-0104', 792, 66, 182, NULL, 792, 792, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(163, 'LUK-0403', 300, 25, 182, NULL, 300, 300, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(164, 'EFR-0210', 180, 15, 182, NULL, 180, 180, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(165, 'IND-0102', 360, 30, 182, NULL, 360, 360, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(166, 'SUP-0306', 240, 20, 182, NULL, 240, 240, NULL, '2018-07-17 00:07:04', '2018-07-17 00:07:04'),
+(167, 'PPR-0115', 864, 3, 183, NULL, NULL, NULL, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(168, 'NES-0201', 1080, 15, 183, NULL, NULL, NULL, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(169, 'SUP-0306', 144, 1, 183, NULL, NULL, NULL, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(170, 'NES-0303', 2400, 25, 183, NULL, NULL, NULL, NULL, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(171, 'LIF-0103', 12, 12, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(172, 'LIF-0104', 12, 12, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(173, 'SKI-0106', 36, 36, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(174, 'RIC-0202', 35, 35, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(175, 'RIC-0301', 5, 5, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(176, 'RIC-0302', 6, 6, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(177, 'RIC-0401', 6, 6, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(178, 'RIC-0402', 6, 6, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(179, 'RIC-0403', 6, 6, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(180, 'EFR-0401', 12, 12, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(181, 'IND-0101', 24, 24, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(182, 'EFR-0317', 12, 12, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(183, 'LUC-0301', 3, 3, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(184, 'RIC-0306', 5, 5, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(185, 'LUC-0305', 3, 3, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(186, 'LUC-0304', 3, 3, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(187, 'VIL-0304', 3, 3, 184, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(188, 'LIF-0104', 12, 12, 185, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(189, 'EFR-0211', 12, 12, 185, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(190, 'EFR-0212', 12, 12, 185, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(191, 'LIF-0103', 12, 12, 185, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(192, 'WRI-0502', 6, 6, 186, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(193, 'WRI-0401', 10, 10, 186, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(194, 'WRI-0304', 24, 24, 186, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(195, 'WRI-0201', 10, 10, 186, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(196, 'PPR-0116', 6, 6, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(197, 'PPR-0115', 12, 12, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(198, 'EFR-0304', 6, 6, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(199, 'EFR-0401', 24, 24, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(200, 'HER-0115', 12, 12, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(201, 'RIC-0302', 6, 6, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(202, 'RIC-0301', 10, 10, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(203, 'MAR-0202', 11, 11, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(204, 'HER-0418', 6, 6, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(205, 'LIF-0401', 12, 12, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(206, 'EFR-0317', 12, 12, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(207, 'LUC-0301', 3, 3, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(208, 'LUC-0303', 3, 3, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(209, 'PPR-0114', 4, 4, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(210, 'RIC-0306', 5, 5, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(211, 'RIC-0202', 35, 35, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(212, 'MAR-0109', 36, 36, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(213, 'NES-0101', 16, 16, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(214, 'VIL-0304', 3, 3, 187, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(215, 'RIC-0301', 5, 5, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(216, 'RIC-0302', 6, 6, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(217, 'RIC-0401', 6, 6, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(218, 'EFR-0401', 12, 12, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(219, 'PPR-0115', 12, 12, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(220, 'EFR-0303', 6, 6, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(221, 'LIF-0401', 12, 12, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(222, 'LIF-0402', 6, 6, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(223, 'EFR-0322', 6, 6, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(224, 'HER-0411', 5, 5, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(225, 'LUC-0305', 3, 3, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(226, 'VIL-0302', 3, 3, 188, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(227, 'SKI-0203', 12, 12, 189, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(228, 'WRI-0101', 10, 10, 190, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(229, 'HER-0418', 6, 6, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(230, 'RIC-0301', 5, 5, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(231, 'RIC-0403', 6, 6, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(232, 'EFR-0401', 12, 12, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(233, 'PPR-0115', 12, 12, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(234, 'IND-0101', 24, 24, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(235, 'IND-0102', 12, 12, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(236, 'HER-0203', 12, 12, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(237, 'MAR-0202', 11, 11, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(238, 'LIF-0402', 6, 6, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(239, 'LUC-0302', 3, 3, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(240, 'LUC-0303', 3, 3, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(241, 'PPR-0114', 4, 4, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(242, 'RIC-0306', 5, 5, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(243, 'LUC-0305', 3, 3, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(244, 'MAR-0109', 36, 36, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(245, 'NES-0101', 16, 16, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(246, 'VIL-0303', 3, 3, 191, NULL, NULL, NULL, NULL, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(247, 'LIF-0103', 12, 12, 192, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(248, 'SKI-0107', 36, 36, 192, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(249, 'SUP-0307', 12, 12, 192, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(250, 'SUP-0306', 12, 12, 192, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(251, 'LUC-0203', 10, 10, 193, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(252, 'WRI-0504', 6, 6, 194, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(253, 'SUP-0312', 12, 12, 194, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(254, 'WRI-0304', 24, 24, 194, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(255, 'WRI-0501', 6, 6, 194, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(256, 'HER-0125', 12, 12, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(257, 'RIC-0508', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(258, 'RIC-0507', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(259, 'EFR-0307', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(260, 'NES-0201', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(261, 'NES-0101', 16, 16, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(262, 'LUC-0305', 9, 9, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(263, 'RIC-0306', 10, 10, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(264, 'PPR-0114', 4, 4, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(265, 'LUC-0303', 3, 3, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(266, 'HER-0203', 12, 12, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(267, 'PPR-0116', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(268, 'EFR-0401', 12, 12, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(269, 'RIC-0403', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(270, 'RIC-0402', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(271, 'RIC-0302', 6, 6, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(272, 'RIC-0301', 15, 15, 195, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(273, 'WRI-0501', 6, 6, 196, NULL, NULL, NULL, NULL, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(274, 'RIC-0301', 5, 5, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(275, 'RIC-0302', 6, 6, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(276, 'RIC-0402', 6, 6, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(277, 'HER-0117', 6, 6, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(278, 'EFR-0401', 12, 12, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(279, 'LIF-0402', 6, 6, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(280, 'LUC-0302', 3, 3, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(281, 'RIC-0306', 5, 5, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(282, 'LUC-0305', 3, 3, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(283, 'LUC-0304', 3, 3, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(284, 'NES-0101', 16, 16, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(285, 'LUC-0307', 3, 3, 197, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(286, 'EFR-0211', 12, 12, 198, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(287, 'LIF-0103', 12, 12, 198, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(288, 'LIF-0104', 12, 12, 198, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(289, 'LIF-0201', 12, 12, 198, NULL, NULL, NULL, NULL, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(290, 'EFR-0339', 6, 6, 198, NULL, NULL, NULL, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(291, 'SUP-0307', 12, 12, 198, NULL, NULL, NULL, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(292, 'WRI-0501', 12, 12, 199, NULL, NULL, NULL, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(293, 'RIC-0403', 6, 6, 200, NULL, NULL, NULL, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(294, 'LUC-0303', 3, 3, 200, NULL, NULL, NULL, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(295, 'PPR-0114', 4, 4, 200, NULL, NULL, NULL, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(296, 'LUK-0115', 96, 12, 201, NULL, NULL, NULL, NULL, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(297, 'EFR-0325', 60, 10, 201, NULL, NULL, NULL, NULL, '2018-07-19 18:48:59', '2018-07-19 18:48:59'),
+(298, 'EFR-0343', 18, 3, 201, NULL, NULL, NULL, NULL, '2018-07-19 18:48:59', '2018-07-19 18:48:59'),
+(299, 'LUC-0301', 84, 28, 201, NULL, NULL, NULL, NULL, '2018-07-19 18:48:59', '2018-07-19 18:48:59');
 
 -- --------------------------------------------------------
 
@@ -1254,6 +1494,7 @@ INSERT INTO `order_details` (`id`, `itemcode`, `quantity`, `quantitypack`, `idOr
 -- Table structure for table `order_pendings`
 --
 
+DROP TABLE IF EXISTS `order_pendings`;
 CREATE TABLE IF NOT EXISTS `order_pendings` (
   `id` int(10) unsigned NOT NULL,
   `order_id` int(10) unsigned NOT NULL,
@@ -1264,14 +1505,33 @@ CREATE TABLE IF NOT EXISTS `order_pendings` (
   `cat_status` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `order_pendings`
 --
 
 INSERT INTO `order_pendings` (`id`, `order_id`, `user_id`, `client_id`, `cat_id`, `client_status`, `cat_status`, `created_at`, `updated_at`) VALUES
-(126, 181, 1, 257, 82, 1, 1, '2018-07-17 00:07:03', '2018-07-17 07:17:16');
+(126, 181, 1, 257, 82, 1, 1, '2018-07-17 00:07:03', '2018-07-17 07:17:16'),
+(128, 183, NULL, 387, 84, 1, 1, '2018-07-19 18:48:49', '2018-07-19 18:48:49'),
+(129, 184, NULL, 12, 85, 1, 1, '2018-07-19 18:48:50', '2018-07-19 18:48:50'),
+(130, 185, NULL, 12, 86, 1, 1, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(131, 186, NULL, 12, 86, 1, 1, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(132, 187, NULL, 12, 86, 1, 1, '2018-07-19 18:48:51', '2018-07-19 18:48:51'),
+(133, 188, NULL, 12, 87, 1, 1, '2018-07-19 18:48:52', '2018-07-19 18:48:52'),
+(134, 189, NULL, 12, 88, 1, 1, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(135, 190, NULL, 12, 88, 1, 1, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(136, 191, NULL, 12, 88, 1, 1, '2018-07-19 18:48:53', '2018-07-19 18:48:53'),
+(137, 192, NULL, 12, 89, 1, 1, '2018-07-19 18:48:54', '2018-07-19 18:48:54'),
+(138, 193, NULL, 12, 89, 1, 1, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(139, 194, NULL, 12, 89, 1, 1, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(140, 195, NULL, 12, 89, 1, 1, '2018-07-19 18:48:55', '2018-07-19 18:48:55'),
+(141, 196, NULL, 12, 90, 1, 1, '2018-07-19 18:48:56', '2018-07-19 18:48:56'),
+(142, 197, NULL, 12, 90, 1, 1, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(143, 198, NULL, 12, 91, 1, 1, '2018-07-19 18:48:57', '2018-07-19 18:48:57'),
+(144, 199, NULL, 12, 92, 1, 1, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(145, 200, NULL, 12, 93, 1, 1, '2018-07-19 18:48:58', '2018-07-19 18:48:58'),
+(146, 201, NULL, 126, 94, 1, 1, '2018-07-19 18:48:58', '2018-07-19 18:48:58');
 
 -- --------------------------------------------------------
 
@@ -1279,11 +1539,52 @@ INSERT INTO `order_pendings` (`id`, `order_id`, `user_id`, `client_id`, `cat_id`
 -- Table structure for table `order_traces`
 --
 
+DROP TABLE IF EXISTS `order_traces`;
 CREATE TABLE IF NOT EXISTS `order_traces` (
   `id` int(10) unsigned NOT NULL,
   `order_id` int(10) unsigned NOT NULL,
   `trace_type` int(11) NOT NULL DEFAULT '0',
   `user_id` int(10) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_traces`
+--
+
+INSERT INTO `order_traces` (`id`, `order_id`, `trace_type`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 182, 1, 1, '2018-07-19 23:48:39', '2018-07-19 23:48:39'),
+(2, 182, 2, 1, '2018-07-19 23:48:45', '2018-07-19 23:48:45'),
+(3, 182, 5, 1, '2018-07-19 23:48:46', '2018-07-19 23:48:46'),
+(4, 182, 3, 1, '2018-07-23 18:12:44', '2018-07-23 18:12:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pallet`
+--
+
+DROP TABLE IF EXISTS `pallet`;
+CREATE TABLE IF NOT EXISTS `pallet` (
+  `id` int(10) unsigned NOT NULL,
+  `code` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order_id` int(10) unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pall_box`
+--
+
+DROP TABLE IF EXISTS `pall_box`;
+CREATE TABLE IF NOT EXISTS `pall_box` (
+  `id` int(10) unsigned NOT NULL,
+  `box_id` int(10) unsigned NOT NULL,
+  `pallet_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1294,6 +1595,7 @@ CREATE TABLE IF NOT EXISTS `order_traces` (
 -- Table structure for table `password_resets`
 --
 
+DROP TABLE IF EXISTS `password_resets`;
 CREATE TABLE IF NOT EXISTS `password_resets` (
   `email` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1306,6 +1608,7 @@ CREATE TABLE IF NOT EXISTS `password_resets` (
 -- Table structure for table `products`
 --
 
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
   `id` int(10) unsigned NOT NULL,
   `sku` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -2372,6 +2675,7 @@ INSERT INTO `products` (`id`, `sku`, `concept`, `alias`, `weight_per_piece`, `it
 -- Table structure for table `profiles`
 --
 
+DROP TABLE IF EXISTS `profiles`;
 CREATE TABLE IF NOT EXISTS `profiles` (
   `id` int(10) unsigned NOT NULL,
   `rol_id` int(10) unsigned DEFAULT NULL,
@@ -2379,7 +2683,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `profiles`
@@ -2504,7 +2808,27 @@ INSERT INTO `profiles` (`id`, `rol_id`, `menu_item_id`, `user_id`, `created_at`,
 (124, 4, 73, 1, '2018-07-17 17:37:10', '2018-07-17 17:37:10'),
 (125, 10, 74, 1, '2018-07-17 17:38:27', '2018-07-17 17:38:27'),
 (126, 10, 75, 1, '2018-07-17 17:39:12', '2018-07-17 17:39:12'),
-(127, 10, 76, 1, '2018-07-17 17:46:15', '2018-07-17 17:46:15');
+(127, 10, 76, 1, '2018-07-17 17:46:15', '2018-07-17 17:46:15'),
+(128, 1, 77, 1, '2018-07-19 17:27:37', '2018-07-19 17:27:37'),
+(129, 8, 77, 1, '2018-07-19 17:27:50', '2018-07-19 17:27:50'),
+(130, 1, 78, 1, '2018-07-19 20:10:02', '2018-07-19 20:10:02'),
+(131, 8, 78, 1, '2018-07-19 20:10:06', '2018-07-19 20:10:06'),
+(132, 1, 79, 1, '2018-07-19 22:12:32', '2018-07-19 22:12:32'),
+(133, 8, 79, 1, '2018-07-19 22:12:37', '2018-07-19 22:12:37'),
+(134, 1, 80, 1, '2018-07-20 17:37:34', '2018-07-20 17:37:34'),
+(135, 8, 80, 1, '2018-07-20 17:37:36', '2018-07-20 17:37:36'),
+(136, 1, 81, 1, '2018-07-20 18:03:33', '2018-07-20 18:03:33'),
+(137, 8, 81, 1, '2018-07-20 18:03:36', '2018-07-20 18:03:36'),
+(138, 1, 82, 1, '2018-07-23 16:40:30', '2018-07-23 16:40:30'),
+(139, 12, 82, 1, '2018-07-23 16:40:39', '2018-07-23 16:40:39'),
+(140, 1, 83, 1, '2018-07-23 16:41:12', '2018-07-23 16:41:12'),
+(141, 12, 83, 1, '2018-07-23 16:41:17', '2018-07-23 16:41:17'),
+(142, 1, 84, 1, '2018-07-23 16:42:01', '2018-07-23 16:42:01'),
+(143, 12, 84, 1, '2018-07-23 16:42:14', '2018-07-23 16:42:14'),
+(144, 1, 85, 1, '2018-07-23 16:42:47', '2018-07-23 16:42:47'),
+(145, 12, 85, 1, '2018-07-23 16:42:50', '2018-07-23 16:42:50'),
+(146, 1, 86, 1, '2018-07-23 16:43:45', '2018-07-23 16:43:45'),
+(147, 12, 86, 1, '2018-07-23 16:43:48', '2018-07-23 16:43:48');
 
 -- --------------------------------------------------------
 
@@ -2512,6 +2836,7 @@ INSERT INTO `profiles` (`id`, `rol_id`, `menu_item_id`, `user_id`, `created_at`,
 -- Table structure for table `purchases`
 --
 
+DROP TABLE IF EXISTS `purchases`;
 CREATE TABLE IF NOT EXISTS `purchases` (
   `id` int(10) unsigned NOT NULL,
   `DocEntry` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -2760,6 +3085,7 @@ INSERT INTO `purchases` (`id`, `DocEntry`, `DocNum`, `CardCode`, `CardName`, `Do
 -- Table structure for table `purchase_items`
 --
 
+DROP TABLE IF EXISTS `purchase_items`;
 CREATE TABLE IF NOT EXISTS `purchase_items` (
   `DocEntry` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `purchase_id` int(10) unsigned NOT NULL,
@@ -3789,6 +4115,7 @@ INSERT INTO `purchase_items` (`DocEntry`, `purchase_id`, `ItemCode`, `product_id
 -- Table structure for table `rols`
 --
 
+DROP TABLE IF EXISTS `rols`;
 CREATE TABLE IF NOT EXISTS `rols` (
   `id` int(10) unsigned NOT NULL,
   `rol` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -3827,6 +4154,7 @@ INSERT INTO `rols` (`id`, `rol`, `description`, `created_at`, `updated_at`) VALU
 -- Table structure for table `rules`
 --
 
+DROP TABLE IF EXISTS `rules`;
 CREATE TABLE IF NOT EXISTS `rules` (
   `id` int(10) unsigned NOT NULL,
   `client_id` int(10) unsigned DEFAULT NULL,
@@ -3846,6 +4174,7 @@ CREATE TABLE IF NOT EXISTS `rules` (
 -- Table structure for table `sessions`
 --
 
+DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
@@ -3854,7 +4183,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sessions`
@@ -3975,7 +4304,34 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip`, `token`, `created_at`, `updated_a
 (112, 10, '::1', 'QbvPA0fp6M9UK1TafcXdTppTWngV2r', '2018-07-17 17:44:40', '2018-07-17 17:45:29', '2018-07-17 17:45:29'),
 (113, 1, '::1', 'hDNFHdr0HgbiqEqJmu2unWz53sTUtu', '2018-07-17 17:45:31', '2018-07-17 17:47:13', '2018-07-17 17:47:13'),
 (114, 10, '::1', 'jgAapISpxgXq6eeRrZfQI2YezfzmGZ', '2018-07-17 17:46:40', '2018-07-17 17:47:08', '2018-07-17 17:47:08'),
-(115, 10, '::1', 'zBkoEhCQnrmA7sHnTWyBeIof5adm4r', '2018-07-17 17:47:30', '2018-07-17 17:47:47', NULL);
+(115, 10, '::1', 'zBkoEhCQnrmA7sHnTWyBeIof5adm4r', '2018-07-17 17:47:30', '2018-07-17 17:47:47', NULL),
+(116, 1, '::1', 'ZwggCnL0hIJoi2TQBIbRxRMbTPXP5S', '2018-07-19 23:13:00', '2018-07-19 23:18:51', '2018-07-19 23:18:51'),
+(117, 3, '::1', 'WgMFKiCmZoOxyhmoMEziCPLH8IF2qX', '2018-07-19 23:19:01', '2018-07-19 23:19:08', '2018-07-19 23:19:08'),
+(118, 1, '::1', 'OunviEFOeaynkqlav5cy4uzuqhXnVH', '2018-07-19 23:19:09', '2018-07-20 14:26:44', '2018-07-20 14:26:44'),
+(119, 1, '::1', 'bjkKDhC8Bdzz4b8LfX4rG0hvNDcjIT', '2018-07-20 14:26:44', '2018-07-20 17:36:17', '2018-07-20 17:36:17'),
+(120, 1, '::1', '8TqwQ3yHjHroURFa8x9IH5n6VTep70', '2018-07-20 17:36:17', '2018-07-23 16:36:27', '2018-07-23 16:36:27'),
+(121, 1, '::1', 'VXzWCz1vzyLdtka0AkD1SyZKNbxgo9', '2018-07-23 16:36:27', '2018-07-23 16:45:01', '2018-07-23 16:45:01'),
+(122, 1, '::1', 'H3hOuWXdZIr9kh3kMxb8Yg1HIRfNA6', '2018-07-23 16:45:03', '2018-07-23 18:28:57', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `trucks`
+--
+
+DROP TABLE IF EXISTS `trucks`;
+CREATE TABLE IF NOT EXISTS `trucks` (
+  `id` int(10) unsigned NOT NULL,
+  `brand` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sub-brand` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `plates` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `capacity` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `operator` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `truck_series` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -3983,6 +4339,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip`, `token`, `created_at`, `updated_a
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL,
   `boss_id` int(10) unsigned DEFAULT NULL,
@@ -4001,9 +4358,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `boss_id`, `rol_id`, `name`, `email`, `password`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, NULL, 1, 'Jaime Ulises Cruz Macías', 'jaimeucm@gmail.com', '$2y$10$vhFL1lqwGHuMtZkKsx.5Zug9Rharqb8gZZT7phEV0rQiYwEQ9irYi', 1, 'zjysjwjf3zaNPZtVD12XwL7wH6xhKPBqYiKMYsS0awi65MtsAxKvijOjm3iJ', NULL, NULL),
+(1, NULL, 1, 'Jaime Ulises Cruz Macías', 'jaimeucm@gmail.com', '$2y$10$vhFL1lqwGHuMtZkKsx.5Zug9Rharqb8gZZT7phEV0rQiYwEQ9irYi', 1, 'nLIJ2MrILcnLNWKtR1h4I18Nvcv4gALi0yr9Y9XvKXemeMJCpzPuqamD7Y5g', NULL, NULL),
 (2, 1, 4, 'Enrique López Aldamas', 'enriqueprogra@gmail.com', '$2y$10$eQhJuFiAFdwrYv4KcRmdmeDniny93JNlFGI4hAvw99c.zKyzdFKGm', 1, 'tQOBEWsG85a93E37EwwMmovE4OzUUfwoL9OnM2lGaglG7XgMYyXcT8enPkW2', NULL, '2018-06-13 18:48:09'),
-(3, 4, 5, 'Operador de almacén', 'op.almacen@marcopolo.mx', '$2y$10$iIC047GqTP5lAITmjrwBWO2OvQQdrbIy283MJB3PxHyF7OvsEPZ36', 1, 'APiQzPReSlHCgUfYBchTM5DQ3wPUwzw0g8LaOKJu93sa57p5hzYwck0D68SP', '2018-07-04 01:21:45', '2018-07-04 01:25:21'),
+(3, 4, 5, 'Operador de almacén', 'op.almacen@marcopolo.mx', '$2y$10$iIC047GqTP5lAITmjrwBWO2OvQQdrbIy283MJB3PxHyF7OvsEPZ36', 1, '9EanEKetP2GcSIvn3JOysQVRVoE2xr4Hhiiug33CD83zYYVnm8saPFmNVB9I', '2018-07-04 01:21:45', '2018-07-04 01:25:21'),
 (4, NULL, 4, 'Encargado de almacén', 'en.almacen@marcopolo.mx', '$2y$10$t5FP8pud76vjAX0I1MOv4.8Gjy30dj0QIT6GnT8Liv9ZBo3CRUaDy', 1, 'ozaVyItjhpN19CuShBzNdSuaaFkqI4itcaYthIsvxJVvFf7FuLibO7KvaKbZ', '2018-07-04 01:22:21', '2018-07-04 01:22:21'),
 (5, 4, 5, 'Operador 2 de almacén', 'op.almacen2@marcopolo.mx', '$2y$10$PkG9/SgX3vGtQL5PnUSo4OhT278PYPUO9xjRCJ2YPbTfFz0yW/qPq', 1, NULL, '2018-07-04 01:22:58', '2018-07-04 01:25:12'),
 (6, NULL, 8, 'Encargado de Preparación de Pedido', 'en.preparacion@marcopolo.mx', '$2y$10$6c52sP5Ac0gPB8Fzxkm6ZOVwvepwJTphJTj0KetNXFle3jTKW/iA6', 1, 'rnBRg667GtJrFV1qyppU6np6kftxSYtM3w5FfKjYchmrXoRU7g0XiOMuukRF', '2018-07-05 00:05:46', '2018-07-05 00:05:46'),
@@ -4154,6 +4511,22 @@ ALTER TABLE `order_traces`
   ADD KEY `order_traces_user_id_foreign` (`user_id`);
 
 --
+-- Indexes for table `pallet`
+--
+ALTER TABLE `pallet`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `pallet_code_unique` (`code`),
+  ADD KEY `pallet_order_id_foreign` (`order_id`);
+
+--
+-- Indexes for table `pall_box`
+--
+ALTER TABLE `pall_box`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pall_box_box_id_foreign` (`box_id`),
+  ADD KEY `pall_box_pallet_id_foreign` (`pallet_id`);
+
+--
 -- Indexes for table `password_resets`
 --
 ALTER TABLE `password_resets`
@@ -4211,6 +4584,12 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_user_id_foreign` (`user_id`);
 
 --
+-- Indexes for table `trucks`
+--
+ALTER TABLE `trucks`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -4247,12 +4626,12 @@ ALTER TABLE `box_ids`
 -- AUTO_INCREMENT for table `calculations`
 --
 ALTER TABLE `calculations`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=175;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=194;
 --
 -- AUTO_INCREMENT for table `catalogs`
 --
 ALTER TABLE `catalogs`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=84;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=95;
 --
 -- AUTO_INCREMENT for table `clients`
 --
@@ -4277,36 +4656,46 @@ ALTER TABLE `history_supply`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=77;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=87;
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=81;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=87;
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=183;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=202;
 --
 -- AUTO_INCREMENT for table `order_designs`
 --
 ALTER TABLE `order_designs`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=41;
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=167;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=300;
 --
 -- AUTO_INCREMENT for table `order_pendings`
 --
 ALTER TABLE `order_pendings`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=127;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=147;
 --
 -- AUTO_INCREMENT for table `order_traces`
 --
 ALTER TABLE `order_traces`
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `pallet`
+--
+ALTER TABLE `pallet`
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `pall_box`
+--
+ALTER TABLE `pall_box`
   MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `products`
@@ -4317,7 +4706,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `profiles`
 --
 ALTER TABLE `profiles`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=128;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=148;
 --
 -- AUTO_INCREMENT for table `purchases`
 --
@@ -4337,7 +4726,12 @@ ALTER TABLE `rules`
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=116;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=123;
+--
+-- AUTO_INCREMENT for table `trucks`
+--
+ALTER TABLE `trucks`
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `users`
 --
@@ -4450,6 +4844,19 @@ ALTER TABLE `order_traces`
   ADD CONSTRAINT `order_traces_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
+-- Constraints for table `pallet`
+--
+ALTER TABLE `pallet`
+  ADD CONSTRAINT `pallet_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
+
+--
+-- Constraints for table `pall_box`
+--
+ALTER TABLE `pall_box`
+  ADD CONSTRAINT `pall_box_box_id_foreign` FOREIGN KEY (`box_id`) REFERENCES `box_ids` (`id`),
+  ADD CONSTRAINT `pall_box_pallet_id_foreign` FOREIGN KEY (`pallet_id`) REFERENCES `pallet` (`id`);
+
+--
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
@@ -4487,6 +4894,7 @@ ALTER TABLE `sessions`
 ALTER TABLE `users`
   ADD CONSTRAINT `users_boss_id_foreign` FOREIGN KEY (`boss_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `users_rol_id_foreign` FOREIGN KEY (`rol_id`) REFERENCES `rols` (`id`);
+SET FOREIGN_KEY_CHECKS=1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

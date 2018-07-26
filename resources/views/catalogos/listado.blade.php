@@ -164,19 +164,19 @@
     <script type="text/javascript">
 
         function ejecutaBusquedasFiltros() {
-            $( '#busquedaId'       ).val( $( '#formaId'       ).val() ? $( '#formaId'       ).val() : '0'  );
-            $( '#busquedaEtiqueta' ).val( $( '#formaEtiqueta' ).val() ? $( '#formaEtiqueta' ).val() : 'NA' );
-            $( '#busquedaGrupo'    ).val( $( '#seleccionaGrup'    ).val() ? $( '#seleccionaGrup'    ).val() : '0' );
-            $( '#busquedaValor'    ).val( $( '#formaValor'    ).val() ? $( '#formaValor'    ).val() : '0'  );
-            $( '#busquedaEstatus'  ).val( $( '#formaEstatus'  ).val() ? $( '#formaEstatus'  ).val() : '-1' );
+            $( '#busquedaId'       ).val( $( '#formaId'        ).val() ? $( '#formaId'       ).val() : '0'  );
+            $( '#busquedaEtiqueta' ).val( $( '#formaEtiqueta'  ).val() ? $( '#formaEtiqueta' ).val() : 'NA' );
+            $( '#busquedaGrupo'    ).val( $( '#seleccionaGrup' ).val() ? $( '#seleccionaGrup').val() : '0' );
+            $( '#busquedaValor'    ).val( $( '#formaValor'     ).val() ? $( '#formaValor'    ).val() : '0'  );
+            $( '#busquedaEstatus'  ).val( $( '#formaEstatus'   ).val() ? $( '#formaEstatus'  ).val() : '-1' );
             $( '#searchForm' ).submit();
         }
 
         $(document).ready(function () {
 
-            //alert($('#grupoSelEsp').val());
-
-            $('#seleccionaGrup').val($('#grupoSelEsp').val());
+            if($('#grupoSelEsp').val()) {
+                $('#seleccionaGrup').val($('#grupoSelEsp').val());
+            }
 
             $( '[data-toggle="tooltip"]' ).tooltip();
             $( '#btnLimpiar' ).click(function () {

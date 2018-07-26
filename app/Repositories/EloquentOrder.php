@@ -43,6 +43,37 @@ class EloquentOrder implements OrderRepository
     }
 
 	/**
+	 * Buscamos un producto dentro de una caja para una orden
+	 * 
+	 * @param integer $order_id
+	 * @param integer $sequence
+	 * @param integer $order_detail_id
+	 * @return App\OrderDesign
+	 */
+	public function getDesignItemInBox($order_id, $sequence, $order_detail_id)
+	{
+		return $this->design->where(self::DESIGN_ORDER, '=', $order_id)
+			->where(self::DESIGN_ORDER_DETAIL, '=', $order_detail_id)
+			->where(self::DESIGN_SEQUENCE, '=', $sequence)
+			->first();
+	}
+
+	/**
+	 * Función para obtener la lista de productos de una caja en el disño
+	 * de pedido
+	 * 
+	 * @param integer $order_id
+	 * @param integer $sequence
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDesignBySequence($order_id, $sequence)
+	{
+		return $this->design->where(self::DESIGN_ORDER, '=', $order_id)
+			->where(self::DESIGN_SEQUENCE, '=', $sequence)
+			->get();
+	}
+
+	/**
 	 * Función para obtener cuanto de un producto ya esta en el diseño
 	 * del pedido.
 	 * 
@@ -150,6 +181,29 @@ class EloquentOrder implements OrderRepository
 	}
 
 	/**
+	 * Función para obtener la lista de tareas de un pedido
+	 * en preparación cuando es por caja
+	 * 
+	 * @param integer $order_id
+	 */
+	public function getDesignGroupByBox($order_id)
+	{
+		$order = $this->design->select(
+				'order_designs.'.self::DESIGN_SEQUENCE,
+				'order_designs.'.self::DESIGN_ORDER,
+				DB::raw('count(*) as cajas'),
+				DB::raw('MAX(assignments.user_id) as usuario'),
+				DB::raw('MAX(assignments.status) as status'))
+			->leftJoin('assignments', 'order_designs.id', '=', 'assignments.order_design_id')
+			->where('order_designs.'.self::DESIGN_ORDER, '=', $order_id)
+			->groupBy('order_designs.'.self::DESIGN_SEQUENCE, 'order_designs.'.self::DESIGN_ORDER)
+			->orderBy('order_designs.'.self::DESIGN_SEQUENCE);
+
+		Log::info("EloquentOrder getDesignGroupByBox - SQL: ".$order->toSql());
+		return $order->get();
+	}
+
+	/**
 	 * Función para obtener la lista de registro de diseño de pedido
 	 * asisiados al detalle del pedido proporcionado.
 	 *
@@ -160,6 +214,22 @@ class EloquentOrder implements OrderRepository
 	{
 		$order = $this->design->where(self::DESIGN_ORDER_DETAIL, '=', $order_detail_id);
 		Log::info("EloquentOrder getDesignsByDetail - SQL: ".$order->toSql());
+		return $order->get();
+	}
+
+	/**
+	 * Función para obtener la lista de registro de diseño de pedido
+	 * asisiados al detalle del pedido proporcionado.
+	 *
+	 * @param integer $order_id
+	 * @param integer $sequence
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getDesignsByBox($order_id, $sequence)
+	{
+		$order = $this->design->where(self::DESIGN_ORDER, '=', $order_id)
+			->where(self::DESIGN_SEQUENCE, '=', $sequence);
+		Log::info("EloquentOrder getDesignsByBox - SQL: ".$order->toSql());
 		return $order->get();
 	}
 

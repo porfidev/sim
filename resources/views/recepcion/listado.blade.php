@@ -154,7 +154,7 @@
                                 {{ $item->Arrival }}
                             </td>
                             <td style="text-align: center;">
-                                 {{ $item->DocDueDate }}
+                                 {{ Carbon\Carbon::parse($item->DocDueDate )->format('Y-m-d') }} 
                             </td>
                             <td style="text-align: center;">
                                  {{ $item->CardCode }}
@@ -196,7 +196,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $( '.irADetalle' ).click(function () {
-                window.location.href = "/ordenes/listadoItems/" + $(this).attr( "data-id" );
+                window.location.href =  "{{ URL::to('/ordenes/listadoItems/') }}/"+$(this).attr( "data-id" );
             });
         });
     </script>

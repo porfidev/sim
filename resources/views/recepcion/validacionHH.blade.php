@@ -79,6 +79,8 @@
 								Cantidad total recibida: {{ $item->quantity}}
 								<br>
 								Id del producto: {{ $item->product_id}}
+                                <br>
+                                Status: {{ $item->status}}
 								</p>
 							</td>
 							
@@ -91,6 +93,7 @@
                                 <input type="hidden" name="u_Caducidad" value="{{ $item->u_Caducidad }}">
                                 <input type="hidden" name="quantity" value="{{ $item->quantity }}">
                                 <input type="hidden" name="product_id" value="{{ $item->product_id }}">
+                                <input type="hidden" name="status" value="{{ $item->status }}">
                                 <button class="btn btn-sm btn-primary "
                                     data-toggle="tooltip"
                                     data-placement="top"
@@ -98,6 +101,8 @@
                                     type="submit"
                                     >
                                 <i class="material-icons">radio_button_checked</i>
+
+
                                 </button>
                             </form>
                             </td>	

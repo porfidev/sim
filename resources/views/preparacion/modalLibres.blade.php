@@ -86,7 +86,7 @@
     var selectedBox = 0;
     var typeBox     = 0;
     $(document).ready(function () {
-        $( '.freeItemsList' ).click(function (){
+        $(document.body).on( 'click', '.freeItemsList', function (){
             selectedBox = $(this).attr("data-sequence");
             typeBox     = $(this).attr("data-type");
             $( "#modalFreeItems" ).modal({

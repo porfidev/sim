@@ -86,10 +86,11 @@ class EloquentOrderDetail implements OrderDetailRepository
 		return $orderList->get();
     }
 
-    public function getDetExt($it,$idOrd){
-
+	public function getDetExt($it, $idOrd)
+	{
     	return $this->model->where("itemcode","=",$it)
-    					   ->where(self::SQL_ORDEN_ID,"=",$idOrd)->get()->first();
+					->where(self::SQL_ORDEN_ID,"=",$idOrd)
+					->first();
 
     }
 

@@ -240,6 +240,7 @@
                                         <i class="material-icons">assignment_turned_in</i>
                                     </a>
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
+                                @if ($tipoEmpaque->id == $pedido->client->TE)
                                     <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"
                                             data-toggle="tooltip"
@@ -247,6 +248,15 @@
                                             title="Asignar personal">
                                         <i class="material-icons">person_add</i>
                                     </button>
+                                @else
+                                <button class="btn btn-sm btn-success mostrarTareasPorCaja"
+                                        data-id="{{ $pedido->id }}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Asignar personal">
+                                    <i class="material-icons">person_add</i>
+                                </button>
+                                @endif
                             @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
                                     <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
                                             data-id="{{ $pedido->id }}"

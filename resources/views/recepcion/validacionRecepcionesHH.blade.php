@@ -44,6 +44,7 @@
                             <input type="hidden" name="u_Caducidad" value="{{ $data["u_Caducidad"] }} ">
                             <input type="hidden" name="quantity" value="{{ $data["quantity"] }} ">
                             <input type="hidden" name="product_id" value="{{ $data["product_id"] }} ">
+                            <input type="hidden" name="status" value="{{ $data["status"] }} ">
                         <div class="modal-footer d-flex justify-content-center">  
                             <button type="button"
                                 class="btn btn-secondary regresa" >
@@ -72,7 +73,7 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$( '.regresa' ).click(function () {
-				window.history.back();
+				window.location.href =  "{{ URL::to('/hh/recepcion/validacionHH/') }}";
 			});
 
 		});

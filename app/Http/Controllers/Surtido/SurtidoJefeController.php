@@ -239,11 +239,11 @@ class SurtidoJefeController extends Controller
             if($ordEsp == null){
 
                 $resultado = "ERROR";
-                $mensajes  = array( "no existe ese codigo de barras" );
+                $mensajes  = array( "No existe el código de barras" );
 
                 return response()->json(array(
-                Controller::JSON_RESPONSE => $resultado,
-                Controller::JSON_MESSAGE  => $mensajes
+                    Controller::JSON_RESPONSE => $resultado,
+                    Controller::JSON_MESSAGE  => $mensajes
                 ));
             }
 
@@ -256,7 +256,7 @@ class SurtidoJefeController extends Controller
 
             $modPed = $this->orderModel->getById($detalleOrder->idOrder);
 
-            if($modPed->status < 4){
+            if($modPed->status < OrderRepository::SURTIDO_VALIDO){
                 
                 $cantU = intval($ordEsp->quantity_boss);
                 $cantT = intval($ordEsp->quantity);
