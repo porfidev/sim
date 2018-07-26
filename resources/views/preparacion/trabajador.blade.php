@@ -88,7 +88,9 @@
                                         {{ $pedido->sku }} - {{ $pedido->concept }}
                                     </div>
                                     <div class="col">
-                                        <span id="register_{{ $pedido->order_id }}_{{ $pedido->sku }}">0</span>
+                                        <span id="register_{{ $pedido->order_id }}_{{ $pedido->sku }}">
+                                            {{ $pedido->quantity_op }}
+                                        </span>
                                         de {{ $pedido->quantity }} piezas
                                     </div>
                                 </div>
@@ -129,7 +131,7 @@
                 }
             }).done(function (data) {
                 if(data.resultado === 'OK') {
-                    $( 'register_' + order + '_' + data.datos.producto ).text(data.datos.total);
+                    $( '#register_' + order + '_' + data.datos.producto ).text(data.datos.total);
                     if( data.datos.terminado == 0 ) {
                         $( "#finishBtn_" + order + "_" + sequence ).show();
                     }

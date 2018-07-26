@@ -52,6 +52,7 @@ class EloquentOrder implements OrderRepository
 	 */
 	public function getDesignItemInBox($order_id, $sequence, $order_detail_id)
 	{
+		Log::info(" EloquentOrder - getDesignItemInBox [ $order_id, $sequence, $order_detail_id ]");
 		return $this->design->where(self::DESIGN_ORDER, '=', $order_id)
 			->where(self::DESIGN_ORDER_DETAIL, '=', $order_detail_id)
 			->where(self::DESIGN_SEQUENCE, '=', $sequence)

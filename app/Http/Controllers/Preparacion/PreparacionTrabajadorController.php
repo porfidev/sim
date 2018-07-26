@@ -235,7 +235,7 @@ class PreparacionTrabajadorController extends Controller
                     if($detail->product->barcode == $request->producto
                         || $detail->product->display_barcode == $request->producto
                         || $detail->product->corrugated_barcode == $request->producto ){
-                        $designFind = $this->orderModel->getDesignItemInBox($detail->order_id, $request->caja, $detail->id);
+                        $designFind = $this->orderModel->getDesignItemInBox($detail->idOrder, $request->caja, $detail->id);
                         $detailFind = $detail;
                         if( $detail->product->barcode == $request->producto ) {
                             $qtyToAdd = 1;
@@ -247,8 +247,10 @@ class PreparacionTrabajadorController extends Controller
                         break;
                     }
                 }
-                if(!empty($detailFind) && !empty($detailFind)){
-                    Log::info("");
+                Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - qtyToAdd: $qtyToAdd");
+                Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - detail: ".json_encode($detailFind));
+                Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - design: ".json_encode($designFind));
+                if(!empty($detailFind) && !empty($designFind)){
                     if( $order->status < OrderRepository::PREPARADO_POR_V ) {
                         $total  = $qtyToAdd;
                         $enCaja = $qtyToAdd;
@@ -261,6 +263,7 @@ class PreparacionTrabajadorController extends Controller
                         if($total <= $detailFind->quantity
                             && $enCaja <= $designFind->quantity ){
 
+                            Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - totales: [ $enCaja, $total ]");
                             // Actualizamos la cantidad en el disño de empaque
                             $this->orderModel->updateDesign(
                                 $designFind->id,
