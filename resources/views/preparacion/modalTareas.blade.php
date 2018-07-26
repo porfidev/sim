@@ -43,7 +43,7 @@
                                             Caja / Producto
                                         </th>
                                         <th style="text-align: center;">
-                                            # Cajas
+                                            # <span id="title">Cajas</span>
                                         </th>
                                         <th>
                                             Trabajador
@@ -75,6 +75,64 @@
     function resetDefautlValuesAT() {
         $( '#lista_taras tr' ).remove();
         $( '#erroresModalAsignarTareas' ).text('');
+    }
+    function obtenerTareasPorCaja(usuarios) {
+        $.ajax({
+            headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type     : 'POST',
+            url      : "{{ route('preparacion.tareas.caja') }}",
+            dataType : 'json',
+            data     : {
+                id    : $( '#order_id' ).val()
+            }
+        }).done(function (data){
+            if(data.resultado === 'OK') {
+                var row = "";
+                $.each(data.datos, function(i,item){
+                    row += "<tr><td style=\"text-align: center;\">";
+                    row += ("Caja " + item.sequence);
+                    row += "</td><td style=\"text-align: center;\">";
+                    row += item.cajas;
+                    row += "</td><td>";
+                    row += "<select class=\"form-control selecionDeTrabajadorCaja\"";
+                    row += ("data-order=\"" + item.order_id + "\" ");
+                    row += ("data-id=\"" + item.sequence + "\" ");
+                    if(item.status > 0){
+                        row += " disabled ";
+                    }
+                    row += ">"
+                    row += "<option value=\"0\"> -- Selecciona un trabajador -- </option>";
+                    for (index = 0; index < usuarios.length; index++) {
+                        row += ("<option value=\"" + usuarios[index].value + "\" ");
+                        if(usuarios[index].online == null) {
+                            row += "disabled=\"true\"";
+                        }
+                        if( usuarios[index].value == item.usuario){
+                            row += "selected >";
+                        } else {
+                            row += ">";
+                        }
+                        row += usuarios[index].label;
+                        row += " </option>";
+                    }
+                    row += "</select>";
+                    row += "</td></tr>";
+                });
+                $( '#lista_tareas' ).html(row);
+            } else {
+                var errorMsg = "<p>Error al obtener las tareas del pedido.<p><ul>";
+                $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                errorMsg += "</ul>";
+                erroresValidacion("erroresModalAsignarTareas", errorMsg);
+            }
+        }).fail(function (jqXHR, textStatus) {
+            errorDetalle = "";
+            // If req debug show errorDetalle
+            $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+            erroresValidacion( "erroresModalAsignarTareas", "Error al obtener las tareas del pedido." );
+        });
     }
     function obtenerTareas(usuarios) {
         $.ajax({
@@ -130,10 +188,41 @@
         });
     }
     $(document).ready(function () {
+
+        $( '.mostrarTareasPorCaja' ).click(function () {
+            resetDefautlValuesAT();
+            $( '#formAsignarTarea' ).hide();
+            $( '#order_id' ).val( $(this).attr('data-id') );
+            $( '#title' ).text('Productos');
+            $( "#modalAsignarTareas" ).modal({
+                keyboard : false,
+                backdrop : 'static'
+            });
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'GET',
+                url      : "{{ URL::to('usuarios/obtenerNombresJefe') }}/" + $( '#order_id' ).val(),
+                dataType : 'json'
+            }).done(function (data) {
+                obtenerTareasPorCaja(data);
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresModalAsignarTareas", "Error al obtener la lista de trabajadores." );
+            }).always(function() {
+                $( '#loading_modal_assign_work' ).hide();
+                $( '#formAsignarTarea'          ).show();
+            });
+        });
+
         $( '.mostrarTareasPorDetalle' ).click(function () {
             resetDefautlValuesAT();
             $( '#formAsignarTarea' ).hide();
             $( '#order_id' ).val( $(this).attr('data-id') );
+            $( '#title' ).text('Cajas');
             $( "#modalAsignarTareas" ).modal({
                 keyboard : false,
                 backdrop : 'static'
@@ -169,6 +258,39 @@
                 data     : {
                     id      : $(this).attr('data-id'),
                     usuario : $(this).val()
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    mensajeExito("erroresModalAsignarTareas", "Se asigno tarea");
+                } else {
+                    var errorMsg = "<p>Error al asignar la tarea.<p><ul>";
+                    $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
+                    errorMsg += "</ul>";
+                    erroresValidacion("erroresModalAsignarTareas", errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                erroresValidacion( "erroresModalAsignarTareas", "Error al obtener la lista de trabajadores." );
+            }).always(function() {
+                $( '#loading_modal_assign_work' ).hide();
+                $( '#formAsignarTarea'          ).show();
+            });
+        });
+
+        $(document.body).on('change', ".selecionDeTrabajadorCaja", function() {
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.asignacionCaja') }}",
+                dataType : 'json',
+                data     : {
+                    caja    : $(this).attr('data-id'),
+                    usuario : $(this).val(),
+                    pedido  : $(this).attr('data-order')
                 }
             }).done(function (data) {
                 if(data.resultado === 'OK') {

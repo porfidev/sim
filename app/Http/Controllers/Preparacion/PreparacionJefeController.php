@@ -82,10 +82,12 @@ class PreparacionJefeController extends Controller
                     OrderRepository::STATUS_OPERATOR_2 => "<",
                 )
             );
+            $boxType = $this->catalogModel->searchGroupItem(CatalogoRepository::TE_GROUP, "Caja");
             return view('preparacion.listadoJefe',
                 array(
                     "anteriores" => $pedidosAnteriores,
-                    "listado"    => $pedidos
+                    "listado"    => $pedidos,
+                    "tipoEmpaque"=> $boxType 
                 )
             );
         } catch (\Exception $e) {
@@ -314,7 +316,7 @@ class PreparacionJefeController extends Controller
     }
 
     /**
-     * Función que obtiene las cajas que se tienen que armar por pedido
+     * Función que obtiene los productos (en cajas) que se tienen que armar por pedido
      * para ser asignadas a lo trabajadores.
      *
      * @return json
@@ -332,7 +334,39 @@ class PreparacionJefeController extends Controller
                 $mensajes = array("No se tienen los datos necesarios");
             }
         } catch (\Exception $e) {
-            Log::error( 'PreparacionJefeController - tareasDelPedidoPorItem - Error: '.$e->getMessage() );
+            Log::error( 'PreparacionJefeController - tareasDelPedidoPorItem - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - tareasDelPedidoPorItem - Trace: \n".$e->getTraceAsString() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes,
+            Controller::JSON_DATA     => $datos
+        ));
+    }
+
+    /**
+     * Función que obtiene las cajas que se tienen que armar por pedido
+     * para ser asignadas a lo trabajadores.
+     *
+     * @return json
+     */
+    public function tareasDelPedidoPorCaja(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        $datos     = array();
+        try {
+            Log::info("PreparacionJefeController - tareasDelPedidoPorCaja ");
+            if($request->has('id')) {
+                $datos = $this->orderModel->getDesignGroupByBox($request->id);
+            } else {
+                $mensajes = array("No se tienen los datos necesarios");
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - tareasDelPedidoPorCaja - Exception: '.$e->getMessage() );
+            Log::error( "PreparacionJefeController - tareasDelPedidoPorCaja - Trace: \n".$e->getTraceAsString() );
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );
         }
@@ -375,6 +409,56 @@ class PreparacionJefeController extends Controller
             }
         } catch (\Exception $e) {
             Log::error( 'PreparacionJefeController - asignacionPorItem - Exception: '.$e->getMessage() );
+            DB::rollback();
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+        }
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    /**
+     * Función para realizar la asignación de tareas por Item
+     *
+     * @return json
+     */
+    public function asignacionPorCaja(Request $request)
+    {
+        $resultado = "OK";
+        $mensajes  = "NA";
+        try {
+            Log::info("PreparacionJefeController - asignacionPorCaja");
+            if($request->has('caja')
+                && $request->has('pedido')
+                && $request->has('usuario')) {
+                Log::info("PreparacionJefeController - asignacionPorCaja: ".$request->caja." - ".$request->usuario." - ".$request->pedido);
+                $designList = $this->orderModel->getDesignsByBox($request->pedido, $request->caja);
+                DB::beginTransaction();
+                foreach ($designList as $item) {
+                    // Buscamos si fue asignado previamente
+                    $finded = $this->assigmentModel->getByDesign($item->order_id, $item->id);
+                    foreach ($finded as $assigment) {
+                        // Eliminamos todas las asignaciones previas
+                        $this->assigmentModel->delete($assigment->id);
+                    }
+
+                    $data = array(
+                        AssignmentRepository::SQL_ORDID         => $item->order_id,
+                        AssignmentRepository::SQL_ORDER_DETAIL  => $item->order_detail_id,
+                        AssignmentRepository::SQL_ORDER_DESIGN  => $item->id,
+                        AssignmentRepository::SQL_USRID         => $request->usuario
+                    );
+                    Log::info(" PreparacionJefeController - asignacionPorCaja - data: ".json_encode($data));
+                    $this->assigmentModel->create($data);
+                }
+                DB::commit();
+            } else {
+                $mensajes = array("No se tienen los datos necesarios para realizar la asignación de tareas");
+            }
+        } catch (\Exception $e) {
+            Log::error( 'PreparacionJefeController - asignacionPorCaja - Exception: '.$e->getMessage() );
             DB::rollback();
             $resultado = "ERROR";
             $mensajes  = array( $e->getMessage() );

@@ -32,7 +32,7 @@
                     <thead>
                         <tr class="table-secondary">
                             <th>
-                                <h5>Pedidos en Etapa de Surtido</h5>
+                                <h5>Pedidos en Etapa de Preparado Validado</h5>
                             </th>
                         </tr>
                         <tr>
@@ -67,7 +67,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                @foreach ($anteriores as $pedido)
+                @foreach ($preDist as $pedido)
                         <tr>
                             <td class="col-sm-1">
                                 {{ $pedido->codeOrder }}
@@ -76,17 +76,7 @@
                                 {{ $pedido->client->name }}
                             </td>
                             <td class="col-sm-2">
-                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_PROCESO)
-                                En Proceso de Surtido
-                        @endif
-
-                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_POR_V)
-                                Por Validar Surtido
-                        @endif
-
-                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_VALIDO)
-                                Surtido
-                        @endif
+                                Preparado Validado
                             </td>
                             <td class="col-sm-2" style="text-align: center;">
                                 {{ $pedido->start }}
@@ -108,17 +98,15 @@
                                 </button>
                             </td>
                             <td class="col-sm-1" style="text-align: center;">
-                        @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_VALIDO)
                                 <button type="button"
-                                    class="btn btn-sm btn-primary recibirSurtido"
+                                    class="btn btn-sm btn-primary recibePed"
                                     data-id="{{ $pedido->id }}">
                                     Recibir
                                 </button>
-                        @endif
                             </td>
                         </tr>
                 @endforeach
-                @if (count($anteriores) === 0)
+                @if (count($preDist) === 0)
                         <tr>
                             <td style="text-align: center;"
                                 class="col">
@@ -138,8 +126,15 @@
                 <table class="table table-striped table-fixed">
                     <thead>
                         <tr class="table-secondary">
-                            <th class="col-12">
-                                <h5>Pedidos en Etapa de Preparaci&oacute;n</h5>
+                            <th scope="col" class="col-sm-10">
+                                <h5>Pedidos en Etapa de Distribuci&oacute;n</h5>
+                            </th>
+                            <th scope="col" class="col-sm-2">
+                                <button type="button"
+                                    class="btn btn-sm btn-primary text-white nuevoViaje"
+                                    role="button">
+                                Nuevo viaje
+                                </button>
                             </th>
                         </tr>
                         <tr>
@@ -173,7 +168,7 @@
                         </tr>
                     </thead>
                     <tbody class="size-2">
-                            @foreach ($listado as $pedido)
+                            @foreach ($dist as $pedido)
                             <tr>
                                 <td class="col-sm-1">
                                     {{ $pedido->codeOrder }}
@@ -182,19 +177,7 @@
                                     {{ $pedido->client->name }}
                                 </td>
                                 <td class="col-sm-2">
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
-                                    Recibido en Preparaci&oacute;n
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
-                                    Por validar Dise&ntilde;o
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
-                                    En espera de Preparaci&oacute;n
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
-                                    En proceso de Preparaci&oacute;n
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
-                                    Por validar Preparaci&oacute;n
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_VALIDADO)
-                                    Validado
-                            @endif
+                                    Distribuci&oacute;n recibido
                                 </td>
                                 <td class="col-sm-2" style="text-align: center;">
                                     {{ $pedido->start }}
@@ -216,68 +199,15 @@
                                     </button>
                                 </td>
                                 <td class="col-sm-2" style="text-align: center;">
-                            @if ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_RECIBIDO)
-                                    <button class="btn btn-primary btn-sm cargaCSVReparto"
-                                            data-id="{{ $pedido->id }}"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Subir CSV">
-                                        <i class="material-icons">file_upload</i>
-                                    </button>
-                                    <button class="btn btn-primary btn-sm createDesignWithoutCSV"
-                                            data-id="{{ $pedido->id }}"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Crear dise&ntilde;o">
-                                        <i class="material-icons">assignment</i>
-                                    </button>
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_DISENIO)
-                                    <a href="{{ route('preparacion.mostrar.disenio', [ 'id' => $pedido->id ]) }}"
-                                            class="btn btn-success btn-sm"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Validar dise&ntilde;o">
-                                        <i class="material-icons">assignment_turned_in</i>
-                                    </a>
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_ESPERA)
-                                @if ($tipoEmpaque->id == $pedido->client->TE)
-                                    <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
-                                            data-id="{{ $pedido->id }}"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Asignar personal">
-                                        <i class="material-icons">person_add</i>
-                                    </button>
-                                @else
-                                <button class="btn btn-sm btn-success mostrarTareasPorCaja"
-                                        data-id="{{ $pedido->id }}"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Asignar personal">
-                                    <i class="material-icons">person_add</i>
-                                </button>
-                                @endif
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_PROCESO)
-                                    <button class="btn btn-sm btn-success mostrarTareasPorDetalle"
-                                            data-id="{{ $pedido->id }}"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Asignar personal">
-                                        <i class="material-icons">person_add</i>
-                                    </button>
-                            @elseif ($pedido->status == \App\Repositories\OrderRepository::PREPARADO_POR_V)
-                                    <a href="{{ route('preparacion.mostrarValidacion', [ 'order_id' => $pedido->id ]) }}"
-                                        class="btn btn-sm btn-success"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Validar Pedido">
-                                        <i class="material-icons">done_all</i>
-                                    </a>
-                            @endif
+                                    <input type="checkbox" 
+                                           class="checkEsp" 
+                                           style="margin-top: 5%;" 
+                                           data-id="{{$pedido->id}}" 
+                                           data-cita="{{$pedido->client->appointment}}">
                                 </td>
                             </tr>
                     @endforeach
-                    @if (count($listado) === 0)
+                    @if (count($dist) === 0)
                             <tr>
                                 <td class="col" style="text-align: center;">
                                     No hay pedidos que mostrar
@@ -290,55 +220,29 @@
         </div>
     </div>
 
-    <form method="POST"
-            action="{{ route('preparacion.disenio.sinCSV') }}"
-            id="crearDisenioSinCSV">
-        {{ csrf_field() }}
-        <input type="hidden" name="id" id="crearDisenioSinCSVPedido" value="0">
-    </form>
-
 @endsection
 
 @section('final')
-    @include('preparacion.csv')
     @include('partials.modalComun')
     @include('partials.modalMensaje')
     @include('partials.modalConfirmacion')
-
-    @include('preparacion.modalTareas')
+    @include('trips.modalNuevo')
 
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="popover"]').popover();
 
-            $(".cargaCSVReparto").click(function () {
-                $( "#labelCSV" ).text('Seleccina un archivo CSV');
-                $( "#CSVModal" ).modal({
-                    keyboard : false,
-                    backdrop : 'static'
-                });
-            });
+            $(".recibePed").click(function() {
 
-            $( "#CSVFile3" ).change(function () {
-                $( "#labelCSV" ).text($( "#CSVFile3" ).val().replace(/C:\\fakepath\\/i, ''));
-            });
+                  var parametros = [];
+                    parametros["id"] = $(this).attr( "data-id" );
+                     abrirConfirmacion(
+                        "Confirmaci&oacute;n",
+                        "¿Estás seguro de que deseas recibir este pedido?",
+                        "{{ route('trips.recibir') }}",
+                        parametros
+                    );
 
-            $( '.recibirSurtido' ).click(function () {
-                var parametros = [];
-                parametros["id"] = $(this).attr("data-id");
-                abrirConfirmacion(
-                    'Recibir Pedido',
-                    'Favor de verificar que la mercancía sea la correcta y corresponde al pedido. ¿Deseas recibir los productos?',
-                    '{{ route("preparacion.recibir") }}',
-                    parametros
-                );
-            });
-
-            $( '.createDesignWithoutCSV' ).click(function () {
-                $( '#overlay' ).show();
-                $( '#crearDisenioSinCSVPedido' ).val( $(this).attr('data-id') );
-                $( '#crearDisenioSinCSV' ).submit();
             });
         });
     </script>

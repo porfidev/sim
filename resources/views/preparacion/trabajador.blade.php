@@ -16,21 +16,35 @@
     <div id="erroresTrabajador" class="mt-3"></div>
 
     <div class="card mb-3">
-        <div class="card-body pl-0 pr-0 pb-0 pt-3">
-            {{ $listado->links('pagination.default') }}
+        <div class="card-body pl-0 pr-0 pb-0 pt-0">
+            {{-- $listado->links('pagination.default') --}}
             <div class="table-responsive">
                 <table class="table table-striped mb-0">
                     <tbody>
+            @php
+                $caja  = 0;
+                $orden = 0;
+            @endphp
             @foreach ($listado as $pedido)
+                @if( $caja != $pedido->sequence
+                    || $orden != $pedido->order_id )
+                @php
+                    $caja  = $pedido->sequence;
+                    $orden = $pedido->order_id;
+                @endphp
                         <tr>
-                            <td style="text-align: center;" class="table-primary">
+                            <th style="text-align: center;" class="table-dark">
                                 <div class="row">
                                     <div class="col">
                                         Pedido: #{{ $pedido->codeOrder }}
                                         Caja {{ $pedido->sequence }} de {{ $pedido->max }}
+                                        <br>
+                                        <small>
+                                            {{ $pedido->client }}
+                                        </small>
                                     </div>
                                     <div class="col"
-                                        id="finishBtn_{{ $pedido->id }}"
+                                        id="finishBtn_{{ $pedido->order_id }}_{{ $pedido->sequence }}"
                             @if( !isset($pedido->label) )
                                         style="display: none;"
                             @endif>
@@ -43,23 +57,40 @@
                                         </button>
                                     </div>
                                 </div>
-                            </td>
+                            </th>
                         </tr>
-                        <tr>
-                            <td style="text-align: center;">
-                                {{ $pedido->sku }} - {{ $pedido->concept }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
+                        <tr class="table-primary">
+                            <th>
                                 <input type="text"
                                     class="form-control registroCaja"
                                     placeholder="Registro de identificador de caja"
-                                    data-find="{{ $pedido->id }}"
-                                    data-id="{{ $pedido->order_design_id }}"
+                                    data-order="{{ $pedido->order_id }}"
+                                    data-id="{{ $pedido->sequence }}"
                                 @isset($pedido->label)
                                     value="{{ $pedido->label }}"
                                 @endisset>
+                            </th>
+                        </tr>
+                        <tr class="table-primary">
+                            <th>
+                                <input type="text"
+                                    class="form-control registroProductos"
+                                    placeholder="Registro de productos"
+                                    data-order="{{ $pedido->order_id }}">
+                            </th>
+                        </tr>
+                @endif
+                        <tr>
+                            <td style="text-align: center;">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ $pedido->sku }} - {{ $pedido->concept }}
+                                    </div>
+                                    <div class="col">
+                                        <span id="register_{{ $pedido->order_id }}_{{ $pedido->sku }}">0</span>
+                                        de {{ $pedido->quantity }} piezas
+                                    </div>
+                                </div>
                             </td>
                         </tr>
             @endforeach
@@ -81,7 +112,7 @@
     @include('partials.modalConfirmacion')
 
     <script type="text/javascript">
-        function asignaCaja(id, find, caja){
+        function asignaCaja(sequence, label, order){
             $( '#overlay' ).show();
             $.ajax({
                 headers: {
@@ -91,13 +122,14 @@
                 url      : "{{ route('preparacion.asigna.caja') }}",
                 dataType : 'json',
                 data     : {
-                    id   : id,
-                    caja : caja
+                    caja     : sequence,
+                    etiqueta : label,
+                    pedido   : order
                 }
             }).done(function (data) {
                 if(data.resultado === 'OK') {
                     mensajeExito("erroresTrabajador", "Se asigno caja");
-                    $( "#finishBtn_" + find ).show();
+                    //$( "#finishBtn_" + order + "_" + sequence ).show();
                 } else {
                     var errorMsg = "Error al asignar la caja. \n";
                     $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
@@ -148,8 +180,8 @@
                 if(e.keyCode == 13) {
                     asignaCaja(
                         $(this).attr('data-id'),
-                        $(this).attr('data-find'),
-                        $(this).val()
+                        $(this).val(),
+                        $(this).attr('data-order')
                     );
                 }
             });

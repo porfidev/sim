@@ -25,12 +25,11 @@
         {{ Session::get('errores') }}
     </div>
     @endif
-    <div class="card mb-3 mt-3">
-        <div class="card-body pl-0 pr-0 pb-0 pt-0">
+    <div class="card">
+        <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped mb-0">
+                <table class="table table-striped">
                     <thead>
-
                         <tr class="table-secondary">
                             <th colspan="10" style="text-align: center;">
                                 <h5>Camiones</h5>

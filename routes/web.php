@@ -138,7 +138,9 @@ Route::get('/preparacion/listado',             '\App\Http\Controllers\Preparacio
 Route::get('/preparacion/informacion',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@mostrarInformacion'     );
 Route::post('/preparacion/recibir',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@recibirPedido'          )->name('preparacion.recibir');
 Route::post('/preparacion/tareas',             '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorItem' )->name('preparacion.tareas');
+Route::post('/preparacion/tareasPorCaja',      '\App\Http\Controllers\Preparacion\PreparacionJefeController@tareasDelPedidoPorCaja' )->name('preparacion.tareas.caja');
 Route::post('/preparacion/asignacionDetalle',  '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorItem'      )->name('preparacion.asignacionDetalle');
+Route::post('/preparacion/asignacionCaja',     '\App\Http\Controllers\Preparacion\PreparacionJefeController@asignacionPorCaja'      )->name('preparacion.asignacionCaja');
 Route::post('/preparacion/obtenerInformacion', '\App\Http\Controllers\Preparacion\PreparacionJefeController@obtenerInformacion'     )->name('preparacion.obtenerInformacion');
 Route::post('/preparacion/validar',            '\App\Http\Controllers\Preparacion\PreparacionJefeController@valida'                 )->name('preparacion.validar');
 Route::post('/preparacion/CSVReparto',         '\App\Http\Controllers\Preparacion\PreparacionJefeController@CSVReparto'             )->name('preparacion.reparto');
@@ -171,7 +173,13 @@ Route::post('/tarimas/asignaTarima',     '\App\Http\Controllers\Tarimas\TarimasC
 Route::post('/tarimas/listaCajas',     '\App\Http\Controllers\Tarimas\TarimasController@listaCajas')->name('tarimas.listaCajas');
 
 // Embarque o distribución de pedido
-Route::get('/camiones/listado',     '\App\Http\Controllers\camiones\CamionesController@listado')->name('camiones.listado');
-Route::post('/camiones/agregar',     '\App\Http\Controllers\camiones\CamionesController@agregar')->name('camiones.agregar');
-Route::post('/camiones/editar',     '\App\Http\Controllers\camiones\CamionesController@editar')->name('camiones.editar');
-Route::post('/camiones/eliminar',     '\App\Http\Controllers\camiones\CamionesController@eliminar')->name('camiones.eliminar');
+Route::get('/camiones/listado',     '\App\Http\Controllers\Embarque\CamionesController@listado')->name('camiones.listado');
+Route::post('/camiones/agregar',     '\App\Http\Controllers\Embarque\CamionesController@agregar')->name('camiones.agregar');
+Route::post('/camiones/editar',     '\App\Http\Controllers\Embarque\CamionesController@editar')->name('camiones.editar');
+Route::post('/camiones/eliminar',     '\App\Http\Controllers\Embarque\CamionesController@eliminar')->name('camiones.eliminar');
+
+//trips
+Route::get('/trips/listado',     '\App\Http\Controllers\Embarque\TripsController@listado')->name('trips.listado');
+Route::get('/trips/listadoDist',     '\App\Http\Controllers\Embarque\TripsController@listadoPedidos')->name('trips.listadoDist');
+Route::post('/trips/agregar',     '\App\Http\Controllers\Embarque\TripsController@agregar')->name('trips.agregar');
+Route::post('/trips/recibir',     '\App\Http\Controllers\Embarque\TripsController@recibir')->name('trips.recibir');
