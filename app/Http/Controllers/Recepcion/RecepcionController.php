@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Input;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\PurchaseRepository;
+use App\Repositories\EloquentPurchase;
 
 use App\Repositories\ProductRepository;
 use App\Repositories\EloquentProduct;
@@ -44,7 +45,7 @@ class RecepcionController extends Controller
 
     public function __construct(PurchaseRepository $cli)
     {
-        $this->middleware(['auth', 'permission', 'update.session']);
+        //$this->middleware(['auth', 'permission', 'update.session']);
         $this->purchaseModel = $cli;
     }
 
@@ -652,9 +653,12 @@ class RecepcionController extends Controller
         
         $modeloP =  new Product;
         $modeloAI =  new ArrivalItem;
+        $modeloPS =  new Purchase;
+
 
         $productModelE = new EloquentProduct($modeloP);
         $arrivalItemModelE = new EloquentArrivalItem($modeloAI);
+        $purchaseModelE = new EloquentPurchase($modeloPS);
 
         $carbon = new Carbon();  
 
@@ -690,7 +694,7 @@ class RecepcionController extends Controller
                             
                                     $total= $arrivalItem->quantity + $cantidadCapturada;
                                     $resultado = $arrivalItemModelE->update($arrivalItem->id, $data);
-                                    $mensajes  = "El producto ha sido actualizado: " .  $arrivalItem->ItemCode . $caducidad_minima;
+                                    $mensajes  = "La recepcion ha sido actualizada: " .  $arrivalItem->ItemCode . $caducidad_minima;
                                   
 
                                 } else {
@@ -715,7 +719,8 @@ class RecepcionController extends Controller
                 
                                     if($purchaseItem != null) {
 
-                                        $status="recibido";
+                                        $purchase = $purchaseModelE->updateStatus($purchaseid , 1);
+                                        $status="por validar";
 
                                         $data = array(
                                         'purchase_id'        => $purchaseItem->purchase_id,
@@ -730,7 +735,7 @@ class RecepcionController extends Controller
 
                                     $nuevoArrivalItem =$arrivalItemModelE ->create($data);
                                     $total= $cantidadCapturada;
-                                    $mensajes  = "Se ha creado un nuevo arrival item.";
+                                    $mensajes  = "Se han registrado los productos";
                                     $resultado = "New Done";
 
                                     }else{
@@ -777,4 +782,147 @@ class RecepcionController extends Controller
         return $response;    
     }
 
+
+
+//Recibe los datos que se validaran (caducidad)
+public function cerrarCaptura(Request $request){
+    $resultado = "recepcion.validacionHH";
+    $id = "0";
+    $status = "recibido";
+
+    if( $request->has("id")) {
+        $id = $request->input("id");
+    }
+
+    $modeloAI =  new ArrivalItem;
+    $arrivalItemModelE = new EloquentArrivalItem($modeloAI);
+    $arrivalItem = $arrivalItemModelE->updateId( $request->get('id') );
+   
+    return $this->validaCodigo($codigo, $ItemCode, $purchaseid);
 }
+
+
+//Actualizar el status de un purchase items especifico
+public function updateStatusPurchaseItems(Request $request){
+    //$resultado = "recepcion.listadoItemsHH";
+    $purchaseid = "" ;
+    $sku= "";
+
+    if( $request->has("purchaseid")) {
+        $purchaseid = $request->input("purchaseid");
+    }
+
+    if( $request->has("sku")) {
+        $sku = $request->input("sku");
+    }
+
+    $modeloPI =  new PurchaseItems;
+    $purchaseItemModelE = new EloquentPurchaseItems($modeloPI);
+    return $purchaseItem = $purchaseItemModelE->updateStatus( $purchaseid, $sku );
+   
+    
+}
+
+
+//Actualizar el status de todo el purchase
+public function updateStatusPurchase(Request $request){
+    //$purchaseid = "" ;
+
+    if( $request->has("el_id")) {
+        $el_id = $request->input("el_id");
+    }
+
+    if( $request->has("num")) {
+        $num = $request->input("num");
+    }
+
+    $modeloP =  new Purchase;
+    $purchaseModelE = new EloquentPurchase($modeloP);
+    return $purchaseModelE->updateStatus($el_id , $num);
+
+}
+
+
+//Actualizar el status de todo el purchase en la validacion
+public function updateStatusPurchaseVal(Request $request){
+    //$purchaseid = "" ;
+
+    if( $request->has("el_id")) {
+        $el_id = $request->input("el_id");
+    }
+
+    if( $request->has("num")) {
+        $num = $request->input("num");
+    }
+
+    if( $request->has("id")) {
+        $id = $request->input("id");
+    }
+
+    $modeloAr = new ArrivalItem;
+    $modeloP =  new Purchase;
+    $arrivalModelE = new EloquentArrivalItem($modeloAr);
+    $purchaseModelE = new EloquentPurchase($modeloP);
+
+    $arrivalModelE->updatePurchaseStatus($el_id );
+
+    $arrivalItem = $arrivalModelE->getById( $id );
+    $date = $arrivalItem->created_at;
+    $purchaseModelE->updateArrival($el_id , $date);
+
+
+    return $purchaseModelE->updateStatus($el_id , $num);
+
+}
+
+
+/*
+function altaOrdenes(Request $request){
+
+    $resultado = "OK";
+    $mensajes  = "NA";
+
+    try{
+
+        $servername = env('SQL_SERVER_NAME', '');
+        $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME_2', '') , 
+                                'UID' => env('SQL_USER', ''),
+                                'PWD' => env('SQL_PASS', ''),
+                                'ReturnDatesAsStrings'=>true, 
+                                'CharacterSet' => 'UTF-8');
+
+        $con = sqlsrv_connect($servername, $connectionInfo);
+
+        if($con){
+
+            $sql = "INSERT INTO ComprasSIM " ;
+
+
+            $stmt = sqlsrv_query( $con, $sql);
+            if( $stmt === false ) {
+                 if( ($errors = sqlsrv_errors() ) != null) {
+                    foreach( $errors as $error ) {
+                    }
+                }
+            }
+        }
+
+
+    } catch (\Exception $e) {
+
+        $resultado = "ERROR";
+        $mensajes  = array( $e->getMessage() );
+
+    }
+
+}
+}
+
+
+*/
+
+}
+
+
+ 
+

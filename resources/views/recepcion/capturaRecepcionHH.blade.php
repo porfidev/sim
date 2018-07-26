@@ -16,7 +16,6 @@ Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  meses<
 <br>
 
 
-
         <form id="formCapturaDatos" data-toggle="validator" role="form" action="{{ route('ordenes.validaCaptura') }}" novalidate>
             <div class="form-group row">
                 <label for="inputlote" class="col-sm-3 col-form-label">Lote</label>
@@ -75,6 +74,7 @@ Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  meses<
         </form>
     </div>
 </div>
+
 
 @endsection
 

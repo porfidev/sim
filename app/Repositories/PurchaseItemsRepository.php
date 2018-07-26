@@ -13,7 +13,8 @@ interface PurchaseItemsRepository
 	const SQL_CODEBARS  = "CodeBars";
 	const SQL_CANTREQ  = "u_CantReq";
     const SQL_DISTNUMBER  = "DistNumber";
-    const SQL_CADUCIDAD  = "u_Caducidad";
+	const SQL_CADUCIDAD  = "u_Caducidad";
+	const SQL_STATUS  = "status";
 
 	const DELETED = 0;
 	const ACTIVE  = 1;
@@ -25,6 +26,8 @@ interface PurchaseItemsRepository
 	function getByCode($ItemCode);
 
 	function getByCodeLote($CodeBars, $DistNumber);
+
+	function updateStatus($purchase_id, $ItemCode);
 
 	function create(array $attributes);
 

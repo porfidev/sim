@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\Purchaseitems;
 
 use Illuminate\Support\Facades\Log;
@@ -68,7 +70,17 @@ class EloquentPurchaseItems implements PurchaseItemsRepository
 	public function create(array $attributes)
 	{
 		return $this->model->create($attributes);
-    }
+	}
+	
+
+	function updateStatus($purchase_id, $ItemCode){
+		
+		return $affected = 	DB::table('purchase_items')
+		->where('purchase_id',$purchase_id)
+		->Where("ItemCode","=",$ItemCode)
+		->update(['status'=>'1']);
+	
+	}
 
     /**
 	 * Update a Catalogo.
@@ -82,6 +94,7 @@ class EloquentPurchaseItems implements PurchaseItemsRepository
 	{
 		return $this->model->find($id)->update($attributes);
 	}
+
 
 	/**
 	 * Delete a Catalogo.

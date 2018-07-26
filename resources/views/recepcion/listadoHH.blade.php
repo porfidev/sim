@@ -75,7 +75,9 @@
                             {{ $item->DocNum }}
                     </td>
                     <td> 
-                        <a class="irADetalleHH" data-id="{{ $item->id }}" >
+                        <a class="irADetalleHH" 
+                        data-id="{{ $item->id }}" 
+                        > 
                         {{ $item->CardName }}
                         <br>
                         <h6>{{ $item->created_at->format('Y-m-d') }}</h6>

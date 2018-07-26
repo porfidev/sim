@@ -148,11 +148,11 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 
-$(document).ready(function () {
-    $("#codigoVal").focus();
-    $("#codigoVal").keyup(function(event){
+//$(document).ready(function () {
+  //  $("#codigoVal").focus();
+    //$("#codigoVal").keyup(function(event){
              
-});
+//});
 </script>
 
 

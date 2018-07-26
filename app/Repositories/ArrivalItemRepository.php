@@ -15,12 +15,17 @@ interface ArrivalItemRepository
     const SQL_CADUCIDAD       = "u_Caducidad";
     const SQL_CADUCIDADM      = "caducidad_minima";
     const SQL_STATUS          = "status";
+    const SQL_PURCHASESTATUS  = "purchase_status";
 
     function getList($itemsPerPage, array $search = null);
 
     function getById($id);
 
     function getByItemCodeLote($ItemCode, $distNumber);
+
+    function updateStatus($purchase_id);
+
+    function updatePurchaseStatus($purchase_id);
 
 	function create(array $attributes);
 

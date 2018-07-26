@@ -24,6 +24,10 @@ interface PurchaseRepository
 
 	function getByCode($CardCode);
 
+	function updateStatus($id, int $num);
+
+	function updateArrival($id, $date);
+
 	function create(array $attributes);
 
 	function update($id, array $attributes);

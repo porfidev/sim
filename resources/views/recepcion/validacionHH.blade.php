@@ -45,6 +45,7 @@
                 id="btnLimpiar">
                 <i class="material-icons">settings_backup_restore</i>
     </button>
+    
 
     {{ $data->links('pagination.default') }}
     
@@ -65,7 +66,9 @@
             <tbody>
                 <tr >
                 
+                
                 @foreach ($data as $item)
+                @if(  $item->purchase_status == null  )
 						<td style="text-align: center;">
 								 {{ $item->purchase_id }}
 							</td>
@@ -80,7 +83,7 @@
 								<br>
 								Id del producto: {{ $item->product_id}}
                                 <br>
-                                Status: {{ $item->status}}
+                                Estatus: {{ $item->status}}
 								</p>
 							</td>
 							
@@ -94,6 +97,8 @@
                                 <input type="hidden" name="quantity" value="{{ $item->quantity }}">
                                 <input type="hidden" name="product_id" value="{{ $item->product_id }}">
                                 <input type="hidden" name="status" value="{{ $item->status }}">
+                               
+                                @if(  $item->status == "por validar"  )
                                 <button class="btn btn-sm btn-primary "
                                     data-toggle="tooltip"
                                     data-placement="top"
@@ -101,17 +106,43 @@
                                     type="submit"
                                     >
                                 <i class="material-icons">radio_button_checked</i>
+                                </button> 
+                            
+                                @endif
+                                </form>   
 
-
+                                @if(  $item->status == "validado"  )
+                                <button class="btn btn-sm btn-success "
+                                    data-placement="top"
+                                    title="Verificado"
+                                    disabled
+                                    >
+                                <i class="material-icons">done</i>
                                 </button>
-                            </form>
+                                <button class="btn btn-sm btn-primary terminar"
+                                    data-placement="top"
+                                    title="Confirmar orden"
+                                    >
+                                <i class="material-icons">done_all</i>
+                                </button>
+                                @endif
+
                             </td>	
                 </tr>
+                @endif
                 @endforeach
+                
 
             </tbody>
         </table>
     </div>
+
+
+    <form id="form">
+	   <input type="hidden" name="el_id" id="el_id" value=" {{ $item->purchase_id }} ">
+       <input type="hidden" name="id" id="id" value=" {{ $item->id }} ">
+       <input type="hidden" name="num" id="num" value=3>
+	</form>
 
 
 
@@ -136,6 +167,28 @@
             });
         });
     </script>
+
+    <script type="text/javascript">
+	$(document).ready(function () {
+		$(".terminar").click(function(event) { 
+					$.ajax({
+						url    : "{{ URL::to('/hh/recepcion/updateStatusPurchaseVal/') }}",
+						method : "GET",
+						data   : $( '#form'  ).serialize()
+						}).done(function( data ) {
+							console.log(data);
+							//$('terminar').prop('disabled', true);
+							window.location.href =  "{{ URL::to('/hh/recepcion/validacionHH') }}";
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							errorDetalle = "ERROR: \n";
+							//$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
+							alert(errorDetalle);
+						}).always(function() {
+							//alert('okkkkkkk always');
+						});
+			});            
+	});
+	</script>
 
 
 

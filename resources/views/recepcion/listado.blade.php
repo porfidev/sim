@@ -151,7 +151,7 @@
                                  {{ $item->status}}
                             </td>
                             <td style="text-align: center;">
-                                {{ $item->Arrival }}
+                                {{ $item->arrival }}
                             </td>
                             <td style="text-align: center;">
                                  {{ Carbon\Carbon::parse($item->DocDueDate )->format('Y-m-d') }} 

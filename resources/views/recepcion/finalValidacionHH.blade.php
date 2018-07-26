@@ -18,7 +18,7 @@
         <br>
         Ultima Caducidad: <b> {{ $data["u_Caducidad"] }} </b>   
         <br>
-        Status: <b> {{ $data["status"] }} </b>   
+        Estatus: <b> {{ $data["status"] }} </b>   
         <br>
         <b>Cantidad nueva capturada:</b>
         <b> {{ $data["cantidadFinal"] }} </b> 

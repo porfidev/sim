@@ -91,7 +91,19 @@ class EloquentArrivalItem implements ArrivalItemRepository
         return $this->model->where("ItemCode","=",$itemCode)
         ->Where("DistNumber","=",$distNumber)
 		->get()->first();
-    }
+	}
+	
+	public function updateStatus($purchase_id)
+	{
+		return $affected = DB::update('update arrival_items set status = "por validar" where purchase_id = ?', [$purchase_id]);
+	}
+	
+
+	public function updatePurchaseStatus($purchase_id){
+
+		return $affected = DB::update('update arrival_items set purchase_status = 3 where purchase_id = ?', [$purchase_id]);
+	}
+
 
 	public function create(array $attributes)
 	{

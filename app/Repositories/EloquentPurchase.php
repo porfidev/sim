@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use DB;
+
 use App\Purchase;
 
 use Illuminate\Support\Facades\Log;
@@ -82,6 +84,24 @@ class EloquentPurchase implements PurchaseRepository
 
     	return $this->model->where("CardCode","=",$CardCode)->get()->first();
     }
+
+
+	function updateStatus($id, $num){
+		
+		return $affected = 	DB::table('purchases')
+		->where('id',$id)
+		->update(['status'=>$num]);
+	
+	}
+
+	
+	function updateArrival($id, $date){
+		
+		return $affected = 	DB::table('purchases')
+		->where('id',$id)
+		->update(['arrival'=>$date]);
+	
+	}
 
 
 	public function create(array $attributes)

@@ -66,6 +66,9 @@
                                 Cantidad Solicitada
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
+                                Cantidad Recibida
+                            </th>
+                            <th scope="col" style="min-width: 150px; text-align: center;">
                                 Lote
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
@@ -104,6 +107,15 @@
                                         placeholder="Cantidad Solicitada"
                                     @if ( Session::has('scl_cantidad') && Session::get('scl_cantidad') != 'NA' )
                                         value="{{ Session::get('scl_cantidad') }}"
+                                    @endif>
+                            </th>
+                            <th>
+                                <input type="text"
+                                        class="form-control inputFiltro"
+                                        id="formCantidadR"
+                                        placeholder="Cantidad Recibida"
+                                    @if ( Session::has('scl_cantidadR') && Session::get('scl_cantidadR') != 'NA' )
+                                        value="{{ Session::get('scl_cantidadR') }}"
                                     @endif>
                             </th>
                             <th>
@@ -159,6 +171,9 @@
                             </td>
                             <td style="text-align: center;">
                                  {{ $item->ItemCode}}
+                            </td>
+                            <td style="text-align: center;">
+                                {{ $item->u_CantReq}}
                             </td>
                             <td style="text-align: center;">
                                 {{ $item->quantity}}
