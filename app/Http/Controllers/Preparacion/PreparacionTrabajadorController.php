@@ -65,6 +65,12 @@ class PreparacionTrabajadorController extends Controller
                     $item->max    = $pedidos[$item->order_id]["max"];
                     $item->min    = $pedidos[$item->order_id]["min"];
                     $item->client = $pedidos[$item->order_id]["client"];
+                    if(array_key_exists($item->sequence, $pedidos[$item->order_id]["cajas"])){
+                        $item->finish = $pedidos[$item->order_id]["cajas"][$item->sequence];
+                    } else {
+                        $pedidos[$item->order_id]["cajas"][$item->sequence] = $this->isFinish($item->order_id, $item->sequence);
+                        $item->finish = $pedidos[$item->order_id]["cajas"][$item->sequence];
+                    }
                 } else {
                     $data   = $this->orderModel->getMaxMin($item->order_id);
                     $order  = $this->orderModel->getById($item->order_id);
@@ -76,8 +82,12 @@ class PreparacionTrabajadorController extends Controller
                     $pedidos[$item->order_id] = array(
                         "max"    => $data->max,
                         "min"    => $data->min,
-                        "client" => $client->name
+                        "client" => $client->name,
+                        "cajas"  => array(
+                            $item->sequence => $this->isFinish($item->order_id, $item->sequence)
+                        ) 
                     );
+                    $item->finish = $pedidos[$item->order_id]["cajas"][$item->sequence];
                 }
             }
 
@@ -196,6 +206,7 @@ class PreparacionTrabajadorController extends Controller
                 break;
             }
         }
+        Log::info("PreparacionTrabajadorController - isFinish - Pedido $order_id caja $sequence: $ans");
         return $ans;
     }
 

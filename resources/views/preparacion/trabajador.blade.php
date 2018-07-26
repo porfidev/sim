@@ -45,7 +45,7 @@
                                     </div>
                                     <div class="col"
                                         id="finishBtn_{{ $pedido->order_id }}_{{ $pedido->sequence }}"
-                            @if( !isset($pedido->label) )
+                            @if( $pedido->finish === 1 )
                                         style="display: none;"
                             @endif>
                                         <button class="btn btn-sm btn-success terminaTarea"
