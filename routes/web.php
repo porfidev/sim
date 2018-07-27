@@ -159,6 +159,7 @@ Route::post('/preparacion/quitarCaja',         '\App\Http\Controllers\Preparacio
 Route::get('/preparacion/listadoTareas', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@listadoTareas' );
 Route::post('/preparacion/asignaCaja',   '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@asignaCaja'    )->name('preparacion.asigna.caja');
 Route::post('/preparacion/terminaTarea', '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@terminarTarea' )->name('preparacion.terminarTarea');
+Route::post('/preparacion/registrarProducto',  '\App\Http\Controllers\Preparacion\PreparacionTrabajadorController@registraProductoEnCaja' )->name('preparacion.registrar.producto');
 
 // Pedidos pendientes
 Route::get('/pendientes/listado',     '\App\Http\Controllers\Pendings\PendingsController@listado')->name('pendiente.listado');

@@ -65,6 +65,12 @@ class PreparacionTrabajadorController extends Controller
                     $item->max    = $pedidos[$item->order_id]["max"];
                     $item->min    = $pedidos[$item->order_id]["min"];
                     $item->client = $pedidos[$item->order_id]["client"];
+                    if(array_key_exists($item->sequence, $pedidos[$item->order_id]["cajas"])){
+                        $item->finish = $pedidos[$item->order_id]["cajas"][$item->sequence];
+                    } else {
+                        $pedidos[$item->order_id]["cajas"][$item->sequence] = $this->isFinish($item->order_id, $item->sequence);
+                        $item->finish = $pedidos[$item->order_id]["cajas"][$item->sequence];
+                    }
                 } else {
                     $data   = $this->orderModel->getMaxMin($item->order_id);
                     $order  = $this->orderModel->getById($item->order_id);
@@ -76,8 +82,12 @@ class PreparacionTrabajadorController extends Controller
                     $pedidos[$item->order_id] = array(
                         "max"    => $data->max,
                         "min"    => $data->min,
-                        "client" => $client->name
+                        "client" => $client->name,
+                        "cajas"  => array(
+                            $item->sequence => $this->isFinish($item->order_id, $item->sequence)
+                        ) 
                     );
+                    $item->finish = $pedidos[$item->order_id]["cajas"][$item->sequence];
                 }
             }
 
@@ -196,6 +206,7 @@ class PreparacionTrabajadorController extends Controller
                 break;
             }
         }
+        Log::info("PreparacionTrabajadorController - isFinish - Pedido $order_id caja $sequence: $ans");
         return $ans;
     }
 
@@ -235,7 +246,7 @@ class PreparacionTrabajadorController extends Controller
                     if($detail->product->barcode == $request->producto
                         || $detail->product->display_barcode == $request->producto
                         || $detail->product->corrugated_barcode == $request->producto ){
-                        $designFind = $this->orderModel->getDesignItemInBox($detail->order_id, $request->caja, $detail->id);
+                        $designFind = $this->orderModel->getDesignItemInBox($detail->idOrder, $request->caja, $detail->id);
                         $detailFind = $detail;
                         if( $detail->product->barcode == $request->producto ) {
                             $qtyToAdd = 1;
@@ -247,7 +258,10 @@ class PreparacionTrabajadorController extends Controller
                         break;
                     }
                 }
-                if(!empty($detailFind) && !empty($detailFind)){
+                Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - qtyToAdd: $qtyToAdd");
+                Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - detail: ".json_encode($detailFind));
+                Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - design: ".json_encode($designFind));
+                if(!empty($detailFind) && !empty($designFind)){
                     if( $order->status < OrderRepository::PREPARADO_POR_V ) {
                         $total  = $qtyToAdd;
                         $enCaja = $qtyToAdd;
@@ -260,7 +274,8 @@ class PreparacionTrabajadorController extends Controller
                         if($total <= $detailFind->quantity
                             && $enCaja <= $designFind->quantity ){
 
-                            // Actualizamos la cantidad en el disño de pedido
+                            Log::info(" PreparacionTrabajadorController - registraProductoEnCaja - totales: [ $enCaja, $total ]");
+                            // Actualizamos la cantidad en el disño de empaque
                             $this->orderModel->updateDesign(
                                 $designFind->id,
                                 array(
@@ -277,6 +292,7 @@ class PreparacionTrabajadorController extends Controller
                             );
 
                             $datos = array(
+                                "producto"  => $detailFind->product->sku,
                                 "terminado" => $this->isFinish($order->id, $request->caja),
                                 "total"     => $enCaja
                             );

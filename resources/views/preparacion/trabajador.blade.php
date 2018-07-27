@@ -45,7 +45,7 @@
                                     </div>
                                     <div class="col"
                                         id="finishBtn_{{ $pedido->order_id }}_{{ $pedido->sequence }}"
-                            @if( !isset($pedido->label) )
+                            @if( $pedido->finish === 1 )
                                         style="display: none;"
                             @endif>
                                         <button class="btn btn-sm btn-success terminaTarea"
@@ -76,7 +76,8 @@
                                 <input type="text"
                                     class="form-control registroProductos"
                                     placeholder="Registro de productos"
-                                    data-order="{{ $pedido->order_id }}">
+                                    data-order="{{ $pedido->order_id }}"
+                                    data-id="{{ $pedido->sequence }}">
                             </th>
                         </tr>
                 @endif
@@ -87,7 +88,9 @@
                                         {{ $pedido->sku }} - {{ $pedido->concept }}
                                     </div>
                                     <div class="col">
-                                        <span id="register_{{ $pedido->order_id }}_{{ $pedido->sku }}">0</span>
+                                        <span id="register_{{ $pedido->order_id }}_{{ $pedido->sku }}">
+                                            {{ $pedido->quantity_op }}
+                                        </span>
                                         de {{ $pedido->quantity }} piezas
                                     </div>
                                 </div>
@@ -112,6 +115,40 @@
     @include('partials.modalConfirmacion')
 
     <script type="text/javascript">
+        function registraProducto(order, sequence, code){
+            $( '#overlay' ).show();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type     : 'POST',
+                url      : "{{ route('preparacion.registrar.producto') }}",
+                dataType : 'json',
+                data     : {
+                    caja     : sequence,
+                    producto : code,
+                    pedido   : order
+                }
+            }).done(function (data) {
+                if(data.resultado === 'OK') {
+                    $( '#register_' + order + '_' + data.datos.producto ).text(data.datos.total);
+                    if( data.datos.terminado == 0 ) {
+                        $( "#finishBtn_" + order + "_" + sequence ).show();
+                    }
+                } else {
+                    var errorMsg = "Error al registrar el producto en la caja. \n";
+                    $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
+                    alert(errorMsg);
+                }
+            }).fail(function (jqXHR, textStatus) {
+                errorDetalle = "";
+                // If req debug show errorDetalle
+                $.each(jqXHR, function(i,val) { errorDetalle += "<br>" + i + " : " + val; } );
+                alert( "Error al llamar el servicio para registrar el producto en la caja." );
+            }).always(function() {
+                $( '#overlay' ).hide();
+            });
+        }
         function asignaCaja(sequence, label, order){
             $( '#overlay' ).show();
             $.ajax({
@@ -129,7 +166,6 @@
             }).done(function (data) {
                 if(data.resultado === 'OK') {
                     mensajeExito("erroresTrabajador", "Se asigno caja");
-                    //$( "#finishBtn_" + order + "_" + sequence ).show();
                 } else {
                     var errorMsg = "Error al asignar la caja. \n";
                     $.each(data.mensajes, function(i,val) { errorMsg += (" - " + val + "\n"); } );
@@ -182,6 +218,16 @@
                         $(this).attr('data-id'),
                         $(this).val(),
                         $(this).attr('data-order')
+                    );
+                }
+            });
+
+            $( '.registroProductos' ).keyup(function(e){
+                if(e.keyCode == 13) {
+                    registraProducto(
+                        $(this).attr('data-order'),
+                        $(this).attr('data-id'),
+                        $(this).val()
                     );
                 }
             });

@@ -88,7 +88,8 @@ class EloquentAssignment implements AssignmentRepository
 			'products.concept',
 			'box_ids.label',
 			'order_designs.sequence',
-			'order_designs.quantity'
+			'order_designs.quantity',
+			DB::raw('COALESCE(order_designs.quantity_op, 0) quantity_op')
 		)
 		->leftJoin('orders', 'assignments.order_id', '=', 'orders.id')
 		->leftJoin('order_designs', 'assignments.order_design_id', '=', 'order_designs.id')
