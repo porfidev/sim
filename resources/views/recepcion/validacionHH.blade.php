@@ -122,6 +122,8 @@
                                 <button class="btn btn-sm btn-primary terminar"
                                     data-placement="top"
                                     title="Confirmar orden"
+                                    data-elid="{{ $item->purchase_id }}"
+                                    data-id="{{ $item->id }}"
                                     >
                                 <i class="material-icons">done_all</i>
                                 </button>
@@ -130,6 +132,14 @@
                             </td>	
                 </tr>
                 @endif
+
+                <form id="form">
+                    <input type="hidden" name="el_id" id="el_id" value="{{ $item->purchase_id }}">
+                    <input type="hidden" name="id" id="id" value="{{ $item->id }} ">
+                    <input type="hidden" name="num" id="num" value=3>
+                </form>
+
+
                 @endforeach
                 
 
@@ -138,11 +148,7 @@
     </div>
 
 
-    <form id="form">
-	   <input type="hidden" name="el_id" id="el_id" value=" {{ $item->purchase_id }} ">
-       <input type="hidden" name="id" id="id" value=" {{ $item->id }} ">
-       <input type="hidden" name="num" id="num" value=3>
-	</form>
+    
 
 
 
@@ -171,6 +177,10 @@
     <script type="text/javascript">
 	$(document).ready(function () {
 		$(".terminar").click(function(event) { 
+
+             //$("#el_id").val({{ $item->purchase_id }});
+            // $("#id").val({{ $item->id }});
+
 					$.ajax({
 						url    : "{{ URL::to('/hh/recepcion/updateStatusPurchaseVal/') }}",
 						method : "GET",

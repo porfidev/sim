@@ -52,7 +52,7 @@ class RecepcionController extends Controller
 
     public function listado(Request $request){
         $data = Purchase::paginate(10);
-
+       
         return view('recepcion.listado',['data' => $data] );
 
         try {
@@ -140,8 +140,9 @@ class RecepcionController extends Controller
     public function listadoItems($purchase_id)
     {
         $data = PurchaseItems::where('purchase_id','=',$purchase_id)->paginate(10);
+        $data2 = ArrivalItem::where('purchase_id','=',$purchase_id)->paginate(10);
 
-        return view('recepcion.listadoItems',['data' => $data] );
+        return view('recepcion.listadoItems',['data' => $data, 'data2' => $data2] );
     }
 
     //Presenta detalle de purchases en hand held

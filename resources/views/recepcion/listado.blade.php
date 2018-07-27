@@ -139,6 +139,7 @@
                     </thead>
                     <tbody>
                         <tr>
+                        
                        
                        @foreach ($data as $item)
                             <td style="text-align: center;">
@@ -148,7 +149,20 @@
                                 {{ $item->CardName }}
                             </td>
                             <td style="text-align: center;">
-                                 {{ $item->status}}
+                            @switch($item->status)
+                                @case(1)
+                                    <span>En proceso</span>
+                                @break
+                                @case(2)
+                                    <span>Por validar</span>
+                                 @break
+                                @case(3)
+                                    <span>Validado</span>
+                                @break    
+                                @default
+                                    <span>En espera</span>
+                            @endswitch
+
                             </td>
                             <td style="text-align: center;">
                                 {{ $item->arrival }}
@@ -170,8 +184,7 @@
                             </td>
                         </tr>
                         @endforeach
-                        
-                       
+                            
                  </tbody>
                 </table>
             </div>
