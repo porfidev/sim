@@ -178,9 +178,6 @@
 	$(document).ready(function () {
 		$(".terminar").click(function(event) { 
 
-             //$("#el_id").val({{ $item->purchase_id }});
-            // $("#id").val({{ $item->id }});
-
 					$.ajax({
 						url    : "{{ URL::to('/hh/recepcion/updateStatusPurchaseVal/') }}",
 						method : "GET",

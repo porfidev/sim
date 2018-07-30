@@ -53,6 +53,7 @@
 <script type="text/javascript">
 $(document).ready(function () {
     $("#cerrar").click(function(event) {   
+        
                 $.ajax({
                     url    : "{{ URL::to('/hh/recepcion/updateStatusPurchaseItems/') }}",
                     method : "GET",
