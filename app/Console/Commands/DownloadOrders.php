@@ -90,6 +90,9 @@ class DownloadOrders extends Command
      */
     public function handle()
     {
+
+        Log::useFiles(storage_path('logs/downloadOrders_'.date('Y-m-d').'.log'));
+
         //Sericio del bajado de pedidos
         //---------------------------------------------------------------------------------------
         $servername = env('SQL_SERVER_NAME', '');

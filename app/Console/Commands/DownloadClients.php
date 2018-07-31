@@ -46,6 +46,8 @@ class DownloadClients extends Command
     public function handle()
     {
 
+        Log::useFiles(storage_path('logs/clientsDownload_'.date('Y-m-d').'.log'));
+
         $servername = env('SQL_SERVER_NAME', '');
         $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME', '') , 
                                 'UID' => env('SQL_USER', ''),
@@ -57,7 +59,8 @@ class DownloadClients extends Command
 
         if($con){
 
-            echo "conexion exitosa<br>";
+            Log::info("Conexion exitosa");
+            echo "Conexion exitosa";
 
             $sql = "select CardName,CardCode,Phone1,ZipCode,City,Address,E_Mail,LicTradNum from OCRD".
                        " where OCRD.CardType = 'C'";
