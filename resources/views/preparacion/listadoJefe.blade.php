@@ -28,7 +28,7 @@
     <div class="card mb-3 mt-3">
         <div class="card-body pl-0 pr-0 pb-0 pt-0">
             <div class="table-responsive">
-                <table class="table table-striped table-fixed mb-0">
+                <table class="table table-striped table-fixed mb-0" id="surtido-fase">
                     <thead>
                         <tr class="table-secondary">
                             <th>
@@ -75,7 +75,7 @@
                             <td class="col-sm-3">
                                 {{ $pedido->client->name }}
                             </td>
-                            <td class="col-sm-2">
+                            <td class="col-sm-2" id="estatus_{{$pedido->id}}">
                         @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_PROCESO)
                                 En Proceso de Surtido
                         @endif
@@ -107,7 +107,7 @@
                                 {{ $pedido->calculation->priority }}
                                 </button>
                             </td>
-                            <td class="col-sm-1" style="text-align: center;">
+                            <td class="col-sm-1" style="text-align: center;" id="action_{{$pedido->id}}">
                         @if ($pedido->status == \App\Repositories\OrderRepository::SURTIDO_VALIDO)
                                 <button type="button"
                                     class="btn btn-sm btn-primary recibirSurtido"
@@ -324,7 +324,7 @@
                 $( "#labelCSV" ).text($( "#CSVFile3" ).val().replace(/C:\\fakepath\\/i, ''));
             });
 
-            $( '.recibirSurtido' ).click(function () {
+            $('#surtido-fase').on('click', '.recibirSurtido', function () {
                 var parametros = [];
                 parametros["id"] = $(this).attr("data-id");
                 abrirConfirmacion(
@@ -340,6 +340,74 @@
                 $( '#crearDisenioSinCSVPedido' ).val( $(this).attr('data-id') );
                 $( '#crearDisenioSinCSV' ).submit();
             });
+        });
+    </script>
+    <script src="js/socket.io.js"></script>
+    <script>
+        function changeStatus(idOrder, newStatus){
+            if(parseInt(newStatus) === 2) {
+                $('#estatus_' + idOrder)
+                    .text('En Proceso de Surtido');
+                return 'success';
+            } else if(parseInt(newStatus) === 3){
+                $('#estatus_' + idOrder)
+                    .text('Por Validar Surtido');
+                return 'success';
+            } else if(parseInt(newStatus) === 4) {
+                $('#estatus_' + idOrder)
+                    .text('Surtido');
+                return 'success';
+            }
+            return 'fail';
+        }
+
+        function showAction(idOrder, enabled){
+            var button = "<button type=\"button\"\n" +
+                "class=\"btn btn-sm btn-primary recibirSurtido\"\n" +
+                "data-id=\""+ idOrder +"\">\n" +
+                "Recibir\n" +
+                "</button>";
+
+            if(enabled){
+                $('#action_' + idOrder).find('button')
+                    .html(button)
+            } else {
+                $('#action_' + idOrder).find('button')
+                    .html('')
+            }
+        }
+
+        function addNewOne(data){
+
+        }
+
+        var socket = io('//:3000');
+
+        // TODO COnnect to Laravel var socket = io.connect('http://homestead.test:8070');
+
+        // 1 // TODO Get from back
+        // socket.on('pedido_preparacion', function(payload){
+        //     var data = JSON.parse(payload);
+        //     changeEstatus(data.idOrder, 1);
+        // });
+
+        // 2
+        socket.on('pedido_enproceso', function(payload){
+            var data = JSON.parse(payload);
+            changeStatus(data.idOrder, 2);
+        });
+
+        // 3
+        socket.on('pedido_porvalidar', function(payload){
+            var data = JSON.parse(payload);
+            changeStatus(data.idOrder, 3);
+        });
+
+        // 4
+        socket.on('pedido_validado', function(payload){
+            var data = JSON.parse(payload);
+            changeStatus(data.idOrder, 4);
+            showAction(data.idOrder, true);
         });
     </script>
 @endsection
