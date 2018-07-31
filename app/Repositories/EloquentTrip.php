@@ -60,6 +60,24 @@ class EloquentTrip implements TripRepository
         return $list->paginate(10);
     }
 
+    /**
+	 * 
+	 *
+	 * @param array $search
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+    public function getAllTripsId($id) {
+		
+		$list = $this->model->select("trips.*","trucks.brand as brand","trucks.model as model","trucks.plates as plates")
+							->leftJoin('trucks','trucks.id','=','trips.truck_id')
+							->where('trucks.user_id','=',$id)
+							->where('trips.status','=',self::CREADO)
+						    ->orderBy('updated_at', 'desc');
+
+        return $list->paginate(10);
+    }
+
     public function getAllTripPalls() {
 		
 		$list = $this->model->with('trip','pallet')

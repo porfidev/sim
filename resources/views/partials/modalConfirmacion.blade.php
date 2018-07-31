@@ -65,6 +65,7 @@
         $( "#modalConfirmationTitle"   ).html(titulo);
         $( "#modalConfirmationMessage" ).html(mensaje);
         for(param in parametros) {
+            //alert("name: "+param+" value: "+parametros[param]);
             crearHidden(param, parametros[param], "confirmationModalForm");
         }
         $( "#confirmationModalForm" ).attr("action", accion);

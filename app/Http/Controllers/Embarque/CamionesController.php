@@ -18,6 +18,7 @@ use App\Repositories\OrderDetailRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\PalletRepository;
 use App\Repositories\TrucksRepository;
+use App\Repositories\UserRepository;
 
 class CamionesController extends Controller
 {
@@ -26,6 +27,7 @@ class CamionesController extends Controller
     private $orderModel;
     private $palletModel;
     private $truckModel;
+    private $userModel;
 
     /**
      * Create a new controller instance.
@@ -36,13 +38,15 @@ class CamionesController extends Controller
         OrderDetailRepository $detail,
         OrderRepository $order,
         PalletRepository $pall,
-        TrucksRepository $tru)
+        TrucksRepository $tru,
+        UserRepository $usu)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
         $this->orderDetailModel  = $detail;
         $this->orderModel        = $order;
         $this->palletModel    = $pall;
         $this->truckModel    = $tru;
+        $this->userModel    = $usu;
     }
 
     /**
@@ -57,10 +61,12 @@ class CamionesController extends Controller
             Log::info("CamionesController - listado ");
 
             $truck = $this->truckModel->getAll();
+            $choferes = $this->userModel->getByRol(17);
 
             return view('camiones.listado',
                 array(
-                    "camiones" => $truck
+                    "camiones" => $truck,
+                    "choferes" => $choferes
                 )
             );
 
@@ -90,7 +96,7 @@ class CamionesController extends Controller
                     'modelo'   => 'required|string|max:191',
                     'placas'   => 'required|string|max:191',
                     'capacidad'   => 'required|string|max:191',
-                    'operador'   => 'required|string|max:191',
+                    'chofer'   => 'required|numeric',
                     'serie'      => 'required|string|max:191'
                 ),
                 Controller::$messages
@@ -102,14 +108,17 @@ class CamionesController extends Controller
 
             } else {
 
+                $ope = $this->userModel->getById($request->chofer);
+
                 $data = array(
                         TrucksRepository::SQL_MARCA  => $request->marca,
                         TrucksRepository::SQL_SUBMARCA  => $request->smarca,
                         TrucksRepository::SQL_MODELO  => $request->modelo,
                         TrucksRepository::SQL_PLACAS  => $request->placas,
                         TrucksRepository::SQL_CAPACIDAD  => $request->capacidad,
-                        TrucksRepository::SQL_OPERADOR  => $request->operador,
-                        TrucksRepository::SQL_SERIE  => $request->serie
+                        TrucksRepository::SQL_OPERADOR  => $ope->name,
+                        TrucksRepository::SQL_SERIE  => $request->serie,
+                        TrucksRepository::SQL_USER  => $request->chofer
 
                 );
 
@@ -145,7 +154,6 @@ class CamionesController extends Controller
                     'modelo'   => 'required|string|max:191',
                     'placas'   => 'required|string|max:191',
                     'capacidad'   => 'required|string|max:191',
-                    'operador'   => 'required|string|max:191',
                     'serie'      => 'required|string|max:191'
                 ),
                 Controller::$messages
@@ -157,14 +165,17 @@ class CamionesController extends Controller
 
             } else {
 
+                $ope = $this->userModel->getById($request->chofer);
+
                 $data = array(
                         TrucksRepository::SQL_MARCA  => $request->marca,
                         TrucksRepository::SQL_SUBMARCA  => $request->smarca,
                         TrucksRepository::SQL_MODELO  => $request->modelo,
                         TrucksRepository::SQL_PLACAS  => $request->placas,
                         TrucksRepository::SQL_CAPACIDAD  => $request->capacidad,
-                        TrucksRepository::SQL_OPERADOR  => $request->operador,
-                        TrucksRepository::SQL_SERIE  => $request->serie
+                        TrucksRepository::SQL_OPERADOR  => $ope->name,
+                        TrucksRepository::SQL_SERIE  => $request->serie,
+                        TrucksRepository::SQL_USER  => $request->chofer
 
                 );
 

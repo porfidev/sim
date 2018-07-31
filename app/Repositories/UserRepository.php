@@ -25,6 +25,8 @@ interface UserRepository
 
 	function updateSession($id, array $attributes);
 
+	function getByRol($rol);
+
 	function getList($itemsPerPage, array $search = null);
 
 	function getListBus($nombre);

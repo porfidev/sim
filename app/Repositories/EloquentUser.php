@@ -69,6 +69,14 @@ class EloquentUser implements UserRepository
 	}
 
 	/**
+	 * Get Rol Users
+	 */
+	public function getByRol($rol)
+	{
+		return $this->model->where(self::SQL_ROL,"=",$rol)->get();
+	}
+
+	/**
 	 * Delete a Session.
 	 *
 	 * @param integer $id

@@ -86,15 +86,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="modalEditOperador">
-                            Operador
+                        <label for="selChofEdit">
+                            Chofer
                         </label>
-                        <input type="text"
-                                class="form-control"
-                                id="modalEditOperador"
-                                placeholder="Escribe el Operador"
-                                name="operador"
-                                required>
+                        <select class="form-control" id="selChofEdit" name="chofer">
+                            <option default value="">Selecciona el chofer</option>
+                            @if (count($choferes) != 0)
+                                @foreach ($choferes as $chof)
+                                    <option value="{{ $chof->id }}">{{ $chof->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -138,7 +140,7 @@
             $("#modalEditModelo").val($(this).attr( "data-modelo" ));
             $("#modalEditPlacas").val($(this).attr( "data-placas" ));
             $("#modalEditCapacidad").val($(this).attr( "data-cap" ));
-            $("#modalEditOperador").val($(this).attr( "data-ope" ));
+            $("#selChofEdit").val($(this).attr( "data-ope" ));
             $("#modalEditSerie").val($(this).attr( "data-serie" ));
 
             $( "#modalEditarCamion" ).modal({
@@ -155,7 +157,7 @@
                 data: $( "#formGuardarEditar" ).serialize()
             }).done(function( data ) {
                 if(data.resultado === 'OK') {
-                    $('#modalNuevoCamion').modal('toggle');
+                    $('#modalEditarCamion').modal('toggle');
                     location.reload();
                 } else {
                     var errorMsg = "<p>Error al agregar el camion.<p><ul>";

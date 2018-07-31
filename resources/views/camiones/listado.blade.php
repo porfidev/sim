@@ -100,7 +100,7 @@
                                         data-modelo="{{ $cam->model }}"
                                         data-placas="{{ $cam->plates }}"
                                         data-cap="{{ $cam->capacity }}"
-                                        data-ope="{{ $cam->operator }}"
+                                        data-ope="{{ $cam->user_id }}"
                                         data-serie="{{ $cam->truck_series }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
