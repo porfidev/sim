@@ -84,7 +84,6 @@ class DownloadClients extends Command
                     ClienteRepository::SQL_SHOPS  => "-",
                     ClienteRepository::SQL_SKU   => "-",
                     ClienteRepository::SQL_D2   => "-",
-                    ClienteRepository::SQL_TE   => "-",
                     ClienteRepository::SQL_CE  => "-",
                     ClienteRepository::SQL_TP   => "-",
                     ClienteRepository::SQL_AVERAGE  => "-"
