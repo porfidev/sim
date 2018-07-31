@@ -87,7 +87,7 @@
                 location.reload();
 
             } else {
-                var errorMsg = "<p>Error al eliminar el elemento dsdsd.<p><ul>";
+                var errorMsg = "<p>Error al realizar la acci&oacute;n.<p><ul>";
                 $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
                 errorMsg += "</ul>";
                 erroresValidacion("messageModalConfirmation", errorMsg);

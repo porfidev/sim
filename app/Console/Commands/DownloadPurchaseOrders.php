@@ -8,7 +8,7 @@ use App\Purchase;
 use App\PurchaseItems;
 
 use App\Repositories\PurchaseItemsRepository;
-use App\Repositories\PurchasesRepository;
+use App\Repositories\PurchaseRepository;
 use Illuminate\Support\Facades\Log;
 
 class DownloadPurchaseOrders extends Command
@@ -81,11 +81,11 @@ class DownloadPurchaseOrders extends Command
          
                     if (  $row['DocEntry']  != $docEntry ) {
                         $data1 = array(
-                            PurchasesRepository::SQL_DOCENTRY  => $row['DocEntry'],
-                            PurchasesRepository::SQL_DOCNUM  => $row['DocNum'],
-                            PurchasesRepository::SQL_CARDCODE   => $row['CardCode'],
-                            PurchasesRepository::SQL_CARDNAME   => $row['CardName'],
-                            PurchasesRepository::SQL_DOCDUEDATE   => $row['DocDueDate']
+                            PurchaseRepository::SQL_DOCENTRY  => $row['DocEntry'],
+                            PurchaseRepository::SQL_DOCNUM  => $row['DocNum'],
+                            PurchaseRepository::SQL_CARDCODE   => $row['CardCode'],
+                            PurchaseRepository::SQL_CARDNAME   => $row['CardName'],
+                            PurchaseRepository::SQL_DOCDUEDATE   => $row['DocDueDate']
                         );
                        
                         $creado = $this->pur->create($data1);                        
@@ -98,7 +98,7 @@ class DownloadPurchaseOrders extends Command
                     //$product = $productModelE->getIdBySku( 'ItemCode' );
 
                     $data2 = array(
-                        PurchasesRepository::SQL_DOCENTRY  => $row['DocEntry'],
+                        PurchaseRepository::SQL_DOCENTRY  => $row['DocEntry'],
                         PurchaseItemsRepository::SQL_ITEMCODE => $row['ItemCode'],
                         //PurchaseItemsRepository::SQL_PRODUCTID => $row[$product->Id],
                         PurchaseItemsRepository::SQL_QUANTITY => $row['Quantity'],

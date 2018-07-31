@@ -48,29 +48,48 @@
 
 @section('final')
 
+@include('partials.modalComun')
+@include('partials.modalMensaje')
+@include('partials.modalConfirmacion')
 
 
 <script type="text/javascript">
 $(document).ready(function () {
     $("#cerrar").click(function(event) {   
         
-                $.ajax({
-                    url    : "{{ URL::to('/hh/recepcion/updateStatusPurchaseItems/') }}",
-                    method : "GET",
-                    data   : $( '#formRecepcion'  ).serialize()
-                    }).done(function( data ) {
-                        console.log(data);
-                        window.location.href =  "{{ URL::to('/hh/recepcion/listadoItemsHH')  }}/{{  $data["purchaseid"] }}";
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        errorDetalle = "ERROR: \n";
-                        //$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
-                        alert(errorDetalle);
-                    }).always(function() {
-                        //alert('okkkkkkk always');
-                    });
+            var parametros = [];
+                parametros["idcompra"] = $('#purchaseid').val();
+                parametros["sku"] = $('#sku').val();
+
+                abrirConfirmacion(
+                    "Confirmaci&oacute;n",
+                    "¿Deseas concluir la captura?",
+                    "{{ URL::to('/hh/recepcion/updateStatusPurchaseItems/') }}",
+                    parametros
+                );
+
+            //window.location.href =  "{{ URL::to('/hh/recepcion/listadoItemsHH')  }}/{{  $data["purchaseid"] }}";    
         });            
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @endsection
 

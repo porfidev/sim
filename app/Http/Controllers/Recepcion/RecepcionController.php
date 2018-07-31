@@ -808,38 +808,76 @@ public function updateStatusPurchaseItems(Request $request){
     //$resultado = "recepcion.listadoItemsHH";
     $purchaseid = "" ;
     $sku= "";
+    $resultado = "OK";
+    $mensajes  = "NA";
 
-    if( $request->has("purchaseid")) {
-        $purchaseid = $request->input("purchaseid");
+    try{
+        if( $request->has("idcompra")) {
+            $idcompra = $request->input("idcompra");
+        }
+
+        if( $request->has("sku")) {
+            $sku = $request->input("sku");
+        }
+
+        $modeloPI =  new PurchaseItems;
+        $purchaseItemModelE = new EloquentPurchaseItems($modeloPI);
+        $changes = $purchaseItem = $purchaseItemModelE->updateStatus( $idcompra, $sku );
+        if($changes === 0) {
+            $resultado = "ERROR";
+            $mensajes  = array( 'No se actualizo nada' );
+        }
+
+    } catch (\Exception $e) {
+
+        Log::error( 'RecepcionController - updateStatusPurchase - Error: '.$e->getMessage() );
+        $resultado = "ERROR";
+        $mensajes  = array( $e->getMessage() );
+
     }
 
-    if( $request->has("sku")) {
-        $sku = $request->input("sku");
-    }
+    //return response()->json(array(
+      //  Controller::JSON_RESPONSE => $resultado,
+      //  Controller::JSON_MESSAGE  => $mensajes
+    //));
 
-    $modeloPI =  new PurchaseItems;
-    $purchaseItemModelE = new EloquentPurchaseItems($modeloPI);
-    return $purchaseItem = $purchaseItemModelE->updateStatus( $purchaseid, $sku );
-   
+    return listadoItemsHH($idcompra);
     
 }
 
 
 //Actualizar el status de todo el purchase
 public function updateStatusPurchase(Request $request){
-    //$purchaseid = "" ;
+    $resultado = "OK";
+    $mensajes  = "NA";
+    try{
+        if( $request->has("identificador")) {
+            $el_id = $request->identificador;
+        }
 
-    if( $request->has("el_id")) {
-        $el_id = $request->input("el_id");
+        if( $request->has("estatus")) {
+            $num = $request->estatus;
+        }
+
+        $modeloP =  new Purchase;
+        $purchaseModelE = new EloquentPurchase($modeloP);
+        $changes = $purchaseModelE->updateStatus($el_id , $num);
+        if($changes === 0) {
+            $resultado = "ERROR";
+            $mensajes  = array( 'No se actualizo nada' );
+        }
+    } catch (\Exception $e) {
+
+        Log::error( 'RecepcionController - updateStatusPurchase - Error: '.$e->getMessage() );
+        $resultado = "ERROR";
+        $mensajes  = array( $e->getMessage() );
+
     }
 
-    if( $request->has("num")) {
-        $num = $request->input("num");
-    }
-
-    $modeloP =  new Purchase;
-    $purchaseModelE = new EloquentPurchase($modeloP);
-    return $purchaseModelE->updateStatus($el_id , $num);
+    return response()->json(array(
+        Controller::JSON_RESPONSE => $resultado,
+        Controller::JSON_MESSAGE  => $mensajes
+    ));
 
 }
 
@@ -878,7 +916,7 @@ public function updateStatusPurchaseVal(Request $request){
 
     $purchaseModelE->updateStatus($el_id , $num);
 
-     /*
+     
     $servername = env('SQL_SERVER_NAME', '');
     $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME_2', '') , 
                             'UID' => env('SQL_USER', ''),
@@ -907,9 +945,13 @@ public function updateStatusPurchaseVal(Request $request){
                 }
             }
         }
+    }else{
+      
+        Log::error("No hay conexion");
+
     }
      
-    */
+
     return $resultado;
 
 

@@ -118,10 +118,11 @@
 
 @endsection
 
-
-
 @section('final')
 
+@include('partials.modalComun')
+@include('partials.modalMensaje')
+@include('partials.modalConfirmacion')
 @include('recepcion.modalRecepcionHH')
 
 
@@ -145,23 +146,36 @@
 
 	<script type="text/javascript">
 	$(document).ready(function () {
-		$(".terminar").click(function(event) {   
-					$.ajax({
-						url    : "{{ URL::to('/hh/recepcion/updateStatusPurchase/') }}",
-						method : "GET",
-						data   : $( '#form'  ).serialize()
-						}).done(function( data ) {
-							console.log(data);
-							$('terminar').prop('disabled', true);
-							window.location.href =  "{{ URL::to('/hh/recepcion/listadoHH') }}";
-						}).fail(function (jqXHR, textStatus, errorThrown) {
-							errorDetalle = "ERROR: \n";
-							//$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
-							alert(errorDetalle);
-						}).always(function() {
-							//alert('okkkkkkk always');
-						});
-			});            
+		$(".terminar").click(function(event) {
+
+			var parametros = [];
+            parametros["identificador"] = $('#el_id').val();
+			parametros["estatus"] = 2;
+
+			abrirConfirmacion(
+				"Confirmaci&oacute;n",
+				"¿Estás seguro de concluir la recepci&oacute;n?",
+				"{{ URL::to('/hh/recepcion/updateStatusPurchase/') }}",
+				parametros
+			);
+			/*
+			$.ajax({
+				url    : "{{ URL::to('/hh/recepcion/updateStatusPurchase/') }}",
+				method : "GET",
+				data   : $( '#form'  ).serialize()
+			}).done(function( data ) {
+				console.log(data);
+				$('terminar').prop('disabled', true);
+				window.location.href =  "{{ URL::to('/hh/recepcion/listadoHH') }}";
+			}).fail(function (jqXHR, textStatus, errorThrown) {
+				errorDetalle = "ERROR: \n";
+				//$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
+				alert(errorDetalle);
+			}).always(function() {
+				//alert('okkkkkkk always');
+			});
+			*/
+		});            
 	});
 	</script>
 
