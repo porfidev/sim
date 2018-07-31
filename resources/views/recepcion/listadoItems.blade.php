@@ -72,10 +72,10 @@
                                 Lote
                             </th>
                             <th scope="col" style="min-width: 150px; text-align: center;">
-                                Pedimiento
+                               Caducidad
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
-                                Caducidad
+                                Pedimiento
                             </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
                                 Acci&oacute;n
@@ -130,19 +130,19 @@
                             <th>
                                 <input type="text"
                                         class="form-control inputFiltro"
-                                        id="formCodigo"
-                                        placeholder="Pedimento"
-                                    @if ( Session::has('scl_codigo') && Session::get('scl_codigo') != 'NA' )
-                                        value="{{ Session::get('scl_codigo') }}"
+                                        id="caducidad"
+                                        placeholder="Caducidad"
+                                    @if ( Session::has('scl_pedimento') && Session::get('scl_pedimento') != 'NA' )
+                                        value="{{ Session::get('scl_pedimento') }}"
                                     @endif>
                             </th>
                             <th style="text-align: center;">
                                     <input type="text"
                                         class="form-control inputFiltro"
-                                        id="formCaducidad"
-                                        placeholder="Caducidad"
-                                    @if ( Session::has('scl_caducidad') && Session::get('scl_caducidad') != 'NA' )
-                                        value="{{ Session::get('scl_caducidad') }}"
+                                        id="pedimento"
+                                        placeholder="Pedimento"
+                                    @if ( Session::has('scl_pedimento') && Session::get('scl_pedimento') != 'NA' )
+                                        value="{{ Session::get('scl_pedimento') }}"
                                     @endif>
                             </th>
                             <th style="text-align: center;">
@@ -167,31 +167,71 @@
                        
                        @foreach ($data as $item)
                             <td style="text-align: center;">
+                            <b>
                                  {{ $item->DocEntry }}
+                            </b>
                             </td>
                             <td style="text-align: center;">
+                            <b>
                                  {{ $item->ItemCode}}
+                            </b>
                             </td>
                             <td style="text-align: center;">
+                            <b>
                                 {{ $item->u_CantReq}}
+                            <b>    
                             </td>
                             <td style="text-align: center;">
+                            <b>
                                 {{ $item->quantity}}
+                            </b>    
                             </td>
                             <td style="text-align: center;">
                                  {{ $item->Lote }}
                                  
                             </td>
                             <td style="text-align: center;">
-                                 {{ $item->Pedimento }}
+                                 {{ $item->Caducidad }}
                             </td>
                             <td style="text-align: center;">
-                                 {{ $item->Caducidad }}
+                                 {{ $item->Pedimento }}
                             </td>
                             <td style="text-align: center;">
                                 
                             </td>
                         </tr>
+                        @endforeach
+                 
+                         
+                         @foreach ($data2 as $item)
+                         @if(  $item->status == "validado"  )
+                            <td style="text-align: center;">
+                                
+                            </td>
+                            <td style="text-align: center;">
+                                {{ $item->ItemCode}} 
+                            </td>
+                            <td style="text-align: center;">
+                                {{ $item->cantidad_rec }}
+                            </td>
+                            <td style="text-align: center;">
+                                {{ $item->quantity }}
+                            </td>
+                            <td style="text-align: center;">
+                                 {{ $item->DistNumber }}
+                                 
+                            </td>
+                            <td style="text-align: center;">
+                                 {{ $item->u_Caducidad }}
+                            </td>
+                            <td style="text-align: center;">
+                                 {{ $item->pedimento }}
+                            </td>
+                            <td style="text-align: center;">
+                                
+                            </td>
+                        </tr>
+                        @endif
                         @endforeach
                         
                        

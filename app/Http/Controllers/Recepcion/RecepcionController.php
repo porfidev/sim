@@ -52,7 +52,7 @@ class RecepcionController extends Controller
 
     public function listado(Request $request){
         $data = Purchase::paginate(10);
-
+       
         return view('recepcion.listado',['data' => $data] );
 
         try {
@@ -140,8 +140,9 @@ class RecepcionController extends Controller
     public function listadoItems($purchase_id)
     {
         $data = PurchaseItems::where('purchase_id','=',$purchase_id)->paginate(10);
+        $data2 = ArrivalItem::where('purchase_id','=',$purchase_id)->paginate(10);
 
-        return view('recepcion.listadoItems',['data' => $data] );
+        return view('recepcion.listadoItems',['data' => $data, 'data2' => $data2] );
     }
 
     //Presenta detalle de purchases en hand held
@@ -847,6 +848,10 @@ public function updateStatusPurchase(Request $request){
 public function updateStatusPurchaseVal(Request $request){
     //$purchaseid = "" ;
 
+    $resultado = "OK";
+    $mensajes  = "NA";
+
+
     if( $request->has("el_id")) {
         $el_id = $request->input("el_id");
     }
@@ -861,6 +866,7 @@ public function updateStatusPurchaseVal(Request $request){
 
     $modeloAr = new ArrivalItem;
     $modeloP =  new Purchase;
+    
     $arrivalModelE = new EloquentArrivalItem($modeloAr);
     $purchaseModelE = new EloquentPurchase($modeloP);
 
@@ -870,56 +876,45 @@ public function updateStatusPurchaseVal(Request $request){
     $date = $arrivalItem->created_at;
     $purchaseModelE->updateArrival($el_id , $date);
 
+    $purchaseModelE->updateStatus($el_id , $num);
 
-    return $purchaseModelE->updateStatus($el_id , $num);
+     /*
+    $servername = env('SQL_SERVER_NAME', '');
+    $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME_2', '') , 
+                            'UID' => env('SQL_USER', ''),
+                            'PWD' => env('SQL_PASS', ''),
+                            'ReturnDatesAsStrings'=>true, 
+                            'CharacterSet' => 'UTF-8');
 
-}
+    $con = sqlsrv_connect($servername, $connectionInfo);
 
+    if($con){
 
-/*
-function altaOrdenes(Request $request){
+        Log::info("id: ".$arrivalItem->id." ItemCode: ".$arrivalItem->ItemCode.
+                  " Quantity: ".$arrivalItem->quantity." Lote: ".$arrivalItem->DistNumber." Pedimento: ".$arrivalItem->pedimento." Caducidad: ".$arrivalItem->u_Caducidad);
+        $sql = "INSERT INTO ComprasSim (Id, LineNum,ItemCode,Quantity,Lote,Pedimento, Caducidad) VALUES ".
+                "('".$arrivalItem->id."', '1', '".$arrivalItem->ItemCode."', '".$arrivalItem->quantity."', '".$arrivalItem->Lote."','".$arrivalItem->Pedimento."','".$arrivalItem->Caducidad."' )";
 
-    $resultado = "OK";
-    $mensajes  = "NA";
+         Log::info("Query: ".$sql);
 
-    try{
-
-        $servername = env('SQL_SERVER_NAME', '');
-        $connectionInfo = array('Database' =>  env('SQL_DATABASE_NAME_2', '') , 
-                                'UID' => env('SQL_USER', ''),
-                                'PWD' => env('SQL_PASS', ''),
-                                'ReturnDatesAsStrings'=>true, 
-                                'CharacterSet' => 'UTF-8');
-
-        $con = sqlsrv_connect($servername, $connectionInfo);
-
-        if($con){
-
-            $sql = "INSERT INTO ComprasSIM " ;
-
-
-            $stmt = sqlsrv_query( $con, $sql);
-            if( $stmt === false ) {
-                 if( ($errors = sqlsrv_errors() ) != null) {
-                    foreach( $errors as $error ) {
-                    }
+        $stmt = sqlsrv_query( $con, $sql);
+        if( $stmt === false ) {
+             if( ($errors = sqlsrv_errors() ) != null) {
+                foreach( $errors as $error ) {
+                    Log::info("updateStatusPurchaseVal - SQLSTATE: ".$error[ 'SQLSTATE']);
+                    Log::info("updateStatusPurchaseVal - code: ".$error[ 'code']);
+                    Log::info("updateStatusPurchaseVal - message: ".$error[ 'message']);
                 }
             }
         }
-
-
-    } catch (\Exception $e) {
-
-        $resultado = "ERROR";
-        $mensajes  = array( $e->getMessage() );
-
     }
+     
+    */
+    return $resultado;
+
 
 }
-}
 
-
-*/
 
 }
 
