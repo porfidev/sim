@@ -299,7 +299,7 @@ class EloquentOrder implements OrderRepository
 	 */
 	public function getById($id)
 	{
-		return $this->model->find($id);
+		return $this->model->where(self::SQL_ID,"=",$id)->with('calculation', 'client')->get()->first();
     }
 
     public function serchDate($fec,$id)

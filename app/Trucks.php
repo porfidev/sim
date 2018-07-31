@@ -18,6 +18,7 @@ class Trucks extends Model
      */
     protected $fillable = [
         'brand', 'sub-brand', 'model',
-        'plates','capacity','operator','truck_series'
+        'plates','capacity','operator','truck_series',
+        'user_id'
     ];
 }

@@ -12,6 +12,7 @@ interface OrderRepository
 	const SQL_ESTATUS       = "status";
 	const SQL_NUMAT         = "numat";
 	const SQL_DIST_ID       = "dist_id";
+	const SQL_CLI_APP       = "client_appointment";
 
 	const STATUS_OPERATOR   = "operator";
 	const STATUS_OPERATOR_2 = "operator_2";

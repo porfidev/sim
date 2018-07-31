@@ -10,6 +10,9 @@ interface TripRepository
 	const SQL_TRUCK_ID     = "truck_id";
 	const SQL_FINISH       = "finish_date";
 	const SQL_ARRIVE       = "arrive_date";
+	const SQL_FOREIGN      = "foreign_truck";
+	const SQL_STATUS       = "status";
+	const SQL_GUIDE        = "guide_number";
 
 	//trip_pallets
 	const SQL_ID_TRIPPALL  = "id";
@@ -24,7 +27,17 @@ interface TripRepository
 	const DELETED = 0;
 	const ACTIVE  = 1;
 
+	//trips status
+
+	const CREADO        = 1;
+	const VALIDADO      = 2;
+	const EN_VIAJE      = 3;
+	const FORANEO       = 4;
+	const FINALIZADO    = 5;
+
 	function getAllTrips();
+
+	function getAllTripsId($id);
 
 	function getAllTripPalls();
 

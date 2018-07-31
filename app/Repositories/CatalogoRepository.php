@@ -20,6 +20,8 @@ interface CatalogoRepository
 
 	function getGroupById($group_id);
 
+	function getGroupByGroup($group_id);
+
 	function searchGroupItem($group, $text);
 
 	function getById($id);

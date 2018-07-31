@@ -203,7 +203,8 @@
                                            class="checkEsp" 
                                            style="margin-top: 5%;" 
                                            data-id="{{$pedido->id}}" 
-                                           data-cita="{{$pedido->client->appointment}}">
+                                           data-cita="{{$pedido->client_appointment}}"
+                                           data-citaB="{{$pedido->client->appointment}}">
                                 </td>
                             </tr>
                     @endforeach
@@ -231,8 +232,11 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').popover();
 
             $(".recibePed").click(function() {
+
+                //alert($(this).attr( "data-id" ));
 
                   var parametros = [];
                     parametros["id"] = $(this).attr( "data-id" );

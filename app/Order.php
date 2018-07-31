@@ -11,7 +11,8 @@ class Order extends Model
 
     protected $fillable = [
         'codeOrder', 'start', 'end', 'code', 'status',
-        'itemcode', 'quantity', 'quantitypack'
+        'itemcode', 'quantity', 'quantitypack','numat',
+        'dist_id','client_appointment'
     ];
 
     /**
