@@ -63,10 +63,10 @@ Caducidad m&iacute;nima del producto: <b> {{ $data["caducidadMinima"] }}  meses<
                             Cancelar
                     </button>
                     &nbsp;&nbsp;
-                    <button type="button"
+                    <button type="submit"
                             class="btn btn-primary"
                             id="btnGuardarCaptura"
-                            onclick="guarda()">
+                            >
                             Aceptar
                     </button>
                 </div>                 

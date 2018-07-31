@@ -85,15 +85,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="modalNewOperador">
-                            Operador
+                        <label for="selChof">
+                            Chofer
                         </label>
-                        <input type="text"
-                                class="form-control"
-                                id="modalNewOperador"
-                                placeholder="Escribe el Operador"
-                                name="operador"
-                                required>
+                        <select class="form-control" id="selChof" name="chofer">
+                            <option default value="">Selecciona el chofer</option>
+                            @if (count($choferes) != 0)
+                                @foreach ($choferes as $chof)
+                                    <option value="{{ $chof->id }}">{{ $chof->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
                     </div>
 
                     <div class="form-group">

@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| f Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -184,3 +184,4 @@ Route::get('/trips/listado',     '\App\Http\Controllers\Embarque\TripsController
 Route::get('/trips/listadoDist',     '\App\Http\Controllers\Embarque\TripsController@listadoPedidos')->name('trips.listadoDist');
 Route::post('/trips/agregar',     '\App\Http\Controllers\Embarque\TripsController@agregar')->name('trips.agregar');
 Route::post('/trips/recibir',     '\App\Http\Controllers\Embarque\TripsController@recibir')->name('trips.recibir');
+Route::post('/trips/cerrar',     '\App\Http\Controllers\Embarque\TripsController@cerrar')->name('trips.cerrar');

@@ -65,6 +65,7 @@
         $( "#modalConfirmationTitle"   ).html(titulo);
         $( "#modalConfirmationMessage" ).html(mensaje);
         for(param in parametros) {
+            //alert("name: "+param+" value: "+parametros[param]);
             crearHidden(param, parametros[param], "confirmationModalForm");
         }
         $( "#confirmationModalForm" ).attr("action", accion);
@@ -87,7 +88,7 @@
                 location.reload();
 
             } else {
-                var errorMsg = "<p>Error al eliminar el elemento dsdsd.<p><ul>";
+                var errorMsg = "<p>Error al realizar la acci&oacute;n.<p><ul>";
                 $.each(data.mensajes, function(i,val) { errorMsg += ("<li>" + val + "</li>"); } );
                 errorMsg += "</ul>";
                 erroresValidacion("messageModalConfirmation", errorMsg);

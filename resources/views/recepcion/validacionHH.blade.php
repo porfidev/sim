@@ -178,21 +178,21 @@
 	$(document).ready(function () {
 		$(".terminar").click(function(event) { 
 
-					$.ajax({
-						url    : "{{ URL::to('/hh/recepcion/updateStatusPurchaseVal/') }}",
-						method : "GET",
-						data   : $( '#form'  ).serialize()
-						}).done(function( data ) {
-							console.log(data);
-							//$('terminar').prop('disabled', true);
-							window.location.href =  "{{ URL::to('/hh/recepcion/validacionHH') }}";
-						}).fail(function (jqXHR, textStatus, errorThrown) {
-							errorDetalle = "ERROR: \n";
-							//$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
-							alert(errorDetalle);
-						}).always(function() {
-							//alert('okkkkkkk always');
-						});
+                $.ajax({
+                    url    : "{{ URL::to('/hh/recepcion/updateStatusPurchaseVal/') }}",
+                    method : "GET",
+                    data   : $( '#form'  ).serialize()
+                    }).done(function( data ) {
+                        console.log(data);
+                        //$('terminar').prop('disabled', true);
+                        window.location.href =  "{{ URL::to('/hh/recepcion/validacionHH') }}";
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        errorDetalle = "ERROR: \n";
+                        //$.each(jqXHR, function(i,val) { errorDetalle += "\n\n" + i + " : " + val; } );
+                        alert(errorDetalle);
+                    }).always(function() {
+                        //alert('okkkkkkk always');
+                    });
 			});            
 	});
 	</script>

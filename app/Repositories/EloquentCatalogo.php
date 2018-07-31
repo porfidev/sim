@@ -108,6 +108,22 @@ class EloquentCatalogo implements CatalogoRepository
 	}
 
 	/**
+	 * Get the group catalog items.
+	 *
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function getGroupByGroup($group_id)
+	{
+		
+		$groupList = $this->model->where(self::SQL_GRUPO_ID, '=', $group_id)
+			->orderBy(self::SQL_VALOR)
+			->get();
+		
+
+		return $groupList;
+	}
+
+	/**
 	 * Función para buscar un elemento de un grupo
 	 * a partir de los nombres del grupo y del elemento
 	 *

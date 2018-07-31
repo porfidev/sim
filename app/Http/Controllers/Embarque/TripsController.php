@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\TripRepository;
 use App\Repositories\TrucksRepository;
 use App\Repositories\OrderRepository;
+use App\Repositories\CatalogoRepository;
 
 class TripsController extends Controller
 {
@@ -24,6 +25,7 @@ class TripsController extends Controller
     private $tripModel;
     private $truckModel;
     private $orderModel;
+    private $catalogoModel;
 
     /**
      * Create a new controller instance.
@@ -31,12 +33,13 @@ class TripsController extends Controller
      * @return void
      */
     public function __construct(
-        TripRepository $tr, TrucksRepository $tru, OrderRepository $ord)
+        TripRepository $tr, TrucksRepository $tru, OrderRepository $ord, CatalogoRepository $cat)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
         $this->tripModel  = $tr;
         $this->truckModel  = $tru;
         $this->orderModel  = $ord;
+        $this->catalogoModel  = $cat;
     }
 
     /**
@@ -50,7 +53,7 @@ class TripsController extends Controller
 
             Log::info("TripsController - listado ");
 
-            $trips = $this->tripModel->getAllTrips();
+            $trips = $this->tripModel->getAllTripsId(Auth::id());
             $trucks = $this->truckModel->getAll();
 
             return view('trips.listado',
@@ -86,13 +89,15 @@ class TripsController extends Controller
             $trucks = $this->truckModel->getAll();
             $dist = $this->orderModel->getAllStatus(OrderRepository::DISTRIBUCION_RECIBIDO);
             $preDist = $this->orderModel->getAllStatus(OrderRepository::PREPARADO_VALIDADO);
+            $foreign = $this->catalogoModel->getGroupById(95);
 
             return view('trips.listadoDist',
                 array(
                     "trips" => $trips,
                     "trucks" => $trucks,
                     "dist" => $dist,
-                    "preDist" => $preDist
+                    "preDist" => $preDist,
+                    "foreign" => $foreign
                 )
             );
 
@@ -118,7 +123,8 @@ class TripsController extends Controller
                 $request->all(),
                 array(
                     'camion'   => 'required|numeric|max:191',
-                    'fechaE'   => 'required'
+                    'fechaE'   => 'required',
+                    'guia'     => 'max:191'
                 ),
                 Controller::$messages
             );
@@ -131,23 +137,104 @@ class TripsController extends Controller
 
                 $idPeds = $request->idPeds;
 
+                if(empty($request->fechaE) && $request->boolC == 0){
+
+                    $resultado = "ERROR";
+                    $mensajes  = array( "Fecha vacia");
+                    return response()->json(array(
+                        Controller::JSON_RESPONSE => $resultado,
+                        Controller::JSON_MESSAGE  => $mensajes
+                    ));
+                }
+
+                if($request->boolF == 1 && $request->camion == 0){
+
+                    $resultado = "ERROR";
+                    $mensajes  = array( "selecciona un cámion");
+                    return response()->json(array(
+                        Controller::JSON_RESPONSE => $resultado,
+                        Controller::JSON_MESSAGE  => $mensajes
+                    ));
+                }
+
+                if($request->boolF == 2 && $request->linea == 0){
+
+                    $resultado = "ERROR";
+                    $mensajes  = array( "selecciona una linea transportista");
+                    return response()->json(array(
+                        Controller::JSON_RESPONSE => $resultado,
+                        Controller::JSON_MESSAGE  => $mensajes
+                    ));
+                }
+
+                if($request->boolF == 2 && empty($request->guia)){
+
+                    $resultado = "ERROR";
+                    $mensajes  = array( "Número de guia vacio");
+                    return response()->json(array(
+                        Controller::JSON_RESPONSE => $resultado,
+                        Controller::JSON_MESSAGE  => $mensajes
+                    ));
+                }
+
+                $fechasPed = array();
+
                 foreach ($idPeds as $idP) {
 
-                    if($this->orderModel->serchDate($request->fechaE,$idP) == null){
+                    $order = $this->orderModel->getById($idP);
 
-                        $resultado = "ERROR";
-                        $mensajes  = array( "La fecha no esta dentro del rango de vigencia de algun pedido con id: ".$idP );
-                        return response()->json(array(
-                            Controller::JSON_RESPONSE => $resultado,
-                            Controller::JSON_MESSAGE  => $mensajes
-                        ));
+                    if($order->client->appointment != 1){
+
+                        if($this->orderModel->serchDate($request->fechaE,$idP) == null){
+
+                            $resultado = "ERROR";
+                            $mensajes  = array( "La fecha no esta dentro del rango de vigencia de algun pedido con id: ".$idP );
+                            return response()->json(array(
+                                Controller::JSON_RESPONSE => $resultado,
+                                Controller::JSON_MESSAGE  => $mensajes
+                            ));
+
+                        }else{
+
+                            array_push($fechasPed,$request->fechaE);
+                        }
+
+                    }else{
+
+                        $fechaCli = date('Y-m-d', strtotime($order->client_appointment));
+
+                        array_push($fechasPed,$fechaCli);
                     }
                 }
 
-                $data = array(
+                $fechinas = array();
+
+                foreach ($fechasPed as $fech) {
+                    
+                    array_push($fechinas,strtotime($fech) * 1000);
+                }
+
+                sort($fechinas);
+
+                if($request->boolF == 1){
+
+                    $data = array(
                         TripRepository::SQL_TRUCK_ID  => $request->camion,
-                        TripRepository::SQL_ARRIVE  => $request->fechaE
-                );
+                        TripRepository::SQL_ARRIVE  => date('Y-m-d', ($fechinas[0]/1000)),
+                        TripRepository::SQL_STATUS  => TripRepository::CREADO
+                    );
+
+                }else{
+
+                    $data = array(
+                        TripRepository::SQL_ARRIVE  => date('Y-m-d', ($fechinas[0]/1000)),
+                        TripRepository::SQL_STATUS  => TripRepository::FORANEO,
+                        TripRepository::SQL_FOREIGN  => $request->linea,
+                        TripRepository::SQL_GUIDE  => $request->guia
+                    );
+                }
+
+                
 
                 Log::info(" TripsController - agregar - data: ".json_encode($data));
                 $idTrip = $this->tripModel->create($data)->id;
@@ -193,6 +280,85 @@ class TripsController extends Controller
         $mensajes  = "NA";
 
         Log::info(" TripsController - recibir idPed : ".$request->get('id'));
+
+        try{
+
+            $idPed = $request->get('id');
+
+            $datosW = array();
+            $datosW[OrderRepository::SQL_ESTATUS] = OrderRepository::DISTRIBUCION_RECIBIDO;
+
+            if(!$this->orderModel->update($idPed,$datosW)) {
+
+                $resultado = "ERROR";
+                $mensajes  = array( "No se pudo validar el pedido" );
+
+            }else{
+
+                $datos['order_id'] = $idPed;
+                $datos['trace_type'] = OrderRepository::TRACE_RECIBIR_DIST;
+                $datos['user_id'] = Auth::id();
+
+                $this->orderModel->addTrace($datos);
+            }
+
+
+        } catch (\Exception $e) {
+
+            Log::error( 'TripsController - recibir - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+
+        }
+
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    function cerrar(Request $request){
+
+        $resultado = "OK";
+        $mensajes  = "NA";
+
+        Log::info(" TripsController - cerrar idPed : ".$request->get('id'));
+
+        try{
+
+            $idV = $request->get('id');
+
+            $datosW = array();
+            $datosW[TripRepository::SQL_STATUS] = TripRepository::VALIDADO;
+
+            if(!$this->tripModel->update($idV,$datosW)) {
+
+                $resultado = "ERROR";
+                $mensajes  = array( "No se pudo validar el viaje" );
+
+            }
+
+
+        } catch (\Exception $e) {
+
+            Log::error( 'TripsController - cerrar - Error: '.$e->getMessage() );
+            $resultado = "ERROR";
+            $mensajes  = array( $e->getMessage() );
+
+        }
+
+        return response()->json(array(
+            Controller::JSON_RESPONSE => $resultado,
+            Controller::JSON_MESSAGE  => $mensajes
+        ));
+    }
+
+    function validaViaje(Request $request){
+
+        $resultado = "OK";
+        $mensajes  = "NA";
+
+        Log::info(" TripsController - validaViaje id: ".$request->get('id'));
 
         try{
 

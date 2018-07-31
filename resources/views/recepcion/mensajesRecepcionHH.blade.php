@@ -16,7 +16,7 @@
                     Regresar
                  </button>
                  @if( $data["resultado"] == "OK")
-                 <button type="button"
+                 <button type="submit"
                     class="btn btn-primary aceptar"
                     title="Aceptar">
                     Aceptar

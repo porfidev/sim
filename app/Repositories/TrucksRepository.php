@@ -13,6 +13,7 @@ interface TrucksRepository
 	const SQL_CAPACIDAD    = "capacity";
 	const SQL_OPERADOR     = "operator";
 	const SQL_SERIE  	   = "truck_series";
+	const SQL_USER  	   = "user_id";
 
 	function getAll();
 

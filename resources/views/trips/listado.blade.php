@@ -20,13 +20,14 @@
                             <th scope="col" style="min-width: 270px;">
                                 Placa
                             </th>
+                            <th scope="col" style="min-width: 270px;">
+                                Fecha estimada
+                            </th>
+                            <th scope="col" style="min-width: 270px;">
+                                Caja o Tarima
+                            </th>
                             <th scope="col" style="min-width: 130px; text-align: center;">
-                                <button class="btn btn-sm btn-primary nuevoViaje"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Buscar">
-                                    <i class="material-icons">add</i>
-                                </button>
+                                Validar
                             </th>
                         </tr>
                     </thead>
@@ -37,25 +38,35 @@
                                 {{ $tp->id }}
                             </td>
                             <td>
-                                {{ $tp->truck->brand }} - {{ $tp->truck->model }}
+                                {{ $tp->brand }} - {{ $tp->model }}
                             </td>
                             <td>
-                                {{ $tp->truck->plates }}
+                                {{ $tp->plates }}
+                            </td>
+                            <td>
+                                {{ $tp->arrive_date }}
+                            </td>
+                            <td>
+                                <input class="codigines form-control"
+                                    onkeypress="return runScript(
+                                    event,{{ $tp->id }})"
+                                    id="cod{{ $tp->id }}"
+                                    placeholder="C&oacute;digo de caja o tarima">
                             </td>
                             <td style="text-align: center;">
-                                <button class="btn btn-sm btn-danger borrarViaje"
+                                <button class="btn btn-sm btn-danger validaViaje"
                                         data-id="{{ $tp->id }}"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Eliminar">
-                                    <i class="material-icons">delete</i>
+                                    <i class="material-icons">done_all</i>
                                 </button>
                             </td>
                         </tr>
             @endforeach
             @if (count($trips) === 0)
                         <tr style="text-align: center;">
-                            <td colspan="4">
+                            <td colspan="6">
                                 No hay viajes que mostrar
                             </td>
                         </tr>
@@ -71,12 +82,24 @@
 @include('partials.modalComun')
 @include('partials.modalMensaje')
 @include('partials.modalConfirmacion')
-@include('trips.modalNuevo')
     <script type="text/javascript">
 
         $(document).ready(function () {
-
             
+            $(".validaViaje").click(function() {
+
+                //alert($(this).attr( "data-id" ));
+
+                  var parametros = [];
+                    parametros["id"] = $(this).attr( "data-id" );
+                     abrirConfirmacion(
+                        "Confirmaci&oacute;n",
+                        "¿Estás seguro de que deseas validar este viaje?",
+                        "{{ route('trips.cerrar') }}",
+                        parametros
+                    );
+
+            });
 
         });
     </script>
