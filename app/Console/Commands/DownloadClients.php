@@ -87,8 +87,7 @@ class DownloadClients extends Command
                     ClienteRepository::SQL_TE   => "-",
                     ClienteRepository::SQL_CE  => "-",
                     ClienteRepository::SQL_TP   => "-",
-                    ClienteRepository::SQL_AVERAGE  => "-",
-                    ClienteRepository::SQL_D   => "-",
+                    ClienteRepository::SQL_AVERAGE  => "-"
                 );
 
                 $cliEsp = $this->clientsModel->getByCodigo($row['CardCode']);
