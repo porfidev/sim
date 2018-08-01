@@ -18,6 +18,8 @@ use App\Repositories\CatalogoRepository;
 use App\Repositories\BoxesRepository;
 use App\Repositories\AssignmentRepository;
 
+use App\Services\SocketIOService;
+
 class PreparacionTrabajadorController extends Controller
 {
     private $productModel;
@@ -26,6 +28,7 @@ class PreparacionTrabajadorController extends Controller
     private $catalogModel;
     private $boxModel;
     private $assigmentModel;
+    private $socketIOService;
 
     /**
      * Create a new controller instance.
@@ -38,7 +41,8 @@ class PreparacionTrabajadorController extends Controller
         OrderRepository $order,
         CatalogoRepository $catalog,
         BoxesRepository $box,
-        AssignmentRepository $assigment)
+        AssignmentRepository $assigment,
+        SocketIOService $socketIOService)
     {
         $this->middleware(['auth', 'permission', 'update.session']);
         $this->productModel     = $product;
@@ -47,6 +51,7 @@ class PreparacionTrabajadorController extends Controller
         $this->catalogModel     = $catalog;
         $this->boxModel         = $box;
         $this->assigmentModel   = $assigment;
+        $this->socketIOService = $socketIOService;
     }
 
     /**
@@ -365,6 +370,8 @@ class PreparacionTrabajadorController extends Controller
                             OrderRepository::SQL_ESTATUS => OrderRepository::PREPARADO_PROCESO
                         )
                     );
+                    $id = $order->id;
+                    $this->socketIOService->emitMessage('pedido_porvalidar', ['idOrder' => $id]);
                 }
                 $missings = $this->assigmentModel->getMissings($order->id);
                 Log::info("PreparacionTrabajadorController - terminarTarea - faltan: ".count($missings));

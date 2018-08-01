@@ -372,6 +372,8 @@ class SurtidoJefeController extends Controller
 
             }
 
+            $this->socketIOService->emitMessage('pedido_validado', ['idOrder' => $idPed]);
+
             $datos['order_id'] = $idPed;
             $datos['trace_type'] = OrderRepository::TRACE_VALDAR_SURTIDO;
             $datos['user_id'] = Auth::id();

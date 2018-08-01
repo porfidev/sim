@@ -185,6 +185,9 @@ class SurtidoTrabajadorController extends Controller
 
                             $this->orderModel->update($detalleOrder->idOrder, $datosE);
 
+                            $id = $detalleOrder->idOrder;
+                            $this->socketIOService->emitMessage('pedido_enproceso', ['idOrder' => $id]);
+
                             $fecHor = date("Y-m-d H:i:s");
 
                             $dataHist = array(
@@ -259,6 +262,8 @@ class SurtidoTrabajadorController extends Controller
             }
 
             $this->socketIOService->emitMessage('pedido_surtido', ['idOrder' => $id]);
+            // Vista Jefe
+            $this->socketIOService->emitMessage('pedido_porvalidar', ['idOrder' => $id]);
 
         } catch (\Exception $e) {
 

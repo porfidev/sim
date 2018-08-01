@@ -342,7 +342,7 @@
             });
         });
     </script>
-    <script src="js/socket.io.js"></script>
+    <script src="../js/socket.io.js"></script>
     <script>
         function changeStatus(idOrder, newStatus){
             if(parseInt(newStatus) === 2) {
@@ -369,10 +369,10 @@
                 "</button>";
 
             if(enabled){
-                $('#action_' + idOrder).find('button')
+                $('#action_' + idOrder)
                     .html(button)
             } else {
-                $('#action_' + idOrder).find('button')
+                $('#action_' + idOrder)
                     .html('')
             }
         }
