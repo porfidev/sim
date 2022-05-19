@@ -376,5 +376,14 @@
             var data = JSON.parse(payload);
             changeStatus(data.idOrder, 3);
         });
+
+        // TODO: Agregar a enproceso
+
+        socket.on('pedido_porvalidar', function(payload){
+            var data = JSON.parse(payload);
+            changeStatus(data.idOrder, 3);
+        });
+
+        /// TODO: Agregar por valida
     </script>
 @endsection
